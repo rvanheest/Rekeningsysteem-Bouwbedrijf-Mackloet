@@ -1,0 +1,25 @@
+2.1 r88
+- Improved performance by turning off default logging, which comes through Velocity.
+
+2.0 r85
+- Integration of Apache Velocity Engine
+- Static and Dynamic Replacement using Velocity
+- JLRGenerator: pdfLaTeX Bugfixes 
+- JLROpener: Print-Function added
+- Minor Changes and Improvements
+- Tutorial updated
+- JavaDoc updated
+
+
+1.5 r73
+- Fixed problem with Cross-References in LaTeX
+- Use of replace() function in JLRConverter to fill the template with information.
+  Thus, the old HashMap concept has been eliminated.
+- Tutorial updated
+- Some Bugfixes
+
+1.0.1 r44
+- MiKTeX Portable fix
+
+1.0
+- JLR goes online
