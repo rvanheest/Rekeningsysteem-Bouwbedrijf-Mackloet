@@ -2,6 +2,7 @@ package org.rekeningsysteem.logic.factuurnummer;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Optional;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
@@ -14,43 +15,61 @@ import com.google.inject.assistedinject.Assisted;
 
 public class FileFactuurnummerManager implements FactuurnummerManager {
 
-	private File file;
-	private String factNr;
-	private Logger logger;
+	private final Optional<File> file;
+	private Optional<String> factNr;
+	private final Logger logger;
 
 	@Inject
-	public FileFactuurnummerManager(PropertiesWorker worker, @Assisted PropertyKey file,
-			Logger logger) {
-		this.file = new File(worker.getProperty(file));
+	public FileFactuurnummerManager(PropertiesWorker worker, @Assisted PropertyKey fileProp, Logger logger) {
+		this.file = worker.getProperty(fileProp).map(File::new);
+		this.factNr = Optional.empty();
 		this.logger = logger;
 	}
-
-	@Override
-	public String getFactuurnummer() {
-		if (this.factNr == null) {
+	
+	private Optional<String> readFromFile() {
+		return this.file.map(f -> {
 			try {
-				String factnr = FileUtils.readFileToString(this.file);
-				String yearNow = String.valueOf(new Datum().getJaar());
-				String newFnr;
-				if (factnr.endsWith(yearNow)) {
-					// same year
-					String[] oldNr = factnr.split(yearNow);
-					int newNumber = Integer.parseInt(oldNr[0]) + 1;
-					newFnr = String.valueOf(newNumber) + yearNow;
-				}
-				else {
-					// other year
-					newFnr = "1" + yearNow;
-					factnr = newFnr;
-				}
-				FileUtils.writeStringToFile(this.file, newFnr);
-				this.factNr = factnr;
+				return FileUtils.readFileToString(f);
+			}
+			catch (IOException e) {
+				this.logger.error(e.getMessage(), e);
+				return null;
+			}
+		});
+	}
 
-				return factnr;
+	private void writeToFile(String text) {
+		this.file.ifPresent(f -> {
+			try {
+				FileUtils.writeStringToFile(f, text);
 			}
 			catch (IOException e) {
 				this.logger.error(e.getMessage(), e);
 			}
+		});
+	}
+
+	@Override
+	public Optional<String> getFactuurnummer() {
+		if (!this.factNr.isPresent()) {
+			Optional<String> nr = this.readFromFile();
+			String yearNow = String.valueOf(new Datum().getJaar());
+			if (nr.map(s -> s.endsWith(yearNow)).orElse(false)) {
+				// same year
+				nr.map(s -> s.substring(0, s.indexOf(yearNow)))
+						.map(Integer::parseInt)
+						.map(i -> i + 1)
+						.map(String::valueOf)
+						.map(s -> s.concat(yearNow))
+						.ifPresent(this::writeToFile);
+				this.factNr = nr;
+			}
+			else if (nr.isPresent()) {
+				// other year
+				this.factNr = Optional.of("1".concat(yearNow));
+				this.factNr.ifPresent(this::writeToFile);
+			}
+			return this.factNr;
 		}
 		return this.factNr;
 	}

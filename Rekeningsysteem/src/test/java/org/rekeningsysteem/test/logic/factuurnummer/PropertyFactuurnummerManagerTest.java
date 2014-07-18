@@ -6,6 +6,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
+import java.util.Optional;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,25 +34,25 @@ public class PropertyFactuurnummerManagerTest {
 
 	@Test
 	public void testGetFactuurnummerSameYear() {
-		when(this.worker.getProperty(eq(this.key))).thenReturn("12" + yearNow);
+		when(this.worker.getProperty(eq(this.key))).thenReturn(Optional.of("12" + yearNow));
 
-		assertEquals("12" + yearNow, this.manager.getFactuurnummer());
+		assertEquals(Optional.of("12" + yearNow), this.manager.getFactuurnummer());
 		verify(this.worker).getProperty(eq(this.key));
 		verify(this.worker).setProperty(eq(this.key), eq("13" + yearNow));
 
-		assertEquals("12" + yearNow, this.manager.getFactuurnummer());
+		assertEquals(Optional.of("12" + yearNow), this.manager.getFactuurnummer());
 		verifyNoMoreInteractions(this.worker);
 	}
 
 	@Test
 	public void testGetFactuurnummerOtherYear() {
-		when(this.worker.getProperty(eq(this.key))).thenReturn("25" + (yearNow - 2));
+		when(this.worker.getProperty(eq(this.key))).thenReturn(Optional.of("25" + (yearNow - 2)));
 
-		assertEquals("1" + yearNow, this.manager.getFactuurnummer());
+		assertEquals(Optional.of("1" + yearNow), this.manager.getFactuurnummer());
 		verify(this.worker).getProperty(eq(this.key));
 		verify(this.worker).setProperty(eq(this.key), eq("1" + yearNow));
 
-		assertEquals("1" + yearNow, this.manager.getFactuurnummer());
+		assertEquals(Optional.of("1" + yearNow), this.manager.getFactuurnummer());
 		verifyNoMoreInteractions(this.worker);
 	}
 }

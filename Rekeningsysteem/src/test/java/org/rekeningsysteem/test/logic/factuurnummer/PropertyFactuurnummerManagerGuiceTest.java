@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 import org.apache.log4j.Logger;
 import org.junit.Test;
@@ -31,11 +32,11 @@ public class PropertyFactuurnummerManagerGuiceTest {
 	public void testMakePropertyFactuurnummerManager() {
 		Injector injector = Guice.createInjector(new PropertyFactuurnummerManagerModule(),
 				new TestModule());
-		when(this.propertiesWorker.getProperty(eq(this.propertyKey))).thenReturn("12012");
+		when(this.propertiesWorker.getProperty(eq(this.propertyKey))).thenReturn(Optional.of("12012"));
 		FactuurnummerManager manager = injector.getInstance(FactuurnummerManagerFactory.class)
 				.create(this.propertyKey);
 		
-		assertEquals("1" + LocalDate.now().getYear(), manager.getFactuurnummer());
+		assertEquals(Optional.of("1" + LocalDate.now().getYear()), manager.getFactuurnummer());
 	}
 
 	private class TestModule extends AbstractModule {

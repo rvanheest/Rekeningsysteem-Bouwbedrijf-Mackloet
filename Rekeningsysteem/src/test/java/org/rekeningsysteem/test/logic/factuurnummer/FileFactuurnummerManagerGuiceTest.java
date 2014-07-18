@@ -6,6 +6,7 @@ import static org.mockito.Mockito.*;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.Optional;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
@@ -41,11 +42,11 @@ public class FileFactuurnummerManagerGuiceTest {
 	public void testMakeFileFactuurnummerManager() {
 		Injector injector = Guice.createInjector(new FileFactuurnummerManagerModule(),
 				new TestModule());
-		when(this.propertiesWorker.getProperty(eq(this.propertyKey))).thenReturn(file);
+		when(this.propertiesWorker.getProperty(eq(this.propertyKey))).thenReturn(Optional.of(file));
 		FactuurnummerManager manager = injector.getInstance(FactuurnummerManagerFactory.class)
 				.create(this.propertyKey);
 		
-		assertEquals("1" + LocalDate.now().getYear(), manager.getFactuurnummer());
+		assertEquals(Optional.of("1" + LocalDate.now().getYear()), manager.getFactuurnummer());
 	}
 	
 	private class TestModule extends AbstractModule {

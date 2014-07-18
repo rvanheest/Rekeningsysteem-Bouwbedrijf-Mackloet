@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Optional;
 import java.util.Properties;
 
 import org.apache.commons.io.FileUtils;
@@ -57,11 +58,12 @@ public class PropertiesWorker {
 		}
 	}
 
-	public String getProperty(PropertyKey key) {
+	public Optional<String> getProperty(PropertyKey key) {
 		return this.getProperty(key.getKey());
 	}
 
-	public String getProperty(String key) {
-		return this.properties.getProperty(key);
+	public Optional<String> getProperty(String key) {
+		String res = this.properties.getProperty(key);
+		return res == null ? Optional.empty() : Optional.of(res);
 	}
 }

@@ -3,6 +3,7 @@ package org.rekeningsysteem.test.properties;
 import static org.junit.Assert.assertEquals;
 
 import java.io.File;
+import java.util.Optional;
 import java.util.Properties;
 
 import org.junit.Test;
@@ -23,7 +24,7 @@ public class PropertiesWorkerGuiceTest {
 		Injector injector = Guice.createInjector(new TestPropertiesModule(),
 				new ConsoleLoggerModule());
 		PropertiesWorker prop = injector.getInstance(PropertiesWorker.class);
-		assertEquals("foobar", prop.getProperty("test123"));
+		assertEquals(Optional.of("foobar"), prop.getProperty("test123"));
 	}
 
 	private class TestPropertiesModule extends AbstractModule {
