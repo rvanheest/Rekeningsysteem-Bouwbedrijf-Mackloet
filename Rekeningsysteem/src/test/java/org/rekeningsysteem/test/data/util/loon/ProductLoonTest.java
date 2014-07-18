@@ -38,6 +38,11 @@ public class ProductLoonTest extends AbstractLoonTest {
 	}
 
 	@Test
+	public void testGetLoon() {
+		assertEquals(new Geld(40), this.getInstance().getLoon());
+	}
+
+	@Test
 	public void testEqualsFalseOtherUren() {
 		ProductLoon loon2 = new ProductLoon(this.getTestOmschrijving(), this.uren + 2, this.uurloon);
 		assertFalse(this.getInstance().equals(loon2));

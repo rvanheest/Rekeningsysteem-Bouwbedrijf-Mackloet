@@ -1,13 +1,16 @@
 package org.rekeningsysteem.test.data.util.loon;
 
+import static org.junit.Assert.assertFalse;
+
 import org.junit.Before;
+import org.junit.Test;
 import org.rekeningsysteem.data.util.loon.AbstractLoon;
 import org.rekeningsysteem.test.data.EqualsHashCodeTest;
 
 public abstract class AbstractLoonTest extends EqualsHashCodeTest {
 
 	private AbstractLoon loon;
-	private final String omschrijving = "omschrijving";
+	private String omschrijving = "omschrijving";
 
 	@Override
 	protected abstract AbstractLoon makeInstance();
@@ -20,12 +23,16 @@ public abstract class AbstractLoonTest extends EqualsHashCodeTest {
 		return this.omschrijving;
 	}
 
-	@Override
 	@Before
+	@Override
 	public void setUp() {
 		super.setUp();
 		this.loon = this.makeInstance();
 	}
 
-	// TODO do the rest of the testing stuff
+	@Test
+	public void testEqualsFalseOtherOmschrijving() {
+		this.omschrijving = "foo";
+		assertFalse(this.makeInstance().equals(this.loon));
+	}
 }
