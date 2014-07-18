@@ -6,6 +6,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 import org.junit.Before;
@@ -13,7 +14,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.rekeningsysteem.data.util.header.Datum;
 import org.rekeningsysteem.logic.factuurnummer.PropertyFactuurnummerManager;
 import org.rekeningsysteem.properties.PropertiesWorker;
 import org.rekeningsysteem.properties.PropertyKey;
@@ -24,7 +24,7 @@ public class PropertyFactuurnummerManagerTest {
 
 	private PropertyFactuurnummerManager manager;
 	@Mock private PropertiesWorker worker;
-	private static int yearNow = new Datum().getJaar();
+	private static int yearNow = LocalDate.now().getYear();
 	private final PropertyKey key = PropertyModelEnum.FACTUURNUMMER;
 
 	@Before

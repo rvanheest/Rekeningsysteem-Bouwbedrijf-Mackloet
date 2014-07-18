@@ -3,11 +3,11 @@ package org.rekeningsysteem.test.data.util.header;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.rekeningsysteem.data.util.header.Datum;
 import org.rekeningsysteem.data.util.header.Debiteur;
 import org.rekeningsysteem.data.util.header.FactuurHeader;
 import org.rekeningsysteem.exception.DatumException;
@@ -17,7 +17,7 @@ public class FactuurHeaderTest extends EqualsHashCodeTest {
 
 	private FactuurHeader header;
 	private final Debiteur debiteur = new Debiteur("RvH", "PB", "116", "3241TA", "MH");
-	private final Datum datum = new Datum();
+	private final LocalDate datum = LocalDate.now();
 	private final String factuurnummer = "32013";
 
 	@Override
@@ -38,7 +38,7 @@ public class FactuurHeaderTest extends EqualsHashCodeTest {
 		return this.debiteur;
 	}
 
-	protected Datum getTestDatum() {
+	protected LocalDate getTestDatum() {
 		return this.datum;
 	}
 
@@ -72,7 +72,7 @@ public class FactuurHeaderTest extends EqualsHashCodeTest {
 
 	@Test
 	public void testSetDatum() throws DatumException {
-		Datum datum2 = new Datum("30-07-1992");
+		LocalDate datum2 = LocalDate.of(1992, 7, 30);
 		this.header.setDatum(datum2);
 		assertEquals(datum2, this.header.getDatum());
 	}
@@ -106,7 +106,7 @@ public class FactuurHeaderTest extends EqualsHashCodeTest {
 
 	@Test
 	public void testEqualsFalseOtherDatum() throws DatumException {
-		Datum datum2 = new Datum(31, 07, 1992);
+		LocalDate datum2 = LocalDate.of(1992, 7, 31);
 		assertFalse(this.header.equals(new FactuurHeader(this.debiteur, datum2,
 				this.factuurnummer)));
 	}

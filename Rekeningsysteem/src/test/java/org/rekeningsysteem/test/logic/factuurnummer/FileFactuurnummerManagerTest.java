@@ -12,6 +12,7 @@ import static org.mockito.Mockito.when;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.Optional;
 
 import org.apache.commons.io.FileUtils;
@@ -22,7 +23,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.rekeningsysteem.data.util.header.Datum;
 import org.rekeningsysteem.logic.factuurnummer.FileFactuurnummerManager;
 import org.rekeningsysteem.properties.PropertiesWorker;
 import org.rekeningsysteem.properties.PropertyKey;
@@ -32,7 +32,7 @@ public class FileFactuurnummerManagerTest {
 
 	private FileFactuurnummerManager manager;
 	private static final String LOCATION = "src\\test\\resources\\testFactuurnummer.txt";
-	private static int yearNow = new Datum().getJaar();
+	private static int yearNow = LocalDate.now().getYear();
 	@Mock private PropertiesWorker propertiesWorker;
 	@Mock private PropertyKey key;
 	@Mock private Logger logger;

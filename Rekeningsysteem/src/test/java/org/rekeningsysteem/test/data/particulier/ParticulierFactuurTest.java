@@ -2,10 +2,10 @@ package org.rekeningsysteem.test.data.particulier;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.fail;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 import org.junit.Before;
@@ -14,11 +14,9 @@ import org.mockito.Mock;
 import org.rekeningsysteem.data.particulier.ParticulierArtikel;
 import org.rekeningsysteem.data.particulier.ParticulierFactuur;
 import org.rekeningsysteem.data.util.BtwPercentage;
-import org.rekeningsysteem.data.util.header.Datum;
 import org.rekeningsysteem.data.util.header.Debiteur;
 import org.rekeningsysteem.data.util.header.OmschrFactuurHeader;
 import org.rekeningsysteem.data.util.loon.AbstractLoon;
-import org.rekeningsysteem.exception.DatumException;
 import org.rekeningsysteem.test.data.util.AbstractFactuurTest;
 
 public class ParticulierFactuurTest extends AbstractFactuurTest<ParticulierArtikel> {
@@ -56,14 +54,8 @@ public class ParticulierFactuurTest extends AbstractFactuurTest<ParticulierArtik
 	@Before
 	@Override
 	public void setUp() {
-		try {
-			this.header = new OmschrFactuurHeader(new Debiteur("a", "b", "c", "d", "e"),
-					new Datum(30, 07, 1992), "f", "g");
-		}
-		catch (DatumException e) {
-			e.printStackTrace();
-			fail(e.getMessage());
-		}
+		this.header = new OmschrFactuurHeader(new Debiteur("a", "b", "c", "d", "e"),
+				LocalDate.of(1992, 7, 30), "f", "g");
 		super.setUp();
 	}
 
@@ -82,15 +74,15 @@ public class ParticulierFactuurTest extends AbstractFactuurTest<ParticulierArtik
 	@Test
 	@Override
 	public void testEqualsFalseOtherFactuurHeader() {
-		this.header = new OmschrFactuurHeader(new Debiteur("", "", "", "", ""), new Datum(),
-				"test", "foo");
+		this.header = new OmschrFactuurHeader(new Debiteur("", "", "", "", ""),
+				LocalDate.now(), "test", "foo");
 		assertFalse(this.getInstance().equals(this.makeInstance()));
 	}
 
 	@Test
 	public void testToString() {
 		String expected = "<ParticulierFactuur[<FactuurHeader[<Debiteur[a, b, c, d, e, "
-				+ "Optional.empty]>, <Datum[30-07-1992]>, Optional[f], g]>, euro, [], "
+				+ "Optional.empty]>, 1992-07-30, Optional[f], g]>, euro, [], "
 				+ "<BtwPercentage[6.0, 21.0]>, []]>";
 		assertEquals(expected, this.getInstance().toString());
 	}

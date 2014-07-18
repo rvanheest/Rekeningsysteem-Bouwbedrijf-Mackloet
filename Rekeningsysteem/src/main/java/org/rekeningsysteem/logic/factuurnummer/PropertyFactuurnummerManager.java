@@ -1,8 +1,8 @@
 package org.rekeningsysteem.logic.factuurnummer;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
-import org.rekeningsysteem.data.util.header.Datum;
 import org.rekeningsysteem.properties.PropertiesWorker;
 import org.rekeningsysteem.properties.PropertyKey;
 
@@ -27,7 +27,7 @@ public class PropertyFactuurnummerManager implements FactuurnummerManager {
 	public Optional<String> getFactuurnummer() {
 		if (!this.factNr.isPresent()) {
 			Optional<String> nr = this.worker.getProperty(this.key);
-			String yearNow = String.valueOf(new Datum().getJaar());
+			String yearNow = String.valueOf(LocalDate.now().getYear());
 			if (nr.map(s -> s.endsWith(yearNow)).orElse(false)) {
 				// same year
 				nr.map(s -> s.substring(0, s.indexOf(yearNow)))

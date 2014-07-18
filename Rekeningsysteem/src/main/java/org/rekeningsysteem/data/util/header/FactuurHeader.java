@@ -1,23 +1,24 @@
 package org.rekeningsysteem.data.util.header;
 
+import java.time.LocalDate;
 import java.util.Objects;
 import java.util.Optional;
 
 public class FactuurHeader {
 
 	private Debiteur debiteur;
-	private Datum datum;
+	private LocalDate datum;
 	private Optional<String> factuurnummer;
 
-	public FactuurHeader(Debiteur debiteur, Datum datum, String factuurnummer) {
+	public FactuurHeader(Debiteur debiteur, LocalDate datum, String factuurnummer) {
 		this(debiteur, datum, Optional.of(factuurnummer));
 	}
 
-	public FactuurHeader(Debiteur debiteur, Datum datum) {
+	public FactuurHeader(Debiteur debiteur, LocalDate datum) {
 		this(debiteur, datum, Optional.empty());
 	}
 	
-	private FactuurHeader(Debiteur debiteur, Datum datum, Optional<String> factuurnummer) {
+	private FactuurHeader(Debiteur debiteur, LocalDate datum, Optional<String> factuurnummer) {
 		this.debiteur = debiteur;
 		this.datum = datum;
 		this.factuurnummer = factuurnummer;
@@ -31,11 +32,11 @@ public class FactuurHeader {
 		this.debiteur = debiteur;
 	}
 
-	public Datum getDatum() {
+	public LocalDate getDatum() {
 		return this.datum;
 	}
 
-	public void setDatum(Datum datum) {
+	public void setDatum(LocalDate datum) {
 		this.datum = datum;
 	}
 

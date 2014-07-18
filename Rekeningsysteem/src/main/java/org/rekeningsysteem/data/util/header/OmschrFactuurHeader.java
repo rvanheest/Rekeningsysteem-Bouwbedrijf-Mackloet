@@ -1,18 +1,19 @@
 package org.rekeningsysteem.data.util.header;
 
+import java.time.LocalDate;
 import java.util.Objects;
 
 public class OmschrFactuurHeader extends FactuurHeader {
 
 	private String omschrijving;
 
-	public OmschrFactuurHeader(Debiteur debiteur, Datum datum, String factuurnummer,
+	public OmschrFactuurHeader(Debiteur debiteur, LocalDate datum, String factuurnummer,
 			String omschrijving) {
 		super(debiteur, datum, factuurnummer);
 		this.omschrijving = omschrijving;
 	}
 
-	public OmschrFactuurHeader(Debiteur debiteur, Datum datum, String omschrijving) {
+	public OmschrFactuurHeader(Debiteur debiteur, LocalDate datum, String omschrijving) {
 		super(debiteur, datum);
 		this.omschrijving = omschrijving;
 	}

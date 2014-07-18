@@ -2,11 +2,11 @@ package org.rekeningsysteem.logic.factuurnummer;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.Optional;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
-import org.rekeningsysteem.data.util.header.Datum;
 import org.rekeningsysteem.properties.PropertiesWorker;
 import org.rekeningsysteem.properties.PropertyKey;
 
@@ -53,7 +53,7 @@ public class FileFactuurnummerManager implements FactuurnummerManager {
 	public Optional<String> getFactuurnummer() {
 		if (!this.factNr.isPresent()) {
 			Optional<String> nr = this.readFromFile();
-			String yearNow = String.valueOf(new Datum().getJaar());
+			String yearNow = String.valueOf(LocalDate.now().getYear());
 			if (nr.map(s -> s.endsWith(yearNow)).orElse(false)) {
 				// same year
 				nr.map(s -> s.substring(0, s.indexOf(yearNow)))

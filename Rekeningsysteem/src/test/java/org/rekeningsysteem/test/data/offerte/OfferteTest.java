@@ -74,7 +74,7 @@ public final class OfferteTest extends AbstractRekeningTest {
 	@Test
 	public void testToString() {
 		assertEquals("<Offerte[<FactuurHeader[<Debiteur[a, b, c, d, e, Optional.empty]>, "
-				+ "<Datum[30-07-1992]>, Optional[f]]>, Lorem ipsum dolor sit amet., true]>",
+				+ "1992-07-30, Optional[f]]>, Lorem ipsum dolor sit amet., true]>",
 				this.getInstance().toString());
 	}
 }
