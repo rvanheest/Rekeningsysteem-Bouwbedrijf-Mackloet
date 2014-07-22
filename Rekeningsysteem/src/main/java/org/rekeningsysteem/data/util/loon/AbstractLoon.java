@@ -3,8 +3,9 @@ package org.rekeningsysteem.data.util.loon;
 import java.util.Objects;
 
 import org.rekeningsysteem.data.util.Geld;
+import org.rekeningsysteem.data.util.ListItem;
 
-public abstract class AbstractLoon {
+public abstract class AbstractLoon implements ListItem {
 
 	private final String omschrijving;
 
@@ -16,7 +17,18 @@ public abstract class AbstractLoon {
 		return this.omschrijving;
 	}
 
+	@Override
 	public abstract Geld getLoon();
+	
+	@Override
+	public Geld getMateriaal() {
+		return new Geld(0);
+	}
+
+	@Override
+	public Geld getTotaal() {
+		return this.getLoon();
+	}
 
 	@Override
 	public boolean equals(Object other) {
