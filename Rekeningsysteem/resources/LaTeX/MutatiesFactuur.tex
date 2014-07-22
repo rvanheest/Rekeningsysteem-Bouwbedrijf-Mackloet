@@ -1,0 +1,80 @@
+\documentclass{factuur}
+
+\usepackage[dutch]{babel}
+\usepackage{graphicx}
+\usepackage[hidelinks]{hyperref}
+\usepackage{longtable}
+\usepackage{eurosym}
+\usepackage{lastpage}
+
+\begin{document}
+
+%-----------------------------------------------------------------------------
+%     HEADING SECTION
+%-----------------------------------------------------------------------------
+
+\includegraphics[width=\textwidth]{header.png}
+
+% Company Information
+\begin{minipage}[c]{0.45\textwidth}
+	Prins Bernhardlaan 79\\
+	3241TA Middelharnis
+	\begin{tabbing}
+		Tel./Fax. \= 0187 - 61 17 80 \\
+		Tel. \> 0187 - 49 38 68
+	\end{tabbing}
+	\href{mailto:ejmackloet@solcon.nl}{ejmackloet@solcon.nl} \\ \\
+	Rek.nr. NL30RABO0360602835 \\
+	K.v.K. Dordrecht nr. 65989 \\
+	BTW.nr. 8078.95.489.B.01 \\
+\end{minipage}
+\hfill
+% Customer address
+\begin{minipage}[c]{0.45\textwidth}
+	\begin{tabular}{r l}
+		{\bf Rekening voor:} & $DebiteurNaam \\
+		& $DebiteurStraat $DebiteurNummer \\
+		& $DebiteurPostcode $DebiteurPlaats \\
+		& \\
+		{\bf Pagina} & \thepage/\pageref{LastPage} \\
+	\end{tabular}
+\end{minipage}
+
+\HRule
+
+%Invoice number and VAT number
+\begin{minipage}[t]{0.45\textwidth}
+	\begin{tabbing}
+		{\bf Factuurnummer:} \= $Factuurnummer \\
+		\BtwNummer{$HasDebiteurBtwNummer}{$DebiteurBtwNummer} \\
+	\end{tabbing}
+\end{minipage}
+\hfill
+%Invoice date
+\begin{minipage}[t]{0.45\textwidth}
+	\begin{tabular}{r l}
+		{\bf Datum:} & $Datum \\
+	\end{tabular}
+\end{minipage}
+
+%----------------------------------------------------------------------------------------
+%	TABLE OF EXPENSES
+%----------------------------------------------------------------------------------------
+
+\begin{mutatiesTable}[$Valuta]
+	#foreach( $bon in $bonList )
+		\mutatiesRow{$bon[0]}{$bon[1]}{$bon[2]}
+	#end
+	\totalRow{$TotaalBedrag}
+\end{mutatiesTable}
+
+%----------------------------------------------------------------------------------------
+%	BOTTEM SECTION
+%----------------------------------------------------------------------------------------
+
+\vfill
+\begin{center}
+	Wilt u het bedrag van deze factuur binnen 14 dagen na\\
+	factuurdatum overmaken op bovenvermelde rekening.
+\end{center}
+\end{document}
