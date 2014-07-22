@@ -6,7 +6,6 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -14,6 +13,7 @@ import org.mockito.Mock;
 import org.rekeningsysteem.data.particulier.ParticulierArtikel;
 import org.rekeningsysteem.data.particulier.ParticulierFactuur;
 import org.rekeningsysteem.data.util.BtwPercentage;
+import org.rekeningsysteem.data.util.ItemList;
 import org.rekeningsysteem.data.util.header.Debiteur;
 import org.rekeningsysteem.data.util.header.OmschrFactuurHeader;
 import org.rekeningsysteem.data.util.loon.AbstractLoon;
@@ -38,17 +38,17 @@ public class ParticulierFactuurTest extends AbstractFactuurTest<ParticulierArtik
 	@Override
 	protected ParticulierFactuur makeInstance() {
 		return new ParticulierFactuur(this.getTestFactuurHeader(),
-				this.getTestValuta(), new ArrayList<ParticulierArtikel>(),
-				this.getTestBtwPercentage(), new ArrayList<AbstractLoon>());
+				this.getTestValuta(), new ItemList<ParticulierArtikel>(this.getTestBtwPercentage()),
+				new ItemList<AbstractLoon>(this.getTestBtwPercentage()));
 	}
 
 	@Override
 	protected ParticulierFactuur makeNotInstance() {
 		BtwPercentage old = this.getTestBtwPercentage();
 		return new ParticulierFactuur(this.getTestFactuurHeader(), this.getTestValuta(),
-				new ArrayList<ParticulierArtikel>(), new BtwPercentage(
-						old.getLoonPercentage() + 1,
-						old.getMateriaalPercentage()), new ArrayList<AbstractLoon>());
+				new ItemList<ParticulierArtikel>(new BtwPercentage(old.getLoonPercentage() + 1,
+						old.getMateriaalPercentage())),
+				new ItemList<AbstractLoon>(this.getTestBtwPercentage()));
 	}
 
 	@Before
@@ -61,7 +61,8 @@ public class ParticulierFactuurTest extends AbstractFactuurTest<ParticulierArtik
 
 	@Test
 	public void testGetLoonList() {
-		assertEquals(new ArrayList<AbstractLoon>(), this.getInstance().getLoonList());
+		assertEquals(new ItemList<AbstractLoon>(this.getTestBtwPercentage()),
+				this.getInstance().getLoonList());
 	}
 
 	@Test
@@ -82,8 +83,11 @@ public class ParticulierFactuurTest extends AbstractFactuurTest<ParticulierArtik
 	@Test
 	public void testToString() {
 		String expected = "<ParticulierFactuur[<FactuurHeader[<Debiteur[a, b, c, d, e, "
-				+ "Optional.empty]>, 1992-07-30, Optional[f], g]>, euro, [], "
-				+ "<BtwPercentage[6.0, 21.0]>, []]>";
+				+ "Optional.empty]>, 1992-07-30, Optional[f], g]>, euro, <ItemList[[], "
+				+ "<BtwPercentage[6.0, 21.0]>, <Totalen[<Geld[0,00]>, <Geld[0,00]>, "
+				+ "<Geld[0,00]>, <Geld[0,00]>, <Geld[0,00]>, <Geld[0,00]>]>]>, "
+				+ "<ItemList[[], <BtwPercentage[6.0, 21.0]>, <Totalen[<Geld[0,00]>, "
+				+ "<Geld[0,00]>, <Geld[0,00]>, <Geld[0,00]>, <Geld[0,00]>, <Geld[0,00]>]>]>]>";
 		assertEquals(expected, this.getInstance().toString());
 	}
 }

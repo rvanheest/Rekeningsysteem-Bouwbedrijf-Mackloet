@@ -6,13 +6,13 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.rekeningsysteem.data.aangenomen.AangenomenFactuur;
 import org.rekeningsysteem.data.aangenomen.AangenomenListItem;
 import org.rekeningsysteem.data.util.BtwPercentage;
+import org.rekeningsysteem.data.util.ItemList;
 import org.rekeningsysteem.data.util.header.Debiteur;
 import org.rekeningsysteem.data.util.header.OmschrFactuurHeader;
 import org.rekeningsysteem.test.data.util.AbstractFactuurTest;
@@ -34,16 +34,15 @@ public class AangenomenFactuurTest extends AbstractFactuurTest<AangenomenListIte
 	@Override
 	protected AangenomenFactuur makeInstance() {
 		return new AangenomenFactuur(this.getTestFactuurHeader(), this.getTestValuta(),
-				new ArrayList<AangenomenListItem>(), this.getTestBtwPercentage());
+				new ItemList<AangenomenListItem>(this.getTestBtwPercentage()));
 	}
 
 	@Override
 	protected AangenomenFactuur makeNotInstance() {
 		BtwPercentage old = this.getTestBtwPercentage();
 		return new AangenomenFactuur(this.getTestFactuurHeader(), this.getTestValuta(),
-				new ArrayList<AangenomenListItem>(), new BtwPercentage(
-						old.getLoonPercentage() + 1,
-						old.getMateriaalPercentage()));
+				new ItemList<AangenomenListItem>(new BtwPercentage(old.getLoonPercentage() + 1,
+						old.getMateriaalPercentage())));
 	}
 
 	@Before
@@ -72,8 +71,9 @@ public class AangenomenFactuurTest extends AbstractFactuurTest<AangenomenListIte
 	@Test
 	public void testToString() {
 		String expected = "<AangenomenFactuur[<FactuurHeader[<Debiteur[a, b, c, d, e, "
-				+ "Optional.empty]>, 1992-07-30, Optional[f], g]>, euro, [], "
-				+ "<BtwPercentage[6.0, 21.0]>]>";
+				+ "Optional.empty]>, 1992-07-30, Optional[f], g]>, euro, <ItemList[[], "
+				+ "<BtwPercentage[6.0, 21.0]>, <Totalen[<Geld[0,00]>, <Geld[0,00]>, "
+				+ "<Geld[0,00]>, <Geld[0,00]>, <Geld[0,00]>, <Geld[0,00]>]>]>]>";
 		assertEquals(expected, this.getInstance().toString());
 	}
 }

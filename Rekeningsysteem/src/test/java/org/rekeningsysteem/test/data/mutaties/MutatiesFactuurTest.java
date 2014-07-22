@@ -4,12 +4,11 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 
-import java.util.ArrayList;
-
 import org.junit.Test;
 import org.rekeningsysteem.data.mutaties.MutatiesBon;
 import org.rekeningsysteem.data.mutaties.MutatiesFactuur;
 import org.rekeningsysteem.data.util.BtwPercentage;
+import org.rekeningsysteem.data.util.ItemList;
 import org.rekeningsysteem.test.data.util.AbstractFactuurTest;
 
 public class MutatiesFactuurTest extends AbstractFactuurTest<MutatiesBon> {
@@ -22,15 +21,15 @@ public class MutatiesFactuurTest extends AbstractFactuurTest<MutatiesBon> {
 	@Override
 	protected MutatiesFactuur makeInstance() {
 		return new MutatiesFactuur(this.getTestFactuurHeader(), this.getTestValuta(),
-				new ArrayList<MutatiesBon>(), this.getTestBtwPercentage());
+				new ItemList<MutatiesBon>(this.getTestBtwPercentage()));
 	}
 
 	@Override
 	protected MutatiesFactuur makeNotInstance() {
 		BtwPercentage old = this.getTestBtwPercentage();
 		return new MutatiesFactuur(this.getTestFactuurHeader(), this.getTestValuta(),
-				new ArrayList<MutatiesBon>(), new BtwPercentage(old.getLoonPercentage() + 1,
-						old.getMateriaalPercentage()));
+				new ItemList<MutatiesBon>(new BtwPercentage(old.getLoonPercentage() + 1,
+						old.getMateriaalPercentage())));
 	}
 
 	@Test
@@ -43,8 +42,9 @@ public class MutatiesFactuurTest extends AbstractFactuurTest<MutatiesBon> {
 	@Test
 	public void testToString() {
 		String expected = "<MutatiesFactuur[<FactuurHeader[<Debiteur[a, b, c, d, e, "
-				+ "Optional.empty]>, 1992-07-30, Optional[f]]>, euro, [], "
-				+ "<BtwPercentage[6.0, 21.0]>]>";
+				+ "Optional.empty]>, 1992-07-30, Optional[f]]>, euro, <ItemList[[], "
+				+ "<BtwPercentage[6.0, 21.0]>, <Totalen[<Geld[0,00]>, <Geld[0,00]>, "
+				+ "<Geld[0,00]>, <Geld[0,00]>, <Geld[0,00]>, <Geld[0,00]>]>]>]>";
 		assertEquals(expected, this.getInstance().toString());
 	}
 }

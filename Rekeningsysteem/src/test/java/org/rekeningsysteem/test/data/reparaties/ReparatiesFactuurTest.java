@@ -4,12 +4,11 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 
-import java.util.ArrayList;
-
 import org.junit.Test;
 import org.rekeningsysteem.data.reparaties.ReparatiesBon;
 import org.rekeningsysteem.data.reparaties.ReparatiesFactuur;
 import org.rekeningsysteem.data.util.BtwPercentage;
+import org.rekeningsysteem.data.util.ItemList;
 import org.rekeningsysteem.test.data.util.AbstractFactuurTest;
 
 public class ReparatiesFactuurTest extends AbstractFactuurTest<ReparatiesBon> {
@@ -22,15 +21,15 @@ public class ReparatiesFactuurTest extends AbstractFactuurTest<ReparatiesBon> {
 	@Override
 	protected ReparatiesFactuur makeInstance() {
 		return new ReparatiesFactuur(this.getTestFactuurHeader(), this.getTestValuta(),
-				new ArrayList<ReparatiesBon>(), this.getTestBtwPercentage());
+				new ItemList<ReparatiesBon>(this.getTestBtwPercentage()));
 	}
 
 	@Override
 	protected ReparatiesFactuur makeNotInstance() {
 		BtwPercentage old = this.getTestBtwPercentage();
 		return new ReparatiesFactuur(this.getTestFactuurHeader(), this.getTestValuta(),
-				new ArrayList<ReparatiesBon>(), new BtwPercentage(old.getLoonPercentage() + 1,
-						old.getMateriaalPercentage()));
+				new ItemList<ReparatiesBon>(new BtwPercentage(old.getLoonPercentage() + 1,
+						old.getMateriaalPercentage())));
 	}
 
 	@Test
@@ -43,8 +42,9 @@ public class ReparatiesFactuurTest extends AbstractFactuurTest<ReparatiesBon> {
 	@Test
 	public void testToString() {
 		String expected = "<ReparatiesFactuur[<FactuurHeader[<Debiteur[a, b, c, d, e, "
-				+ "Optional.empty]>, 1992-07-30, Optional[f]]>, euro, [], "
-				+ "<BtwPercentage[6.0, 21.0]>]>";
+				+ "Optional.empty]>, 1992-07-30, Optional[f]]>, euro, <ItemList[[], "
+				+ "<BtwPercentage[6.0, 21.0]>, <Totalen[<Geld[0,00]>, <Geld[0,00]>, "
+				+ "<Geld[0,00]>, <Geld[0,00]>, <Geld[0,00]>, <Geld[0,00]>]>]>]>";
 		assertEquals(expected, this.getInstance().toString());
 	}
 }

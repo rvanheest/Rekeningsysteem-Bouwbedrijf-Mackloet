@@ -40,10 +40,9 @@ public class Offerte extends AbstractRekening {
 
 	@Override
 	public boolean equals(Object other) {
-		if (other instanceof Offerte) {
+		if (super.equals(other) && other instanceof Offerte) {
 			Offerte that = (Offerte) other;
-			return super.equals(that)
-					&& Objects.equals(this.tekst, that.tekst)
+			return Objects.equals(this.tekst, that.tekst)
 					&& Objects.equals(this.ondertekenen, that.ondertekenen);
 		}
 		return false;
