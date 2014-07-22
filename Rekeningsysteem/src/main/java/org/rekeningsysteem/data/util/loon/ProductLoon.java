@@ -32,10 +32,9 @@ public final class ProductLoon extends AbstractLoon {
 
 	@Override
 	public boolean equals(Object other) {
-		if (other instanceof ProductLoon) {
+		if (super.equals(other) && other instanceof ProductLoon) {
 			ProductLoon that = (ProductLoon) other;
-			return super.equals(that)
-					&& Objects.equals(this.uren, that.uren)
+			return Objects.equals(this.uren, that.uren)
 					&& Objects.equals(this.uurloon, that.uurloon);
 		}
 		return false;

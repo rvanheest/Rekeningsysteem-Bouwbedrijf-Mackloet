@@ -20,10 +20,9 @@ public final class InstantLoon extends AbstractLoon {
 
 	@Override
 	public boolean equals(Object other) {
-		if (other instanceof InstantLoon) {
+		if (super.equals(other) && other instanceof InstantLoon) {
 			InstantLoon that = (InstantLoon) other;
-			return super.equals(that)
-					&& Objects.equals(this.loon, that.loon);
+			return Objects.equals(this.loon, that.loon);
 		}
 		return false;
 	}
