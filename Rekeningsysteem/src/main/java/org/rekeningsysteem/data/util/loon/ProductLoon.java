@@ -27,7 +27,7 @@ public final class ProductLoon extends AbstractLoon {
 
 	@Override
 	public Geld getLoon() {
-		return this.loon;
+		return new Geld(this.loon);
 	}
 
 	@Override

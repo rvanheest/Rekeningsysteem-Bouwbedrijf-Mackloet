@@ -41,7 +41,7 @@ public class ReparatiesBon implements ListItem {
 
 	@Override
 	public Geld getTotaal() {
-		return this.totaal;
+		return new Geld(this.totaal);
 	}
 
 	@Override
