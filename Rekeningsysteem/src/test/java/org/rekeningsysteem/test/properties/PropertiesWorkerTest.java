@@ -77,6 +77,14 @@ public class PropertiesWorkerTest {
 
 		assertEquals(Optional.of("value"), this.worker.getProperty(this.key));
 	}
+	
+	@Test
+	public void testGetValueNotPresent() {
+		when(this.key.getKey()).thenReturn("key");
+		when(this.properties.getProperty(anyString())).thenReturn(null);
+
+		assertEquals(Optional.empty(), this.worker.getProperty(this.key));
+	}
 
 	@Test
 	public void testLoadFails() throws IOException {
