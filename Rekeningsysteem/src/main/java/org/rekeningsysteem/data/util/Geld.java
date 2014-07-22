@@ -2,8 +2,8 @@ package org.rekeningsysteem.data.util;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.util.Objects;
 
-import org.apache.commons.lang3.ObjectUtils;
 import org.rekeningsysteem.exception.GeldParseException;
 
 public final class Geld {
@@ -92,14 +92,14 @@ public final class Geld {
 	public boolean equals(Object other) {
 		if (other instanceof Geld) {
 			Geld that = (Geld) other;
-			return ObjectUtils.equals(this.bedrag, that.bedrag);
+			return Objects.equals(this.bedrag, that.bedrag);
 		}
 		return false;
 	}
 
 	@Override
 	public int hashCode() {
-		return ObjectUtils.hashCode(this.bedrag);
+		return Objects.hash(this.bedrag);
 	}
 
 	@Override
