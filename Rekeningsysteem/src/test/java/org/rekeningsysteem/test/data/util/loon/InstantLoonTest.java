@@ -30,6 +30,11 @@ public class InstantLoonTest extends AbstractLoonTest {
 	public void testGetLoon() {
 		assertEquals(this.loon, this.getInstance().getLoon());
 	}
+	
+	@Override
+	public void testGetTotaal() {
+		assertEquals(this.loon, this.getInstance().getTotaal());
+	}
 
 	@Test
 	public void testEqualsFalseOtherLoon() {
