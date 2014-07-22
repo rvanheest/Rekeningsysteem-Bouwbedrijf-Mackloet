@@ -10,7 +10,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.rekeningsysteem.data.util.header.Debiteur;
 import org.rekeningsysteem.data.util.header.FactuurHeader;
-import org.rekeningsysteem.exception.DatumException;
 import org.rekeningsysteem.test.data.EqualsHashCodeTest;
 
 public class FactuurHeaderTest extends EqualsHashCodeTest {
@@ -71,7 +70,7 @@ public class FactuurHeaderTest extends EqualsHashCodeTest {
 	}
 
 	@Test
-	public void testSetDatum() throws DatumException {
+	public void testSetDatum() {
 		LocalDate datum2 = LocalDate.of(1992, 7, 30);
 		this.header.setDatum(datum2);
 		assertEquals(datum2, this.header.getDatum());
@@ -105,7 +104,7 @@ public class FactuurHeaderTest extends EqualsHashCodeTest {
 	}
 
 	@Test
-	public void testEqualsFalseOtherDatum() throws DatumException {
+	public void testEqualsFalseOtherDatum() {
 		LocalDate datum2 = LocalDate.of(1992, 7, 31);
 		assertFalse(this.header.equals(new FactuurHeader(this.debiteur, datum2,
 				this.factuurnummer)));
