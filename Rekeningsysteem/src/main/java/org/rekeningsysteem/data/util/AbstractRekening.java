@@ -4,6 +4,7 @@ import java.util.Objects;
 
 import org.rekeningsysteem.data.util.header.FactuurHeader;
 import org.rekeningsysteem.data.util.visitor.RekeningVisitable;
+import org.rekeningsysteem.logic.factuurnummer.FactuurnummerManager;
 
 public abstract class AbstractRekening implements RekeningVisitable {
 
@@ -15,6 +16,11 @@ public abstract class AbstractRekening implements RekeningVisitable {
 
 	public FactuurHeader getFactuurHeader() {
 		return this.header;
+	}
+
+	public void initFactuurnummer(FactuurnummerManager manager) {
+		this.header.setFactuurnummer(this.header.getFactuurnummer()
+				.orElseGet(() -> manager.getFactuurnummer()));
 	}
 
 	@Override

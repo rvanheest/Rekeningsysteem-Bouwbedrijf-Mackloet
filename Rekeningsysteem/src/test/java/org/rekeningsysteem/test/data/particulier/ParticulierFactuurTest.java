@@ -2,11 +2,15 @@ package org.rekeningsysteem.test.data.particulier;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -20,6 +24,7 @@ import org.rekeningsysteem.data.util.header.Debiteur;
 import org.rekeningsysteem.data.util.header.OmschrFactuurHeader;
 import org.rekeningsysteem.data.util.loon.AbstractLoon;
 import org.rekeningsysteem.logic.bedragmanager.Totalen;
+import org.rekeningsysteem.logic.factuurnummer.FactuurnummerManager;
 import org.rekeningsysteem.test.data.util.AbstractFactuurTest;
 
 public class ParticulierFactuurTest extends AbstractFactuurTest<ParticulierArtikel> {
@@ -57,13 +62,40 @@ public class ParticulierFactuurTest extends AbstractFactuurTest<ParticulierArtik
 	@Override
 	public void setUp() {
 		this.header = new OmschrFactuurHeader(new Debiteur("a", "b", "c", "d", "e"),
-				LocalDate.of(1992, 7, 30), "f", "g");
+				LocalDate.of(1992, 7, 30), "g");
 		super.setUp();
 	}
 
 	@Test
 	public void testGetLoonList() {
 		assertEquals(new ItemList<>(), this.getInstance().getLoonList());
+	}
+	
+	@Test
+	@Override
+	public void testInitFactuurnummer() {
+		assertFalse(this.header.getFactuurnummer().isPresent());
+		
+		FactuurnummerManager manager = mock(FactuurnummerManager.class);
+		when(manager.getFactuurnummer()).thenReturn("12014");
+		
+		this.getInstance().initFactuurnummer(manager);
+		
+		assertEquals(Optional.of("12014"), this.header.getFactuurnummer());
+		verify(manager).getFactuurnummer();
+	}
+	
+	@Test
+	@Override
+	public void testSameFactuurnummer() {
+		this.header.setFactuurnummer("12013");
+		assertTrue(this.header.getFactuurnummer().isPresent());
+		
+		FactuurnummerManager manager = mock(FactuurnummerManager.class);
+		this.getInstance().initFactuurnummer(manager);
+		
+		assertEquals(Optional.of("12013"), this.header.getFactuurnummer());
+		verifyZeroInteractions(manager);
 	}
 	
 	@Test
@@ -101,7 +133,7 @@ public class ParticulierFactuurTest extends AbstractFactuurTest<ParticulierArtik
 	@Test
 	public void testToString() {
 		String expected = "<ParticulierFactuur[<FactuurHeader[<Debiteur[a, b, c, d, e, "
-				+ "Optional.empty]>, 1992-07-30, Optional[f], g]>, euro, <ItemList[[], "
+				+ "Optional.empty]>, 1992-07-30, Optional.empty, g]>, euro, <ItemList[[], "
 				+ "<Totalen[<Geld[0,00]>, <Geld[0,00]>, <Geld[0,00]>, <Geld[0,00]>, "
 				+ "<Geld[0,00]>, <Geld[0,00]>]>]>, <ItemList[[], <Totalen[<Geld[0,00]>, "
 				+ "<Geld[0,00]>, <Geld[0,00]>, <Geld[0,00]>, <Geld[0,00]>, <Geld[0,00]>]>]>, "

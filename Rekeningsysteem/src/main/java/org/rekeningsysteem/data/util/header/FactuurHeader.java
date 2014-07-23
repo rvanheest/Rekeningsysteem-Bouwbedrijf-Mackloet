@@ -45,7 +45,7 @@ public class FactuurHeader {
 	}
 
 	public void setFactuurnummer(String factuurnummer) {
-		this.factuurnummer = Optional.of(factuurnummer);
+		this.factuurnummer = Optional.ofNullable(factuurnummer);
 	}
 
 	@Override
