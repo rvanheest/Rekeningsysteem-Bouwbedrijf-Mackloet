@@ -50,7 +50,7 @@ public class PropertyFactuurnummerManagerTest {
 
 		assertEquals("1" + yearNow, this.manager.getFactuurnummer());
 		verify(this.worker).getProperty(eq(this.key));
-		verify(this.worker).setProperty(eq(this.key), eq("1" + yearNow));
+		verify(this.worker).setProperty(eq(this.key), eq("2" + yearNow));
 
 		assertEquals("1" + yearNow, this.manager.getFactuurnummer());
 		verifyNoMoreInteractions(this.worker);
@@ -62,7 +62,7 @@ public class PropertyFactuurnummerManagerTest {
 		
 		assertEquals("1" + yearNow, this.manager.getFactuurnummer());
 		verify(this.worker).getProperty(eq(this.key));
-		verify(this.worker).setProperty(eq(this.key), eq("1" + yearNow));
+		verify(this.worker).setProperty(eq(this.key), eq("2" + yearNow));
 		
 		assertEquals("1" + yearNow, this.manager.getFactuurnummer());
 		verifyNoMoreInteractions(this.worker);

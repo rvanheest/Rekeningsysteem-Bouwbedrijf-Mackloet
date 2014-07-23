@@ -69,10 +69,10 @@ public class FileFactuurnummerManagerTest {
 	public void testGetFactuurnummerOtherYear() throws IOException {
 		this.setFileContent("25" + (yearNow - 2));
 		assertEquals("1" + yearNow, this.manager.getFactuurnummer());
-		assertEquals("1" + yearNow, FileUtils.readFileToString(new File(LOCATION)));
+		assertEquals("2" + yearNow, FileUtils.readFileToString(new File(LOCATION)));
 
 		assertEquals("1" + yearNow, this.manager.getFactuurnummer());
-		assertEquals("1" + yearNow, FileUtils.readFileToString(new File(LOCATION)));
+		assertEquals("2" + yearNow, FileUtils.readFileToString(new File(LOCATION)));
 	}
 
 	@Test
