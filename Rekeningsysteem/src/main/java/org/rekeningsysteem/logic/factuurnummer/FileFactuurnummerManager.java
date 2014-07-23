@@ -67,7 +67,7 @@ public class FileFactuurnummerManager implements FactuurnummerManager {
 			else {
 				// first in current year
 				this.factNr = Optional.of("1".concat(yearNow));
-				this.factNr.ifPresent(this::writeToFile);
+				this.factNr.ifPresent(s -> this.writeToFile("2".concat(yearNow)));
 			}
 			return this.factNr.get();
 		}

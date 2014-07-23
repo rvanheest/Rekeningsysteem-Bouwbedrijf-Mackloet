@@ -41,7 +41,7 @@ public class PropertyFactuurnummerManager implements FactuurnummerManager {
 			else {
 				// first in current year
 				this.factNr = Optional.of("1".concat(yearNow));
-				this.factNr.ifPresent(s -> this.worker.setProperty(this.key, s));
+				this.factNr.ifPresent(s -> this.worker.setProperty(this.key, "2".concat(yearNow)));
 			}
 			return this.factNr.get();
 		}
