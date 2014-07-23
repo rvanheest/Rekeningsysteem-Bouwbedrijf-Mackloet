@@ -24,7 +24,7 @@ public class PropertyFactuurnummerManager implements FactuurnummerManager {
 	}
 
 	@Override
-	public Optional<String> getFactuurnummer() {
+	public String getFactuurnummer() {
 		if (!this.factNr.isPresent()) {
 			Optional<String> nr = this.worker.getProperty(this.key);
 			String yearNow = String.valueOf(LocalDate.now().getYear());
@@ -38,13 +38,13 @@ public class PropertyFactuurnummerManager implements FactuurnummerManager {
 						.ifPresent(s -> this.worker.setProperty(this.key, s));
 				this.factNr = nr;
 			}
-			else if (nr.isPresent()) {
-				// other year
+			else {
+				// first in current year
 				this.factNr = Optional.of("1".concat(yearNow));
 				this.factNr.ifPresent(s -> this.worker.setProperty(this.key, s));
 			}
-			return this.factNr;
+			return this.factNr.get();
 		}
-		return this.factNr;
+		return this.factNr.get();
 	}
 }

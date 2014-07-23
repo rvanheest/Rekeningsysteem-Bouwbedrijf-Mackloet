@@ -36,11 +36,11 @@ public class PropertyFactuurnummerManagerTest {
 	public void testGetFactuurnummerSameYear() {
 		when(this.worker.getProperty(eq(this.key))).thenReturn(Optional.of("12" + yearNow));
 
-		assertEquals(Optional.of("12" + yearNow), this.manager.getFactuurnummer());
+		assertEquals("12" + yearNow, this.manager.getFactuurnummer());
 		verify(this.worker).getProperty(eq(this.key));
 		verify(this.worker).setProperty(eq(this.key), eq("13" + yearNow));
 
-		assertEquals(Optional.of("12" + yearNow), this.manager.getFactuurnummer());
+		assertEquals("12" + yearNow, this.manager.getFactuurnummer());
 		verifyNoMoreInteractions(this.worker);
 	}
 
@@ -48,11 +48,23 @@ public class PropertyFactuurnummerManagerTest {
 	public void testGetFactuurnummerOtherYear() {
 		when(this.worker.getProperty(eq(this.key))).thenReturn(Optional.of("25" + (yearNow - 2)));
 
-		assertEquals(Optional.of("1" + yearNow), this.manager.getFactuurnummer());
+		assertEquals("1" + yearNow, this.manager.getFactuurnummer());
 		verify(this.worker).getProperty(eq(this.key));
 		verify(this.worker).setProperty(eq(this.key), eq("1" + yearNow));
 
-		assertEquals(Optional.of("1" + yearNow), this.manager.getFactuurnummer());
+		assertEquals("1" + yearNow, this.manager.getFactuurnummer());
+		verifyNoMoreInteractions(this.worker);
+	}
+
+	@Test
+	public void testGetFactuurnummerPropertyNotFound() {
+		when(this.worker.getProperty(eq(this.key))).thenReturn(Optional.empty());
+		
+		assertEquals("1" + yearNow, this.manager.getFactuurnummer());
+		verify(this.worker).getProperty(eq(this.key));
+		verify(this.worker).setProperty(eq(this.key), eq("1" + yearNow));
+		
+		assertEquals("1" + yearNow, this.manager.getFactuurnummer());
 		verifyNoMoreInteractions(this.worker);
 	}
 }

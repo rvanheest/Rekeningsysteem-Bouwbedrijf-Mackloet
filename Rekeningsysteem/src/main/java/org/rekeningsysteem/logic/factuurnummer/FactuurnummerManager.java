@@ -1,7 +1,5 @@
 package org.rekeningsysteem.logic.factuurnummer;
 
-import java.util.Optional;
-
 /**
  * Interface voor de communicatie met de manager van het factuurnummer. Deze manager moet een
  * factuurnummer geven/genereren voor de factuur. Om het factuurnummer van de manager te vragen,
@@ -9,6 +7,7 @@ import java.util.Optional;
  * 
  * @author Richard van Heest
  */
+@FunctionalInterface
 public interface FactuurnummerManager {
 
 	/**
@@ -16,5 +15,5 @@ public interface FactuurnummerManager {
 	 * 
 	 * @return het gevraagde factuurnummer.
 	 */
-	Optional<String> getFactuurnummer();
+	String getFactuurnummer();
 }

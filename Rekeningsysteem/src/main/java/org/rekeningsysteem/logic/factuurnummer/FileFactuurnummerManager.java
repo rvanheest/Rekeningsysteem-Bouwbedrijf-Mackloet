@@ -50,7 +50,7 @@ public class FileFactuurnummerManager implements FactuurnummerManager {
 	}
 
 	@Override
-	public Optional<String> getFactuurnummer() {
+	public String getFactuurnummer() {
 		if (!this.factNr.isPresent()) {
 			Optional<String> nr = this.readFromFile();
 			String yearNow = String.valueOf(LocalDate.now().getYear());
@@ -64,13 +64,13 @@ public class FileFactuurnummerManager implements FactuurnummerManager {
 						.ifPresent(this::writeToFile);
 				this.factNr = nr;
 			}
-			else if (nr.isPresent()) {
-				// other year
+			else {
+				// first in current year
 				this.factNr = Optional.of("1".concat(yearNow));
 				this.factNr.ifPresent(this::writeToFile);
 			}
-			return this.factNr;
+			return this.factNr.get();
 		}
-		return this.factNr;
+		return this.factNr.get();
 	}
 }

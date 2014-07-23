@@ -36,7 +36,7 @@ public class PropertyFactuurnummerManagerGuiceTest {
 		FactuurnummerManager manager = injector.getInstance(FactuurnummerManagerFactory.class)
 				.create(this.propertyKey);
 		
-		assertEquals(Optional.of("1" + LocalDate.now().getYear()), manager.getFactuurnummer());
+		assertEquals("1" + LocalDate.now().getYear(), manager.getFactuurnummer());
 	}
 
 	private class TestModule extends AbstractModule {

@@ -1,13 +1,10 @@
 package org.rekeningsysteem.test.logic.factuurnummer;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.anyObject;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.File;
@@ -61,33 +58,36 @@ public class FileFactuurnummerManagerTest {
 	@Test
 	public void testGetFactuurnummerSameYear() throws IOException {
 		this.setFileContent("12" + yearNow);
-		assertEquals(Optional.of("12" + yearNow), this.manager.getFactuurnummer());
+		assertEquals("12" + yearNow, this.manager.getFactuurnummer());
 		assertEquals("13" + yearNow, FileUtils.readFileToString(new File(LOCATION)));
 
-		assertEquals(Optional.of("12" + yearNow), this.manager.getFactuurnummer());
+		assertEquals("12" + yearNow, this.manager.getFactuurnummer());
 		assertEquals("13" + yearNow, FileUtils.readFileToString(new File(LOCATION)));
 	}
 
 	@Test
 	public void testGetFactuurnummerOtherYear() throws IOException {
 		this.setFileContent("25" + (yearNow - 2));
-		assertEquals(Optional.of("1" + yearNow), this.manager.getFactuurnummer());
+		assertEquals("1" + yearNow, this.manager.getFactuurnummer());
 		assertEquals("1" + yearNow, FileUtils.readFileToString(new File(LOCATION)));
 
-		assertEquals(Optional.of("1" + yearNow), this.manager.getFactuurnummer());
+		assertEquals("1" + yearNow, this.manager.getFactuurnummer());
 		assertEquals("1" + yearNow, FileUtils.readFileToString(new File(LOCATION)));
 	}
 
 	@Test
 	public void testGetFactuurnummerNotExistingFile() {
 		String fileName = "src\\test\\resources\\test.txt";
-		when(this.propertiesWorker.getProperty((PropertyKey) anyObject())).thenReturn(Optional.of(fileName));
+		when(this.propertiesWorker.getProperty((PropertyKey) anyObject()))
+				.thenReturn(Optional.of(fileName));
 		FileFactuurnummerManager ffm = new FileFactuurnummerManager(this.propertiesWorker,
 				this.key, this.logger);
 
-		assertFalse(ffm.getFactuurnummer().isPresent());
-		verify(this.logger).error(anyString(), (Throwable) anyObject());
+		assertEquals("1" + yearNow, ffm.getFactuurnummer());
 		
-		
+		// clear file
+		File file = new File(fileName);
+		assertTrue(file.exists());
+		file.delete();
 	}
 }
