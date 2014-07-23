@@ -47,29 +47,4 @@ public class PropertyFactuurnummerManager implements FactuurnummerManager {
 		}
 		return this.factNr;
 	}
-
-//	@Override
-//	public Optional<String> getFactuurnummer() {
-//		if (this.factNr == null) {
-//			String factnr = this.worker.getProperty(this.key);
-//			String yearNow = String.valueOf(new Datum().getJaar());
-//			String newFnr;
-//			if (factnr.endsWith(yearNow)) {
-//				// same year
-//				String[] oldNr = factnr.split(yearNow);
-//				int newNumber = Integer.parseInt(oldNr[0]) + 1;
-//				newFnr = String.valueOf(newNumber) + yearNow;
-//			}
-//			else {
-//				// other year
-//				newFnr = "1" + yearNow;
-//				factnr = newFnr;
-//			}
-//			this.worker.setProperty(this.key, newFnr);
-//			this.factNr = factnr;
-//
-//			return factnr;
-//		}
-//		return this.factNr;
-//	}
 }
