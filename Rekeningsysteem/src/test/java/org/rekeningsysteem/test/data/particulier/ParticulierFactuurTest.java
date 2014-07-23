@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
 
@@ -13,10 +14,12 @@ import org.mockito.Mock;
 import org.rekeningsysteem.data.particulier.ParticulierArtikel;
 import org.rekeningsysteem.data.particulier.ParticulierFactuur;
 import org.rekeningsysteem.data.util.BtwPercentage;
+import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.data.util.ItemList;
 import org.rekeningsysteem.data.util.header.Debiteur;
 import org.rekeningsysteem.data.util.header.OmschrFactuurHeader;
 import org.rekeningsysteem.data.util.loon.AbstractLoon;
+import org.rekeningsysteem.logic.bedragmanager.Totalen;
 import org.rekeningsysteem.test.data.util.AbstractFactuurTest;
 
 public class ParticulierFactuurTest extends AbstractFactuurTest<ParticulierArtikel> {
@@ -38,17 +41,16 @@ public class ParticulierFactuurTest extends AbstractFactuurTest<ParticulierArtik
 	@Override
 	protected ParticulierFactuur makeInstance() {
 		return new ParticulierFactuur(this.getTestFactuurHeader(),
-				this.getTestValuta(), new ItemList<ParticulierArtikel>(this.getTestBtwPercentage()),
-				new ItemList<AbstractLoon>(this.getTestBtwPercentage()));
+				this.getTestValuta(), new ItemList<>(), new ItemList<>(),
+				this.getTestBtwPercentage());
 	}
 
 	@Override
 	protected ParticulierFactuur makeNotInstance() {
 		BtwPercentage old = this.getTestBtwPercentage();
 		return new ParticulierFactuur(this.getTestFactuurHeader(), this.getTestValuta(),
-				new ItemList<ParticulierArtikel>(new BtwPercentage(old.getLoonPercentage() + 1,
-						old.getMateriaalPercentage())),
-				new ItemList<AbstractLoon>(this.getTestBtwPercentage()));
+				new ItemList<>(), new ItemList<>(), new BtwPercentage(old.getLoonPercentage() + 1,
+						old.getMateriaalPercentage()));
 	}
 
 	@Before
@@ -61,8 +63,24 @@ public class ParticulierFactuurTest extends AbstractFactuurTest<ParticulierArtik
 
 	@Test
 	public void testGetLoonList() {
-		assertEquals(new ItemList<AbstractLoon>(this.getTestBtwPercentage()),
-				this.getInstance().getLoonList());
+		assertEquals(new ItemList<>(), this.getInstance().getLoonList());
+	}
+	
+	@Test
+	@Override
+	public void testGetTotalen() {
+		when(this.loon1.getLoon()).thenReturn(new Geld(3.00));
+		when(this.loon1.getMateriaal()).thenReturn(new Geld(0.00));
+		
+		ItemList<AbstractLoon> loon = this.getInstance().getLoonList();
+		loon.add(this.loon1);
+		loon.add(this.loon1);
+		
+		assertEquals(new Totalen().withLoon(new Geld(6.00))
+				.withLoonBtw(new Geld(3.00))
+				.withMateriaal(new Geld(0.00))
+				.withMateriaalBtw(new Geld(0.00)),
+				this.getInstance().getTotalen());
 	}
 
 	@Test
@@ -84,10 +102,10 @@ public class ParticulierFactuurTest extends AbstractFactuurTest<ParticulierArtik
 	public void testToString() {
 		String expected = "<ParticulierFactuur[<FactuurHeader[<Debiteur[a, b, c, d, e, "
 				+ "Optional.empty]>, 1992-07-30, Optional[f], g]>, euro, <ItemList[[], "
-				+ "<BtwPercentage[6.0, 21.0]>, <Totalen[<Geld[0,00]>, <Geld[0,00]>, "
-				+ "<Geld[0,00]>, <Geld[0,00]>, <Geld[0,00]>, <Geld[0,00]>]>]>, "
-				+ "<ItemList[[], <BtwPercentage[6.0, 21.0]>, <Totalen[<Geld[0,00]>, "
-				+ "<Geld[0,00]>, <Geld[0,00]>, <Geld[0,00]>, <Geld[0,00]>, <Geld[0,00]>]>]>]>";
+				+ "<Totalen[<Geld[0,00]>, <Geld[0,00]>, <Geld[0,00]>, <Geld[0,00]>, "
+				+ "<Geld[0,00]>, <Geld[0,00]>]>]>, <ItemList[[], <Totalen[<Geld[0,00]>, "
+				+ "<Geld[0,00]>, <Geld[0,00]>, <Geld[0,00]>, <Geld[0,00]>, <Geld[0,00]>]>]>, "
+				+ "<BtwPercentage[50.0, 100.0]>]>";
 		assertEquals(expected, this.getInstance().toString());
 	}
 }

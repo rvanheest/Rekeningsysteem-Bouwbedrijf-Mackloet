@@ -70,6 +70,13 @@ public final class Totalen {
 	public Geld getTotaal() {
 		return this.totaal;
 	}
+	
+	public Totalen plus(Totalen t2) {
+		return new Totalen().withLoon(this.loon.add(t2.loon))
+				.withLoonBtw(this.loonBtw.add(t2.loonBtw))
+				.withMateriaal(this.materiaal.add(t2.materiaal))
+				.withMateriaalBtw(this.materiaalBtw.add(t2.materiaalBtw));
+	}
 
 	@Override
 	public boolean equals(Object other) {

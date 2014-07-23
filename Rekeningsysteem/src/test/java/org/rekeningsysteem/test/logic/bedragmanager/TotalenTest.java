@@ -61,6 +61,20 @@ public class TotalenTest extends EqualsHashCodeTest {
 	public void testGetTotalen() {
 		assertEquals(new Geld(4.00), this.totalen.getTotaal());
 	}
+	
+	@Test
+	public void testPlus() {
+		Totalen t2 = new Totalen().withLoon(new Geld(2.00))
+				.withLoonBtw(new Geld(1.00))
+				.withMateriaal(new Geld(1.00))
+				.withMateriaalBtw(new Geld(1.00));
+		Totalen expected = new Totalen().withLoon(new Geld(3.00))
+				.withLoonBtw(new Geld(2.00))
+				.withMateriaal(new Geld(2.00))
+				.withMateriaalBtw(new Geld(2.00));
+		
+		assertEquals(expected, this.totalen.plus(t2));
+	}
 
 	@Test
 	public void testEqualsFalseOtherLoon() {

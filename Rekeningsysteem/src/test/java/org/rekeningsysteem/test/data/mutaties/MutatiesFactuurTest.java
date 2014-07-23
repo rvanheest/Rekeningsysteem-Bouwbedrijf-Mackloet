@@ -21,15 +21,15 @@ public class MutatiesFactuurTest extends AbstractFactuurTest<MutatiesBon> {
 	@Override
 	protected MutatiesFactuur makeInstance() {
 		return new MutatiesFactuur(this.getTestFactuurHeader(), this.getTestValuta(),
-				new ItemList<MutatiesBon>(this.getTestBtwPercentage()));
+				new ItemList<>(), this.getTestBtwPercentage());
 	}
 
 	@Override
 	protected MutatiesFactuur makeNotInstance() {
 		BtwPercentage old = this.getTestBtwPercentage();
 		return new MutatiesFactuur(this.getTestFactuurHeader(), this.getTestValuta(),
-				new ItemList<MutatiesBon>(new BtwPercentage(old.getLoonPercentage() + 1,
-						old.getMateriaalPercentage())));
+				new ItemList<>(), new BtwPercentage(old.getLoonPercentage() + 1,
+						old.getMateriaalPercentage()));
 	}
 
 	@Test
@@ -43,8 +43,8 @@ public class MutatiesFactuurTest extends AbstractFactuurTest<MutatiesBon> {
 	public void testToString() {
 		String expected = "<MutatiesFactuur[<FactuurHeader[<Debiteur[a, b, c, d, e, "
 				+ "Optional.empty]>, 1992-07-30, Optional[f]]>, euro, <ItemList[[], "
-				+ "<BtwPercentage[6.0, 21.0]>, <Totalen[<Geld[0,00]>, <Geld[0,00]>, "
-				+ "<Geld[0,00]>, <Geld[0,00]>, <Geld[0,00]>, <Geld[0,00]>]>]>]>";
+				+ "<Totalen[<Geld[0,00]>, <Geld[0,00]>, <Geld[0,00]>, <Geld[0,00]>, "
+				+ "<Geld[0,00]>, <Geld[0,00]>]>]>, <BtwPercentage[50.0, 100.0]>]>";
 		assertEquals(expected, this.getInstance().toString());
 	}
 }

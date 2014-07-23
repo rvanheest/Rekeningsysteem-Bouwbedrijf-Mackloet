@@ -3,18 +3,22 @@ package org.rekeningsysteem.data.particulier;
 import java.util.Objects;
 
 import org.rekeningsysteem.data.util.AbstractFactuur;
+import org.rekeningsysteem.data.util.BtwPercentage;
+import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.data.util.ItemList;
 import org.rekeningsysteem.data.util.header.OmschrFactuurHeader;
 import org.rekeningsysteem.data.util.loon.AbstractLoon;
 import org.rekeningsysteem.data.util.visitor.RekeningVisitor;
+import org.rekeningsysteem.logic.bedragmanager.Totalen;
 
 public class ParticulierFactuur extends AbstractFactuur<ParticulierArtikel> {
 
 	private final ItemList<AbstractLoon> loonList;
 
 	public ParticulierFactuur(OmschrFactuurHeader header, String valuta,
-			ItemList<ParticulierArtikel> itemList, ItemList<AbstractLoon> loonList) {
-		super(header, valuta, itemList);
+			ItemList<ParticulierArtikel> itemList, ItemList<AbstractLoon> loonList,
+			BtwPercentage btwPercentage) {
+		super(header, valuta, itemList, btwPercentage);
 		this.loonList = loonList;
 	}
 
@@ -25,6 +29,20 @@ public class ParticulierFactuur extends AbstractFactuur<ParticulierArtikel> {
 
 	public ItemList<AbstractLoon> getLoonList() {
 		return this.loonList;
+	}
+	
+	@Override
+	public Totalen getTotalen() {
+		Totalen sub = this.loonList.getTotalen();
+		Geld loonBtw = sub.getLoon()
+				.multiply(this.getBtwPercentage().getLoonPercentage())
+				.divide(100);
+		Geld materiaalBtw = sub.getMateriaal()
+				.multiply(this.getBtwPercentage().getMateriaalPercentage())
+				.divide(100);
+		Totalen loon = sub.withLoonBtw(loonBtw)
+				.withMateriaalBtw(materiaalBtw);
+		return super.getTotalen().plus(loon);
 	}
 
 	@Override
@@ -51,6 +69,7 @@ public class ParticulierFactuur extends AbstractFactuur<ParticulierArtikel> {
 		return "<ParticulierFactuur[" + String.valueOf(this.getFactuurHeader()) + ", "
 				+ String.valueOf(this.getValuta()) + ", "
 				+ String.valueOf(this.getItemList()) + ", "
-				+ String.valueOf(this.loonList) + "]>";
+				+ String.valueOf(this.loonList) + ", "
+				+ String.valueOf(this.getBtwPercentage()) + "]>";
 	}
 }
