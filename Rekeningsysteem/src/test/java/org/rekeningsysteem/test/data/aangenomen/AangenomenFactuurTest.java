@@ -104,9 +104,8 @@ public class AangenomenFactuurTest extends AbstractFactuurTest<AangenomenListIte
 	@Test
 	public void testToString() {
 		String expected = "<AangenomenFactuur[<FactuurHeader[<Debiteur[a, b, c, d, e, "
-				+ "Optional.empty]>, 1992-07-30, Optional.empty, f]>, euro, <ItemList[[], "
-				+ "<Totalen[<Geld[0,00]>, <Geld[0,00]>, <Geld[0,00]>, <Geld[0,00]>, "
-				+ "<Geld[0,00]>, <Geld[0,00]>]>]>, <BtwPercentage[50.0, 100.0]>]>";
+				+ "Optional.empty]>, 1992-07-30, Optional.empty, f]>, euro, [], "
+				+ "<BtwPercentage[50.0, 100.0]>]>";
 		assertEquals(expected, this.getInstance().toString());
 	}
 }

@@ -2,102 +2,31 @@ package org.rekeningsysteem.data.util;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
 
 import org.rekeningsysteem.logic.bedragmanager.BedragManager;
 import org.rekeningsysteem.logic.bedragmanager.Totalen;
 
-public class ItemList<E extends ListItem> implements BedragManager {
+public class ItemList<E extends ListItem> extends ArrayList<E> implements BedragManager {
 
-	private final List<E> list;
-	private Totalen totalen;
+	private static final long serialVersionUID = -8022736753592974322L;
 
 	public ItemList() {
-		this.list = new ArrayList<>();
-		this.totalen = new Totalen();
+		super();
 	}
 
 	public ItemList(Collection<? extends E> c) {
-		this.list = new ArrayList<>();
-		this.totalen = new Totalen();
-		
-		c.forEach(this::add);
+		super(c);
 	}
 
 	@Override
 	public Totalen getTotalen() {
-		return this.totalen;
-	}
-
-	public int size() {
-		return this.list.size();
-	}
-
-	public boolean isEmpty() {
-		return this.list.isEmpty();
-	}
-
-	public boolean add(E item) {
-		boolean res = this.list.add(item);
-		
-		this.addLoonBedrag(item.getLoon());
-		this.addMateriaalBedrag(item.getMateriaal());
-		
-		return res;
-	}
-
-	protected void addLoonBedrag(Geld geld) {
-		Geld nieuwLoon = this.totalen.getLoon().add(geld);
-		this.totalen = this.totalen.withLoon(nieuwLoon);
-	}
-
-	protected void addMateriaalBedrag(Geld geld) {
-		Geld nieuwMateriaal = this.totalen.getMateriaal().add(geld);
-		this.totalen = this.totalen.withMateriaal(nieuwMateriaal);
-	}
-
-	public boolean remove(E item) {
-		boolean res = this.list.remove(item);
-		
-		this.subtractLoonBedrag(item.getLoon());
-		this.subtractMateriaalBedrag(item.getMateriaal());
-		
-		return res;
-	}
-
-	protected void subtractLoonBedrag(Geld geld) {
-		Geld nieuwLoon = this.totalen.getLoon().subtract(geld);
-		this.totalen = this.totalen.withLoon(nieuwLoon);
-	}
-
-	protected void subtractMateriaalBedrag(Geld geld) {
-		Geld nieuwMateriaal = this.totalen.getMateriaal().subtract(geld);
-		this.totalen = this.totalen.withMateriaal(nieuwMateriaal);
+		return this.parallelStream().reduce(new Totalen(),
+				ItemList::makeTotalen,
+				Totalen::plus);
 	}
 	
-	public void clear() {
-		this.list.clear();
-		this.totalen = new Totalen();
-	}
-
-	@Override
-	public boolean equals(Object other) {
-		if (other instanceof ItemList) {
-			ItemList<?> that = (ItemList<?>) other;
-			return Objects.equals(this.list, that.list)
-					&& Objects.equals(this.totalen, that.totalen);
-		}
-		return false;
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(this.list, this.totalen);
-	}
-
-	@Override
-	public String toString() {
-		return "<ItemList[" + this.list + ", " + this.totalen + "]>";
+	protected static Totalen makeTotalen(Totalen t, ListItem li) {
+		return t.withLoon(t.getLoon().add(li.getLoon()))
+				.withMateriaal(t.getMateriaal().add(li.getMateriaal()));
 	}
 }
