@@ -2,6 +2,7 @@ package org.rekeningsysteem.data.util.header;
 
 import java.time.LocalDate;
 import java.util.Objects;
+import java.util.Optional;
 
 public class OmschrFactuurHeader extends FactuurHeader {
 
@@ -15,6 +16,12 @@ public class OmschrFactuurHeader extends FactuurHeader {
 
 	public OmschrFactuurHeader(Debiteur debiteur, LocalDate datum, String omschrijving) {
 		super(debiteur, datum);
+		this.omschrijving = omschrijving;
+	}
+
+	public OmschrFactuurHeader(Debiteur debiteur, LocalDate datum, Optional<String> factuurnummer,
+			String omschrijving) {
+		super(debiteur, datum, factuurnummer);
 		this.omschrijving = omschrijving;
 	}
 
