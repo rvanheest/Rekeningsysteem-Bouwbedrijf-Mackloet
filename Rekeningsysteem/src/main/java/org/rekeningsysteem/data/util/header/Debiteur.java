@@ -21,7 +21,7 @@ public final class Debiteur {
 		this(naam, straat, nummer, postcode, plaats, Optional.ofNullable(btwNummer));
 	}
 
-	private Debiteur(String naam, String straat, String nummer, String postcode, String plaats,
+	public Debiteur(String naam, String straat, String nummer, String postcode, String plaats,
 			Optional<String> btwNummer) {
 		this.naam = naam;
 		this.straat = straat;
