@@ -18,7 +18,7 @@ public class FactuurHeader {
 		this(debiteur, datum, Optional.empty());
 	}
 	
-	private FactuurHeader(Debiteur debiteur, LocalDate datum, Optional<String> factuurnummer) {
+	public FactuurHeader(Debiteur debiteur, LocalDate datum, Optional<String> factuurnummer) {
 		this.debiteur = debiteur;
 		this.datum = datum;
 		this.factuurnummer = factuurnummer;
