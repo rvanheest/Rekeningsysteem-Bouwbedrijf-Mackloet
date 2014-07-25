@@ -28,6 +28,11 @@ public class ParticulierFactuurRootTest {
 	public void setUp() {
 		this.root = new ParticulierFactuurRoot();
 	}
+	
+	@Test
+	public void testGetType() {
+		assertEquals("ParticulierFactuur", this.root.getType());
+	}
 
 	@Test
 	public void testUnmarshalMarshal() {

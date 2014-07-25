@@ -19,6 +19,11 @@ public class OfferteRootTest {
 	public void setUp() {
 		this.root = new OfferteRoot();
 	}
+	
+	@Test
+	public void testGetType() {
+		assertEquals("Offerte", this.root.getType());
+	}
 
 	@Test
 	public void testUnmarshalMarshal() {

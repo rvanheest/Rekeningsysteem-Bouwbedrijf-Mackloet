@@ -23,6 +23,11 @@ public class MutatiesFactuurRootTest {
 	public void setUp() {
 		this.root = new MutatiesFactuurRoot();
 	}
+	
+	@Test
+	public void testGetType() {
+		assertEquals("MutatiesFactuur", this.root.getType());
+	}
 
 	@Test
 	public void testUnmarshalMarshal() {

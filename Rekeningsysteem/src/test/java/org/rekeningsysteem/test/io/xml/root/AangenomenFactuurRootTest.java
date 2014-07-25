@@ -25,6 +25,11 @@ public class AangenomenFactuurRootTest {
 	}
 
 	@Test
+	public void testGetType() {
+		assertEquals("AangenomenFactuur", this.root.getType());
+	}
+
+	@Test
 	public void testSetGetFactuur() {
 		ItemList<AangenomenListItem> itemList = new ItemList<>();
 		itemList.add(new AangenomenListItem("omschr", new Geld(12.3), new Geld(49)));

@@ -1,0 +1,57 @@
+package org.rekeningsysteem.io.xml.adaptee.util.header;
+
+import java.time.LocalDate;
+import java.util.Optional;
+
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
+import org.rekeningsysteem.data.util.header.Debiteur;
+import org.rekeningsysteem.io.xml.adapter.util.header.DatumAdapter;
+import org.rekeningsysteem.io.xml.adapter.util.header.DebiteurAdapter;
+
+@XmlType(propOrder = { "debiteur", "datum", "factuurnummer", "omschrijving" })
+public class OmschrFactuurHeaderAdaptee {
+
+	private Debiteur debiteur;
+	private LocalDate datum;
+	private Optional<String> factuurnummer;
+	private String omschrijving;
+
+	@XmlJavaTypeAdapter(DebiteurAdapter.class)
+	public Debiteur getDebiteur() {
+		return this.debiteur;
+	}
+
+	public void setDebiteur(Debiteur debiteur) {
+		this.debiteur = debiteur;
+	}
+
+	@XmlJavaTypeAdapter(DatumAdapter.class)
+	public LocalDate getDatum() {
+		return this.datum;
+	}
+
+	public void setDatum(LocalDate datum) {
+		this.datum = datum;
+	}
+
+	@XmlElement
+	public Optional<String> getFactuurnummer() {
+		return this.factuurnummer;
+	}
+
+	public void setFactuurnummer(Optional<String> factuurnummer) {
+		this.factuurnummer = factuurnummer;
+	}
+
+	@XmlElement
+	public String getOmschrijving() {
+		return this.omschrijving;
+	}
+
+	public void setOmschrijving(String omschrijving) {
+		this.omschrijving = omschrijving;
+	}
+}

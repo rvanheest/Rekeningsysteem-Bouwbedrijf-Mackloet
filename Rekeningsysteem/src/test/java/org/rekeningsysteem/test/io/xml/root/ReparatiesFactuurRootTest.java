@@ -23,6 +23,11 @@ public class ReparatiesFactuurRootTest {
 	public void setUp() {
 		this.root = new ReparatiesFactuurRoot();
 	}
+	
+	@Test
+	public void testGetType() {
+		assertEquals("ReparatiesFactuur", this.root.getType());
+	}
 
 	@Test
 	public void testUnmarshalMarshal() {
