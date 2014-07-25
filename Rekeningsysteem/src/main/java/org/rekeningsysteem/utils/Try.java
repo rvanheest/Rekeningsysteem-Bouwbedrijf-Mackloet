@@ -331,14 +331,14 @@ public abstract class Try<T> {
 		public boolean equals(Object other) {
 			if (other instanceof Failure) {
 				Failure<?> that = (Failure<?>) other;
-				return Objects.equals(this.exception, that.exception);
+				return Objects.equals(this.exception.getMessage(), that.exception.getMessage());
 			}
 			return false;
 		}
 
 		@Override
 		public int hashCode() {
-			return Objects.hash(this.exception);
+			return Objects.hash(this.exception.getMessage());
 		}
 
 		@Override
