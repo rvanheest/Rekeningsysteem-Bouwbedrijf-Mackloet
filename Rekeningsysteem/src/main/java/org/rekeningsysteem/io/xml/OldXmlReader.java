@@ -2,6 +2,7 @@ package org.rekeningsysteem.io.xml;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Optional;
@@ -129,12 +130,18 @@ public class OldXmlReader implements FactuurLoader {
 		}
 	}
 
-	private LocalDate makeDatum(Node node) {
+	private Try<LocalDate> makeDatum(Node node) {
 		String dag = this.getNodeValue(((Element) node).getElementsByTagName("dag"));
 		String maand = this.getNodeValue(((Element) node).getElementsByTagName("maand"));
 		String jaar = this.getNodeValue(((Element) node).getElementsByTagName("jaar"));
 
-		return LocalDate.of(Integer.parseInt(jaar), Integer.parseInt(maand), Integer.parseInt(dag));
+		try {
+			return Try.of(LocalDate.of(Integer.parseInt(jaar), Integer.parseInt(maand),
+					Integer.parseInt(dag)));
+		}
+		catch (DateTimeException e) {
+			return Try.failure(e);
+		}
 	}
 
 	private Debiteur makeDebiteur(Node node) {
@@ -149,36 +156,39 @@ public class OldXmlReader implements FactuurLoader {
 		return new Debiteur(naam, straat, nummer, postcode, plaats, btwnr);
 	}
 
-	private OmschrFactuurHeader makeFactuurHeader(Node node) {
+	private Try<OmschrFactuurHeader> makeFactuurHeader(Node node) {
 		Debiteur debiteur = this.makeDebiteur(((Element) node).getElementsByTagName("debiteur")
 				.item(0));
-		LocalDate datum = this.makeDatum(((Element) node).getElementsByTagName("datum").item(0));
+		Try<LocalDate> datum = this.makeDatum(((Element) node).getElementsByTagName("datum")
+				.item(0));
 		String factuurnummer = this.getNodeValue(((Element) node)
 				.getElementsByTagName("factuurnummer"));
 		String omschrijving = this.getNodeValue(((Element) node)
 				.getElementsByTagName("omschrijving"));
 
-		return new OmschrFactuurHeader(debiteur, datum, factuurnummer, omschrijving);
+		return datum.map(d -> new OmschrFactuurHeader(debiteur, d, factuurnummer, omschrijving));
 	}
 
-	private FactuurHeader makeFactuurHeaderWithoutOmschrijving(Node node) {
+	private Try<FactuurHeader> makeFactuurHeaderWithoutOmschrijving(Node node) {
 		Debiteur debiteur = this.makeDebiteur(((Element) node).getElementsByTagName("debiteur")
 				.item(0));
-		LocalDate datum = this.makeDatum(((Element) node).getElementsByTagName("datum").item(0));
+		Try<LocalDate> datum = this.makeDatum(((Element) node).getElementsByTagName("datum")
+				.item(0));
 		String factuurnummer = this.getNodeValue(((Element) node)
 				.getElementsByTagName("factuurnummer"));
 
-		return new FactuurHeader(debiteur, datum, factuurnummer);
+		return datum.map(d -> new FactuurHeader(debiteur, d, factuurnummer));
 	}
 
-	private FactuurHeader makeOfferteFactuurHeader(Node node) {
+	private Try<FactuurHeader> makeOfferteFactuurHeader(Node node) {
 		Debiteur debiteur = this.makeDebiteur(((Element) node).getElementsByTagName("debiteur")
 				.item(0));
-		LocalDate datum = this.makeDatum(((Element) node).getElementsByTagName("datum").item(0));
+		Try<LocalDate> datum = this.makeDatum(((Element) node).getElementsByTagName("datum")
+				.item(0));
 		String factuurnummer = this.getNodeValue(((Element) node)
 				.getElementsByTagName("offertenummer"));
 
-		return new FactuurHeader(debiteur, datum, factuurnummer);
+		return datum.map(d -> new FactuurHeader(debiteur, d, factuurnummer));
 	}
 
 	private Try<AnderArtikel> makeAnderArtikel(Node node) {
@@ -245,6 +255,7 @@ public class OldXmlReader implements FactuurLoader {
 		NodeList gal = ((Element) al).getElementsByTagName("gebruiktartikellijst").item(0)
 				.getChildNodes();
 
+		Try<OmschrFactuurHeader> header = this.makeFactuurHeader(node);
 		Try<ItemList<ParticulierArtikel>> itemList;
 		try {
 			itemList = Try.of(IntStream
@@ -255,11 +266,11 @@ public class OldXmlReader implements FactuurLoader {
 						if ("gebruiktartikelander".equals(item.getNodeName())) {
 							return this.makeAnderArtikel(item);
 						}
-						else if ("gebruiktartikelesselink".equals(item.getNodeName())) {
-							return this.makeGebruiktArtikelEsselink(item);
-						}
-						return Try.failure(new IllegalArgumentException(
-								"Unknown artikel type found."));
+							else if ("gebruiktartikelesselink".equals(item.getNodeName())) {
+								return this.makeGebruiktArtikelEsselink(item);
+							}
+							return Try.failure(new IllegalArgumentException(
+									"Unknown artikel type found."));
 						})
 					.map(Try::get)
 					.collect(Collectors.toCollection(ItemList::new)));
@@ -273,15 +284,16 @@ public class OldXmlReader implements FactuurLoader {
 				.map(Arrays::asList)
 				.map(ItemList<AbstractLoon>::new);
 
-		return itemList.flatMap(il -> loonList.map(ll -> new ParticulierFactuur(this
-				.makeFactuurHeader(node), this.valuta, il,
-				ll, this.makeEnkelBtw(node))));
+		return itemList.flatMap(il -> loonList.flatMap(ll -> header.map(h ->
+				new ParticulierFactuur(h, this.valuta, il, ll, this.makeEnkelBtw(node)))));
 	}
 
 	private Try<ParticulierFactuur> makeParticulierFactuur2(Node node) {
 		Node al = ((Element) node).getElementsByTagName("artikellijst").item(0);
 		NodeList gal = ((Element) al).getElementsByTagName("gebruiktartikellijst").item(0)
 				.getChildNodes();
+
+		Try<OmschrFactuurHeader> header = this.makeFactuurHeader(node);
 		Try<ItemList<ParticulierArtikel>> itemList;
 		try {
 			itemList = Try.of(IntStream
@@ -311,9 +323,8 @@ public class OldXmlReader implements FactuurLoader {
 				.map(Arrays::asList)
 				.map(ItemList<AbstractLoon>::new);
 
-		return itemList.flatMap(il -> loonList.map(ll -> new ParticulierFactuur(this
-				.makeFactuurHeader(node), this.valuta, il,
-				ll, this.makeDubbelBtw(node))));
+		return itemList.flatMap(il -> loonList.flatMap(ll -> header.map(h ->
+				new ParticulierFactuur(h, this.valuta, il, ll, this.makeDubbelBtw(node)))));
 	}
 
 	private Try<MutatiesBon> makeMutatiesBon(Node node) {
@@ -327,7 +338,7 @@ public class OldXmlReader implements FactuurLoader {
 	}
 
 	private Try<MutatiesFactuur> makeMutatiesFactuur(Node node) {
-		FactuurHeader header = this.makeFactuurHeaderWithoutOmschrijving(node);
+		Try<FactuurHeader> header = this.makeFactuurHeaderWithoutOmschrijving(node);
 		BtwPercentage btw = new BtwPercentage(0.0, 0.0);
 
 		Node mbl = ((Element) node).getElementsByTagName("mutatiesbonlijst").item(0);
@@ -345,7 +356,8 @@ public class OldXmlReader implements FactuurLoader {
 			itemList = Try.failure(e);
 		}
 
-		return itemList.map(il -> new MutatiesFactuur(header, this.valuta, il, btw));
+		return itemList.flatMap(il -> header.map(h ->
+				new MutatiesFactuur(h, this.valuta, il, btw)));
 	}
 
 	private Try<ReparatiesBon> makeReparatiesBon(Node node) {
@@ -362,7 +374,7 @@ public class OldXmlReader implements FactuurLoader {
 	}
 
 	private Try<ReparatiesFactuur> makeReparatiesFactuur(Node node) {
-		FactuurHeader header = this.makeFactuurHeaderWithoutOmschrijving(node);
+		Try<FactuurHeader> header = this.makeFactuurHeaderWithoutOmschrijving(node);
 		BtwPercentage btw = new BtwPercentage(0.0, 0.0);
 
 		Node rbl = ((Element) node).getElementsByTagName("reparatiesbonlijst").item(0);
@@ -380,15 +392,16 @@ public class OldXmlReader implements FactuurLoader {
 			itemList = Try.failure(e);
 		}
 
-		return itemList.map(il -> new ReparatiesFactuur(header, this.valuta, il, btw));
+		return itemList.flatMap(il -> header.map(h ->
+				new ReparatiesFactuur(h, this.valuta, il, btw)));
 	}
 
 	private Try<Offerte> makeOfferte(Node node) {
-		FactuurHeader header = this.makeOfferteFactuurHeader(node);
+		Try<FactuurHeader> header = this.makeOfferteFactuurHeader(node);
 		String tekst = this.getNodeValue(((Element) node).getElementsByTagName("tekst"));
 		boolean ondertekenen = Boolean.parseBoolean(this.getNodeValue(((Element) node)
 				.getElementsByTagName("ondertekenen")));
 
-		return Try.of(new Offerte(header, tekst, ondertekenen));
+		return header.map(h -> new Offerte(h, tekst, ondertekenen));
 	}
 }
