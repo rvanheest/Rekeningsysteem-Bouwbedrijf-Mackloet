@@ -14,7 +14,15 @@ public enum PropertyModelEnum implements PropertyKey {
 	UURLOON("uurloon"),
 
 	VALUTA("valuta"),
-	VALUTAISO4217("valutaiso4217");
+	VALUTAISO4217("valutaiso4217"),
+	
+	DATE_FORMAT("dateformat"),
+	
+	PDF_AANGENOMEN_TEMPLATE("pdfaangenomentemplate"),
+	PDF_MUTATIES_TEMPLATE("pdfmutatiestemplate"),
+	PDF_OFFERTE_TEMPLATE("pdfoffertetemplate"),
+	PDF_PARTICULIER_TEMPLATE("pdfparticuliertemplate"),
+	PDF_REPARATIES_TEMPLATE("pdfreparatiestemplate");
 
 	private String key;
 
