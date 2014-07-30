@@ -17,7 +17,7 @@ public class ReparatiesFactuurAdaptee {
 
 	private FactuurHeader header;
 	private String valuta;
-	private ItemList<ReparatiesBon> list;
+	private ItemList<ReparatiesBon> list = new ItemList<>();
 	private BtwPercentage btwPercentage;
 
 	@XmlJavaTypeAdapter(FactuurHeaderAdapter.class)

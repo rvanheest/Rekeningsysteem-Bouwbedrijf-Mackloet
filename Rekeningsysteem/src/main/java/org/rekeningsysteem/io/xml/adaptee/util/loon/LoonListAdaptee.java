@@ -14,7 +14,7 @@ public class LoonListAdaptee {
 
 	@XmlElementRef
 	@XmlJavaTypeAdapter(LoonAdapter.class)
-	public List<AbstractLoon> getLoonList() {
+	public List<AbstractLoon> getList() {
 		return this.list;
 	}
 

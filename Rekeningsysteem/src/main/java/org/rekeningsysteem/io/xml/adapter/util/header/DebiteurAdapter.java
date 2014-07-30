@@ -21,7 +21,7 @@ public class DebiteurAdapter extends XmlAdapter<DebiteurAdaptee, Debiteur> {
 		adaptee.setNummer(deb.getNummer());
 		adaptee.setPostcode(deb.getPostcode());
 		adaptee.setPlaats(deb.getPlaats());
-		adaptee.setBtwNummer(deb.getBtwNummer());
+		adaptee.setBtwNummer(deb.getBtwNummer().orElse(null));
 		return adaptee;
 	}
 }

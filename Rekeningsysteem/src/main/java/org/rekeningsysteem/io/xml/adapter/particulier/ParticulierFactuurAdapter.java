@@ -22,8 +22,8 @@ public class ParticulierFactuurAdapter extends
 		adaptee.setFactuurHeader(factuur.getFactuurHeader());
 		adaptee.setValuta(factuur.getValuta());
 		adaptee.setItemList(new ItemList<>(factuur.getItemList()));
-		adaptee.setBtwPercentage(factuur.getBtwPercentage());
 		adaptee.setLoonList(new ItemList<>(factuur.getLoonList()));
+		adaptee.setBtwPercentage(factuur.getBtwPercentage());
 
 		return adaptee;
 	}

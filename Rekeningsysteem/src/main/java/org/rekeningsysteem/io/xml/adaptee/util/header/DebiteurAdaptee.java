@@ -1,7 +1,5 @@
 package org.rekeningsysteem.io.xml.adaptee.util.header;
 
-import java.util.Optional;
-
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
@@ -13,16 +11,7 @@ public class DebiteurAdaptee {
 	private String nummer;
 	private String postcode;
 	private String plaats;
-	private Optional<String> btwNummer;
-
-	public DebiteurAdaptee() {
-		this.naam = "";
-		this.straat = "";
-		this.nummer = "";
-		this.postcode = "";
-		this.plaats = "";
-		this.btwNummer = Optional.of("");
-	}
+	private String btwNummer;
 
 	@XmlElement
 	public String getNaam() {
@@ -70,11 +59,11 @@ public class DebiteurAdaptee {
 	}
 
 	@XmlElement
-	public Optional<String> getBtwNummer() {
+	public String getBtwNummer() {
 		return this.btwNummer;
 	}
 
-	public void setBtwNummer(Optional<String> btwNummer) {
+	public void setBtwNummer(String btwNummer) {
 		this.btwNummer = btwNummer;
 	}
 }

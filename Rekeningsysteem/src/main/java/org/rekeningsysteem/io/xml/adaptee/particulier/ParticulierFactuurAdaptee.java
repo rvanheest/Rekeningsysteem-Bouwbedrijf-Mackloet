@@ -14,14 +14,14 @@ import org.rekeningsysteem.io.xml.adapter.util.BtwPercentageAdapter;
 import org.rekeningsysteem.io.xml.adapter.util.header.OmschrFactuurHeaderAdapter;
 import org.rekeningsysteem.io.xml.adapter.util.loon.LoonListAdapter;
 
-@XmlType(propOrder = { "factuurHeader", "valuta", "itemList", "btwPercentage", "loonList" })
+@XmlType(propOrder = { "factuurHeader", "valuta", "itemList", "loonList", "btwPercentage" })
 public class ParticulierFactuurAdaptee {
 
 	private OmschrFactuurHeader factuurHeader;
 	private String valuta;
-	private ItemList<ParticulierArtikel> itemList;
+	private ItemList<ParticulierArtikel> itemList = new ItemList<>();
+	private ItemList<AbstractLoon> loonList = new ItemList<>();
 	private BtwPercentage btwPercentage;
-	private ItemList<AbstractLoon> loonList;
 
 	@XmlJavaTypeAdapter(OmschrFactuurHeaderAdapter.class)
 	public OmschrFactuurHeader getFactuurHeader() {
@@ -49,6 +49,15 @@ public class ParticulierFactuurAdaptee {
 	public void setItemList(ItemList<ParticulierArtikel> list) {
 		this.itemList = list;
 	}
+	
+	@XmlJavaTypeAdapter(LoonListAdapter.class)
+	public ItemList<AbstractLoon> getLoonList() {
+		return this.loonList;
+	}
+
+	public void setLoonList(ItemList<AbstractLoon> loonList) {
+		this.loonList = loonList;
+	}
 
 	@XmlJavaTypeAdapter(BtwPercentageAdapter.class)
 	public BtwPercentage getBtwPercentage() {
@@ -57,14 +66,5 @@ public class ParticulierFactuurAdaptee {
 
 	public void setBtwPercentage(BtwPercentage btwPercentage) {
 		this.btwPercentage = btwPercentage;
-	}
-
-	@XmlJavaTypeAdapter(LoonListAdapter.class)
-	public ItemList<AbstractLoon> getLoonList() {
-		return this.loonList;
-	}
-
-	public void setLoonList(ItemList<AbstractLoon> loonList) {
-		this.loonList = loonList;
 	}
 }

@@ -23,6 +23,6 @@ public class LoonListAdapteeTest {
 	public void testSetGetLoonList() {
 		List<AbstractLoon> list = new ArrayList<>();
 		this.adaptee.setList(list);
-		assertEquals(list, this.adaptee.getLoonList());
+		assertEquals(list, this.adaptee.getList());
 	}
 }

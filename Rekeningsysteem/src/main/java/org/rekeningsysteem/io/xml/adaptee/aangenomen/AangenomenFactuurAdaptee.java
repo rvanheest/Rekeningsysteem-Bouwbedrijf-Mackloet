@@ -17,7 +17,7 @@ public class AangenomenFactuurAdaptee {
 
 	private OmschrFactuurHeader header;
 	private String valuta;
-	private ItemList<AangenomenListItem> list;
+	private ItemList<AangenomenListItem> list = new ItemList<>();
 	private BtwPercentage btwPercentage;
 
 	@XmlJavaTypeAdapter(OmschrFactuurHeaderAdapter.class)

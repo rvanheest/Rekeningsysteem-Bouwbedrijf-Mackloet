@@ -19,7 +19,7 @@ public class OmschrFactuurHeaderAdapter extends
 		OmschrFactuurHeaderAdaptee adaptee = new OmschrFactuurHeaderAdaptee();
 		adaptee.setDebiteur(header.getDebiteur());
 		adaptee.setDatum(header.getDatum());
-		adaptee.setFactuurnummer(header.getFactuurnummer());
+		adaptee.setFactuurnummer(header.getFactuurnummer().orElse(null));
 		adaptee.setOmschrijving(header.getOmschrijving());
 		return adaptee;
 	}

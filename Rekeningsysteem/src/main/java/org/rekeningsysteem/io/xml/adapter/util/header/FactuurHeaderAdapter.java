@@ -18,7 +18,7 @@ public class FactuurHeaderAdapter extends XmlAdapter<FactuurHeaderAdaptee, Factu
 		FactuurHeaderAdaptee adaptee = new FactuurHeaderAdaptee();
 		adaptee.setDebiteur(header.getDebiteur());
 		adaptee.setDatum(header.getDatum());
-		adaptee.setFactuurnummer(header.getFactuurnummer());
+		adaptee.setFactuurnummer(header.getFactuurnummer().orElse(null));
 		return adaptee;
 	}
 }

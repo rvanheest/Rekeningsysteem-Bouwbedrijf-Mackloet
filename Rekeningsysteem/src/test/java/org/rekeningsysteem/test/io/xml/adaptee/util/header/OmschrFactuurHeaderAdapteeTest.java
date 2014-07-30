@@ -3,7 +3,6 @@ package org.rekeningsysteem.test.io.xml.adaptee.util.header;
 import static org.junit.Assert.assertEquals;
 
 import java.time.LocalDate;
-import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -35,8 +34,8 @@ public class OmschrFactuurHeaderAdapteeTest {
 
 	@Test
 	public void testSetGetFactuurnummer() {
-		this.adaptee.setFactuurnummer(Optional.of("abcd"));
-		assertEquals(Optional.of("abcd"), this.adaptee.getFactuurnummer());
+		this.adaptee.setFactuurnummer("abcd");
+		assertEquals("abcd", this.adaptee.getFactuurnummer());
 	}
 
 	@Test

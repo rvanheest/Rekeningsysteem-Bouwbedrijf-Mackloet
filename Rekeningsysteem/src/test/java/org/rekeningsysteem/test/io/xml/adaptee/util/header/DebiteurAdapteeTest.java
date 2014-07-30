@@ -2,8 +2,6 @@ package org.rekeningsysteem.test.io.xml.adaptee.util.header;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.Optional;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.rekeningsysteem.io.xml.adaptee.util.header.DebiteurAdaptee;
@@ -49,7 +47,7 @@ public class DebiteurAdapteeTest {
 
 	@Test
 	public void testSetGetBtwNummer() {
-		this.adaptee.setBtwNummer(Optional.of("BtwNummer"));
-		assertEquals(Optional.of("BtwNummer"), this.adaptee.getBtwNummer());
+		this.adaptee.setBtwNummer("BtwNummer");
+		assertEquals("BtwNummer", this.adaptee.getBtwNummer());
 	}
 }

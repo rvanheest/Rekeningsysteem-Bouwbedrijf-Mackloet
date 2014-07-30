@@ -1,7 +1,6 @@
 package org.rekeningsysteem.io.xml.adaptee.util.header;
 
 import java.time.LocalDate;
-import java.util.Optional;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
@@ -16,7 +15,7 @@ public class OmschrFactuurHeaderAdaptee {
 
 	private Debiteur debiteur;
 	private LocalDate datum;
-	private Optional<String> factuurnummer;
+	private String factuurnummer;
 	private String omschrijving;
 
 	@XmlJavaTypeAdapter(DebiteurAdapter.class)
@@ -38,11 +37,11 @@ public class OmschrFactuurHeaderAdaptee {
 	}
 
 	@XmlElement
-	public Optional<String> getFactuurnummer() {
+	public String getFactuurnummer() {
 		return this.factuurnummer;
 	}
 
-	public void setFactuurnummer(Optional<String> factuurnummer) {
+	public void setFactuurnummer(String factuurnummer) {
 		this.factuurnummer = factuurnummer;
 	}
 

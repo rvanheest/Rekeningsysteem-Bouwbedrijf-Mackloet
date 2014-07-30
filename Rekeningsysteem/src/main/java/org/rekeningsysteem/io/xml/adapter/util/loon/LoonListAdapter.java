@@ -12,7 +12,7 @@ public class LoonListAdapter extends XmlAdapter<LoonListAdaptee, ItemList<Abstra
 
 	@Override
 	public ItemList<AbstractLoon> unmarshal(LoonListAdaptee v) {
-		return new ItemList<>(v.getLoonList());
+		return new ItemList<>(v.getList());
 	}
 
 	@Override
