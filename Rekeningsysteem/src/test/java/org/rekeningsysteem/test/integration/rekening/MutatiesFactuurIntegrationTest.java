@@ -34,11 +34,4 @@ public class MutatiesFactuurIntegrationTest extends AbstractRekeningIntegrationT
 	protected File makeFile() {
 		return new File("mutatiesFactuurXMLTest.xml");
 	}
-
-//	@Test
-//	public void testMakeInitFactuurWithGuice() {
-//		Injector injector = Guice.createInjector(new MutatiesFactuurModule(),
-//				new ConfigPropertiesModule(), new ConsoleLoggerModule());
-//		injector.getInstance(MutatiesFactuur.class);
-//	}
 }

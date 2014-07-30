@@ -81,11 +81,4 @@ public class ReparatiesFactuurIntegrationTest extends AbstractRekeningIntegratio
 	protected File makeFile() {
 		return new File("reparatiesFactuurXMLTest.xml");
 	}
-
-//	@Test
-//	public void testMakeInitFactuurWithGuice() {
-//		Injector injector = Guice.createInjector(new ReparatiesFactuurModule(),
-//				new ConfigPropertiesModule(), new ConsoleLoggerModule());
-//		injector.getInstance(ReparatiesFactuur.class);
-//	}
 }

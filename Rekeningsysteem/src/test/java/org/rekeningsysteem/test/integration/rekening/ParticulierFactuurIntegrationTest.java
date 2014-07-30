@@ -82,11 +82,4 @@ public class ParticulierFactuurIntegrationTest extends AbstractRekeningIntegrati
 	protected File makeFile() {
 		return new File("particulierFactuurXMLTest.xml");
 	}
-
-//	@Test
-//	public void testMakeInitFactuurWithGuice() {
-//		Injector injector = Guice.createInjector(new ParticulierFactuurModule(),
-//				new ConfigPropertiesModule(), new ConsoleLoggerModule());
-//		injector.getInstance(ParticulierFactuur.class);
-//	}
 }

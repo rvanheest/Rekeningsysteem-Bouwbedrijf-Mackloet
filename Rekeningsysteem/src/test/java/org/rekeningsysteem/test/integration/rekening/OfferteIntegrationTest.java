@@ -53,11 +53,4 @@ public class OfferteIntegrationTest extends AbstractRekeningIntegrationTest {
 	protected File makeFile() {
 		return new File("offerteXMLTest.xml");
 	}
-
-//	@Test
-//	public void testMakeInitFactuurWithGuice() {
-//		Injector injector = Guice.createInjector(new OfferteModule(),
-//				new ConfigPropertiesModule(), new ConsoleLoggerModule());
-//		injector.getInstance(Offerte.class);
-//	}
 }

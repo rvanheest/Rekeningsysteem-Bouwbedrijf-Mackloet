@@ -51,11 +51,4 @@ public class AangenomenFactuurIntegrationTest extends AbstractRekeningIntegratio
 	protected File makeFile() {
 		return new File("aangenomenFactuurXMLTest.xml");
 	}
-
-//	@Test
-//	public void testMakeInitFactuurWithGuice() {
-//		Injector injector = Guice.createInjector(new AangenomenFactuurModule(),
-//				new ConfigPropertiesModule(), new ConsoleLoggerModule());
-//		injector.getInstance(AangenomenFactuur.class);
-//	}
 }
