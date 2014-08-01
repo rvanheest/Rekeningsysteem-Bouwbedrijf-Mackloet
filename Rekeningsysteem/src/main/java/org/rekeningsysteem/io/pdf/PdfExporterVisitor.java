@@ -19,6 +19,7 @@ import org.rekeningsysteem.data.particulier.GebruiktEsselinkArtikel;
 import org.rekeningsysteem.data.particulier.ParticulierFactuur;
 import org.rekeningsysteem.data.reparaties.ReparatiesFactuur;
 import org.rekeningsysteem.data.util.BtwPercentage;
+import org.rekeningsysteem.data.util.Totalen;
 import org.rekeningsysteem.data.util.header.Debiteur;
 import org.rekeningsysteem.data.util.header.FactuurHeader;
 import org.rekeningsysteem.data.util.header.OmschrFactuurHeader;
@@ -26,7 +27,6 @@ import org.rekeningsysteem.data.util.loon.InstantLoon;
 import org.rekeningsysteem.data.util.loon.ProductLoon;
 import org.rekeningsysteem.data.util.visitor.RekeningVisitor;
 import org.rekeningsysteem.exception.PdfException;
-import org.rekeningsysteem.logic.bedragmanager.Totalen;
 import org.rekeningsysteem.properties.PropertiesWorker;
 import org.rekeningsysteem.properties.PropertyModelEnum;
 

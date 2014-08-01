@@ -11,7 +11,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.data.util.ItemList;
 import org.rekeningsysteem.data.util.ListItem;
-import org.rekeningsysteem.logic.bedragmanager.Totalen;
+import org.rekeningsysteem.data.util.Totalen;
 import org.rekeningsysteem.test.data.EqualsHashCodeTest;
 
 @RunWith(MockitoJUnitRunner.class)

@@ -6,7 +6,7 @@ import static org.junit.Assert.assertFalse;
 import org.junit.Before;
 import org.junit.Test;
 import org.rekeningsysteem.data.util.Geld;
-import org.rekeningsysteem.logic.bedragmanager.Totalen;
+import org.rekeningsysteem.data.util.Totalen;
 import org.rekeningsysteem.test.data.EqualsHashCodeTest;
 
 public class TotalenTest extends EqualsHashCodeTest {

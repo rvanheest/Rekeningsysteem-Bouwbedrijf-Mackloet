@@ -3,8 +3,6 @@ package org.rekeningsysteem.data.util;
 import java.util.Objects;
 
 import org.rekeningsysteem.data.util.header.FactuurHeader;
-import org.rekeningsysteem.logic.bedragmanager.BedragManager;
-import org.rekeningsysteem.logic.bedragmanager.Totalen;
 
 public abstract class AbstractFactuur<E extends ListItem> extends AbstractRekening
 		implements BedragManager {

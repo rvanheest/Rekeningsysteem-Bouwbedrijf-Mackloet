@@ -20,10 +20,10 @@ import org.rekeningsysteem.data.particulier.ParticulierFactuur;
 import org.rekeningsysteem.data.util.BtwPercentage;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.data.util.ItemList;
+import org.rekeningsysteem.data.util.Totalen;
 import org.rekeningsysteem.data.util.header.Debiteur;
 import org.rekeningsysteem.data.util.header.OmschrFactuurHeader;
 import org.rekeningsysteem.data.util.loon.AbstractLoon;
-import org.rekeningsysteem.logic.bedragmanager.Totalen;
 import org.rekeningsysteem.logic.factuurnummer.FactuurnummerManager;
 import org.rekeningsysteem.test.data.util.AbstractFactuurTest;
 

@@ -6,10 +6,10 @@ import org.rekeningsysteem.data.util.AbstractFactuur;
 import org.rekeningsysteem.data.util.BtwPercentage;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.data.util.ItemList;
+import org.rekeningsysteem.data.util.Totalen;
 import org.rekeningsysteem.data.util.header.OmschrFactuurHeader;
 import org.rekeningsysteem.data.util.loon.AbstractLoon;
 import org.rekeningsysteem.data.util.visitor.RekeningVisitor;
-import org.rekeningsysteem.logic.bedragmanager.Totalen;
 
 public class ParticulierFactuur extends AbstractFactuur<ParticulierArtikel> {
 

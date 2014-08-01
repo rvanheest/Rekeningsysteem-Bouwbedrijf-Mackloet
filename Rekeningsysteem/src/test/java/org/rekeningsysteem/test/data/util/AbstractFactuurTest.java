@@ -13,7 +13,7 @@ import org.rekeningsysteem.data.util.BtwPercentage;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.data.util.ItemList;
 import org.rekeningsysteem.data.util.ListItem;
-import org.rekeningsysteem.logic.bedragmanager.Totalen;
+import org.rekeningsysteem.data.util.Totalen;
 
 @RunWith(MockitoJUnitRunner.class)
 public abstract class AbstractFactuurTest<E extends ListItem> extends AbstractRekeningTest {

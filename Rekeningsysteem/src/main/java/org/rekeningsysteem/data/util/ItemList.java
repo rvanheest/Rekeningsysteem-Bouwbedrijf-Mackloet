@@ -3,9 +3,6 @@ package org.rekeningsysteem.data.util;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.rekeningsysteem.logic.bedragmanager.BedragManager;
-import org.rekeningsysteem.logic.bedragmanager.Totalen;
-
 public class ItemList<E extends ListItem> extends ArrayList<E> implements BedragManager {
 
 	private static final long serialVersionUID = -8022736753592974322L;
