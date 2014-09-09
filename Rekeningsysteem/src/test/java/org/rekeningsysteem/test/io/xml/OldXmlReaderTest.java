@@ -11,8 +11,6 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
 import org.rekeningsysteem.data.mutaties.MutatiesBon;
 import org.rekeningsysteem.data.mutaties.MutatiesFactuur;
 import org.rekeningsysteem.data.offerte.Offerte;
@@ -35,7 +33,6 @@ import org.rekeningsysteem.data.util.loon.ProductLoon;
 import org.rekeningsysteem.io.xml.OldXmlReader;
 import org.rekeningsysteem.utils.Try;
 
-@RunWith(MockitoJUnitRunner.class)
 public class OldXmlReaderTest {
 
 	private OldXmlReader reader;
