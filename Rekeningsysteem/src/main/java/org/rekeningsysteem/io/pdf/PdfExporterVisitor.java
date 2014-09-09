@@ -123,7 +123,7 @@ public class PdfExporterVisitor implements RekeningVisitor {
     		converter.replace("HasDebiteurBtwNummer", debiteur.getBtwNummer().isPresent());
     		converter.replace("DebiteurBtwNummer", debiteur.getBtwNummer().orElse(""));
     
-    		converter.replace("Factuurnummer", header.getFactuurnummer());
+    		converter.replace("Factuurnummer", header.getFactuurnummer().orElse(""));
     		this.properties.getProperty(PropertyModelEnum.DATE_FORMAT)
     				.map(format -> header.getDatum().format(DateTimeFormatter.ofPattern(format)))
     				.ifPresent(datum -> converter.replace("Datum", datum));
