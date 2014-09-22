@@ -1,0 +1,47 @@
+#root {
+    -fx-background-color: #333333;
+    -fx-padding: 1.0px;
+}
+
+#mainToolBar {
+	-fx-padding: 10.0px;
+	-fx-background-image: url("images/top-bar.png");
+    -fx-background-size: cover;
+    -fx-background-position: left top;
+    -fx-background-repeat: no-repeat;
+}
+#name-image {
+	-fx-effect: dropshadow(three-pass-box, rgba(255.0, 255.0, 255.0, 0.8), 5.0, 0.5, 0.0, 0.0);
+}
+#window-close {
+    -fx-font-size: 1.0px;
+    -fx-background-color: null;
+    -fx-background-image: url("images/window-close.png");
+    -fx-padding: 6.0 6.0 4.0 6.0;
+}
+#window-close:hover {
+    -fx-background-image: url("images/window-close-over.png");
+}
+#window-min {
+    -fx-font-size: 1.0px;
+    -fx-background-color: null;
+    -fx-background-image: url("images/window-min.png");
+    -fx-padding: 6.0 6.0 4.0 6.0;
+}
+#window-min:hover {
+    -fx-background-image: url("images/window-min-over.png");
+}
+#window-max {
+    -fx-font-size: 1.0px;
+    -fx-background-color: null;
+    -fx-background-image: url("images/window-expand.png");
+    -fx-padding: 6.0 6.0 4.0 6.0;
+}
+#window-max:hover {
+    -fx-background-image: url("images/window-expand-over.png");
+}
+#window-resize-button {
+    -fx-background-image: url("images/window-corner.png");
+    -fx-background-position: right 1.0px bottom 1.0px;
+    -fx-background-repeat: no-repeat;
+}
