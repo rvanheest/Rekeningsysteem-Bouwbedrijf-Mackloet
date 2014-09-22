@@ -60,8 +60,14 @@
 			<version>3.0</version>
 		</dependency>
 		
+		<!-- Reactive Programming -->
+		<dependency>
+			<groupId>com.netflix.rxjava</groupId>
+			<artifactId>rxjava-core</artifactId>
+			<version>0.19.6</version>
+		</dependency>
+		
 		<!-- Commons utilities -->
-
 		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
