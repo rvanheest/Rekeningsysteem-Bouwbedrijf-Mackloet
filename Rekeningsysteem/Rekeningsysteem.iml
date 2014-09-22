@@ -20,12 +20,13 @@
     <orderEntry type="library" name="Maven: javax.inject:javax.inject:1" level="project" />
     <orderEntry type="library" name="Maven: aopalliance:aopalliance:1.0" level="project" />
     <orderEntry type="library" name="Maven: com.google.inject.extensions:guice-assistedinject:3.0" level="project" />
+    <orderEntry type="library" name="Maven: com.netflix.rxjava:rxjava-core:0.19.6" level="project" />
     <orderEntry type="library" name="Maven: commons-io:commons-io:2.4" level="project" />
     <orderEntry type="library" name="Maven: log4j:log4j:1.2.17" level="project" />
     <orderEntry type="module-library">
       <library name="Maven: jlr:jlr:0">
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/Java LaTeX Report/jlr.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/jlr.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
