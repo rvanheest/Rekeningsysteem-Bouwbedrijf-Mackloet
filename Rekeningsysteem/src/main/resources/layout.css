@@ -75,3 +75,18 @@
     -fx-border-color: transparent transparent transparent #6e737d, transparent transparent transparent rgba(255, 255, 255, 0.3);
     -fx-border-insets: 0.0, 0.0 1.0 0.0 1.0;
 }
+
+#rekening-tabs {
+	-fx-side: top;
+}
+#rekening-tabs *.tab-header-background {
+    -fx-background-color: #51555c;
+    -fx-effect: innershadow(gaussian, rgba(0, 0, 0, 0.7), 12, 0, 0, 0);
+}
+#rekening-tabs .tab-header-content-spacer {
+    -fx-padding: 0;
+    -fx-border-width: 0px;
+}
+#rekening-tabs .tab-label {
+    -fx-font-size: 1em;
+}
