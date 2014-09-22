@@ -8,17 +8,20 @@ import javafx.stage.Stage;
 import org.rekeningsysteem.application.top.UpperBar;
 import org.rekeningsysteem.rxjavafx.Observables;
 
+import com.google.inject.Inject;
+
 public class Root extends BorderPane {
 
 	private WindowResizeButton resizeButton;
 
-	public Root(Stage stage) {
+	@Inject
+	public Root(Stage stage, UpperBar upperBar, SplitPane splitPane, WindowResizeButton resize) {
 		this.setId("root");
 
-		this.setTop(new UpperBar(stage));
-		this.setCenter(new SplitPane());
+		this.setTop(upperBar);
+		this.setCenter(splitPane);
 
-		this.resizeButton = new WindowResizeButton(stage, 1061, 728);
+		this.resizeButton = resize;
 		this.resizeButton.setManaged(false);
 
 		Observables.fromProperty(stage.maximizedProperty())

@@ -14,11 +14,14 @@ import javafx.stage.Stage;
 import org.rekeningsysteem.application.Main;
 import org.rekeningsysteem.rxjavafx.Observables;
 
+import com.google.inject.Inject;
+
 import rx.Observable;
 
 public class UpperBar extends ToolBar {
 
-	public UpperBar(Stage stage) {
+	@Inject
+	public UpperBar(Stage stage, WindowButtons windowButtons) {
 		this.setId("mainToolBar");
 
 		this.setPrefHeight(66);
@@ -41,7 +44,6 @@ public class UpperBar extends ToolBar {
 		HBox.setHgrow(spacer2, Priority.ALWAYS);
 		this.getItems().add(spacer2);
 
-		WindowButtons windowButtons = new WindowButtons(stage);
 		this.getItems().add(windowButtons);
 
 		Observables.fromNodeEvents(this, MouseEvent.MOUSE_CLICKED)

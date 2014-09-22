@@ -7,14 +7,19 @@ import javafx.scene.layout.Region;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
+import org.rekeningsysteem.application.guice.SceneMinHeight;
+import org.rekeningsysteem.application.guice.SceneMinWidth;
 import org.rekeningsysteem.rxjavafx.Observables;
 
 import rx.Observable;
 import rx.functions.Func3;
 
+import com.google.inject.Inject;
+
 public class WindowResizeButton extends Region {
 
-	public WindowResizeButton(Stage stage, double stageMinimumWidth, double stageMinimumHeight) {
+	@Inject
+	public WindowResizeButton(Stage stage, @SceneMinWidth double stageMinimumWidth, @SceneMinHeight double stageMinimumHeight) {
 		this.setId("window-resize-button");
 		this.setPrefSize(11, 11);
 		

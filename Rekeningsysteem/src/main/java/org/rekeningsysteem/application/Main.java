@@ -1,5 +1,11 @@
 package org.rekeningsysteem.application;
 
+import org.rekeningsysteem.application.guice.ApplicationModule;
+
+import com.google.inject.AbstractModule;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -19,7 +25,16 @@ public class Main extends Application {
 
 	@Override
 	public void start(Stage stage) {
-		StackPane layerPane = new StackPane(new Root(stage));
+		Injector injector = Guice.createInjector(new ApplicationModule(), new AbstractModule() {
+
+			@Override
+			protected void configure() {
+				this.bind(Stage.class).toInstance(stage);
+			}
+		});
+		Root root = injector.getInstance(Root.class);
+		
+		StackPane layerPane = new StackPane(root);
 
 		Scene scene = new Scene(layerPane, 1061, 728);
 		scene.getStylesheets().add(getResource("/layout.css"));
