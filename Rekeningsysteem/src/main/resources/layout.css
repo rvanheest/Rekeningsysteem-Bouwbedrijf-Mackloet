@@ -45,3 +45,33 @@
     -fx-background-position: right 1.0px bottom 1.0px;
     -fx-background-repeat: no-repeat;
 }
+
+#main-pane {
+    -fx-background-color: null;
+    -fx-background-insets: 0.0;
+    -fx-padding: 1.0px 0.0px 0.0px 0.0px;
+}
+
+#rekening-toolbar {
+	-fx-padding: 5.0px 5.0px 5.0px 5.0px;
+	-fx-border-image-source: url("images/mid-bar-right.png");
+    -fx-border-image-slice: 1.0 0.0 1.0 0.0 fill;
+    -fx-border-image-width: 1.0 0.0 1.0 0.0;
+    -fx-border-image-repeat: stretch;
+    -fx-spacing: 0.0;
+}
+#rekening-toolbar .button {
+    -fx-background-color: null;
+    -fx-background-radius: 0.0;
+    -fx-background-insets: 0.0;
+    -fx-padding: 3.0px 6.0px 4.0px 6.0px;
+    -fx-border-color: transparent #6e737d transparent rgba(255.0,255.0,255.0,0.3), transparent rgba(255, 255, 255, 0.3) transparent transparent;
+    -fx-border-insets: 0.0, 0.0 1.0 0.0 1.0;
+}
+#rekening-toolbar .button:hover {
+    -fx-background-color: rgba(255.0,255.0,255.0,0.4);
+}
+#rekening-toolbar #settings-button {
+    -fx-border-color: transparent transparent transparent #6e737d, transparent transparent transparent rgba(255, 255, 255, 0.3);
+    -fx-border-insets: 0.0, 0.0 1.0 0.0 1.0;
+}
