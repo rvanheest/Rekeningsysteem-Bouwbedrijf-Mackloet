@@ -3,8 +3,7 @@ package org.rekeningsysteem.io.pdf;
 import java.io.File;
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -13,9 +12,6 @@ import org.apache.commons.io.FileUtils;
 import org.rekeningsysteem.data.aangenomen.AangenomenFactuur;
 import org.rekeningsysteem.data.mutaties.MutatiesFactuur;
 import org.rekeningsysteem.data.offerte.Offerte;
-import org.rekeningsysteem.data.particulier.AnderArtikel;
-import org.rekeningsysteem.data.particulier.EsselinkArtikel;
-import org.rekeningsysteem.data.particulier.GebruiktEsselinkArtikel;
 import org.rekeningsysteem.data.particulier.ParticulierFactuur;
 import org.rekeningsysteem.data.reparaties.ReparatiesFactuur;
 import org.rekeningsysteem.data.util.BtwPercentage;
@@ -23,8 +19,7 @@ import org.rekeningsysteem.data.util.Totalen;
 import org.rekeningsysteem.data.util.header.Debiteur;
 import org.rekeningsysteem.data.util.header.FactuurHeader;
 import org.rekeningsysteem.data.util.header.OmschrFactuurHeader;
-import org.rekeningsysteem.data.util.loon.InstantLoon;
-import org.rekeningsysteem.data.util.loon.ProductLoon;
+import org.rekeningsysteem.data.util.visitor.ListItemVisitor;
 import org.rekeningsysteem.data.util.visitor.RekeningVisitor;
 import org.rekeningsysteem.exception.PdfException;
 import org.rekeningsysteem.properties.PropertiesWorker;
@@ -36,12 +31,14 @@ import de.nixosoft.jlr.JLRGenerator;
 
 public class PdfExporterVisitor implements RekeningVisitor {
 
-	private PropertiesWorker properties;
+	private final PropertiesWorker properties;
 	private File saveLocation;
+	private final ListItemVisitor<List<String>> itemVisitor;
 
 	@Inject
-	public PdfExporterVisitor(PropertiesWorker properties) {
+	public PdfExporterVisitor(PropertiesWorker properties, ListItemVisitor<List<String>> itemVisitor) {
 		this.properties = properties;
+		this.itemVisitor = itemVisitor;
 	}
 
 	public File getSaveLocation() {
@@ -151,10 +148,7 @@ public class PdfExporterVisitor implements RekeningVisitor {
 				.andThen(converter -> converter.replace("Valuta", factuur.getValuta()))
 				.andThen(converter -> converter.replace("aangenomenList", factuur.getItemList()
 						.parallelStream()
-						.map(item -> Arrays.asList(item.getOmschrijving(), 
-        						item.getLoon().formattedString(),
-        						item.getMateriaal().formattedString(),
-        						item.getTotaal().formattedString()))
+						.map(item -> item.accept(this.itemVisitor))
         				.collect(Collectors.toList())))
         		.andThen(this.convertTotalen(factuur.getBtwPercentage(), factuur.getTotalen()));
 	}
@@ -164,9 +158,7 @@ public class PdfExporterVisitor implements RekeningVisitor {
 				.andThen(converter -> converter.replace("Valuta", factuur.getValuta()))
 				.andThen(converter -> converter.replace("bonList", factuur.getItemList()
 						.parallelStream()
-        				.map(bon -> Arrays.asList(bon.getOmschrijving(),
-        						bon.getBonnummer(),
-        						bon.getTotaal().formattedString()))
+        				.map(item -> item.accept(this.itemVisitor))
         				.collect(Collectors.toList())))
         		.andThen(converter -> converter.replace("TotaalBedrag", factuur.getTotalen().getTotaal().formattedString()));
 	}
@@ -182,44 +174,11 @@ public class PdfExporterVisitor implements RekeningVisitor {
 				.andThen(converter -> converter.replace("Valuta", factuur.getValuta()))
 				.andThen(converter -> converter.replace("artikelList", factuur.getItemList()
 						.parallelStream()
-						.map(artikel -> {
-							ArrayList<String> list = new ArrayList<>();
-							if (artikel instanceof AnderArtikel) {
-								AnderArtikel aa = (AnderArtikel) artikel;
-								list.add("");
-								list.add(aa.getOmschrijving());
-								list.add("");
-								list.add("");
-							}
-							else if (artikel instanceof GebruiktEsselinkArtikel) {
-								GebruiktEsselinkArtikel gea = (GebruiktEsselinkArtikel) artikel;
-								EsselinkArtikel ea = gea.getArtikel();
-								list.add(ea.getArtikelNummer());
-								list.add(ea.getOmschrijving());
-								list.add("" + gea.getAantal());
-								list.add(ea.getEenheid());
-							}
-							list.add(artikel.getTotaal().formattedString());
-							return list;
-						})
+						.map(artikel -> artikel.accept(this.itemVisitor))
 						.collect(Collectors.toList())))
 				.andThen(converter -> converter.replace("loonList", factuur.getLoonList()
 						.parallelStream()
-						.map(loon -> {
-							ArrayList<String> list = new ArrayList<>();
-							list.add(loon.getOmschrijving());
-							if (loon instanceof InstantLoon) {
-								list.add("");
-								list.add("");
-							}
-							else if (loon instanceof ProductLoon) {
-								ProductLoon pl = (ProductLoon) loon;
-								list.add("" + pl.getUren());
-								list.add("uren");
-							}
-							list.add(loon.getLoon().formattedString());
-							return list;
-						})
+						.map(loon -> loon.accept(this.itemVisitor))
 						.collect(Collectors.toList())))
 				.andThen(this.convertTotalen(factuur.getBtwPercentage(), factuur.getTotalen()));
 	}
@@ -229,11 +188,7 @@ public class PdfExporterVisitor implements RekeningVisitor {
 				.andThen(converter -> converter.replace("Valuta", factuur.getValuta()))
 				.andThen(converter -> converter.replace("bonList", factuur.getItemList()
 						.parallelStream()
-        				.map(bon -> Arrays.asList(bon.getOmschrijving(),
-        						bon.getBonnummer(),
-        						bon.getLoon().formattedString(),
-        						bon.getMateriaal().formattedString(),
-        						bon.getTotaal().formattedString()))
+        				.map(item -> item.accept(this.itemVisitor))
         				.collect(Collectors.toList())))
         		.andThen(converter -> converter.replace("TotaalBedrag", factuur.getTotalen().getTotaal().formattedString()));
 	}

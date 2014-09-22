@@ -3,6 +3,7 @@ package org.rekeningsysteem.data.particulier;
 import java.util.Objects;
 
 import org.rekeningsysteem.data.util.Geld;
+import org.rekeningsysteem.data.util.visitor.ListItemVisitor;
 
 public final class AnderArtikel extends ParticulierArtikel {
 
@@ -31,6 +32,11 @@ public final class AnderArtikel extends ParticulierArtikel {
 	@Override
 	public Geld getTotaal() {
 		return this.getMateriaal();
+	}
+
+	@Override
+	public <T> T accept(ListItemVisitor<T> visitor) {
+		return visitor.visit(this);
 	}
 
 	@Override

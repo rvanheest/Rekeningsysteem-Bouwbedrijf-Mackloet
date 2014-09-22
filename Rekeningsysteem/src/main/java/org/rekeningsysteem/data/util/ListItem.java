@@ -1,6 +1,8 @@
 package org.rekeningsysteem.data.util;
 
-public interface ListItem {
+import org.rekeningsysteem.data.util.visitor.ListItemVisitable;
+
+public interface ListItem extends ListItemVisitable {
 
 	Geld getLoon();
 

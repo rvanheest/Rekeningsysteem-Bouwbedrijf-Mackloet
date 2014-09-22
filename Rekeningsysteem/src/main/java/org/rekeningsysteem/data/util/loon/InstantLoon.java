@@ -3,6 +3,7 @@ package org.rekeningsysteem.data.util.loon;
 import java.util.Objects;
 
 import org.rekeningsysteem.data.util.Geld;
+import org.rekeningsysteem.data.util.visitor.ListItemVisitor;
 
 public final class InstantLoon extends AbstractLoon {
 
@@ -16,6 +17,11 @@ public final class InstantLoon extends AbstractLoon {
 	@Override
 	public Geld getLoon() {
 		return new Geld(this.loon);
+	}
+	
+	@Override
+	public <T> T accept(ListItemVisitor<T> visitor) {
+		return visitor.visit(this);
 	}
 
 	@Override
