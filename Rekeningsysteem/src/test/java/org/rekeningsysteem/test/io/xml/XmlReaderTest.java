@@ -20,6 +20,7 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.soap.Node;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -93,7 +94,7 @@ public class XmlReaderTest {
 		when(this.unmarshaller.unmarshal((Node) anyObject())).thenReturn(root);
 		when(root.getRekening()).thenReturn(rekening);
 
-		assertEquals(rekening, this.reader.load(file).get());
+		this.reader.load(file).forEach(rek -> assertEquals(rekening, rek));
 		verify(this.unmarshaller).unmarshal(eq(doc));
 	}
 
@@ -119,7 +120,7 @@ public class XmlReaderTest {
 		when(this.unmarshaller.unmarshal((Node) anyObject())).thenReturn(root);
 		when(root.getRekening()).thenReturn(rekening);
 
-		assertEquals(rekening, this.reader.load(file).get());
+		this.reader.load(file).forEach(rek -> assertEquals(rekening, rek));
 		verify(this.unmarshaller).unmarshal(eq(doc));
 	}
 
@@ -144,7 +145,7 @@ public class XmlReaderTest {
 		when(this.unmarshaller.unmarshal((Node) anyObject())).thenReturn(root);
 		when(root.getRekening()).thenReturn(rekening);
 
-		assertEquals(rekening, this.reader.load(file).get());
+		this.reader.load(file).forEach(rek -> assertEquals(rekening, rek));
 		verify(this.unmarshaller).unmarshal(eq(doc));
 	}
 
@@ -171,7 +172,7 @@ public class XmlReaderTest {
 		when(this.unmarshaller.unmarshal((Node) anyObject())).thenReturn(root);
 		when(root.getRekening()).thenReturn(rekening);
 
-		assertEquals(rekening, this.reader.load(file).get());
+		this.reader.load(file).forEach(rek -> assertEquals(rekening, rek));
 		verify(this.unmarshaller).unmarshal(eq(doc));
 	}
 
@@ -197,11 +198,11 @@ public class XmlReaderTest {
 		when(this.unmarshaller.unmarshal((Node) anyObject())).thenReturn(root);
 		when(root.getRekening()).thenReturn(rekening);
 
-		assertEquals(rekening, this.reader.load(file).get());
+		this.reader.load(file).forEach(rek -> assertEquals(rekening, rek));
 		verify(this.unmarshaller).unmarshal(eq(doc));
 	}
 
-	@Test (expected = IllegalStateException.class)
+	@Test
 	public void testLoadUnknownType() throws SAXException, IOException {
 		File file = mock(File.class);
 		Document doc = mock(Document.class);
@@ -216,28 +217,31 @@ public class XmlReaderTest {
 		when(nodeList.item(anyInt())).thenReturn(factuur);
 		when(factuur.getAttribute(anyString())).thenReturn(type);
 
-		this.reader.load(file).get();
+		this.reader.load(file).forEach(rek -> Assert.fail("item received: " + rek),
+				error -> assertTrue(error instanceof IllegalArgumentException));
 	}
 
-	@Test (expected = IllegalStateException.class)
+	@Test
 	public void testLoadParseSAXException() throws SAXException, IOException {
 		File file = mock(File.class);
 
 		when(this.builder.parse((File) anyObject())).thenThrow(new SAXException());
 
-		this.reader.load(file).get();
+		this.reader.load(file).forEach(rek -> Assert.fail("item received: " + rek),
+				error -> assertTrue(error instanceof SAXException));
 	}
 
-	@Test (expected = IllegalStateException.class)
+	@Test
 	public void testLoadParseIOException() throws SAXException, IOException {
 		File file = mock(File.class);
 
 		when(this.builder.parse((File) anyObject())).thenThrow(new IOException());
 
-		this.reader.load(file).get();
+		this.reader.load(file).forEach(rek -> Assert.fail("item received: " + rek),
+				error -> assertTrue(error instanceof IOException));
 	}
 
-	@Test (expected = IllegalStateException.class)
+	@Test
 	public void testLoadJAXBException() throws SAXException, IOException, JAXBException {
 		File file = mock(File.class);
 		Document doc = mock(Document.class);
@@ -253,6 +257,7 @@ public class XmlReaderTest {
 		when(factuur.getAttribute(anyString())).thenReturn(type);
 		when(this.unmarshaller.unmarshal((Node) anyObject())).thenThrow(new JAXBException("foo"));
 
-		this.reader.load(file).get();
+		this.reader.load(file).forEach(rek -> Assert.fail("item received: " + rek),
+				error -> assertTrue(error instanceof JAXBException));
 	}
 }

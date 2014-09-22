@@ -14,7 +14,6 @@ import org.rekeningsysteem.io.FactuurSaver;
 import org.rekeningsysteem.io.xml.guice.XmlMakerModule;
 import org.rekeningsysteem.io.xml.guice.XmlReaderModule;
 import org.rekeningsysteem.logging.ConsoleLoggerModule;
-import org.rekeningsysteem.utils.Try;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -59,8 +58,7 @@ public abstract class AbstractRekeningIntegrationTest {
 		FactuurLoader reader = injector.getInstance(FactuurLoader.class);
 
 		maker.save(this.rekening, this.file);
-		Try<? extends AbstractRekening> result = reader.load(this.file);
 
-		assertEquals(this.rekening, result.get());
+		reader.load(this.file).forEach(rek -> assertEquals(this.rekening, rek));
 	}
 }

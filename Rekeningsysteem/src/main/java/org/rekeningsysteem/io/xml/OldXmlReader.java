@@ -4,10 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.time.DateTimeException;
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
+import java.util.Collection;
 
 import javax.management.modelmbean.XMLParseException;
 import javax.xml.parsers.DocumentBuilder;
@@ -33,12 +30,13 @@ import org.rekeningsysteem.data.util.loon.AbstractLoon;
 import org.rekeningsysteem.data.util.loon.ProductLoon;
 import org.rekeningsysteem.exception.GeldParseException;
 import org.rekeningsysteem.io.FactuurLoader;
-import org.rekeningsysteem.utils.Try;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
+
+import rx.Observable;
 
 import com.google.inject.Inject;
 
@@ -53,17 +51,16 @@ public class OldXmlReader implements FactuurLoader {
 	}
 
 	@Override
-	public Try<? extends AbstractRekening> load(File file) {
+	public Observable<? extends AbstractRekening> load(File file) {
 		try {
 			return this.loadRekening(file);
 		}
 		catch (SAXException | IOException exception) {
-			return Try.failure(exception);
+			return Observable.error(exception);
 		}
 	}
 
-	private Try<? extends AbstractRekening> loadRekening(File file)
-			throws SAXException, IOException {
+	private Observable<? extends AbstractRekening> loadRekening(File file) throws SAXException, IOException {
 		Document doc = this.builder.parse(file);
 		doc.getDocumentElement().normalize();
 		Node factuur = doc.getElementsByTagName("bestand").item(0).getFirstChild();
@@ -84,40 +81,44 @@ public class OldXmlReader implements FactuurLoader {
 			return this.makeOfferte(factuur);
 		}
 		else {
-			return Try.failure(new XMLParseException("Geen geschikte Node gevonden. "
+			return Observable.error(new XMLParseException("Geen geschikte Node gevonden. "
 					+ "Nodenaam = " + soort + "."));
 		}
 	}
+	
+	private Observable<String> getNodeValue(Node node, String s) {
+		return this.getNodeValue(((Element) node).getElementsByTagName(s));
+	}
 
-	private String getNodeValue(NodeList list) {
+	private Observable<String> getNodeValue(NodeList list) {
 		Node n = list.item(0);
 		if (n == null) {
-			return null;
+			return Observable.empty();
 		}
 
 		n = n.getChildNodes().item(0);
 
 		if (n == null) {
-			return null;
+			return Observable.empty();
 		}
-		return n.getNodeValue();
+		return Observable.from(n.getNodeValue());
 	}
 
-	private Try<Geld> makeGeld(String s) {
+	private Observable<Geld> makeGeld(String s) {
 		String[] ss = s.split(" ");
 
 		try {
 			switch (ss.length) {
 				case 1:
-					return Try.of(new Geld(ss[0]));
+					return Observable.from(new Geld(ss[0]));
 				case 2:
 					if (this.valuta == null || this.valuta.equals(ss[0])) {
 						this.valuta = ss[0];
-						return Try.of(new Geld(ss[1]));
+						return Observable.from(new Geld(ss[1]));
 					}
 					else {
 						// corrupte file: verschillende valuta's
-						return Try.failure(new IllegalArgumentException("This file is corrupt. "
+						return Observable.error(new IllegalArgumentException("This file is corrupt. "
 								+ "It has multiple currencies."));
 					}
 
@@ -126,282 +127,202 @@ public class OldXmlReader implements FactuurLoader {
 			}
 		}
 		catch (GeldParseException e) {
-			return Try.failure(e);
+			return Observable.error(e);
 		}
 	}
 
-	private Try<LocalDate> makeDatum(Node node) {
-		String dag = this.getNodeValue(((Element) node).getElementsByTagName("dag"));
-		String maand = this.getNodeValue(((Element) node).getElementsByTagName("maand"));
-		String jaar = this.getNodeValue(((Element) node).getElementsByTagName("jaar"));
+	private Observable<LocalDate> makeDatum(Node node) {
+		Observable<Integer> dag = this.getNodeValue(node, "dag").map(Integer::parseInt);
+		Observable<Integer> maand = this.getNodeValue(node, "maand").map(Integer::parseInt);
+		Observable<Integer> jaar = this.getNodeValue(node, "jaar").map(Integer::parseInt);
 
 		try {
-			return Try.of(LocalDate.of(Integer.parseInt(jaar), Integer.parseInt(maand),
-					Integer.parseInt(dag)));
+			return Observable.zip(jaar, maand, dag, LocalDate::of);
 		}
 		catch (DateTimeException e) {
-			return Try.failure(e);
+			return Observable.error(e);
 		}
 	}
 
-	private Debiteur makeDebiteur(Node node) {
-		String naam = this.getNodeValue(((Element) node).getElementsByTagName("naam"));
-		String straat = this.getNodeValue(((Element) node).getElementsByTagName("straat"));
-		String nummer = this.getNodeValue(((Element) node).getElementsByTagName("nummer"));
-		String postcode = this.getNodeValue(((Element) node).getElementsByTagName("postcode"));
-		String plaats = this.getNodeValue(((Element) node).getElementsByTagName("plaats"));
-		Optional<String> btwnr = Optional.ofNullable(this.getNodeValue(((Element) node)
-				.getElementsByTagName("btwnr")));
-
-		return new Debiteur(naam, straat, nummer, postcode, plaats, btwnr);
+	private Observable<Debiteur> makeDebiteur(Node node) {
+		Observable<String> naam = this.getNodeValue(node, "naam");
+		Observable<String> straat = this.getNodeValue(node, "straat");
+		Observable<String> nummer = this.getNodeValue(node, "nummer");
+		Observable<String> postcode = this.getNodeValue(node, "postcode");
+		Observable<String> plaats = this.getNodeValue(node, "plaats");
+		Observable<String> btwnr = this.getNodeValue(node, "btwnr");
+		
+		Observable<Boolean> empty = btwnr.isEmpty();
+		
+		return empty.filter(b -> b)
+				.flatMap(b -> b ? Observable.zip(naam, straat, nummer, postcode, plaats, Debiteur::new)
+						: Observable.zip(naam, straat, nummer, postcode, plaats, btwnr, Debiteur::new));
 	}
 
-	private Try<OmschrFactuurHeader> makeFactuurHeader(Node node) {
-		Debiteur debiteur = this.makeDebiteur(((Element) node).getElementsByTagName("debiteur")
-				.item(0));
-		Try<LocalDate> datum = this.makeDatum(((Element) node).getElementsByTagName("datum")
-				.item(0));
-		String factuurnummer = this.getNodeValue(((Element) node)
-				.getElementsByTagName("factuurnummer"));
-		String omschrijving = this.getNodeValue(((Element) node)
-				.getElementsByTagName("omschrijving"));
+	private Observable<OmschrFactuurHeader> makeFactuurHeader(Node node) {
+		Observable<Debiteur> debiteur = this.makeDebiteur(((Element) node).getElementsByTagName("debiteur").item(0));
+		Observable<LocalDate> datum = this.makeDatum(((Element) node).getElementsByTagName("datum").item(0));
+		Observable<String> factuurnummer = this.getNodeValue(node, "factuurnummer");
+		Observable<String> omschrijving = this.getNodeValue(node, "omschrijving");
 
-		return datum.map(d -> new OmschrFactuurHeader(debiteur, d, factuurnummer, omschrijving));
+		return Observable.zip(debiteur, datum, factuurnummer, omschrijving, OmschrFactuurHeader::new);
 	}
 
-	private Try<FactuurHeader> makeFactuurHeaderWithoutOmschrijving(Node node) {
-		Debiteur debiteur = this.makeDebiteur(((Element) node).getElementsByTagName("debiteur")
-				.item(0));
-		Try<LocalDate> datum = this.makeDatum(((Element) node).getElementsByTagName("datum")
-				.item(0));
-		String factuurnummer = this.getNodeValue(((Element) node)
-				.getElementsByTagName("factuurnummer"));
+	private Observable<FactuurHeader> makeFactuurHeaderWithoutOmschrijving(Node node) {
+		Observable<Debiteur> debiteur = this.makeDebiteur(((Element) node).getElementsByTagName("debiteur").item(0));
+		Observable<LocalDate> datum = this.makeDatum(((Element) node).getElementsByTagName("datum").item(0));
+		Observable<String> factuurnummer = this.getNodeValue(node, "factuurnummer");
 
-		return datum.map(d -> new FactuurHeader(debiteur, d, factuurnummer));
+		return Observable.zip(debiteur, datum, factuurnummer, FactuurHeader::new);
 	}
 
-	private Try<FactuurHeader> makeOfferteFactuurHeader(Node node) {
-		Debiteur debiteur = this.makeDebiteur(((Element) node).getElementsByTagName("debiteur")
-				.item(0));
-		Try<LocalDate> datum = this.makeDatum(((Element) node).getElementsByTagName("datum")
-				.item(0));
-		String factuurnummer = this.getNodeValue(((Element) node)
-				.getElementsByTagName("offertenummer"));
+	private Observable<FactuurHeader> makeOfferteFactuurHeader(Node node) {
+		Observable<Debiteur> debiteur = this.makeDebiteur(((Element) node).getElementsByTagName("debiteur").item(0));
+		Observable<LocalDate> datum = this.makeDatum(((Element) node).getElementsByTagName("datum").item(0));
+		Observable<String> offertenummer = this.getNodeValue(node, "offertenummer");
 
-		return datum.map(d -> new FactuurHeader(debiteur, d, factuurnummer));
+		return Observable.zip(debiteur, datum, offertenummer, FactuurHeader::new);
 	}
 
-	private Try<AnderArtikel> makeAnderArtikel(Node node) {
-		Node temp = ((Element) node).getElementsByTagName("artikel").item(0);
-		String omschrijving = this.getNodeValue(((Element) temp)
-				.getElementsByTagName("omschrijving"));
-		Try<Geld> prijs = this.makeGeld(this.getNodeValue(((Element) node)
-				.getElementsByTagName("prijs")));
+	private Observable<AnderArtikel> makeAnderArtikel(Node node) {
+		Node temp = ((Element) node).getElementsByTagName("artikel").item(0); //TODO gaat dit wel goed? er zit nog een niveau tussen...
+		Observable<String> omschrijving = this.getNodeValue(temp, "omschrijving");
+		Observable<Geld> prijs = this.getNodeValue(((Element) node).getElementsByTagName("prijs")).flatMap(this::makeGeld);
 
-		return prijs.map(p -> new AnderArtikel(omschrijving, p));
+		return Observable.zip(omschrijving, prijs, AnderArtikel::new);
 	}
 
-	private Try<EsselinkArtikel> makeArtikelEsselink(Node node) {
-		String artikelNummer = this.getNodeValue(((Element) node)
-				.getElementsByTagName("artikelnummer"));
-		String omschrijving = this.getNodeValue(((Element) node)
-				.getElementsByTagName("omschrijving"));
-		int prijsPer = Integer.parseInt(this.getNodeValue(((Element) node)
-				.getElementsByTagName("prijsper")));
-		String eenheid = this.getNodeValue(((Element) node).getElementsByTagName("eenheid"));
-		Try<Geld> verkoopPrijs = this.makeGeld(this.getNodeValue(((Element) node)
-				.getElementsByTagName("verkoopprijs")));
-
-		return verkoopPrijs.map(p -> new EsselinkArtikel(artikelNummer, omschrijving, prijsPer,
-				eenheid, p));
+	private Observable<EsselinkArtikel> makeArtikelEsselink(Node node) {
+		Observable<String> artikelNummer = this.getNodeValue(node, "artikelnummer");
+		Observable<String> omschrijving = this.getNodeValue(node, "omschrijving");
+		Observable<Integer> prijsPer = this.getNodeValue(node, "prijsper").map(Integer::parseInt);
+		Observable<String> eenheid = this.getNodeValue(node, "eenheid");
+		Observable<Geld> verkoopPrijs = this.getNodeValue(node, "verkoopprijs").flatMap(this::makeGeld);
+		
+		return Observable.zip(artikelNummer, omschrijving, prijsPer, eenheid, verkoopPrijs, EsselinkArtikel::new);
 	}
 
-	private Try<GebruiktEsselinkArtikel> makeGebruiktArtikelEsselink(Node node) {
-		Try<EsselinkArtikel> artikel = this.makeArtikelEsselink(((Element) node)
-				.getElementsByTagName("artikel").item(0));
-		double aantal = Double.parseDouble(this.getNodeValue(((Element) node)
-				.getElementsByTagName("aantal")));
+	private Observable<GebruiktEsselinkArtikel> makeGebruiktArtikelEsselink(Node node) {
+		Observable<EsselinkArtikel> artikel = this.makeArtikelEsselink(((Element) node).getElementsByTagName("artikel").item(0));
+		Observable<Double> aantal = this.getNodeValue(node, "aantal").map(Double::parseDouble);
 
-		return artikel.map(a -> new GebruiktEsselinkArtikel(a, aantal));
+		return Observable.zip(artikel, aantal, GebruiktEsselinkArtikel::new);
 	}
 
-	private Try<ProductLoon> makeLoon(Node node) {
-		Try<Geld> uurloon = this.makeGeld(this.getNodeValue(((Element) node)
-				.getElementsByTagName("uurloon")));
-		double uren = Double.parseDouble(this.getNodeValue(((Element) node)
-				.getElementsByTagName("uren")));
+	private Observable<ProductLoon> makeLoon(Node node) {
+		Observable<Geld> uurloon = this.getNodeValue(node, "uurloon").flatMap(this::makeGeld);
+		Observable<Double> uren = this.getNodeValue(node, "uren").map(Double::parseDouble);
 
-		return uurloon.map(u -> new ProductLoon("Uurloon à " + u.formattedString(), uren, u));
+		return Observable.zip(uurloon, uren, (ul, ur) -> new ProductLoon("Uurloon à " + ul.formattedString(), ur, ul));
 	}
 
-	private BtwPercentage makeEnkelBtw(Node node) {
-		double btw = Double.parseDouble(this.getNodeValue(((Element) node)
-				.getElementsByTagName("btw")));
+	private Observable<BtwPercentage> makeEnkelBtw(Node node) {
+		Observable<Double> btw = this.getNodeValue(node, "btw").map(Double::parseDouble);
 
-		return new BtwPercentage(btw, btw);
+		return btw.map(b -> new BtwPercentage(b, b));
 	}
 
-	private BtwPercentage makeDubbelBtw(Node node) {
-		double btwArt = Double.parseDouble(this.getNodeValue(((Element) node)
-				.getElementsByTagName("btwpercentageart")));
-		double btwLoon = Double.parseDouble(this.getNodeValue(((Element) node)
-				.getElementsByTagName("btwpercentageloon")));
+	private Observable<BtwPercentage> makeDubbelBtw(Node node) {
+		Observable<Double> btwArt = this.getNodeValue(node, "btwpercentageart").map(Double::parseDouble);
+		Observable<Double> btwLoon = this.getNodeValue(node, "btwpercentageloon").map(Double::parseDouble);
 
-		return new BtwPercentage(btwLoon, btwArt);
+		return Observable.zip(btwLoon, btwArt, BtwPercentage::new);
 	}
 
-	public Try<ParticulierFactuur> makeParticulierFactuur1(Node node) {
+	public Observable<ParticulierFactuur> makeParticulierFactuur1(Node node) {
 		Node al = ((Element) node).getElementsByTagName("artikellijst").item(0);
-		NodeList gal = ((Element) al).getElementsByTagName("gebruiktartikellijst").item(0)
-				.getChildNodes();
+		NodeList gal = ((Element) al).getElementsByTagName("gebruiktartikellijst").item(0).getChildNodes();
 
-		Try<OmschrFactuurHeader> header = this.makeFactuurHeader(node);
-		Try<ItemList<ParticulierArtikel>> itemList;
-		try {
-			itemList = Try.of(IntStream
-					.range(0, gal.getLength())
-					.boxed()
-					.map(i -> gal.item(i))
-					.<Try<? extends ParticulierArtikel>> map(item -> {
-						if ("gebruiktartikelander".equals(item.getNodeName())) {
-							return this.makeAnderArtikel(item);
-						}
-							else if ("gebruiktartikelesselink".equals(item.getNodeName())) {
-								return this.makeGebruiktArtikelEsselink(item);
-							}
-							return Try.failure(new IllegalArgumentException(
-									"Unknown artikel type found."));
-						})
-					.map(Try::get)
-					.collect(Collectors.toCollection(ItemList::new)));
-		}
-		catch (Throwable e) {
-			itemList = Try.failure(e);
-		}
-
-		Try<ItemList<AbstractLoon>> loonList = this
-				.makeLoon(((Element) node).getElementsByTagName("loon").item(0))
-				.map(Arrays::asList)
-				.map(ItemList<AbstractLoon>::new);
-
-		return itemList.flatMap(il -> loonList.flatMap(ll -> header.map(h ->
-				new ParticulierFactuur(h, this.valuta, il, ll, this.makeEnkelBtw(node)))));
+		Observable<OmschrFactuurHeader> header = this.makeFactuurHeader(node);
+		Observable<ItemList<ParticulierArtikel>> itemList = Observable.range(0, gal.getLength())
+				.map(gal::item)
+				.<ParticulierArtikel> flatMap(item -> {
+					switch (item.getNodeName()) {
+						case "gebruiktartikelander" : return this.makeAnderArtikel(item);
+						case "gebruiktartikelesselink" : return this.makeGebruiktArtikelEsselink(item);
+						default : return Observable.error(new IllegalArgumentException("Unknown artikel type found."));
+					}
+				})
+				.collect(new ItemList<>(), Collection::add);
+		
+		Observable<ItemList<AbstractLoon>> loonList = this.makeLoon(((Element) node).getElementsByTagName("loon").item(0))
+				.collect(new ItemList<>(), Collection::add);
+		
+		return Observable.zip(header, itemList, loonList, this.makeEnkelBtw(node), (h, item, loon, btw) -> new ParticulierFactuur(h, this.valuta, item, loon, btw));
 	}
 
-	private Try<ParticulierFactuur> makeParticulierFactuur2(Node node) {
+	private Observable<ParticulierFactuur> makeParticulierFactuur2(Node node) {
 		Node al = ((Element) node).getElementsByTagName("artikellijst").item(0);
-		NodeList gal = ((Element) al).getElementsByTagName("gebruiktartikellijst").item(0)
-				.getChildNodes();
+		NodeList gal = ((Element) al).getElementsByTagName("gebruiktartikellijst").item(0).getChildNodes();
 
-		Try<OmschrFactuurHeader> header = this.makeFactuurHeader(node);
-		Try<ItemList<ParticulierArtikel>> itemList;
-		try {
-			itemList = Try.of(IntStream
-					.range(0, gal.getLength())
-					.boxed()
-					.map(i -> gal.item(i))
-					.<Try<? extends ParticulierArtikel>> map(
-							item -> {
-								if ("gebruiktartikelander".equals(item.getNodeName())) {
-									return this.makeAnderArtikel(item);
-								}
-								else if ("gebruiktartikelesselink".equals(item.getNodeName())) {
-									return this.makeGebruiktArtikelEsselink(item);
-								}
-								return Try.failure(new IllegalArgumentException(
-										"Unknown artikel type found."));
-							})
-					.map(Try::get)
-					.collect(Collectors.toCollection(ItemList::new)));
-		}
-		catch (Throwable e) {
-			itemList = Try.failure(e);
-		}
-
-		Try<ItemList<AbstractLoon>> loonList = this
-				.makeLoon(((Element) node).getElementsByTagName("loon").item(0))
-				.map(Arrays::asList)
-				.map(ItemList<AbstractLoon>::new);
-
-		return itemList.flatMap(il -> loonList.flatMap(ll -> header.map(h ->
-				new ParticulierFactuur(h, this.valuta, il, ll, this.makeDubbelBtw(node)))));
+		Observable<OmschrFactuurHeader> header = this.makeFactuurHeader(node);
+		Observable<ItemList<ParticulierArtikel>> itemList = Observable.range(0, gal.getLength())
+				.map(gal::item)
+				.<ParticulierArtikel> flatMap(item -> {
+					switch (item.getNodeName()) {
+						case "gebruiktartikelander" : return this.makeAnderArtikel(item);
+						case "gebruiktartikelesselink" : return this.makeGebruiktArtikelEsselink(item);
+						default : return Observable.error(new IllegalArgumentException("Unknown artikel type found."));
+					}
+				})
+				.collect(new ItemList<>(), Collection::add);
+		
+		Observable<ItemList<AbstractLoon>> loonList = this.makeLoon(((Element) node).getElementsByTagName("loon").item(0))
+				.collect(new ItemList<>(), Collection::add);
+		
+		return Observable.zip(header, itemList, loonList, this.makeDubbelBtw(node), (h, item, loon, btw) -> new ParticulierFactuur(h, this.valuta, item, loon, btw));
 	}
 
-	private Try<MutatiesBon> makeMutatiesBon(Node node) {
-		String omschrijving = this.getNodeValue(((Element) node)
-				.getElementsByTagName("omschrijving"));
-		String bonnummer = this.getNodeValue(((Element) node).getElementsByTagName("bonnummer"));
-		Try<Geld> prijs = this.makeGeld(this.getNodeValue(((Element) node)
-				.getElementsByTagName("prijs")));
+	private Observable<MutatiesBon> makeMutatiesBon(Node node) {
+		Observable<String> omschrijving = this.getNodeValue(node, "omschrijving");
+		Observable<String> bonnummer = this.getNodeValue(node, "bonnummer");
+		Observable<Geld> prijs = this.getNodeValue(node, "prijs").flatMap(this::makeGeld);
 
-		return prijs.map(p -> new MutatiesBon(omschrijving, bonnummer, p));
+		return Observable.zip(omschrijving, bonnummer, prijs, MutatiesBon::new);
 	}
 
-	private Try<MutatiesFactuur> makeMutatiesFactuur(Node node) {
-		Try<FactuurHeader> header = this.makeFactuurHeaderWithoutOmschrijving(node);
+	private Observable<MutatiesFactuur> makeMutatiesFactuur(Node node) {
+		Observable<FactuurHeader> header = this.makeFactuurHeaderWithoutOmschrijving(node);
 		BtwPercentage btw = new BtwPercentage(0.0, 0.0);
 
 		Node mbl = ((Element) node).getElementsByTagName("mutatiesbonlijst").item(0);
 		NodeList bonnen = ((Element) mbl).getElementsByTagName("mutatiesbon");
-		Try<ItemList<MutatiesBon>> itemList;
-		try {
-			itemList = Try.of(IntStream.range(0, bonnen.getLength())
-					.boxed()
-					.map(i -> bonnen.item(i))
-					.map(this::makeMutatiesBon)
-					.map(Try::get)
-					.collect(Collectors.toCollection(ItemList::new)));
-		}
-		catch (Throwable e) {
-			itemList = Try.failure(e);
-		}
-
-		return itemList.flatMap(il -> header.map(h ->
-				new MutatiesFactuur(h, this.valuta, il, btw)));
+		Observable<ItemList<MutatiesBon>> itemList = Observable.range(0, bonnen.getLength())
+				.map(bonnen::item)
+				.flatMap(this::makeMutatiesBon)
+				.collect(new ItemList<>(), Collection::add);
+		
+		return Observable.zip(header, itemList, (h, il) -> new MutatiesFactuur(h, this.valuta, il, btw));
 	}
 
-	private Try<ReparatiesBon> makeReparatiesBon(Node node) {
-		String omschrijving = this.getNodeValue(((Element) node)
-				.getElementsByTagName("omschrijving"));
-		String bonnummer = this.getNodeValue(((Element) node).getElementsByTagName("bonnummer"));
-		Try<Geld> uurloon = this.makeGeld(this.getNodeValue(((Element) node)
-				.getElementsByTagName("uurloon")));
-		Try<Geld> materiaal = this.makeGeld(this.getNodeValue(((Element) node)
-				.getElementsByTagName("materiaal")));
-
-		return uurloon.flatMap(uu -> materiaal.map(m -> new ReparatiesBon(omschrijving, bonnummer,
-				uu, m)));
+	private Observable<ReparatiesBon> makeReparatiesBon(Node node) {
+		Observable<String> omschrijving = this.getNodeValue(node, "omschrijving");
+		Observable<String> bonnummer = this.getNodeValue(node, "bonnummer");
+		Observable<Geld> uurloon = this.getNodeValue(node, "uurloon").flatMap(this::makeGeld);
+		Observable<Geld> materiaal = this.getNodeValue(node, "materiaal").flatMap(this::makeGeld);
+		
+		return Observable.zip(omschrijving, bonnummer, uurloon, materiaal, ReparatiesBon::new);
 	}
 
-	private Try<ReparatiesFactuur> makeReparatiesFactuur(Node node) {
-		Try<FactuurHeader> header = this.makeFactuurHeaderWithoutOmschrijving(node);
+	private Observable<ReparatiesFactuur> makeReparatiesFactuur(Node node) {
+		Observable<FactuurHeader> header = this.makeFactuurHeaderWithoutOmschrijving(node);
 		BtwPercentage btw = new BtwPercentage(0.0, 0.0);
 
 		Node rbl = ((Element) node).getElementsByTagName("reparatiesbonlijst").item(0);
 		NodeList bonnen = ((Element) rbl).getElementsByTagName("reparatiesbon");
-		Try<ItemList<ReparatiesBon>> itemList;
-		try {
-			itemList = Try.of(IntStream.range(0, bonnen.getLength())
-					.boxed()
-					.map(i -> bonnen.item(i))
-					.map(this::makeReparatiesBon)
-					.map(Try::get)
-					.collect(Collectors.toCollection(ItemList::new)));
-		}
-		catch (Throwable e) {
-			itemList = Try.failure(e);
-		}
-
-		return itemList.flatMap(il -> header.map(h ->
-				new ReparatiesFactuur(h, this.valuta, il, btw)));
+		Observable<ItemList<ReparatiesBon>> itemList = Observable.range(0, bonnen.getLength())
+				.map(bonnen::item)
+				.flatMap(this::makeReparatiesBon)
+				.collect(new ItemList<>(), Collection::add);
+		
+		return Observable.zip(header, itemList, (h, il) -> new ReparatiesFactuur(h, this.valuta, il, btw));
 	}
 
-	private Try<Offerte> makeOfferte(Node node) {
-		Try<FactuurHeader> header = this.makeOfferteFactuurHeader(node);
-		String tekst = this.getNodeValue(((Element) node).getElementsByTagName("tekst"));
-		boolean ondertekenen = Boolean.parseBoolean(this.getNodeValue(((Element) node)
-				.getElementsByTagName("ondertekenen")));
+	private Observable<Offerte> makeOfferte(Node node) {
+		Observable<FactuurHeader> header = this.makeOfferteFactuurHeader(node);
+		Observable<String> tekst = this.getNodeValue(node, "tekst");
+		Observable<Boolean> ondertekenen = this.getNodeValue(node, "ondertekenen").map(Boolean::parseBoolean);
 
-		return header.map(h -> new Offerte(h, tekst, ondertekenen));
+		return Observable.zip(header, tekst, ondertekenen, Offerte::new);
 	}
 }

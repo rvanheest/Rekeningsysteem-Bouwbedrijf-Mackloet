@@ -21,7 +21,6 @@ import org.rekeningsysteem.data.particulier.ParticulierArtikel;
 import org.rekeningsysteem.data.particulier.ParticulierFactuur;
 import org.rekeningsysteem.data.reparaties.ReparatiesBon;
 import org.rekeningsysteem.data.reparaties.ReparatiesFactuur;
-import org.rekeningsysteem.data.util.AbstractRekening;
 import org.rekeningsysteem.data.util.BtwPercentage;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.data.util.ItemList;
@@ -31,7 +30,6 @@ import org.rekeningsysteem.data.util.header.OmschrFactuurHeader;
 import org.rekeningsysteem.data.util.loon.AbstractLoon;
 import org.rekeningsysteem.data.util.loon.ProductLoon;
 import org.rekeningsysteem.io.xml.OldXmlReader;
-import org.rekeningsysteem.utils.Try;
 
 public class OldXmlReaderTest {
 
@@ -47,7 +45,6 @@ public class OldXmlReaderTest {
 	@Test
 	public void testLoadParticulierFactuur1() {
 		File file = new File("src\\test\\resources\\OldXml\\ParticulierFactuur1.xml");
-		Try<? extends AbstractRekening> result = this.reader.load(file);
 
 		OmschrFactuurHeader factuurHeader = new OmschrFactuurHeader(new Debiteur(
 				"testnaam", "teststraat", "testnummer", "testpostcode", "testplaats"),
@@ -68,13 +65,12 @@ public class OldXmlReaderTest {
 		ParticulierFactuur expected = new ParticulierFactuur(factuurHeader, "€", itemList,
 				loonList, new BtwPercentage(19.0, 19.0));
 
-		assertEquals(expected, result.get());
+		this.reader.load(file).forEach(rek -> assertEquals(expected, rek));
 	}
 
 	@Test
 	public void testLoadParticulierFactuur2() {
 		File file = new File("src\\test\\resources\\OldXml\\ParticulierFactuur2.xml");
-		Try<? extends AbstractRekening> result = this.reader.load(file);
 
 		OmschrFactuurHeader factuurHeader = new OmschrFactuurHeader(new Debiteur(
 				"testnaam", "teststraat", "testnummer", "testpostcode", "testplaats"),
@@ -93,13 +89,12 @@ public class OldXmlReaderTest {
 		ParticulierFactuur expected = new ParticulierFactuur(factuurHeader, "€", itemList,
 				loonList, new BtwPercentage(6.0, 21.0));
 
-		assertEquals(expected, result.get());
+		this.reader.load(file).forEach(rek -> assertEquals(expected, rek));
 	}
 
 	@Test
 	public void testLoadParticulierFactuur() {
 		File file = new File("src\\test\\resources\\OldXml\\PartFactuur.xml");
-		Try<? extends AbstractRekening> result = this.reader.load(file);
 
 		OmschrFactuurHeader factuurHeader = new OmschrFactuurHeader(new Debiteur(
 				"testnaam", "teststraat", "testnummer", "testpostcode", "testplaats"),
@@ -117,13 +112,12 @@ public class OldXmlReaderTest {
 		ParticulierFactuur expected = new ParticulierFactuur(factuurHeader, "€", itemList,
 				loonList, new BtwPercentage(0.0, 0.0));
 
-		assertEquals(expected.toString(), result.get().toString());
+		this.reader.load(file).forEach(rek -> assertEquals(expected, rek));
 	}
 
 	@Test
 	public void testLoadMutatiesFactuur() {
 		File file = new File("src\\test\\resources\\OldXml\\MutatiesFactuur.xml");
-		Try<? extends AbstractRekening> result = this.reader.load(file);
 
 		FactuurHeader factuurHeader = new FactuurHeader(new Debiteur("testnaam",
 				"teststraat", "testnummer", "testpostcode", "testplaats", "testbtwnr"),
@@ -135,13 +129,12 @@ public class OldXmlReaderTest {
 		MutatiesFactuur expected = new MutatiesFactuur(factuurHeader, "€", itemList,
 				new BtwPercentage(0.0, 0.0));
 
-		assertEquals(expected, result.get());
+		this.reader.load(file).forEach(rek -> assertEquals(expected, rek));
 	}
 
 	@Test
 	public void testLoadReparatiesFactuur() {
 		File file = new File("src\\test\\resources\\OldXml\\ReparatiesFactuur.xml");
-		Try<? extends AbstractRekening> result = this.reader.load(file);
 
 		FactuurHeader factuurHeader = new FactuurHeader(new Debiteur("testnaam",
 				"teststraat", "testnummer", "testpostcode", "testplaats", "testbtwnr"),
@@ -153,19 +146,18 @@ public class OldXmlReaderTest {
 		ReparatiesFactuur expected = new ReparatiesFactuur(factuurHeader, "€",
 				itemList, new BtwPercentage(0.0, 0.0));
 
-		assertEquals(expected, result.get());
+		this.reader.load(file).forEach(rek -> assertEquals(expected, rek));
 	}
 
 	@Test
 	public void testLoadOfferte() {
 		File file = new File("src\\test\\resources\\OldXml\\Offerte.xml");
-		Try<? extends AbstractRekening> result = this.reader.load(file);
 
 		FactuurHeader factuurHeader = new FactuurHeader(new Debiteur(
 				"testnaam", "teststraat", "testnummer", "testpostcode", "testplaats"),
 				LocalDate.of(2012, 8, 24), "62012");
 		Offerte expected = new Offerte(factuurHeader, "dsafsdkljfaskljfpoj", true);
 
-		assertEquals(expected, result.get());
+		this.reader.load(file).forEach(rek -> assertEquals(expected, rek));
 	}
 }

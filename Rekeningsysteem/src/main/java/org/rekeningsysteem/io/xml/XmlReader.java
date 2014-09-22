@@ -17,11 +17,12 @@ import org.rekeningsysteem.io.xml.root.OfferteRoot;
 import org.rekeningsysteem.io.xml.root.ParticulierFactuurRoot;
 import org.rekeningsysteem.io.xml.root.ReparatiesFactuurRoot;
 import org.rekeningsysteem.io.xml.root.Root;
-import org.rekeningsysteem.utils.Try;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
+
+import rx.Observable;
 
 import com.google.inject.Inject;
 
@@ -38,7 +39,7 @@ public class XmlReader implements FactuurLoader {
 	}
 
 	@Override
-	public Try<? extends AbstractRekening> load(File file) {
+	public Observable<AbstractRekening> load(File file) {
 		try {
 			Document doc = this.builder.parse(file);
 			doc.getDocumentElement().normalize();
@@ -67,21 +68,21 @@ public class XmlReader implements FactuurLoader {
 					return this.readXML(unmarshaller, doc).map(Root::getRekening);
 				}
 				default:
-					return Try.failure(new IllegalArgumentException("This typ (" + type
+					return Observable.error(new IllegalArgumentException("This typ (" + type
 							+ ") can't be used"));
 			}
 		}
 		catch (SAXException | IOException e) {
-			return Try.failure(e);
+			return Observable.error(e);
 		}
 	}
 
-	private Try<Root<?>> readXML(Unmarshaller unmarshaller, Node node) {
+	private Observable<Root<?>> readXML(Unmarshaller unmarshaller, Node node) {
 		try {
-			return Try.of((Root<?>) unmarshaller.unmarshal(node));
+			return Observable.from((Root<?>) unmarshaller.unmarshal(node));
 		}
 		catch (JAXBException e) {
-			return Try.failure(e);
+			return Observable.error(e);
 		}
 	}
 }
