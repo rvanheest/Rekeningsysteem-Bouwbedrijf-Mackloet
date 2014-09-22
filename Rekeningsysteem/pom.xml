@@ -87,7 +87,7 @@
 			<artifactId>jlr</artifactId>
 			<version>0</version>
 			<scope>system</scope>
-			<systemPath>${project.basedir}/lib/Java LaTeX Report/jlr.jar</systemPath>
+			<systemPath>${project.basedir}/lib/jlr.jar</systemPath>
 		</dependency>
 		
 		<!-- SQLite database connector -->
