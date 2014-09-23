@@ -5,7 +5,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
 import org.rekeningsysteem.application.top.UpperBar;
-import org.rekeningsysteem.application.working.MainPaneController;
+import org.rekeningsysteem.application.working.MainPane;
 import org.rekeningsysteem.rxjavafx.Observables;
 
 import com.google.inject.Inject;
@@ -15,11 +15,11 @@ public class Root extends BorderPane {
 	private WindowResizeButton resizeButton;
 
 	@Inject
-	public Root(Stage stage, UpperBar upperBar, MainPaneController mainPaneController, WindowResizeButton resize) {
+	public Root(Stage stage, UpperBar upperBar, MainPane mainPane, WindowResizeButton resize) {
 		this.setId("root");
 
 		this.setTop(upperBar);
-		this.setCenter(mainPaneController.getUI());
+		this.setCenter(mainPane);
 
 		this.resizeButton = resize;
 		this.resizeButton.setManaged(false);
