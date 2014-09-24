@@ -15,6 +15,7 @@ import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 
 import org.rekeningsysteem.application.Main;
+import org.rekeningsysteem.rxjavafx.Observables;
 
 import rx.Observable;
 
@@ -54,6 +55,11 @@ public class MainPane extends BorderPane {
 
 		this.setTop(this.toolbar);
 		this.setCenter(this.tabpane);
+		
+		Observable<Boolean> hasNoTabs = Observables.fromObservableList(this.tabpane.getTabs())
+				.map(List::isEmpty);
+		hasNoTabs.subscribe(this.save::setDisable);
+		hasNoTabs.subscribe(this.pdf::setDisable);
 	}
 
 	private void initButtons() {
