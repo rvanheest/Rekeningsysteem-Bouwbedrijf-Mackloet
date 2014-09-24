@@ -90,3 +90,71 @@
 #rekening-tabs .tab-label {
     -fx-font-size: 1em;
 }
+
+#left-panel {
+	-fx-pref-width: 200px;
+}
+
+#panel-tree .tree-cell {
+    -fx-indent: 10;
+    -fx-background-color: transparent;
+}
+#panel-tree .tree-cell:odd {
+    -fx-background-color: transparent;
+}
+#panel-tree .tree-cell:filled:selected:focused, #panel-tree .tree-cell:filled:selected {
+    -fx-background: #666666;
+    -fx-background-color: -fx-selection-bar;
+    -fx-text-fill: -fx-selection-bar-text;
+}
+#panel-tree:focused .tree-cell:filled:selected {
+    -fx-background: -fx-accent;
+}
+#panel-tree {
+    -fx-background-color: #d1dee3;
+    -fx-border-image-source: url("images/tree-background.png");
+    -fx-border-image-slice: 30 30 30 30 fill;
+    -fx-border-image-width: 30 30 30 30;
+    -fx-border-image-repeat: stretch;
+    -fx-background-insets: 0;
+    -fx-background-radius: 0;
+    -fx-padding: -25 -30 -30 -30; /* counter the 30px added by border image to give 0 overall */
+}
+#panel-tree:focused {
+    -fx-background-color: -fx-focus-color;
+    -fx-background-insets: 0;
+    -fx-background-radius: 0;
+}
+
+.working-pane {
+    -fx-background-color: #EEEEEE;
+    -fx-text-fill: black;
+    -fx-border-color: transparent transparent transparent black;
+    -fx-border-width: 1px;
+    -fx-spacing: 20px;
+    -fx-fill-width: false;
+    -fx-alignment: top-center;
+}
+
+.page {
+	-fx-alignment: top-center;
+	-fx-padding: 10px 0px 10px 0px;
+}
+.page #title {
+	-fx-alignment: top-center;
+	-fx-border-color: transparent transparent #AAAAAA transparent;
+	-fx-border-insets: 0 0 8px 0;
+	-fx-font-size: 1.3em;
+	-fx-font-weight: bold;
+	-fx-padding: 0 0 2px 0;
+	-fx-text-fill: #0072aa;
+}
+.page #subtitle {
+	-fx-alignment: top-center;
+	-fx-border-color: transparent transparent #AAAAAA transparent;
+	-fx-border-insets: 0 0 8px 0;
+	-fx-font-size: 1.2em;
+	-fx-font-weight: bold;
+	-fx-padding: 8px 0 2px 0;
+	-fx-text-fill: #0072aa;
+}

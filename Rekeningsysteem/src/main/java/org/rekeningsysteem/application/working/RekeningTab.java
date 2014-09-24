@@ -1,12 +1,15 @@
 package org.rekeningsysteem.application.working;
 
-import javafx.scene.control.SplitPane;
 import javafx.scene.control.Tab;
 
 public class RekeningTab extends Tab {
 
-	public RekeningTab(String name) {
+	private final RekeningSplitPane splitPane;
+
+	public RekeningTab(String name, RekeningSplitPane splitPane) {
 		super(name);
-		this.setContent(new SplitPane());
+		this.splitPane = splitPane;
+		
+		this.setContent(this.splitPane);
 	}
 }
