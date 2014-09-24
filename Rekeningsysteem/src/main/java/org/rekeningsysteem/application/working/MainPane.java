@@ -1,5 +1,10 @@
 package org.rekeningsysteem.application.working;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -18,18 +23,13 @@ public class MainPane extends BorderPane {
 
 	private RekeningToolbar toolbar;
 
-	private Button aangenomen;
-	private Button mutaties;
-	private Button reparaties;
-	private Button particulier;
-	private Button offerte;
 	private Button open;
 	private Button save;
 	private Button pdf;
 	private Button settings;
 
 	@Inject
-	public MainPane(Stage stage) {
+	public MainPane(Stage stage, List<AbstractWorkModule> workModules) {
 		this.setId("main-pane");
 		this.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
 
@@ -38,35 +38,18 @@ public class MainPane extends BorderPane {
 		Region spacer = new Region();
 		HBox.setHgrow(spacer, Priority.ALWAYS);
 
-		this.toolbar = new RekeningToolbar(this.aangenomen, this.mutaties,
-				this.reparaties, this.particulier, this.offerte, this.open,
-				this.save, this.pdf, spacer, this.settings);
+		List<Node> buttons = workModules.stream()
+				.map(AbstractWorkModule::getButton)
+				.collect(Collectors.toList());
+		buttons.addAll(Arrays.asList(this.open, this.save, this.pdf, spacer, this.settings));
+
+		this.toolbar = new RekeningToolbar(buttons);
 
 		this.setTop(this.toolbar);
 		this.setCenter(new StackPane());
 	}
 
 	private void initButtons() {
-		this.aangenomen = new Button();
-		this.aangenomen.setGraphic(new ImageView(new Image(Main
-				.getResource("/images/aangenomen.png"))));
-
-		this.mutaties = new Button();
-		this.mutaties.setGraphic(new ImageView(new Image(Main
-				.getResource("/images/mutaties.png"))));
-
-		this.reparaties = new Button();
-		this.reparaties.setGraphic(new ImageView(new Image(Main
-				.getResource("/images/reparaties.png"))));
-
-		this.particulier = new Button();
-		this.particulier.setGraphic(new ImageView(new Image(Main
-				.getResource("/images/particulier.png"))));
-
-		this.offerte = new Button();
-		this.offerte.setGraphic(new ImageView(new Image(Main
-				.getResource("/images/offerte.png"))));
-
 		this.open = new Button();
 		this.open.setGraphic(new ImageView(new Image(Main
 				.getResource("/images/openen.png"))));
