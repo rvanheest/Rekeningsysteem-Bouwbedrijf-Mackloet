@@ -5,10 +5,12 @@ import javafx.scene.image.ImageView;
 
 import org.rekeningsysteem.application.Main;
 import org.rekeningsysteem.application.working.AbstractWorkModule;
+import org.rekeningsysteem.application.working.RekeningTab;
 
 public class AangenomenWorkPane extends AbstractWorkModule {
 
 	public AangenomenWorkPane() {
-		super(new ImageView(new Image(Main.getResource("/images/aangenomen.png"))));
+		super(new ImageView(new Image(Main.getResource("/images/aangenomen.png"))),
+				event -> new RekeningTab("Aangenomen factuur"));
 	}
 }

@@ -12,21 +12,23 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
-import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 import org.rekeningsysteem.application.Main;
+
+import rx.Observable;
 
 import com.google.inject.Inject;
 
 public class MainPane extends BorderPane {
 
-	private RekeningToolbar toolbar;
+	private final RekeningToolbar toolbar;
+	private final RekeningTabpane tabpane = new RekeningTabpane();
 
-	private Button open;
-	private Button save;
-	private Button pdf;
-	private Button settings;
+	private final Button open = new Button();
+	private final Button save = new Button();
+	private final Button pdf = new Button();
+	private final Button settings = new Button();
 
 	@Inject
 	public MainPane(Stage stage, List<AbstractWorkModule> workModules) {
@@ -44,26 +46,25 @@ public class MainPane extends BorderPane {
 		buttons.addAll(Arrays.asList(this.open, this.save, this.pdf, spacer, this.settings));
 
 		this.toolbar = new RekeningToolbar(buttons);
+		
+		workModules.stream().map(AbstractWorkModule::getButtonEvent)
+				.map(tab -> tab.doOnNext(this.tabpane::addTab))
+				.map(tab -> tab.doOnNext(this.tabpane::selectTab))
+				.forEach(Observable::subscribe);
 
 		this.setTop(this.toolbar);
-		this.setCenter(new StackPane());
+		this.setCenter(this.tabpane);
 	}
 
 	private void initButtons() {
-		this.open = new Button();
+		this.settings.setId("settings-button");
+		
 		this.open.setGraphic(new ImageView(new Image(Main
 				.getResource("/images/openen.png"))));
-
-		this.save = new Button();
 		this.save.setGraphic(new ImageView(new Image(Main
 				.getResource("/images/opslaan.png"))));
-
-		this.pdf = new Button();
 		this.pdf.setGraphic(new ImageView(new Image(Main
 				.getResource("/images/pdf.png"))));
-
-		this.settings = new Button();
-		this.settings.setId("settings-button");
 		this.settings.setGraphic(new ImageView(new Image(Main
 				.getResource("/images/settings.png"))));
 	}
