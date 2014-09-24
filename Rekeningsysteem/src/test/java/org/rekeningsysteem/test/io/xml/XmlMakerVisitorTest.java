@@ -9,7 +9,9 @@ import static org.mockito.Mockito.verify;
 
 import java.io.File;
 import java.time.LocalDate;
+import java.util.Currency;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.xml.bind.Marshaller;
@@ -78,7 +80,7 @@ public class XmlMakerVisitorTest {
 
 	@Test
 	public void testVisitAangenomenFactuur() throws Exception {
-		AangenomenFactuur factuur = new AangenomenFactuur(this.testOmschrHeader, "",
+		AangenomenFactuur factuur = new AangenomenFactuur(this.testOmschrHeader, Currency.getInstance(Locale.US),
 				new ItemList<AangenomenListItem>(), this.btwPercentage);
 		this.visitor.visit(factuur);
 
@@ -88,7 +90,7 @@ public class XmlMakerVisitorTest {
 
 	@Test
 	public void testVisitMutatiesFactuur() throws Exception {
-		MutatiesFactuur factuur = new MutatiesFactuur(this.testHeader, "",
+		MutatiesFactuur factuur = new MutatiesFactuur(this.testHeader, Currency.getInstance(Locale.US),
 				new ItemList<MutatiesBon>(), this.btwPercentage);
 		this.visitor.visit(factuur);
 
@@ -107,7 +109,7 @@ public class XmlMakerVisitorTest {
 
 	@Test
 	public void testVisitParticulierFactuur() throws Exception {
-		ParticulierFactuur factuur = new ParticulierFactuur(this.testOmschrHeader, "",
+		ParticulierFactuur factuur = new ParticulierFactuur(this.testOmschrHeader, Currency.getInstance(Locale.US),
 				new ItemList<ParticulierArtikel>(), new ItemList<AbstractLoon>(),
 				this.btwPercentage);
 		this.visitor.visit(factuur);
@@ -118,7 +120,7 @@ public class XmlMakerVisitorTest {
 
 	@Test
 	public void testVisitReparatiesFactuur() throws Exception {
-		ReparatiesFactuur factuur = new ReparatiesFactuur(this.testHeader, "",
+		ReparatiesFactuur factuur = new ReparatiesFactuur(this.testHeader, Currency.getInstance(Locale.US),
 				new ItemList<ReparatiesBon>(), this.btwPercentage);
 		this.visitor.visit(factuur);
 

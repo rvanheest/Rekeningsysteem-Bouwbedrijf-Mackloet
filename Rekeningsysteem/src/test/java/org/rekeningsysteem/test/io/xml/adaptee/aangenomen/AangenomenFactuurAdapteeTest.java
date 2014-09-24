@@ -3,6 +3,7 @@ package org.rekeningsysteem.test.io.xml.adaptee.aangenomen;
 import static org.junit.Assert.assertEquals;
 
 import java.time.LocalDate;
+import java.util.Currency;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -32,8 +33,8 @@ public class AangenomenFactuurAdapteeTest {
 
 	@Test
 	public void testSetGetValuta() {
-		this.adaptee.setValuta("valuta");
-		assertEquals("valuta", this.adaptee.getValuta());
+		this.adaptee.setCurrency(Currency.getInstance("EUR"));
+		assertEquals(Currency.getInstance("EUR"), this.adaptee.getCurrency());
 	}
 
 	@Test

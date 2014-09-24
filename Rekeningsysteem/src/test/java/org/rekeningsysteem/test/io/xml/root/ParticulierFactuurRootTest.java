@@ -3,6 +3,7 @@ package org.rekeningsysteem.test.io.xml.root;
 import static org.junit.Assert.assertEquals;
 
 import java.time.LocalDate;
+import java.util.Currency;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -45,7 +46,7 @@ public class ParticulierFactuurRootTest {
 		loonList.add(new ProductLoon("", 12, new Geld(1)));
 
 		ParticulierFactuur expected = new ParticulierFactuur(new OmschrFactuurHeader(
-				new Debiteur("a", "b", "c", "d", "e", "f"), LocalDate.now(), "g", "h"), "i",
+				new Debiteur("a", "b", "c", "d", "e", "f"), LocalDate.now(), "g", "h"), Currency.getInstance("EUR"),
 				itemList, loonList, new BtwPercentage(6, 21));
 		this.root.setRekening(expected);
 

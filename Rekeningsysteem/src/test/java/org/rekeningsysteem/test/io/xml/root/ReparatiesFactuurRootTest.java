@@ -3,6 +3,7 @@ package org.rekeningsysteem.test.io.xml.root;
 import static org.junit.Assert.assertEquals;
 
 import java.time.LocalDate;
+import java.util.Currency;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -34,7 +35,7 @@ public class ReparatiesFactuurRootTest {
 		ItemList<ReparatiesBon> itemList = new ItemList<>();
 		itemList.add(new ReparatiesBon("omschr", "bonnummer", new Geld(1), new Geld(3)));
 		ReparatiesFactuur expected = new ReparatiesFactuur(new FactuurHeader(new Debiteur("a", "b",
-				"c", "d", "e", "f"), LocalDate.now(), "g"), "i", itemList,
+				"c", "d", "e", "f"), LocalDate.now(), "g"), Currency.getInstance("EUR"), itemList,
 				new BtwPercentage(6, 21));
 		this.root.setRekening(expected);
 

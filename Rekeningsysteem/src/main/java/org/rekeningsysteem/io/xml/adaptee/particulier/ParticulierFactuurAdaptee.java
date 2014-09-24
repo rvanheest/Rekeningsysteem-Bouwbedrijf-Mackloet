@@ -1,6 +1,7 @@
 package org.rekeningsysteem.io.xml.adaptee.particulier;
 
-import javax.xml.bind.annotation.XmlElement;
+import java.util.Currency;
+
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
@@ -11,14 +12,15 @@ import org.rekeningsysteem.data.util.header.OmschrFactuurHeader;
 import org.rekeningsysteem.data.util.loon.AbstractLoon;
 import org.rekeningsysteem.io.xml.adapter.particulier.ParticulierItemListAdapter;
 import org.rekeningsysteem.io.xml.adapter.util.BtwPercentageAdapter;
+import org.rekeningsysteem.io.xml.adapter.util.CurrencyAdapter;
 import org.rekeningsysteem.io.xml.adapter.util.header.OmschrFactuurHeaderAdapter;
 import org.rekeningsysteem.io.xml.adapter.util.loon.LoonListAdapter;
 
-@XmlType(propOrder = { "factuurHeader", "valuta", "itemList", "loonList", "btwPercentage" })
+@XmlType(propOrder = { "factuurHeader", "currency", "itemList", "loonList", "btwPercentage" })
 public class ParticulierFactuurAdaptee {
 
 	private OmschrFactuurHeader factuurHeader;
-	private String valuta;
+	private Currency currency;
 	private ItemList<ParticulierArtikel> itemList = new ItemList<>();
 	private ItemList<AbstractLoon> loonList = new ItemList<>();
 	private BtwPercentage btwPercentage;
@@ -32,13 +34,13 @@ public class ParticulierFactuurAdaptee {
 		this.factuurHeader = factuurHeader;
 	}
 
-	@XmlElement
-	public String getValuta() {
-		return this.valuta;
+	@XmlJavaTypeAdapter(CurrencyAdapter.class)
+	public Currency getCurrency() {
+		return this.currency;
 	}
 
-	public void setValuta(String valuta) {
-		this.valuta = valuta;
+	public void setCurrency(Currency currency) {
+		this.currency = currency;
 	}
 
 	@XmlJavaTypeAdapter(ParticulierItemListAdapter.class)

@@ -2,6 +2,7 @@ package org.rekeningsysteem.test.integration.rekening;
 
 import java.io.File;
 import java.time.LocalDate;
+import java.util.Currency;
 
 import org.rekeningsysteem.data.reparaties.ReparatiesBon;
 import org.rekeningsysteem.data.reparaties.ReparatiesFactuur;
@@ -51,7 +52,7 @@ public class ReparatiesFactuurIntegrationTest extends AbstractRekeningIntegratio
 		ItemList<ReparatiesBon> itemList = new ItemList<>();
 		this.addBonnen(itemList);
 
-		return new ReparatiesFactuur(header, "euro", itemList, btwPercentage);
+		return new ReparatiesFactuur(header, Currency.getInstance("EUR"), itemList, btwPercentage);
 	}
 
 	@Override

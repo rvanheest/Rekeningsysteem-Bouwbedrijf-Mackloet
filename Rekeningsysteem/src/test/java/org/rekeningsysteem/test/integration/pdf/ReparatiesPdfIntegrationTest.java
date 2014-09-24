@@ -2,6 +2,7 @@ package org.rekeningsysteem.test.integration.pdf;
 
 import java.io.File;
 import java.time.LocalDate;
+import java.util.Currency;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -93,7 +94,7 @@ public class ReparatiesPdfIntegrationTest {
 		ItemList<ReparatiesBon> itemList = new ItemList<>();
 		this.addBonnen(itemList);
 
-		ReparatiesFactuur factuur = new ReparatiesFactuur(header, "euro", itemList, btwPercentage);
+		ReparatiesFactuur factuur = new ReparatiesFactuur(header, Currency.getInstance("EUR"), itemList, btwPercentage);
 		this.exporter.save(factuur, new File("src\\test\\resources\\pdf\\"
 				+ "ReparatiesFactuurTest123.pdf"));
 	}

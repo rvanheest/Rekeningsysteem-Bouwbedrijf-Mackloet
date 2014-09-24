@@ -17,7 +17,7 @@
             <factuurnummer>22011</factuurnummer>
             <omschrijving>Voor u verrichte werkzaamheden betreffende renovatie badkamervloer i.v.m. lekkage</omschrijving>
         </factuurHeader>
-        <valuta>dollar</valuta>
+        <currency>EUR</currency>
         <itemList>
             <gebruikt-esselink-artikel>
                 <artikel>

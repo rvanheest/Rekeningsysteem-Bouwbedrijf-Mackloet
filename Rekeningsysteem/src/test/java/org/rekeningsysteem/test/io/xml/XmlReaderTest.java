@@ -1,6 +1,7 @@
 package org.rekeningsysteem.test.io.xml;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.anyString;
@@ -12,7 +13,9 @@ import static org.mockito.Mockito.when;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.Currency;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.xml.bind.JAXBException;
@@ -83,7 +86,7 @@ public class XmlReaderTest {
 		String type = "AangenomenFactuur";
 		Root<AangenomenFactuur> root = mock(Root.class);
 		AangenomenFactuur rekening = new AangenomenFactuur(new OmschrFactuurHeader(
-				new Debiteur("", "", "", "", "", ""), LocalDate.now(), "", ""), "",
+				new Debiteur("", "", "", "", "", ""), LocalDate.now(), "", ""), Currency.getInstance(Locale.US),
 				new ItemList<AangenomenListItem>(), new BtwPercentage(0.0, 0.0));
 
 		when(this.builder.parse((File) anyObject())).thenReturn(doc);
@@ -109,7 +112,7 @@ public class XmlReaderTest {
 		String type = "MutatiesFactuur";
 		Root<MutatiesFactuur> root = mock(Root.class);
 		MutatiesFactuur rekening = new MutatiesFactuur(new FactuurHeader(
-				new Debiteur("", "", "", "", "", ""), LocalDate.now(), ""), "",
+				new Debiteur("", "", "", "", "", ""), LocalDate.now(), ""), Currency.getInstance(Locale.US),
 				new ItemList<MutatiesBon>(), new BtwPercentage(0.0, 0.0));
 
 		when(this.builder.parse((File) anyObject())).thenReturn(doc);
@@ -160,7 +163,7 @@ public class XmlReaderTest {
 		String type = "ParticulierFactuur";
 		Root<ParticulierFactuur> root = mock(Root.class);
 		ParticulierFactuur rekening = new ParticulierFactuur(new OmschrFactuurHeader(
-				new Debiteur("", "", "", "", "", ""), LocalDate.now(), "", ""), "",
+				new Debiteur("", "", "", "", "", ""), LocalDate.now(), "", ""), Currency.getInstance(Locale.US),
 				new ItemList<ParticulierArtikel>(),	new ItemList<AbstractLoon>(),
 				new BtwPercentage(0.0, 0.0));
 
@@ -187,7 +190,7 @@ public class XmlReaderTest {
 		String type = "ReparatiesFactuur";
 		Root<ReparatiesFactuur> root = mock(Root.class);
 		ReparatiesFactuur rekening = new ReparatiesFactuur(new FactuurHeader(
-				new Debiteur("", "", "", "", "", ""), LocalDate.now(), ""), "",
+				new Debiteur("", "", "", "", "", ""), LocalDate.now(), ""), Currency.getInstance(Locale.US),
 				new ItemList<ReparatiesBon>(), new BtwPercentage(0.0, 0.0));
 
 		when(this.builder.parse((File) anyObject())).thenReturn(doc);

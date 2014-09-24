@@ -2,6 +2,7 @@ package org.rekeningsysteem.test.integration.rekening;
 
 import java.io.File;
 import java.time.LocalDate;
+import java.util.Currency;
 
 import org.rekeningsysteem.data.particulier.AnderArtikel;
 import org.rekeningsysteem.data.particulier.EsselinkArtikel;
@@ -62,20 +63,20 @@ public class ParticulierFactuurIntegrationTest extends AbstractRekeningIntegrati
 
 	@Override
 	protected ParticulierFactuur makeRekening() {
-			Debiteur debiteur = new Debiteur("Name", "Street", "Number", "Zipcode",
-					"Place");
-			LocalDate datum = LocalDate.of(2011, 4, 2);
-			String factuurnummer = "22011";
-			String omschrijving = "Voor u verrichte werkzaamheden betreffende renovatie "
-					+ "badkamervloer i.v.m. lekkage";
-			OmschrFactuurHeader header = new OmschrFactuurHeader(debiteur, datum, factuurnummer,
-					omschrijving);
+		Debiteur debiteur = new Debiteur("Name", "Street", "Number", "Zipcode",
+				"Place");
+		LocalDate datum = LocalDate.of(2011, 4, 2);
+		String factuurnummer = "22011";
+		String omschrijving = "Voor u verrichte werkzaamheden betreffende renovatie "
+				+ "badkamervloer i.v.m. lekkage";
+		OmschrFactuurHeader header = new OmschrFactuurHeader(debiteur, datum, factuurnummer,
+				omschrijving);
 
-			BtwPercentage btwPercentage = new BtwPercentage(6, 21);
-			ItemList<ParticulierArtikel> itemList = this.addArtikels();
-			ItemList<AbstractLoon> loonList = this.addLoon();
+		BtwPercentage btwPercentage = new BtwPercentage(6, 21);
+		ItemList<ParticulierArtikel> itemList = this.addArtikels();
+		ItemList<AbstractLoon> loonList = this.addLoon();
 
-			return new ParticulierFactuur(header, "dollar", itemList, loonList, btwPercentage);
+		return new ParticulierFactuur(header, Currency.getInstance("EUR"), itemList, loonList, btwPercentage);
 	}
 
 	@Override

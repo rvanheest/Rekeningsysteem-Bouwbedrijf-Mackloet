@@ -17,7 +17,7 @@
             <factuurnummer>122013</factuurnummer>
             <omschrijving>Voor u verrichte werkzaamheden</omschrijving>
         </factuurHeader>
-        <valuta>euro</valuta>
+        <currency>EUR</currency>
         <list>
             <list-item>
                 <omschrijving>omschr1</omschrijving>

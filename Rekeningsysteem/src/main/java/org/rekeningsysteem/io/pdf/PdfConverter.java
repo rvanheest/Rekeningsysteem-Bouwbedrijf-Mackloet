@@ -95,6 +95,7 @@ public class PdfConverter extends JLRConverter {
 						.map(Entry::getValue)
 						.findFirst().orElse(s))
 				.map(s -> "\n".equals(s) ? "\\\\" : s)
+				.map(s -> "€".equals(s) ? "\\euro" : s)
 				.collect(Collectors.joining());
 	}
 

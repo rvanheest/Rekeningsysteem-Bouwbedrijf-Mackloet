@@ -39,14 +39,14 @@ public class AangenomenFactuurTest extends AbstractFactuurTest<AangenomenListIte
 
 	@Override
 	protected AangenomenFactuur makeInstance() {
-		return new AangenomenFactuur(this.getTestFactuurHeader(), this.getTestValuta(),
+		return new AangenomenFactuur(this.getTestFactuurHeader(), this.getTestCurrency(),
 				new ItemList<AangenomenListItem>(), this.getTestBtwPercentage());
 	}
 
 	@Override
 	protected AangenomenFactuur makeNotInstance() {
 		BtwPercentage old = this.getTestBtwPercentage();
-		return new AangenomenFactuur(this.getTestFactuurHeader(), this.getTestValuta(),
+		return new AangenomenFactuur(this.getTestFactuurHeader(), this.getTestCurrency(),
 				new ItemList<>(), new BtwPercentage(old.getLoonPercentage() + 1,
 						old.getMateriaalPercentage()));
 	}
@@ -104,7 +104,7 @@ public class AangenomenFactuurTest extends AbstractFactuurTest<AangenomenListIte
 	@Test
 	public void testToString() {
 		String expected = "<AangenomenFactuur[<FactuurHeader[<Debiteur[a, b, c, d, e, "
-				+ "Optional.empty]>, 1992-07-30, Optional.empty, f]>, euro, [], "
+				+ "Optional.empty]>, 1992-07-30, Optional.empty, f]>, EUR, [], "
 				+ "<BtwPercentage[50.0, 100.0]>]>";
 		assertEquals(expected, this.getInstance().toString());
 	}

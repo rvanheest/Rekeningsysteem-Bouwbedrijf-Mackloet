@@ -9,6 +9,7 @@
 \usepackage{numprint}
 \usepackage[nomessages]{fp}
 \usepackage{ifthen}
+\usepackage{eurosym}
 
 \pagestyle{empty} % No page numbers
 

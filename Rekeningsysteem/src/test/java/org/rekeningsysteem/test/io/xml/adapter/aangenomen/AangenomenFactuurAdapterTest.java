@@ -3,6 +3,7 @@ package org.rekeningsysteem.test.io.xml.adapter.aangenomen;
 import static org.junit.Assert.assertEquals;
 
 import java.time.LocalDate;
+import java.util.Currency;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -30,7 +31,7 @@ public class AangenomenFactuurAdapterTest {
 		itemList.add(new AangenomenListItem("omschr", new Geld(12.3), new Geld(49)));
 
 		AangenomenFactuur expected = new AangenomenFactuur(new OmschrFactuurHeader(
-				new Debiteur("a", "b", "c", "d", "e", "f"), LocalDate.now(), "g", "h"), "i",
+				new Debiteur("a", "b", "c", "d", "e", "f"), LocalDate.now(), "g", "h"), Currency.getInstance("EUR"),
 				itemList, new BtwPercentage(6, 21));
 
 		assertEquals(expected, this.adapter.unmarshal(this.adapter.marshal(expected)));

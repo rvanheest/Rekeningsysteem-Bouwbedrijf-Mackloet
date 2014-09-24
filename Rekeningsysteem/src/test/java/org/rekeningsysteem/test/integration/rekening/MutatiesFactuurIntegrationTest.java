@@ -2,6 +2,7 @@ package org.rekeningsysteem.test.integration.rekening;
 
 import java.io.File;
 import java.time.LocalDate;
+import java.util.Currency;
 
 import org.rekeningsysteem.data.mutaties.MutatiesBon;
 import org.rekeningsysteem.data.mutaties.MutatiesFactuur;
@@ -27,7 +28,7 @@ public class MutatiesFactuurIntegrationTest extends AbstractRekeningIntegrationT
 		itemList.add(new MutatiesBon("Bonnummer", "111477", new Geld(4820.96)));
 		itemList.add(new MutatiesBon("Bonnummer", "112308", new Geld(5510.74)));
 
-		return new MutatiesFactuur(header, "euro", itemList, btwPercentage);
+		return new MutatiesFactuur(header, Currency.getInstance("EUR"), itemList, btwPercentage);
 	}
 
 	@Override

@@ -145,7 +145,7 @@ public class PdfExporterVisitor implements RekeningVisitor {
 
 	private Consumer<PdfConverter> convert(AangenomenFactuur factuur) {
 		return this.convertOmschrFactuurHeader(factuur.getFactuurHeader())
-				.andThen(converter -> converter.replace("Valuta", factuur.getValuta()))
+				.andThen(converter -> converter.replace("Valuta", factuur.getCurrency().getSymbol()))
 				.andThen(converter -> converter.replace("aangenomenList", factuur.getItemList()
 						.parallelStream()
 						.map(item -> item.accept(this.itemVisitor))
@@ -155,7 +155,7 @@ public class PdfExporterVisitor implements RekeningVisitor {
 
 	private Consumer<PdfConverter> convert(MutatiesFactuur factuur) {
 		return this.convertFactuurHeader(factuur.getFactuurHeader())
-				.andThen(converter -> converter.replace("Valuta", factuur.getValuta()))
+				.andThen(converter -> converter.replace("Valuta", factuur.getCurrency().getSymbol()))
 				.andThen(converter -> converter.replace("bonList", factuur.getItemList()
 						.parallelStream()
         				.map(item -> item.accept(this.itemVisitor))
@@ -171,7 +171,7 @@ public class PdfExporterVisitor implements RekeningVisitor {
 
 	private Consumer<PdfConverter> convert(ParticulierFactuur factuur) {
 		return this.convertOmschrFactuurHeader(factuur.getFactuurHeader())
-				.andThen(converter -> converter.replace("Valuta", factuur.getValuta()))
+				.andThen(converter -> converter.replace("Valuta", factuur.getCurrency().getSymbol()))
 				.andThen(converter -> converter.replace("artikelList", factuur.getItemList()
 						.parallelStream()
 						.map(artikel -> artikel.accept(this.itemVisitor))
@@ -185,7 +185,7 @@ public class PdfExporterVisitor implements RekeningVisitor {
 
 	private Consumer<PdfConverter> convert(ReparatiesFactuur factuur) {
 		return this.convertFactuurHeader(factuur.getFactuurHeader())
-				.andThen(converter -> converter.replace("Valuta", factuur.getValuta()))
+				.andThen(converter -> converter.replace("Valuta", factuur.getCurrency().getSymbol()))
 				.andThen(converter -> converter.replace("bonList", factuur.getItemList()
 						.parallelStream()
         				.map(item -> item.accept(this.itemVisitor))

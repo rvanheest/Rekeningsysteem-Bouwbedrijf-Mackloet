@@ -11,7 +11,7 @@ public class ReparatiesFactuurAdapter extends
 
 	@Override
 	public ReparatiesFactuur unmarshal(ReparatiesFactuurAdaptee adaptee) {
-		return new ReparatiesFactuur(adaptee.getFactuurHeader(), adaptee.getValuta(),
+		return new ReparatiesFactuur(adaptee.getFactuurHeader(), adaptee.getCurrency(),
 				adaptee.getList(), adaptee.getBtwPercentage());
 	}
 
@@ -19,7 +19,7 @@ public class ReparatiesFactuurAdapter extends
 	public ReparatiesFactuurAdaptee marshal(ReparatiesFactuur factuur) {
 		ReparatiesFactuurAdaptee adaptee = new ReparatiesFactuurAdaptee();
 		adaptee.setFactuurHeader(factuur.getFactuurHeader());
-		adaptee.setValuta(factuur.getValuta());
+		adaptee.setCurrency(factuur.getCurrency());
 		adaptee.setList(new ItemList<>(factuur.getItemList()));
 		adaptee.setBtwPercentage(factuur.getBtwPercentage());
 

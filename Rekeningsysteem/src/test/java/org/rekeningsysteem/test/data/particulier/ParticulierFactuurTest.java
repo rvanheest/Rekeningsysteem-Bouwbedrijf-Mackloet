@@ -46,14 +46,14 @@ public class ParticulierFactuurTest extends AbstractFactuurTest<ParticulierArtik
 	@Override
 	protected ParticulierFactuur makeInstance() {
 		return new ParticulierFactuur(this.getTestFactuurHeader(),
-				this.getTestValuta(), new ItemList<>(), new ItemList<>(),
+				this.getTestCurrency(), new ItemList<>(), new ItemList<>(),
 				this.getTestBtwPercentage());
 	}
 
 	@Override
 	protected ParticulierFactuur makeNotInstance() {
 		BtwPercentage old = this.getTestBtwPercentage();
-		return new ParticulierFactuur(this.getTestFactuurHeader(), this.getTestValuta(),
+		return new ParticulierFactuur(this.getTestFactuurHeader(), this.getTestCurrency(),
 				new ItemList<>(), new ItemList<>(), new BtwPercentage(old.getLoonPercentage() + 1,
 						old.getMateriaalPercentage()));
 	}
@@ -133,7 +133,7 @@ public class ParticulierFactuurTest extends AbstractFactuurTest<ParticulierArtik
 	@Test
 	public void testToString() {
 		String expected = "<ParticulierFactuur[<FactuurHeader[<Debiteur[a, b, c, d, e, "
-				+ "Optional.empty]>, 1992-07-30, Optional.empty, g]>, euro, [], [], "
+				+ "Optional.empty]>, 1992-07-30, Optional.empty, g]>, EUR, [], [], "
 				+ "<BtwPercentage[50.0, 100.0]>]>";
 		assertEquals(expected, this.getInstance().toString());
 	}

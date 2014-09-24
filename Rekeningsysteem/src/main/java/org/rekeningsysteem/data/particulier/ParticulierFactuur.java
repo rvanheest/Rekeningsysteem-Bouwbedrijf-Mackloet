@@ -1,5 +1,6 @@
 package org.rekeningsysteem.data.particulier;
 
+import java.util.Currency;
 import java.util.Objects;
 
 import org.rekeningsysteem.data.util.AbstractFactuur;
@@ -15,10 +16,10 @@ public class ParticulierFactuur extends AbstractFactuur<ParticulierArtikel> {
 
 	private final ItemList<AbstractLoon> loonList;
 
-	public ParticulierFactuur(OmschrFactuurHeader header, String valuta,
+	public ParticulierFactuur(OmschrFactuurHeader header, Currency currency,
 			ItemList<ParticulierArtikel> itemList, ItemList<AbstractLoon> loonList,
 			BtwPercentage btwPercentage) {
-		super(header, valuta, itemList, btwPercentage);
+		super(header, currency, itemList, btwPercentage);
 		this.loonList = loonList;
 	}
 
@@ -30,7 +31,7 @@ public class ParticulierFactuur extends AbstractFactuur<ParticulierArtikel> {
 	public ItemList<AbstractLoon> getLoonList() {
 		return this.loonList;
 	}
-	
+
 	@Override
 	public Totalen getTotalen() {
 		Totalen sub = this.loonList.getTotalen();
@@ -67,7 +68,7 @@ public class ParticulierFactuur extends AbstractFactuur<ParticulierArtikel> {
 	@Override
 	public String toString() {
 		return "<ParticulierFactuur[" + String.valueOf(this.getFactuurHeader()) + ", "
-				+ String.valueOf(this.getValuta()) + ", "
+				+ String.valueOf(this.getCurrency()) + ", "
 				+ String.valueOf(this.getItemList()) + ", "
 				+ String.valueOf(this.loonList) + ", "
 				+ String.valueOf(this.getBtwPercentage()) + "]>";

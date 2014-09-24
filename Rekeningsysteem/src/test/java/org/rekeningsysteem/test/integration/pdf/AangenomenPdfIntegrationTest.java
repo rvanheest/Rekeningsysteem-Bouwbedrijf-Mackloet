@@ -2,6 +2,7 @@ package org.rekeningsysteem.test.integration.pdf;
 
 import java.io.File;
 import java.time.LocalDate;
+import java.util.Currency;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -57,7 +58,7 @@ public class AangenomenPdfIntegrationTest {
 		itemList.add(item3);
 		itemList.add(item4);
 
-		AangenomenFactuur factuur = new AangenomenFactuur(header, "euro", itemList, btwPercentage);
+		AangenomenFactuur factuur = new AangenomenFactuur(header, Currency.getInstance("EUR"), itemList, btwPercentage);
 
 		this.exporter.save(factuur, new File("src\\test\\resources\\pdf\\"
 				+ "AangenomenFactuurTest123TwoBtw.pdf"));
@@ -89,7 +90,7 @@ public class AangenomenPdfIntegrationTest {
 		itemList.add(item3);
 		itemList.add(item4);
 
-		AangenomenFactuur factuur = new AangenomenFactuur(header, "euro", itemList, btwPercentage);
+		AangenomenFactuur factuur = new AangenomenFactuur(header, Currency.getInstance("EUR"), itemList, btwPercentage);
 
 		this.exporter.save(factuur, new File("src\\test\\resources\\pdf\\"
 				+ "AangenomenFactuurTest123OneBtw.pdf"));

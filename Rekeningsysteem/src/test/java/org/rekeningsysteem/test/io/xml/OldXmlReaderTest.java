@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.File;
 import java.time.LocalDate;
+import java.util.Currency;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -62,7 +63,7 @@ public class OldXmlReaderTest {
 		ItemList<AbstractLoon> loonList = new ItemList<>();
 		loonList.add(new ProductLoon("Uurloon à 5,60", 20.0, new Geld(5.60)));
 
-		ParticulierFactuur expected = new ParticulierFactuur(factuurHeader, "€", itemList,
+		ParticulierFactuur expected = new ParticulierFactuur(factuurHeader, Currency.getInstance("EUR"), itemList,
 				loonList, new BtwPercentage(19.0, 19.0));
 
 		this.reader.load(file).forEach(rek -> assertEquals(expected, rek));
@@ -86,7 +87,7 @@ public class OldXmlReaderTest {
 		ItemList<AbstractLoon> loonList = new ItemList<>();
 		loonList.add(new ProductLoon("Uurloon à 6,50", 3.0, new Geld(6.50)));
 
-		ParticulierFactuur expected = new ParticulierFactuur(factuurHeader, "€", itemList,
+		ParticulierFactuur expected = new ParticulierFactuur(factuurHeader, Currency.getInstance("EUR"), itemList,
 				loonList, new BtwPercentage(6.0, 21.0));
 
 		this.reader.load(file).forEach(rek -> assertEquals(expected, rek));
@@ -109,7 +110,7 @@ public class OldXmlReaderTest {
 		ItemList<AbstractLoon> loonList = new ItemList<>();
 		loonList.add(new ProductLoon("Uurloon à 2,50", 1.0, new Geld(2.50)));
 
-		ParticulierFactuur expected = new ParticulierFactuur(factuurHeader, "€", itemList,
+		ParticulierFactuur expected = new ParticulierFactuur(factuurHeader, Currency.getInstance("EUR"), itemList,
 				loonList, new BtwPercentage(0.0, 0.0));
 
 		this.reader.load(file).forEach(rek -> assertEquals(expected, rek));
@@ -126,7 +127,7 @@ public class OldXmlReaderTest {
 		ItemList<MutatiesBon> itemList = new ItemList<>();
 		itemList.add(new MutatiesBon("Bonnummer", "13151", new Geld(2135131.00)));
 
-		MutatiesFactuur expected = new MutatiesFactuur(factuurHeader, "€", itemList,
+		MutatiesFactuur expected = new MutatiesFactuur(factuurHeader, Currency.getInstance("EUR"), itemList,
 				new BtwPercentage(0.0, 0.0));
 
 		this.reader.load(file).forEach(rek -> assertEquals(expected, rek));
@@ -143,7 +144,7 @@ public class OldXmlReaderTest {
 		ItemList<ReparatiesBon> itemList = new ItemList<>();
 		itemList.add(new ReparatiesBon("Bonnummer", "35343134", new Geld(50), new Geld(60)));
 
-		ReparatiesFactuur expected = new ReparatiesFactuur(factuurHeader, "€",
+		ReparatiesFactuur expected = new ReparatiesFactuur(factuurHeader, Currency.getInstance("EUR"),
 				itemList, new BtwPercentage(0.0, 0.0));
 
 		this.reader.load(file).forEach(rek -> assertEquals(expected, rek));

@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
-import java.util.Currency;
 import java.util.Locale;
 import java.util.Optional;
 
@@ -234,8 +233,7 @@ public class MoneyFieldSkin implements Skin<MoneyField> {
 			String text = this.textField.getText() == null ? "" : this.textField.getText().trim();
 			// I have to clean some of this up because the formatter parsing isn't forgiving enough
 			// I am probably incorrect in assuming the currency symbol goes at the front...
-			Currency currency = this.getSkinnable().getCurrency();
-			String symbol = currency.getSymbol();
+			String symbol = this.getSkinnable().getCurrency().getSymbol();
 			if (text.equals("") || text.equals(symbol)) {
 				// This thing is just the symbol or empty string, so newValue is going to be 0
 				newValue = value == null ? null : BigDecimal.ZERO;

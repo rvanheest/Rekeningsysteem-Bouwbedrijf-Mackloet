@@ -2,6 +2,7 @@ package org.rekeningsysteem.test.integration.rekening;
 
 import java.io.File;
 import java.time.LocalDate;
+import java.util.Currency;
 
 import org.rekeningsysteem.data.aangenomen.AangenomenFactuur;
 import org.rekeningsysteem.data.aangenomen.AangenomenListItem;
@@ -41,10 +42,7 @@ public class AangenomenFactuurIntegrationTest extends AbstractRekeningIntegratio
 		itemList.add(item3);
 		itemList.add(item4);
 
-		AangenomenFactuur factuur = new AangenomenFactuur(header, "euro", itemList,
-				btwPercentage);
-
-		return factuur;
+		return new AangenomenFactuur(header, Currency.getInstance("EUR"), itemList, btwPercentage);
 	}
 
 	@Override

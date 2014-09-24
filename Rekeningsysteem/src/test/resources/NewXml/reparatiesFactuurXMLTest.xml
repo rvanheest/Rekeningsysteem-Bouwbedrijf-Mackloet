@@ -17,7 +17,7 @@
             </datum>
             <factuurnummer>232011</factuurnummer>
         </factuurHeader>
-        <valuta>euro</valuta>
+        <currency>EUR</currency>
         <list>
             <list-item>
                 <omschrijving>Bonnummer</omschrijving>

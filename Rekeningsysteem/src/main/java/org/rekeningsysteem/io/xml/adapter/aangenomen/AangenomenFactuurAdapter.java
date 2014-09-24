@@ -11,7 +11,7 @@ public class AangenomenFactuurAdapter extends
 
 	@Override
 	public AangenomenFactuur unmarshal(AangenomenFactuurAdaptee adaptee) {
-		return new AangenomenFactuur(adaptee.getFactuurHeader(), adaptee.getValuta(),
+		return new AangenomenFactuur(adaptee.getFactuurHeader(), adaptee.getCurrency(),
 				adaptee.getList(), adaptee.getBtwPercentage());
 	}
 
@@ -19,7 +19,7 @@ public class AangenomenFactuurAdapter extends
 	public AangenomenFactuurAdaptee marshal(AangenomenFactuur factuur) {
 		AangenomenFactuurAdaptee adaptee = new AangenomenFactuurAdaptee();
 		adaptee.setFactuurHeader(factuur.getFactuurHeader());
-		adaptee.setValuta(factuur.getValuta());
+		adaptee.setCurrency(factuur.getCurrency());
 		adaptee.setList(new ItemList<>(factuur.getItemList()));
 		adaptee.setBtwPercentage(factuur.getBtwPercentage());
 

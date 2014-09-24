@@ -1,5 +1,6 @@
 package org.rekeningsysteem.data.util;
 
+import java.util.Currency;
 import java.util.Objects;
 
 import org.rekeningsysteem.data.util.header.FactuurHeader;
@@ -7,24 +8,24 @@ import org.rekeningsysteem.data.util.header.FactuurHeader;
 public abstract class AbstractFactuur<E extends ListItem> extends AbstractRekening
 		implements BedragManager {
 
-	private String valuta;
+	private Currency currency;
 	private final ItemList<E> itemList;
 	private final BtwPercentage btwPercentage;
 
-	public AbstractFactuur(FactuurHeader header, String valuta, ItemList<E> itemList,
+	public AbstractFactuur(FactuurHeader header, Currency currency, ItemList<E> itemList,
 			BtwPercentage btwPercentage) {
 		super(header);
-		this.valuta = valuta;
+		this.currency = currency;
 		this.itemList = itemList;
 		this.btwPercentage = btwPercentage;
 	}
 
-	public String getValuta() {
-		return this.valuta;
+	public Currency getCurrency() {
+		return this.currency;
 	}
 
-	public final void setValuta(String valuta) {
-		this.valuta = valuta;
+	public final void setCurrency(Currency currency) {
+		this.currency = currency;
 	}
 
 	public ItemList<E> getItemList() {
@@ -52,7 +53,7 @@ public abstract class AbstractFactuur<E extends ListItem> extends AbstractRekeni
 	public boolean equals(Object other) {
 		if (super.equals(other) && other instanceof AbstractFactuur) {
 			AbstractFactuur<?> that = (AbstractFactuur<?>) other;
-			return Objects.equals(this.valuta, that.valuta)
+			return Objects.equals(this.currency, that.currency)
 					&& Objects.equals(this.itemList, that.itemList)
 					&& Objects.equals(this.btwPercentage, that.btwPercentage);
 		}
@@ -61,6 +62,6 @@ public abstract class AbstractFactuur<E extends ListItem> extends AbstractRekeni
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(super.hashCode(), this.valuta, this.itemList, this.btwPercentage);
+		return Objects.hash(super.hashCode(), this.currency, this.itemList, this.btwPercentage);
 	}
 }

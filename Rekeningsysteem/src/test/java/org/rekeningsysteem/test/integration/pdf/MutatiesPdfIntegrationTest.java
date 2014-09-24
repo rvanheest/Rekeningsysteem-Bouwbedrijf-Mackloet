@@ -2,6 +2,7 @@ package org.rekeningsysteem.test.integration.pdf;
 
 import java.io.File;
 import java.time.LocalDate;
+import java.util.Currency;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -45,7 +46,7 @@ public class MutatiesPdfIntegrationTest {
 		itemList.add(new MutatiesBon("Bonnummer", "111477", new Geld(4820.96)));
 		itemList.add(new MutatiesBon("Bonnummer", "112308", new Geld(5510.74)));
 
-		MutatiesFactuur factuur = new MutatiesFactuur(header, "euro", itemList, btwPercentage);
+		MutatiesFactuur factuur = new MutatiesFactuur(header, Currency.getInstance("EUR"), itemList, btwPercentage);
 		this.exporter.save(factuur, new File("src\\test\\resources\\pdf\\"
 				+ "MutatiesFactuurTest123.pdf"));
 	}

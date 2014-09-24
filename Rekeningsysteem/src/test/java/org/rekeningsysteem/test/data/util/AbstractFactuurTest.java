@@ -4,6 +4,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.mockito.Mockito.*;
 
+import java.util.Currency;
+import java.util.Locale;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -18,7 +21,7 @@ import org.rekeningsysteem.data.util.Totalen;
 @RunWith(MockitoJUnitRunner.class)
 public abstract class AbstractFactuurTest<E extends ListItem> extends AbstractRekeningTest {
 
-	private final String valuta = "euro";
+	private final Currency valuta = Currency.getInstance("EUR");
 	private final BtwPercentage btwPercentage = new BtwPercentage(50, 100);
 	@Mock private E item;
 
@@ -31,7 +34,7 @@ public abstract class AbstractFactuurTest<E extends ListItem> extends AbstractRe
 		return (AbstractFactuur<E>) super.getInstance();
 	}
 
-	protected String getTestValuta() {
+	protected Currency getTestCurrency() {
 		return this.valuta;
 	}
 
@@ -41,13 +44,14 @@ public abstract class AbstractFactuurTest<E extends ListItem> extends AbstractRe
 
 	@Test
 	public void testGetValuta() {
-		assertEquals(this.getTestValuta(), this.getInstance().getValuta());
+		assertEquals(this.getTestCurrency(), this.getInstance().getCurrency());
 	}
 
 	@Test
 	public void testSetValuta() {
-		this.getInstance().setValuta(this.getTestValuta() + "foobar");
-		assertEquals(this.getTestValuta() + "foobar", this.getInstance().getValuta());
+		Currency c = Currency.getInstance(Locale.US);
+		this.getInstance().setCurrency(c);
+		assertEquals(c, this.getInstance().getCurrency());
 	}
 
 	@Test
@@ -91,7 +95,7 @@ public abstract class AbstractFactuurTest<E extends ListItem> extends AbstractRe
 	@Test
 	public void testEqualsFalseOtherValuta() {
 		AbstractFactuur<E> factuur2 = this.makeInstance();
-		factuur2.setValuta(this.getTestValuta() + "1234");
+		factuur2.setCurrency(Currency.getInstance(Locale.US));
 		assertFalse(this.getInstance().equals(factuur2));
 	}
 }
