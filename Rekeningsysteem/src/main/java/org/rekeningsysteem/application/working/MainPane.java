@@ -32,7 +32,7 @@ public class MainPane extends BorderPane {
 	private final Button settings = new Button();
 
 	@Inject
-	public MainPane(Stage stage, List<AbstractWorkModule> workModules) {
+	public MainPane(Stage stage, List<WorkUnit> workModules) {
 		this.setId("main-pane");
 		this.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
 
@@ -42,20 +42,20 @@ public class MainPane extends BorderPane {
 		HBox.setHgrow(spacer, Priority.ALWAYS);
 
 		List<Node> buttons = workModules.stream()
-				.map(AbstractWorkModule::getButton)
+				.map(WorkUnit::getButton)
 				.collect(Collectors.toList());
 		buttons.addAll(Arrays.asList(this.open, this.save, this.pdf, spacer, this.settings));
 
 		this.toolbar = new RekeningToolbar(buttons);
-		
-		workModules.stream().map(AbstractWorkModule::getButtonEvent)
+
+		workModules.stream().map(WorkUnit::getNewRekeningTab)
 				.map(tab -> tab.doOnNext(this.tabpane::addTab))
 				.map(tab -> tab.doOnNext(this.tabpane::selectTab))
 				.forEach(Observable::subscribe);
 
 		this.setTop(this.toolbar);
 		this.setCenter(this.tabpane);
-		
+
 		Observable<Boolean> hasNoTabs = Observables.fromObservableList(this.tabpane.getTabs())
 				.map(List::isEmpty);
 		hasNoTabs.subscribe(this.save::setDisable);
@@ -64,7 +64,7 @@ public class MainPane extends BorderPane {
 
 	private void initButtons() {
 		this.settings.setId("settings-button");
-		
+
 		this.open.setGraphic(new ImageView(new Image(Main
 				.getResource("/images/openen.png"))));
 		this.save.setGraphic(new ImageView(new Image(Main

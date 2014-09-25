@@ -7,6 +7,8 @@ import java.util.Objects;
 import org.rekeningsysteem.rxjavafx.Observables;
 import org.rekeningsysteem.ui.WorkingPane;
 
+import com.google.inject.Inject;
+
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
@@ -16,6 +18,7 @@ public class RekeningSplitPane extends BorderPane {
 
 	private List<WorkingPane> panes;
 
+	@Inject
 	public RekeningSplitPane(WorkingPane... panes) {
 		this.panes = Arrays.asList(panes);
 
@@ -38,11 +41,11 @@ public class RekeningSplitPane extends BorderPane {
 		tree.setShowRoot(false);
 		tree.setEditable(false);
 		tree.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-		
+
 		this.panes.stream().map(pane -> new TreeItem<>(pane.getTitle()))
 				.forEach(treeRoot.getChildren()::add);
 		tree.getSelectionModel().select(0);
-		
+
 		Observables.fromProperty(tree.getSelectionModel().selectedIndexProperty())
 				.filter(Objects::nonNull)
 				.map(Number::intValue)
