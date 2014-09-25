@@ -1,4 +1,4 @@
-package org.rekeningsysteem.ui;
+package org.rekeningsysteem.ui.header;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -7,6 +7,7 @@ import javafx.scene.control.DatePicker;
 import javafx.util.StringConverter;
 
 import org.rekeningsysteem.rxjavafx.Observables;
+import org.rekeningsysteem.ui.Page;
 
 import rx.Observable;
 

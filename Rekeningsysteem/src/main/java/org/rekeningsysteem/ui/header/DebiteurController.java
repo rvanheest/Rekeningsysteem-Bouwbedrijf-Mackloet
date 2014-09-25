@@ -1,4 +1,4 @@
-package org.rekeningsysteem.ui;
+package org.rekeningsysteem.ui.header;
 
 import org.rekeningsysteem.data.util.header.Debiteur;
 

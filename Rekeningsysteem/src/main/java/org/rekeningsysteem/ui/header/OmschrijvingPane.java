@@ -1,8 +1,9 @@
-package org.rekeningsysteem.ui;
+package org.rekeningsysteem.ui.header;
 
 import javafx.scene.control.TextArea;
 
 import org.rekeningsysteem.rxjavafx.Observables;
+import org.rekeningsysteem.ui.Page;
 
 import rx.Observable;
 

@@ -3,10 +3,10 @@ package org.rekeningsysteem.ui.offerte;
 import java.util.Optional;
 
 import org.rekeningsysteem.data.util.header.FactuurHeader;
-import org.rekeningsysteem.ui.DatumController;
-import org.rekeningsysteem.ui.DebiteurController;
-import org.rekeningsysteem.ui.FactuurHeaderPane;
-import org.rekeningsysteem.ui.FactuurnummerController;
+import org.rekeningsysteem.ui.header.DatumController;
+import org.rekeningsysteem.ui.header.DebiteurController;
+import org.rekeningsysteem.ui.header.FactuurHeaderPane;
+import org.rekeningsysteem.ui.header.FactuurnummerController;
 
 import rx.Observable;
 

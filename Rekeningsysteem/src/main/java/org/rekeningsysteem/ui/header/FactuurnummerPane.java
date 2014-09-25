@@ -1,4 +1,4 @@
-package org.rekeningsysteem.ui;
+package org.rekeningsysteem.ui.header;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -6,6 +6,7 @@ import java.util.Optional;
 import javafx.scene.control.Label;
 
 import org.rekeningsysteem.rxjavafx.Observables;
+import org.rekeningsysteem.ui.Page;
 
 import com.google.inject.Inject;
 

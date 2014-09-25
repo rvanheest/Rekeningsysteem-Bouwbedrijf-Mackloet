@@ -1,5 +1,6 @@
-package org.rekeningsysteem.ui;
+package org.rekeningsysteem.ui.header;
 
+import org.rekeningsysteem.ui.WorkingPane;
 import org.rekeningsysteem.ui.offerte.OndertekenenPane;
 
 public class FactuurHeaderPane extends WorkingPane {

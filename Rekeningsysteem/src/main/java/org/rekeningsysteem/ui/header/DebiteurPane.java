@@ -1,4 +1,4 @@
-package org.rekeningsysteem.ui;
+package org.rekeningsysteem.ui.header;
 
 import java.util.Optional;
 
@@ -8,6 +8,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 
 import org.rekeningsysteem.rxjavafx.Observables;
+import org.rekeningsysteem.ui.Page;
 import org.rekeningsysteem.ui.textfields.PostcodeTextField;
 
 import rx.Observable;

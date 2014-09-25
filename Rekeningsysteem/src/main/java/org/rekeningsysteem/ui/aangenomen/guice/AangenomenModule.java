@@ -6,8 +6,8 @@ import javafx.scene.image.ImageView;
 import org.rekeningsysteem.application.Main;
 import org.rekeningsysteem.application.guice.ButtonImage;
 import org.rekeningsysteem.application.guice.TabName;
-import org.rekeningsysteem.ui.FactuurnummerPane.FactuurnummerType;
-import org.rekeningsysteem.ui.OmschrFactuurHeaderController;
+import org.rekeningsysteem.ui.header.OmschrFactuurHeaderController;
+import org.rekeningsysteem.ui.header.FactuurnummerPane.FactuurnummerType;
 import org.rekeningsysteem.ui.WorkingPane;
 
 import com.google.inject.AbstractModule;
