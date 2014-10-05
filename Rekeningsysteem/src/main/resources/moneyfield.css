@@ -3,7 +3,8 @@
     -fx-alignment: baseline-right;
 }
 
-.field {
+.money-field {
+	-fx-skin: "org.rekeningsysteem.ui.textfields.MoneyFieldSkin";
     -fx-background-color: -fx-shadow-highlight-color, -fx-text-box-border, -fx-control-inner-background;
     -fx-background-insets: 0, 1, 2;
     -fx-background-radius: 3, 2, 2;
@@ -12,12 +13,12 @@
     -fx-cursor: text;
 }
 
-.field:focused {
+.money-field:focused {
     -fx-background-color: -fx-focus-color, -fx-text-box-border, -fx-control-inner-background;
     -fx-background-insets: -0.4, 1, 2;
     -fx-background-radius: 3.4, 2, 2;
 }
 
-.field:disabled {
+.money-field:disabled {
     -fx-opacity: -fx-disabled-opacity;
 }

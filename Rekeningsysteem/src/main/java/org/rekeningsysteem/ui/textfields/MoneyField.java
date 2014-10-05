@@ -16,6 +16,8 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Control;
 
+import com.google.inject.Inject;
+
 /**
  * A Control for handling the editing of Monetary values. This control uses BigDecimal as the
  * representation for Money, and uses the default Locale to define how that BigDecimal is to be
@@ -239,15 +241,15 @@ public class MoneyField extends Control {
 	 * Creates a new MoneyField. The style class is set to "money-field".
 	 * @param currency The currency of the money
 	 */
+	@Inject
 	public MoneyField(Currency currency) {
 		this.setCurrency(currency);
 		
-		this.getStyleClass().setAll("field");
-		this.setSkin(new MoneyFieldSkin(this));
+		this.getStyleClass().setAll("money-field");
 	}
 
 	@Override
 	protected String getUserAgentStylesheet() {
-		return this.getClass().getResource("/textfield.css").toExternalForm();
+		return this.getClass().getResource("/moneyfield.css").toExternalForm();
 	}
 }

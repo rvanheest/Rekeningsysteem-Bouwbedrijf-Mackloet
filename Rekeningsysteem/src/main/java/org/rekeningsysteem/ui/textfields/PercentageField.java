@@ -147,12 +147,11 @@ public class PercentageField extends Control {
 	}
 
 	public PercentageField() {
-		this.getStyleClass().setAll("field");
-		this.setSkin(new PercentageFieldSkin(this));
+		this.getStyleClass().setAll("percentage-field");
 	}
 
 	@Override
 	protected String getUserAgentStylesheet() {
-		return this.getClass().getResource("/textfield.css").toExternalForm();
+		return this.getClass().getResource("/percentagefield.css").toExternalForm();
 	}
 }
