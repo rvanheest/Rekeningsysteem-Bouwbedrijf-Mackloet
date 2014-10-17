@@ -28,8 +28,10 @@ public class FactuurnummerPane extends Page {
 			return this.type;
 		}
 	}
+	
+	private static final String emptyText = "Er is nog geen factuurnummer toegekend aan deze factuur";
 
-	private Label factNrL = new Label("Er is nog geen factuurnummer toegekend aan deze factuur");
+	private Label factNrL = new Label(emptyText);
 	private Observable<Optional<String>> factuurnummer;
 
 	@Inject
@@ -39,12 +41,14 @@ public class FactuurnummerPane extends Page {
 		this.getChildren().add(this.factNrL);
 
 		Observable<String> text = Observables.fromProperty(this.factNrL.textProperty());
-		this.factuurnummer = Observable.merge(
-				text.filter(s -> Objects.isNull(s) || s.isEmpty())
-						.map(s -> Optional.empty()),
-				text.filter(Objects::nonNull)
-						.filter(s -> !s.isEmpty())
-						.map(Optional::of));
+		this.factuurnummer = text.map(s -> {
+			if (Objects.isNull(s) || s.isEmpty() || emptyText.equals(s)) {
+				return Optional.empty();
+			}
+			else {
+				return Optional.of(s);
+			}
+		});
 	}
 
 	public Observable<Optional<String>> getFactuurnummer() {
