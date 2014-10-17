@@ -8,14 +8,13 @@ import javafx.scene.image.ImageView;
 import org.rekeningsysteem.application.Main;
 import org.rekeningsysteem.application.guice.ButtonImage;
 import org.rekeningsysteem.application.guice.TabName;
+import org.rekeningsysteem.application.working.AbstractRekeningController;
 import org.rekeningsysteem.properties.PropertiesWorker;
 import org.rekeningsysteem.properties.PropertyModelEnum;
-import org.rekeningsysteem.ui.WorkingPane;
+import org.rekeningsysteem.ui.aangenomen.AangenomenController;
 import org.rekeningsysteem.ui.aangenomen.AangenomenListItemPane;
 import org.rekeningsysteem.ui.header.FactuurnummerPane.FactuurnummerType;
-import org.rekeningsysteem.ui.header.OmschrFactuurHeaderController;
 import org.rekeningsysteem.ui.list.ItemPane;
-import org.rekeningsysteem.ui.list.ListPaneController;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
@@ -28,14 +27,9 @@ public class AangenomenModule extends AbstractModule {
 		this.bind(FactuurnummerType.class).toInstance(FactuurnummerType.FACTUUR);
 		this.bind(String.class).annotatedWith(TabName.class).toInstance("Aangenomen factuur");
 		this.bind(ItemPane.class).to(AangenomenListItemPane.class);
-		
-		this.install(new FactoryModuleBuilder().build(AangenomenListItemControllerFactory.class));
-	}
+		this.bind(AbstractRekeningController.class).to(AangenomenController.class);
 
-	@Provides
-	public WorkingPane[] provideWorkingPanes(OmschrFactuurHeaderController header,
-			ListPaneController list) {
-		return new WorkingPane[] { header.getUI(), list.getUI() };
+		this.install(new FactoryModuleBuilder().build(AangenomenListItemControllerFactory.class));
 	}
 
 	@Provides
