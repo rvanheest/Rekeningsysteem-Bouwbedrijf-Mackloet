@@ -3,14 +3,14 @@ package org.rekeningsysteem.ui.header;
 import java.util.Optional;
 
 import org.rekeningsysteem.data.util.header.FactuurHeader;
+import org.rekeningsysteem.ui.WorkingPaneController;
 
 import rx.Observable;
 
 import com.google.inject.Inject;
 
-public class FactuurHeaderController {
+public class FactuurHeaderController extends WorkingPaneController {
 
-	private final FactuurHeaderPane ui;
 	private final Observable<FactuurHeader> model;
 
 	@Inject
@@ -21,7 +21,7 @@ public class FactuurHeaderController {
 
 	public FactuurHeaderController(DebiteurController debiteur, DatumController datum,
 			FactuurnummerController factuurnummer, Observable<FactuurHeader> input) {
-		this.ui = new FactuurHeaderPane(debiteur.getUI(), datum.getUI(), factuurnummer.getUI());
+		super(new FactuurHeaderPane(debiteur.getUI(), datum.getUI(), factuurnummer.getUI()));
 		this.model = Observable.combineLatest(debiteur.getModel(), datum.getModel(),
 				factuurnummer.getModel(), FactuurHeader::new);
 
@@ -31,10 +31,6 @@ public class FactuurHeaderController {
 				.filter(Optional::isPresent)
 				.map(Optional::get)
 				.subscribe(factuurnummer);
-	}
-
-	public FactuurHeaderPane getUI() {
-		return this.ui;
 	}
 
 	public Observable<FactuurHeader> getModel() {
