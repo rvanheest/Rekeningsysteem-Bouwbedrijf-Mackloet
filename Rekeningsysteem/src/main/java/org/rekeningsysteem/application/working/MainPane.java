@@ -1,9 +1,11 @@
 package org.rekeningsysteem.application.working;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javafx.event.ActionEvent;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
@@ -12,6 +14,8 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
+import javafx.stage.FileChooser;
+import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
 
 import org.rekeningsysteem.application.Main;
@@ -53,6 +57,15 @@ public class MainPane extends BorderPane {
 				.map(tab -> tab.doOnNext(this.tabpane::selectTab))
 				.forEach(Observable::subscribe);
 
+		this.initSaveObservable().doOnNext(tab -> {
+			if (!tab.getSaveFile().isPresent()) {
+				tab.setSaveFile(this.showSaveFileChooser(stage));
+			}
+		}).subscribe(RekeningTab::save);
+
+		this.initExportObservable()
+				.subscribe(tab -> tab.export(this.showExportFileChooser(stage)));
+
 		this.setTop(this.toolbar);
 		this.setCenter(this.tabpane);
 
@@ -73,5 +86,38 @@ public class MainPane extends BorderPane {
 				.getResource("/images/pdf.png"))));
 		this.settings.setGraphic(new ImageView(new Image(Main
 				.getResource("/images/settings.png"))));
+	}
+
+	private File showSaveFileChooser(Stage stage) {
+		FileChooser chooser = new FileChooser();
+		chooser.setTitle("Sla een factuur op");
+		chooser.setInitialDirectory(new File(System.getProperty("user.dir")));
+		chooser.getExtensionFilters().addAll(new ExtensionFilter("XML", "*.xml"));
+
+		return chooser.showSaveDialog(stage);
+	}
+
+	private File showExportFileChooser(Stage stage) {
+		FileChooser chooser = new FileChooser();
+		chooser.setTitle("Exporteer een factuur");
+		chooser.setInitialDirectory(new File(System.getProperty("user.dir")));
+		chooser.setInitialFileName(this.tabpane.getSelectedTab().getSaveFile()
+				.map(file -> file.getName())
+				.map(s -> s.substring(0, s.length() - 3) + "pdf")
+				.orElse(""));
+
+		chooser.getExtensionFilters().addAll(new ExtensionFilter("PDF", "*.pdf"));
+
+		return chooser.showSaveDialog(stage);
+	}
+
+	private Observable<RekeningTab> initSaveObservable() {
+		return Observables.fromNodeEvents(this.save, ActionEvent.ACTION)
+				.map(event -> this.tabpane.getSelectedTab());
+	}
+
+	private Observable<RekeningTab> initExportObservable() {
+		return Observables.fromNodeEvents(this.pdf, ActionEvent.ACTION)
+				.map(event -> this.tabpane.getSelectedTab());
 	}
 }
