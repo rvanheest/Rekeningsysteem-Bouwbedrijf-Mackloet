@@ -47,7 +47,7 @@ public class MutatiesPdfIntegrationTest {
 		itemList.add(new MutatiesBon("Bonnummer", "112308", new Geld(5510.74)));
 
 		MutatiesFactuur factuur = new MutatiesFactuur(header, Currency.getInstance("EUR"), itemList, btwPercentage);
-		this.exporter.save(factuur, new File("src\\test\\resources\\pdf\\"
+		this.exporter.export(factuur, new File("src\\test\\resources\\pdf\\"
 				+ "MutatiesFactuurTest123.pdf"));
 	}
 }

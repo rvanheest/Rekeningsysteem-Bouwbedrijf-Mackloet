@@ -96,7 +96,7 @@ public class ParticulierPdfIntegrationTest {
 
 		ParticulierFactuur factuur = new ParticulierFactuur(header,
 				Currency.getInstance("EUR"), itemList, loonList, btwPercentage);
-		this.exporter.save(factuur, new File("src\\test\\resources\\pdf\\"
+		this.exporter.export(factuur, new File("src\\test\\resources\\pdf\\"
 				+ "ParticulierFactuurTest123TwoBtw.pdf"));
 	}
 
@@ -117,7 +117,7 @@ public class ParticulierPdfIntegrationTest {
 
 		ParticulierFactuur factuur = new ParticulierFactuur(header,
 				Currency.getInstance("EUR"), itemList, loonList, btwPercentage);
-		this.exporter.save(factuur, new File("src\\test\\resources\\pdf\\"
+		this.exporter.export(factuur, new File("src\\test\\resources\\pdf\\"
 				+ "ParticulierFactuurTest123OneBtw.pdf"));
 	}
 }

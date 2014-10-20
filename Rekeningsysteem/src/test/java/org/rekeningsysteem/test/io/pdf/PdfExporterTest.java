@@ -37,7 +37,7 @@ public class PdfExporterTest {
 		AbstractRekening mockedRekening = mock(AbstractRekening.class);
 		File mockedFile = mock(File.class);
 
-		this.exporter.save(mockedRekening, mockedFile);
+		this.exporter.export(mockedRekening, mockedFile);
 
 		verify(this.visitor).setSaveLocation(eq(mockedFile));
 		verify(mockedRekening).accept(eq(this.visitor));
@@ -51,7 +51,7 @@ public class PdfExporterTest {
 
 		doThrow(new Exception()).when(mockedRekening).accept(eq(this.visitor));
 
-		this.exporter.save(mockedRekening, mockedFile);
+		this.exporter.export(mockedRekening, mockedFile);
 
 		verify(this.visitor).setSaveLocation(eq(mockedFile));
 		verify(mockedRekening).accept(eq(this.visitor));

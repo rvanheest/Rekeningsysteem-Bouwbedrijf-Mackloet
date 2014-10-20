@@ -95,7 +95,7 @@ public class ReparatiesPdfIntegrationTest {
 		this.addBonnen(itemList);
 
 		ReparatiesFactuur factuur = new ReparatiesFactuur(header, Currency.getInstance("EUR"), itemList, btwPercentage);
-		this.exporter.save(factuur, new File("src\\test\\resources\\pdf\\"
+		this.exporter.export(factuur, new File("src\\test\\resources\\pdf\\"
 				+ "ReparatiesFactuurTest123.pdf"));
 	}
 }

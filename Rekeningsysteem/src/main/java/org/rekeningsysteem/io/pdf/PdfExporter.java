@@ -4,11 +4,11 @@ import java.io.File;
 
 import org.apache.log4j.Logger;
 import org.rekeningsysteem.data.util.AbstractRekening;
-import org.rekeningsysteem.io.FactuurSaver;
+import org.rekeningsysteem.io.FactuurExporter;
 
 import com.google.inject.Inject;
 
-public class PdfExporter implements FactuurSaver {
+public class PdfExporter implements FactuurExporter {
 
 	private PdfExporterVisitor visitor;
 	private Logger logger;
@@ -20,7 +20,7 @@ public class PdfExporter implements FactuurSaver {
 	}
 
 	@Override
-	public void save(AbstractRekening rekening, File saveLocation) {
+	public void export(AbstractRekening rekening, File saveLocation) {
 		try {
 			this.visitor.setSaveLocation(saveLocation);
 			rekening.accept(this.visitor);

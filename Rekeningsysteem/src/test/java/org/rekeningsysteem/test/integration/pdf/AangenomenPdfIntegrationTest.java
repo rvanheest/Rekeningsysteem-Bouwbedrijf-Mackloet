@@ -60,7 +60,7 @@ public class AangenomenPdfIntegrationTest {
 
 		AangenomenFactuur factuur = new AangenomenFactuur(header, Currency.getInstance("EUR"), itemList, btwPercentage);
 
-		this.exporter.save(factuur, new File("src\\test\\resources\\pdf\\"
+		this.exporter.export(factuur, new File("src\\test\\resources\\pdf\\"
 				+ "AangenomenFactuurTest123TwoBtw.pdf"));
 	}
 
@@ -92,7 +92,7 @@ public class AangenomenPdfIntegrationTest {
 
 		AangenomenFactuur factuur = new AangenomenFactuur(header, Currency.getInstance("EUR"), itemList, btwPercentage);
 
-		this.exporter.save(factuur, new File("src\\test\\resources\\pdf\\"
+		this.exporter.export(factuur, new File("src\\test\\resources\\pdf\\"
 				+ "AangenomenFactuurTest123OneBtw.pdf"));
 	}
 }
