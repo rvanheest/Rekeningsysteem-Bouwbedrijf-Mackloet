@@ -97,13 +97,21 @@ public class AangenomenListPane extends Page {
 		Observable<Integer> selectedRow = Observables.fromProperty(this.table.getSelectionModel()
 				.selectedIndexProperty())
 				.map(Number::intValue);
-		selectedRow.filter(i -> i == 0)
+		selectedRow.filter(i -> this.data.size() > 1)
+				.filter(i -> i == 0)
 				.doOnNext(i -> this.up.setDisable(true))
 				.doOnNext(i -> this.down.setDisable(false))
 				.subscribe();
-		selectedRow.filter(i -> i == Math.max(0, this.data.size() - 1))
+		selectedRow.filter(i -> this.data.size() > 1)
+				.filter(i -> i == Math.max(0, this.data.size() - 1))
 				.doOnNext(i -> this.up.setDisable(false))
 				.doOnNext(i -> this.down.setDisable(true))
+				.subscribe();
+		selectedRow.filter(i -> !this.data.isEmpty())
+				.filter(i -> i > 0)
+				.filter(i -> i < Math.max(0, this.data.size() - 1))
+				.doOnNext(i -> this.up.setDisable(false))
+				.doOnNext(i -> this.down.setDisable(false))
 				.subscribe();
 		selectedRow.filter(i -> i == -1 || this.data.isEmpty() || this.data.size() == 1)
 				.doOnNext(i -> this.up.setDisable(true))

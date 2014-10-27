@@ -189,10 +189,10 @@
 	-fx-graphic: url("images/add.png");
 }
 .page #up-button:hover {
-	-fx-effect: url("images/arrowUpHover.png");
+	-fx-graphic: url("images/arrowUpHover.png");
 }
 .page #down-button:hover {
-	-fx-effect: url("images/arrowDownHover.png");
+	-fx-graphic: url("images/arrowDownHover.png");
 }
 .page #add-button:hover {
 	-fx-graphic: url("images/addHover.png");
