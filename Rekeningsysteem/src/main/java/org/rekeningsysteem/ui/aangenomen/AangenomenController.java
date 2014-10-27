@@ -2,7 +2,6 @@ package org.rekeningsysteem.ui.aangenomen;
 
 import java.util.Currency;
 
-import org.rekeningsysteem.application.working.AbstractRekeningController;
 import org.rekeningsysteem.application.working.RekeningSplitPane;
 import org.rekeningsysteem.data.aangenomen.AangenomenFactuur;
 import org.rekeningsysteem.logging.ConsoleLoggerModule;
@@ -11,6 +10,7 @@ import org.rekeningsysteem.logic.factuurnummer.guice.FactuurnummerManagerFactory
 import org.rekeningsysteem.logic.factuurnummer.guice.PropertyFactuurnummerManagerModule;
 import org.rekeningsysteem.properties.PropertyModelEnum;
 import org.rekeningsysteem.properties.guice.ConfigPropertiesModule;
+import org.rekeningsysteem.ui.AbstractRekeningController;
 import org.rekeningsysteem.ui.header.OmschrFactuurHeaderController;
 
 import rx.Observable;

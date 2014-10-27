@@ -16,6 +16,7 @@ import org.rekeningsysteem.io.xml.guice.XmlMakerModule;
 import org.rekeningsysteem.io.xml.guice.XmlReaderModule;
 import org.rekeningsysteem.logging.ConsoleLoggerModule;
 import org.rekeningsysteem.properties.guice.ConfigPropertiesModule;
+import org.rekeningsysteem.ui.AbstractRekeningController;
 import org.rekeningsysteem.ui.aangenomen.AangenomenController;
 
 import rx.Observable;
