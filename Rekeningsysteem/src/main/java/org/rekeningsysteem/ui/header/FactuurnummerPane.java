@@ -26,7 +26,7 @@ public class FactuurnummerPane extends Page {
 			return this.type;
 		}
 	}
-	
+
 	private static final String emptyText = "Er is nog geen factuurnummer toegekend aan deze factuur";
 
 	private Label factNrL = new Label(emptyText);
@@ -42,10 +42,10 @@ public class FactuurnummerPane extends Page {
 			if (Objects.isNull(s) || s.isEmpty() || emptyText.equals(s)) {
 				return Optional.empty();
 			}
-			else {
-				return Optional.of(s);
-			}
-		});
+				else {
+					return Optional.of(s);
+				}
+			});
 	}
 
 	public Observable<Optional<String>> getFactuurnummer() {

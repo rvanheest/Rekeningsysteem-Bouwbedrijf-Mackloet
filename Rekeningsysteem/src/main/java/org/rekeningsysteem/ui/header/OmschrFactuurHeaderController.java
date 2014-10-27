@@ -14,7 +14,7 @@ public class OmschrFactuurHeaderController extends WorkingPaneController {
 
 	private final Observable<OmschrFactuurHeader> model;
 	private final FactuurnummerController factuurnummerController;
-	
+
 	public OmschrFactuurHeaderController() {
 		this(new DebiteurController(), new DatumController(),
 				new FactuurnummerController(FactuurnummerType.FACTUUR),

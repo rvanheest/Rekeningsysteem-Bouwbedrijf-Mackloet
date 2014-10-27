@@ -11,7 +11,7 @@ import rx.Observable;
 public class FactuurHeaderController extends WorkingPaneController {
 
 	private final Observable<FactuurHeader> model;
-	
+
 	public FactuurHeaderController() {
 		this(new DebiteurController(), new DatumController(),
 				new FactuurnummerController(FactuurnummerType.FACTUUR));
