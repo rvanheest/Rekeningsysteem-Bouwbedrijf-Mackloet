@@ -15,8 +15,6 @@ import org.rekeningsysteem.rxjavafx.Observables;
 import org.rekeningsysteem.ui.list.ItemPane;
 import org.rekeningsysteem.ui.textfields.MoneyField;
 
-import com.google.inject.Inject;
-
 import rx.Observable;
 
 public class AangenomenListItemPane extends ItemPane {
@@ -28,7 +26,6 @@ public class AangenomenListItemPane extends ItemPane {
 	private final Observable<Double> loon;
 	private final Observable<Double> materiaal;
 
-	@Inject
 	public AangenomenListItemPane(Currency currency) {
 		super("Nieuw artikel");
 		this.loonTF = new MoneyField(currency);

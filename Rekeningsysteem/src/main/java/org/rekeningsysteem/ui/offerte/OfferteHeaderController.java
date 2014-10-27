@@ -8,17 +8,27 @@ import org.rekeningsysteem.ui.header.DatumController;
 import org.rekeningsysteem.ui.header.DebiteurController;
 import org.rekeningsysteem.ui.header.FactuurHeaderPane;
 import org.rekeningsysteem.ui.header.FactuurnummerController;
+import org.rekeningsysteem.ui.header.FactuurnummerPane.FactuurnummerType;
 
 import rx.Observable;
-
-import com.google.inject.Inject;
 
 public class OfferteHeaderController extends WorkingPaneController {
 
 	private final Observable<FactuurHeader> model;
 	private final Observable<Boolean> ondertekenen;
 
-	@Inject
+	public OfferteHeaderController() {
+		this(new DebiteurController(), new DatumController(),
+				new FactuurnummerController(FactuurnummerType.OFFERTE),
+				new OndertekenenController());
+	}
+
+	public OfferteHeaderController(Observable<FactuurHeader> input, Observable<Boolean> ondertekenenInput) {
+		this(new DebiteurController(), new DatumController(),
+				new FactuurnummerController(FactuurnummerType.OFFERTE),
+				new OndertekenenController(), input, ondertekenenInput);
+	}
+
 	public OfferteHeaderController(DebiteurController debiteur, DatumController datum,
 			FactuurnummerController offertenummer, OndertekenenController ondertekenen) {
 		this(debiteur, datum, offertenummer, ondertekenen, Observable.empty(), Observable.empty());

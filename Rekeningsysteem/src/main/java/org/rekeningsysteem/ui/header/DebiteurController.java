@@ -5,14 +5,15 @@ import org.rekeningsysteem.data.util.header.Debiteur;
 import rx.Observable;
 import rx.Observer;
 
-import com.google.inject.Inject;
-
 public class DebiteurController implements Observer<Debiteur> {
 
 	private final DebiteurPane ui;
 	private final Observable<Debiteur> model;
 
-	@Inject
+	public DebiteurController() {
+		this(new DebiteurPane());
+	}
+
 	public DebiteurController(DebiteurPane ui) {
 		this.ui = ui;
 		this.model = Observable.combineLatest(this.ui.getNaam(), this.ui.getStraat(),

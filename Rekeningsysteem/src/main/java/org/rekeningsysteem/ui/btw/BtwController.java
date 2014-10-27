@@ -5,14 +5,15 @@ import org.rekeningsysteem.data.util.BtwPercentage;
 import rx.Observable;
 import rx.Observer;
 
-import com.google.inject.Inject;
-
 public class BtwController implements Observer<BtwPercentage> {
 
 	private final BtwPane ui;
 	private final Observable<BtwPercentage> model;
 
-	@Inject
+	public BtwController() {
+		this(new BtwPane());
+	}
+
 	public BtwController(BtwPane ui) {
 		this.ui = ui;
 		this.model = Observable.combineLatest(this.ui.getLoon(),

@@ -1,13 +1,13 @@
 package org.rekeningsysteem.ui.list;
 
 import org.rekeningsysteem.rxjavafx.Observables;
+import org.rekeningsysteem.ui.Page;
 import org.rekeningsysteem.ui.WorkingPane;
-import org.rekeningsysteem.ui.aangenomen.AangenomenListPane;
 import org.rekeningsysteem.ui.btw.BtwPane;
 
 public class ListPane extends WorkingPane {
 
-	public ListPane(AangenomenListPane listPane, BtwPane btwPane) {
+	public ListPane(Page listPane, BtwPane btwPane) {
 		super(btwPane, listPane);
 
 		Observables.fromProperty(this.heightProperty())

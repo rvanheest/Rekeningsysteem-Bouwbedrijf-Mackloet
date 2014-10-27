@@ -1,11 +1,10 @@
 package org.rekeningsysteem.ui.aangenomen;
 
+import java.util.Currency;
 import java.util.Optional;
 
 import org.rekeningsysteem.data.aangenomen.AangenomenListItem;
 import org.rekeningsysteem.data.util.Geld;
-
-import com.google.inject.Inject;
 
 import rx.Observable;
 import rx.Observer;
@@ -15,7 +14,10 @@ public class AangenomenListItemController implements Observer<AangenomenListItem
 	private AangenomenListItemPane ui;
 	private Observable<Optional<AangenomenListItem>> model;
 
-	@Inject
+	public AangenomenListItemController(Currency currency) {
+		this(new AangenomenListItemPane(currency));
+	}
+
 	public AangenomenListItemController(AangenomenListItemPane ui) {
 		this.ui = ui;
 

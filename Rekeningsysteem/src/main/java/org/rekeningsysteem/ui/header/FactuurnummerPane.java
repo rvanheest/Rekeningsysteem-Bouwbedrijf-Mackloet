@@ -8,8 +8,6 @@ import javafx.scene.control.Label;
 import org.rekeningsysteem.rxjavafx.Observables;
 import org.rekeningsysteem.ui.Page;
 
-import com.google.inject.Inject;
-
 import rx.Observable;
 
 public class FactuurnummerPane extends Page {
@@ -34,7 +32,6 @@ public class FactuurnummerPane extends Page {
 	private Label factNrL = new Label(emptyText);
 	private Observable<Optional<String>> factuurnummer;
 
-	@Inject
 	public FactuurnummerPane(FactuurnummerType type) {
 		super(type.getType());
 

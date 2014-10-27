@@ -17,4 +17,6 @@ public abstract class AbstractRekeningController {
 	}
 
 	public abstract Observable<? extends AbstractRekening> getModel();
+
+	public abstract void initFactuurnummer();
 }

@@ -3,14 +3,15 @@ package org.rekeningsysteem.ui.header;
 import rx.Observable;
 import rx.Observer;
 
-import com.google.inject.Inject;
-
 public class OmschrijvingController implements Observer<String> {
 
 	private final OmschrijvingPane ui;
 	private final Observable<String> model;
 
-	@Inject
+	public OmschrijvingController() {
+		this(new OmschrijvingPane());
+	}
+
 	public OmschrijvingController(OmschrijvingPane ui) {
 		this.ui = ui;
 		this.model = this.ui.getOmschrijving();

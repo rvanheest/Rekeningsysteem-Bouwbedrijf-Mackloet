@@ -2,17 +2,20 @@ package org.rekeningsysteem.ui.header;
 
 import java.util.Optional;
 
+import org.rekeningsysteem.ui.header.FactuurnummerPane.FactuurnummerType;
+
 import rx.Observable;
 import rx.Observer;
-
-import com.google.inject.Inject;
 
 public class FactuurnummerController implements Observer<String> {
 
 	private final FactuurnummerPane ui;
 	private final Observable<Optional<String>> model;
 
-	@Inject
+	public FactuurnummerController(FactuurnummerType type) {
+		this(new FactuurnummerPane(type));
+	}
+
 	public FactuurnummerController(FactuurnummerPane ui) {
 		this.ui = ui;
 		this.model = this.ui.getFactuurnummer();

@@ -1,6 +1,7 @@
 package org.rekeningsysteem.ui.aangenomen;
 
 import java.util.Collections;
+import java.util.Currency;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -10,13 +11,10 @@ import org.rekeningsysteem.data.aangenomen.AangenomenListItem;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.data.util.ItemList;
 import org.rekeningsysteem.ui.aangenomen.AangenomenListPane.AangenomenModel;
-import org.rekeningsysteem.ui.aangenomen.guice.AangenomenListItemControllerFactory;
 
 import rx.Observable;
 import rx.Observer;
 import rx.functions.Func1;
-
-import com.google.inject.Inject;
 
 public class AangenomenListController implements Observer<List<AangenomenListItem>> {
 
@@ -28,17 +26,17 @@ public class AangenomenListController implements Observer<List<AangenomenListIte
 					item.getLoon().getBedrag(), item.getMateriaal().getBedrag()))
 					.collect(Collectors.toList());
 
-	@Inject
-	public AangenomenListController(AangenomenListItemControllerFactory paneMaker) {
+	public AangenomenListController(Observable<Currency> currency) {
 		this.ui = new AangenomenListPane();
 		this.model = this.ui.getData()
 				.map(list -> list.stream()
 						.map(m -> new AangenomenListItem(m.getOmschrijving(),
 								new Geld(m.getLoon()), new Geld(m.getMateriaal())))
 						.collect(Collectors.toCollection(ItemList::new)));
-
+		
 		this.ui.getAddButtonEvent()
-				.map(event -> paneMaker.create())
+				.flatMap(event -> currency)
+				.map(AangenomenListItemController::new)
 				.doOnNext(controller -> Main.getMain().showModalMessage(controller.getUI()))
 				.flatMap(controller -> controller.getModel())
 				.doOnNext(optItem -> Main.getMain().hideModalMessage())

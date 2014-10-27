@@ -4,16 +4,24 @@ import java.util.Optional;
 
 import org.rekeningsysteem.data.util.header.FactuurHeader;
 import org.rekeningsysteem.ui.WorkingPaneController;
+import org.rekeningsysteem.ui.header.FactuurnummerPane.FactuurnummerType;
 
 import rx.Observable;
-
-import com.google.inject.Inject;
 
 public class FactuurHeaderController extends WorkingPaneController {
 
 	private final Observable<FactuurHeader> model;
+	
+	public FactuurHeaderController() {
+		this(new DebiteurController(), new DatumController(),
+				new FactuurnummerController(FactuurnummerType.FACTUUR));
+	}
 
-	@Inject
+	public FactuurHeaderController(Observable<FactuurHeader> input) {
+		this(new DebiteurController(), new DatumController(),
+				new FactuurnummerController(FactuurnummerType.FACTUUR), input);
+	}
+
 	public FactuurHeaderController(DebiteurController debiteur, DatumController datum,
 			FactuurnummerController factuurnummer) {
 		this(debiteur, datum, factuurnummer, Observable.empty());

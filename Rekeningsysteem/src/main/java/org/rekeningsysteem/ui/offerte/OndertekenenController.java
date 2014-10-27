@@ -3,14 +3,15 @@ package org.rekeningsysteem.ui.offerte;
 import rx.Observable;
 import rx.Observer;
 
-import com.google.inject.Inject;
-
 public class OndertekenenController implements Observer<Boolean> {
 
 	private final OndertekenenPane ui;
 	private final Observable<Boolean> model;
 
-	@Inject
+	public OndertekenenController() {
+		this(new OndertekenenPane());
+	}
+
 	public OndertekenenController(OndertekenenPane ui) {
 		this.ui = ui;
 		this.model = this.ui.isOndertekenen();

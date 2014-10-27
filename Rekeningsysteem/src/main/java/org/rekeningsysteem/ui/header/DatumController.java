@@ -2,8 +2,6 @@ package org.rekeningsysteem.ui.header;
 
 import java.time.LocalDate;
 
-import com.google.inject.Inject;
-
 import rx.Observable;
 import rx.Observer;
 
@@ -12,7 +10,10 @@ public class DatumController implements Observer<LocalDate> {
 	private final DatumPane ui;
 	private final Observable<LocalDate> model;
 
-	@Inject
+	public DatumController() {
+		this(new DatumPane());
+	}
+
 	public DatumController(DatumPane ui) {
 		this.ui = ui;
 		this.model = this.ui.getDatum();

@@ -8,7 +8,7 @@ import org.junit.Test;
 import org.rekeningsysteem.data.offerte.Offerte;
 import org.rekeningsysteem.data.util.header.Debiteur;
 import org.rekeningsysteem.data.util.header.FactuurHeader;
-import org.rekeningsysteem.io.FactuurSaver;
+import org.rekeningsysteem.io.FactuurExporter;
 import org.rekeningsysteem.io.pdf.guice.PdfExporterModule;
 import org.rekeningsysteem.logging.ConsoleLoggerModule;
 import org.rekeningsysteem.properties.guice.ConfigPropertiesModule;
@@ -18,7 +18,7 @@ import com.google.inject.Injector;
 
 public class OffertePdfIntegrationTest {
 
-	private FactuurSaver exporter;
+	private FactuurExporter exporter;
 
 	protected String makeText() {
 		return "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce quis quam tortor. "
@@ -50,7 +50,7 @@ public class OffertePdfIntegrationTest {
 	public void setUp() {
 		Injector injector = Guice.createInjector(new PdfExporterModule(),
 				new ConfigPropertiesModule(), new ConsoleLoggerModule());
-		this.exporter = injector.getInstance(FactuurSaver.class);
+		this.exporter = injector.getInstance(FactuurExporter.class);
 	}
 
 	@Test
@@ -61,7 +61,7 @@ public class OffertePdfIntegrationTest {
 		FactuurHeader header = new FactuurHeader(debiteur, datum, factuurnummer);
 		Offerte offerte = new Offerte(header, this.makeText(), true);
 		
-		this.exporter.save(offerte, new File("src\\test\\resources\\pdf\\"
+		this.exporter.export(offerte, new File("src\\test\\resources\\pdf\\"
 				+ "OfferteTest123True.pdf"));
 	}
 
@@ -73,7 +73,7 @@ public class OffertePdfIntegrationTest {
 		FactuurHeader header = new FactuurHeader(debiteur, datum, factuurnummer);
 		Offerte offerte = new Offerte(header, this.makeText(), false);
 		
-		this.exporter.save(offerte, new File("src\\test\\resources\\pdf\\"
+		this.exporter.export(offerte, new File("src\\test\\resources\\pdf\\"
 				+ "OfferteTest123False.pdf"));
 	}
 }

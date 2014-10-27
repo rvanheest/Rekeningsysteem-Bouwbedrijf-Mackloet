@@ -20,6 +20,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.assistedinject.FactoryModuleBuilder;
 
+@Deprecated
 public class AangenomenModule extends AbstractModule {
 
 	@Override
