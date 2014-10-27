@@ -3,9 +3,9 @@ package org.rekeningsysteem.application.working;
 import java.io.File;
 import java.util.Optional;
 
+import javafx.scene.control.SplitPane;
 import javafx.scene.control.Tab;
 
-import org.rekeningsysteem.application.guice.TabName;
 import org.rekeningsysteem.data.aangenomen.AangenomenFactuur;
 import org.rekeningsysteem.data.util.AbstractRekening;
 import org.rekeningsysteem.io.FactuurExporter;
@@ -23,7 +23,6 @@ import rx.Observable;
 import rx.subjects.PublishSubject;
 
 import com.google.inject.Guice;
-import com.google.inject.Inject;
 
 public class RekeningTab extends Tab {
 
@@ -31,8 +30,14 @@ public class RekeningTab extends Tab {
 	private final PublishSubject<Boolean> modified = PublishSubject.create();
 	private Optional<File> saveFile;
 
-	@Inject
-	public RekeningTab(@TabName String name, AbstractRekeningController controller) {
+	@Deprecated
+	public RekeningTab(String name) {
+		super(name);
+		this.controller = null;
+		this.setContent(new SplitPane());
+	}
+
+	public RekeningTab(String name, AbstractRekeningController controller) {
 		this(name, controller, null);
 	}
 
@@ -40,7 +45,7 @@ public class RekeningTab extends Tab {
 		super(name);
 		this.controller = controller;
 		this.saveFile = Optional.ofNullable(file);
-		
+
 		this.setContent(this.controller.getUI());
 
 		this.controller.getModel()
@@ -75,15 +80,18 @@ public class RekeningTab extends Tab {
 	}
 
 	public static RekeningTab openFile(File file) {
+		// TODO remove GUICE
 		XmlReader reader = Guice.createInjector(new XmlReaderModule(), new ConsoleLoggerModule())
 				.getInstance(XmlReader.class);
 		Observable<AbstractRekening> factuur = reader.load(file);
 		factuur.subscribe(System.out::println);
-		
-		return new RekeningTab(file.getName(), new AangenomenController(factuur.cast(AangenomenFactuur.class)), file);
+
+		return new RekeningTab(file.getName(), new AangenomenController(
+				factuur.cast(AangenomenFactuur.class)), file);
 	}
-	
+
 	public void save() {
+		// TODO remove GUICE
 		XmlMaker maker = Guice.createInjector(new XmlMakerModule(), new ConsoleLoggerModule())
 				.getInstance(XmlMaker.class);
 		this.getModel()
@@ -98,12 +106,16 @@ public class RekeningTab extends Tab {
 
 	public void export(File file) {
 		if (file != null) {
-    		FactuurExporter pdf = Guice.createInjector(new PdfExporterModule(), new ConfigPropertiesModule(), new ConsoleLoggerModule())
-    				.getInstance(FactuurExporter.class);
-    		this.getModel().doOnNext(factuur -> pdf.export(factuur, file))
-    				.subscribe(factuur -> {},
-    						e -> e.printStackTrace())
-    				.unsubscribe();
+			//TODO remove GUICE
+			FactuurExporter pdf = Guice.createInjector(new PdfExporterModule(),
+					new ConfigPropertiesModule(), new ConsoleLoggerModule())
+					.getInstance(FactuurExporter.class);
+			this.getModel().doOnNext(factuur -> pdf.export(factuur, file))
+					.subscribe(factuur -> {
+					},
+							e -> e.printStackTrace())
+					.unsubscribe();
 		}
+		//TODO what if file == null???
 	}
 }

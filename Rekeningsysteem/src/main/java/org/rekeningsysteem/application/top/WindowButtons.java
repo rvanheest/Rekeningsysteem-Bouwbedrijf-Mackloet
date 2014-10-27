@@ -8,13 +8,10 @@ import javafx.stage.Stage;
 
 import org.rekeningsysteem.rxjavafx.Observables;
 
-import com.google.inject.Inject;
-
 public class WindowButtons extends VBox {
 
 	private Stage stage;
 
-	@Inject
 	public WindowButtons(Stage stage) {
 		super(4);
 		this.stage = stage;

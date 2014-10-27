@@ -15,6 +15,7 @@ public class RekeningToolbar extends ToolBar {
 		this.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
 	}
 
+	@Deprecated
 	public RekeningToolbar(List<Node> nodes) {
 		this(nodes.toArray(new Node[0]));
 	}

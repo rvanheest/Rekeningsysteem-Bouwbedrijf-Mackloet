@@ -31,10 +31,10 @@ public class MainPane extends BorderPane {
 	private RekeningTabpane tabpane;
 
 	private Button aangenomen;
-//	private Button mutaties;
-//	private Button reparaties;
-//	private Button particulier;
-//	private Button offerte;
+	private Button mutaties;
+	private Button reparaties;
+	private Button particulier;
+	private Button offerte;
 	private Button open;
 	private Button save;
 	private Button pdf;
@@ -50,8 +50,8 @@ public class MainPane extends BorderPane {
 		Region spacer = new Region();
 		HBox.setHgrow(spacer, Priority.ALWAYS);
 
-		this.toolbar = new RekeningToolbar(this.aangenomen, /*this.mutaties,
-				this.reparaties, this.particulier, this.offerte,*/ this.open,
+		this.toolbar = new RekeningToolbar(this.aangenomen, this.mutaties,
+				this.reparaties, this.particulier, this.offerte, this.open,
 				this.save, this.pdf, spacer, this.settings);
 		this.tabpane = new RekeningTabpane();
 
@@ -71,21 +71,21 @@ public class MainPane extends BorderPane {
 		this.aangenomen.setGraphic(new ImageView(new Image(Main
 				.getResource("/images/aangenomen.png"))));
 
-//		this.mutaties = new Button();
-//		this.mutaties.setGraphic(new ImageView(new Image(Main
-//				.getResource("/images/mutaties.png"))));
-//
-//		this.reparaties = new Button();
-//		this.reparaties.setGraphic(new ImageView(new Image(Main
-//				.getResource("/images/reparaties.png"))));
-//
-//		this.particulier = new Button();
-//		this.particulier.setGraphic(new ImageView(new Image(Main
-//				.getResource("/images/particulier.png"))));
-//
-//		this.offerte = new Button();
-//		this.offerte.setGraphic(new ImageView(new Image(Main
-//				.getResource("/images/offerte.png"))));
+		this.mutaties = new Button();
+		this.mutaties.setGraphic(new ImageView(new Image(Main
+				.getResource("/images/mutaties.png"))));
+
+		this.reparaties = new Button();
+		this.reparaties.setGraphic(new ImageView(new Image(Main
+				.getResource("/images/reparaties.png"))));
+
+		this.particulier = new Button();
+		this.particulier.setGraphic(new ImageView(new Image(Main
+				.getResource("/images/particulier.png"))));
+
+		this.offerte = new Button();
+		this.offerte.setGraphic(new ImageView(new Image(Main
+				.getResource("/images/offerte.png"))));
 
 		this.open = new Button();
 		this.open.setGraphic(new ImageView(new Image(Main
@@ -111,10 +111,10 @@ public class MainPane extends BorderPane {
 				.doOnNext(this.tabpane::selectTab)
 				.subscribe();
 		addSelect.apply(this.initAangenomenObservable());
-//		addSelect.apply(this.initMutatiesObservable());
-//		addSelect.apply(this.initReparatiesObservable());
-//		addSelect.apply(this.initParticulierObservable());
-//		addSelect.apply(this.initOfferteObservable());
+		addSelect.apply(this.initMutatiesObservable());
+		addSelect.apply(this.initReparatiesObservable());
+		addSelect.apply(this.initParticulierObservable());
+		addSelect.apply(this.initOfferteObservable());
 		addSelect.apply(this.initOpenObservable(stage));
 
 		this.initSaveObservable().doOnNext(tab -> {
@@ -165,25 +165,25 @@ public class MainPane extends BorderPane {
 				.map(event -> new RekeningTab("Aangenomen factuur", new AangenomenController()));
 	}
 
-//	private Observable<RekeningTab> initMutatiesObservable() {
-//		return Observables.fromNodeEvents(this.mutaties, ActionEvent.ACTION)
-//				.map(event -> new RekeningTab("Tab"));
-//	}
-//
-//	private Observable<RekeningTab> initReparatiesObservable() {
-//		return Observables.fromNodeEvents(this.reparaties, ActionEvent.ACTION)
-//				.map(event -> new RekeningTab("Tab"));
-//	}
-//
-//	private Observable<RekeningTab> initParticulierObservable() {
-//		return Observables.fromNodeEvents(this.particulier, ActionEvent.ACTION)
-//				.map(event -> new RekeningTab("Tab"));
-//	}
-//
-//	private Observable<RekeningTab> initOfferteObservable() {
-//		return Observables.fromNodeEvents(this.offerte, ActionEvent.ACTION)
-//				.map(event -> new RekeningTab("Tab"));
-//	}
+	private Observable<RekeningTab> initMutatiesObservable() {
+		return Observables.fromNodeEvents(this.mutaties, ActionEvent.ACTION)
+				.map(event -> new RekeningTab("Mutaties factuur"));
+	}
+
+	private Observable<RekeningTab> initReparatiesObservable() {
+		return Observables.fromNodeEvents(this.reparaties, ActionEvent.ACTION)
+				.map(event -> new RekeningTab("Reparaties factuur"));
+	}
+
+	private Observable<RekeningTab> initParticulierObservable() {
+		return Observables.fromNodeEvents(this.particulier, ActionEvent.ACTION)
+				.map(event -> new RekeningTab("Particulier factuur"));
+	}
+
+	private Observable<RekeningTab> initOfferteObservable() {
+		return Observables.fromNodeEvents(this.offerte, ActionEvent.ACTION)
+				.map(event -> new RekeningTab("Offerte"));
+	}
 
 	private Observable<RekeningTab> initOpenObservable(Stage stage) {
 		return Observables.fromNodeEvents(this.open, ActionEvent.ACTION)

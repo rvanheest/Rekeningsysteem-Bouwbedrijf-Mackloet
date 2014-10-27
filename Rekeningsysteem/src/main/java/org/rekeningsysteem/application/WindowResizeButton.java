@@ -7,26 +7,15 @@ import javafx.scene.layout.Region;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
-import org.rekeningsysteem.application.guice.SceneMinHeight;
-import org.rekeningsysteem.application.guice.SceneMinWidth;
 import org.rekeningsysteem.rxjavafx.Observables;
 
 import rx.Observable;
-import rx.functions.Func3;
-
-import com.google.inject.Inject;
 
 public class WindowResizeButton extends Region {
 
-	@Inject
-	public WindowResizeButton(Stage stage, @SceneMinWidth double stageMinimumWidth,
-			@SceneMinHeight double stageMinimumHeight) {
+	public WindowResizeButton(Stage stage, double stageMinWidth, double stageMinHeight) {
 		this.setId("window-resize-button");
 		this.setPrefSize(11, 11);
-
-		Func3<Point2D, Point2D, Rectangle2D, Point2D> func = (pressed, dragged, bounds) -> new Point2D(
-				Math.min(bounds.getMaxX(), dragged.getX() + pressed.getX()),
-				Math.min(bounds.getMaxY(), dragged.getY() + pressed.getY()));
 
 		Observable<Point2D> pressed = Observables.fromNodeEvents(this, MouseEvent.MOUSE_PRESSED)
 				.doOnNext(MouseEvent::consume)
@@ -42,11 +31,11 @@ public class WindowResizeButton extends Region {
 				.map(s -> !s.isEmpty() ? s.get(0).getVisualBounds()
 						: Screen.getScreensForRectangle(0, 0, 1, 1).get(0).getVisualBounds());
 
-		Observable.combineLatest(pressed, dragged, bounds, func)
-				.doOnNext(p -> stage.setWidth(Math.max(stageMinimumWidth,
-						p.getX() - stage.getX())))
-				.doOnNext(p -> stage.setHeight(Math.max(stageMinimumHeight,
-						p.getY() - stage.getY())))
+		Observable.combineLatest(pressed, dragged, bounds, (press, dragg, bound) -> new Point2D(
+				Math.min(bound.getMaxX(), dragg.getX() + press.getX()),
+				Math.min(bound.getMaxY(), dragg.getY() + press.getY())))
+				.doOnNext(p -> stage.setWidth(Math.max(stageMinWidth, p.getX() - stage.getX())))
+				.doOnNext(p -> stage.setHeight(Math.max(stageMinHeight, p.getY() - stage.getY())))
 				.subscribe();
 	}
 }
