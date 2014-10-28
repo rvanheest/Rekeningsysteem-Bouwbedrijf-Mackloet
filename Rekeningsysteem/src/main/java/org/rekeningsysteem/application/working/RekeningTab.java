@@ -85,7 +85,8 @@ public class RekeningTab extends Tab {
 				.getInstance(XmlReader.class);
 		Observable<AbstractRekening> factuur = reader.load(file);
 		factuur.subscribe(System.out::println);
-
+		
+		// TODO make this more generic for other types of AbstractRekening
 		return new RekeningTab(file.getName(), new AangenomenController(
 				factuur.cast(AangenomenFactuur.class)), file);
 	}

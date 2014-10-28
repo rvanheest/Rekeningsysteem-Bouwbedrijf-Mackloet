@@ -19,6 +19,7 @@ import javafx.stage.Stage;
 import org.rekeningsysteem.application.Main;
 import org.rekeningsysteem.rxjavafx.Observables;
 import org.rekeningsysteem.ui.aangenomen.AangenomenController;
+import org.rekeningsysteem.ui.offerte.OfferteController;
 
 import rx.Observable;
 import rx.Subscription;
@@ -182,7 +183,7 @@ public class MainPane extends BorderPane {
 
 	private Observable<RekeningTab> initOfferteObservable() {
 		return Observables.fromNodeEvents(this.offerte, ActionEvent.ACTION)
-				.map(event -> new RekeningTab("Offerte"));
+				.map(event -> new RekeningTab("Offerte", new OfferteController()));
 	}
 
 	private Observable<RekeningTab> initOpenObservable(Stage stage) {

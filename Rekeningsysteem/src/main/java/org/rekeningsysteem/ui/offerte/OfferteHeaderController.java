@@ -11,11 +11,13 @@ import org.rekeningsysteem.ui.header.FactuurnummerController;
 import org.rekeningsysteem.ui.header.FactuurnummerPane.FactuurnummerType;
 
 import rx.Observable;
+import rx.Subscription;
 
 public class OfferteHeaderController extends WorkingPaneController {
 
 	private final Observable<FactuurHeader> model;
 	private final Observable<Boolean> ondertekenen;
+	private final FactuurnummerController offertenummerController;
 
 	public OfferteHeaderController() {
 		this(new DebiteurController(), new DatumController(),
@@ -42,6 +44,7 @@ public class OfferteHeaderController extends WorkingPaneController {
 		this.model = Observable.combineLatest(debiteur.getModel(), datum.getModel(),
 				offertenummer.getModel(), FactuurHeader::new);
 		this.ondertekenen = ondertekenen.getModel();
+		this.offertenummerController = offertenummer;
 
 		input.map(FactuurHeader::getDebiteur).subscribe(debiteur);
 		input.map(FactuurHeader::getDatum).subscribe(datum);
@@ -58,5 +61,9 @@ public class OfferteHeaderController extends WorkingPaneController {
 
 	public Observable<Boolean> getOndertekenen() {
 		return this.ondertekenen;
+	}
+
+	public Subscription initFactuurnummer(Observable<String> factuurnummer) {
+		return factuurnummer.subscribe(this.offertenummerController);
 	}
 }
