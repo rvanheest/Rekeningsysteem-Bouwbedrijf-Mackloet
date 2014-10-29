@@ -7,6 +7,7 @@ import javafx.scene.control.SplitPane;
 import javafx.scene.control.Tab;
 
 import org.rekeningsysteem.data.aangenomen.AangenomenFactuur;
+import org.rekeningsysteem.data.offerte.Offerte;
 import org.rekeningsysteem.data.util.AbstractRekening;
 import org.rekeningsysteem.io.FactuurExporter;
 import org.rekeningsysteem.io.pdf.guice.PdfExporterModule;
@@ -18,6 +19,7 @@ import org.rekeningsysteem.logging.ConsoleLoggerModule;
 import org.rekeningsysteem.properties.guice.ConfigPropertiesModule;
 import org.rekeningsysteem.ui.AbstractRekeningController;
 import org.rekeningsysteem.ui.aangenomen.AangenomenController;
+import org.rekeningsysteem.ui.offerte.OfferteController;
 
 import rx.Observable;
 import rx.subjects.PublishSubject;
@@ -79,16 +81,25 @@ public class RekeningTab extends Tab {
 		this.controller.initFactuurnummer();
 	}
 
-	public static RekeningTab openFile(File file) {
+	public static Observable<RekeningTab> openFile(File file) {
 		// TODO remove GUICE
 		XmlReader reader = Guice.createInjector(new XmlReaderModule(), new ConsoleLoggerModule())
 				.getInstance(XmlReader.class);
 		Observable<AbstractRekening> factuur = reader.load(file);
 		factuur.subscribe(System.out::println);
 		
-		// TODO make this more generic for other types of AbstractRekening
-		return new RekeningTab(file.getName(), new AangenomenController(
-				factuur.cast(AangenomenFactuur.class)), file);
+		Observable<AangenomenController> aangenomen = factuur
+				.filter(a -> a instanceof AangenomenFactuur)
+				.cast(AangenomenFactuur.class)
+				.map(Observable::just)
+				.map(AangenomenController::new);
+		Observable<OfferteController> offerte = factuur.filter(a -> a instanceof Offerte)
+				.cast(Offerte.class)
+				.map(Observable::just)
+				.map(OfferteController::new);
+		
+		return Observable.merge(aangenomen, offerte)
+				.map(c -> new RekeningTab(file.getName(), c, file));
 	}
 
 	public void save() {

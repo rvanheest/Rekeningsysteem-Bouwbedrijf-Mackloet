@@ -189,7 +189,7 @@ public class MainPane extends BorderPane {
 	private Observable<RekeningTab> initOpenObservable(Stage stage) {
 		return Observables.fromNodeEvents(this.open, ActionEvent.ACTION)
 				.map(event -> this.showOpenFileChooser(stage))
-				.map(RekeningTab::openFile);
+				.flatMap(RekeningTab::openFile);
 	}
 
 	private Observable<RekeningTab> initSaveObservable() {
