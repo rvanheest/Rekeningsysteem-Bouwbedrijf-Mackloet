@@ -2,6 +2,8 @@ package org.rekeningsysteem.application.working;
 
 import java.io.File;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Function;
 
 import javafx.event.ActionEvent;
@@ -22,6 +24,7 @@ import org.rekeningsysteem.ui.aangenomen.AangenomenController;
 import org.rekeningsysteem.ui.offerte.OfferteController;
 
 import rx.Observable;
+import rx.Subscriber;
 import rx.Subscription;
 
 import com.google.inject.Inject;
@@ -120,34 +123,40 @@ public class MainPane extends BorderPane {
 
 		this.initSaveObservable().doOnNext(tab -> {
 			if (!tab.getSaveFile().isPresent()) {
-				tab.setSaveFile(this.showSaveFileChooser(stage));
-				tab.initFactuurnummer();
+				this.showSaveFileChooser(stage).ifPresent(file -> {
+					tab.setSaveFile(file);
+    				tab.initFactuurnummer();
+				});
 			}
-		}).subscribe(RekeningTab::save);
+		}).filter(t -> !t.getSaveFile().isPresent())
+		.subscribe(RekeningTab::save);
 
 		this.initExportObservable()
-				.subscribe(tab -> tab.export(this.showExportFileChooser(stage)));
+				.subscribe(tab -> this.showExportFileChooser(stage).ifPresent(tab::export));
 	}
 
-	private File showOpenFileChooser(Stage stage) {
+	private Observable<File> showOpenFileChooser(Stage stage) {
 		FileChooser chooser = new FileChooser();
 		chooser.setTitle("Open een factuur");
 		chooser.setInitialDirectory(new File(System.getProperty("user.dir")));
 		chooser.getExtensionFilters().addAll(new ExtensionFilter("XML", "*.xml"));
 
-		return chooser.showOpenDialog(stage);
+		return Observable.create((Subscriber<? super File> subscriber) -> {
+			subscriber.onNext(chooser.showOpenDialog(stage));
+			subscriber.onCompleted();
+		}).filter(Objects::nonNull);
 	}
 
-	private File showSaveFileChooser(Stage stage) {
+	private Optional<File> showSaveFileChooser(Stage stage) {
 		FileChooser chooser = new FileChooser();
 		chooser.setTitle("Sla een factuur op");
 		chooser.setInitialDirectory(new File(System.getProperty("user.dir")));
 		chooser.getExtensionFilters().addAll(new ExtensionFilter("XML", "*.xml"));
 
-		return chooser.showSaveDialog(stage);
+		return Optional.ofNullable(chooser.showSaveDialog(stage));
 	}
 
-	private File showExportFileChooser(Stage stage) {
+	private Optional<File> showExportFileChooser(Stage stage) {
 		FileChooser chooser = new FileChooser();
 		chooser.setTitle("Exporteer een factuur");
 		chooser.setInitialDirectory(new File(System.getProperty("user.dir")));
@@ -158,7 +167,7 @@ public class MainPane extends BorderPane {
 		
 		chooser.getExtensionFilters().addAll(new ExtensionFilter("PDF", "*.pdf"));
 
-		return chooser.showSaveDialog(stage);
+		return Optional.ofNullable(chooser.showSaveDialog(stage));
 	}
 
 	private Observable<RekeningTab> initAangenomenObservable() {
@@ -188,7 +197,7 @@ public class MainPane extends BorderPane {
 
 	private Observable<RekeningTab> initOpenObservable(Stage stage) {
 		return Observables.fromNodeEvents(this.open, ActionEvent.ACTION)
-				.map(event -> this.showOpenFileChooser(stage))
+				.flatMap(event -> this.showOpenFileChooser(stage))
 				.flatMap(RekeningTab::openFile);
 	}
 
