@@ -17,8 +17,8 @@ public class AangenomenListPaneController extends WorkingPaneController {
 	private final Observable<ItemList<AangenomenListItem>> listModel;
 	private final Observable<BtwPercentage> btwModel;
 
-	public AangenomenListPaneController(Currency currency) {
-		this(new AangenomenListController(currency), new BtwController(), currency);
+	public AangenomenListPaneController(Currency currency, BtwPercentage btw) {
+		this(new AangenomenListController(currency), new BtwController(btw), currency);
 	}
 
 	public AangenomenListPaneController(Currency currency, ItemList<AangenomenListItem> inputList,

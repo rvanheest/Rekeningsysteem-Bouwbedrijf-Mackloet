@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.rekeningsysteem.application.working.RekeningSplitPane;
 import org.rekeningsysteem.data.aangenomen.AangenomenFactuur;
+import org.rekeningsysteem.data.util.BtwPercentage;
 import org.rekeningsysteem.properties.PropertyModelEnum;
 import org.rekeningsysteem.ui.AbstractRekeningController;
 import org.rekeningsysteem.ui.header.OmschrFactuurHeaderController;
@@ -17,11 +18,11 @@ public class AangenomenController extends AbstractRekeningController {
 	private final OmschrFactuurHeaderController headerController;
 
 	public AangenomenController() {
-		this(Currency.getInstance("EUR"));
+		this(Currency.getInstance("EUR"), new BtwPercentage(6.0, 21.0));
 	}
 
-	public AangenomenController(Currency currency) {
-		this(new OmschrFactuurHeaderController(), new AangenomenListPaneController(currency));
+	public AangenomenController(Currency currency, BtwPercentage btw) {
+		this(new OmschrFactuurHeaderController(), new AangenomenListPaneController(currency, btw));
 	}
 
 	public AangenomenController(AangenomenFactuur input) {

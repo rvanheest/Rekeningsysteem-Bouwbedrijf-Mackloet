@@ -17,8 +17,8 @@ public class MutatiesListPaneController extends WorkingPaneController {
 	private final Observable<ItemList<MutatiesBon>> listModel;
 	private final Observable<BtwPercentage> btwModel;
 
-	public MutatiesListPaneController(Currency currency) {
-		this(new MutatiesListController(currency), new BtwController(), currency);
+	public MutatiesListPaneController(Currency currency, BtwPercentage btw) {
+		this(new MutatiesListController(currency), new BtwController(btw), currency);
 	}
 
 	public MutatiesListPaneController(Currency currency, ItemList<MutatiesBon> inputList,
