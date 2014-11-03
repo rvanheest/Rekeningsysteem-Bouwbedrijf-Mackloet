@@ -34,24 +34,6 @@ public class OmschrFactuurHeaderController extends WorkingPaneController {
 		this.factuurnummerController = factuurnummer;
 	}
 
-//	public OmschrFactuurHeaderController(DebiteurController debiteur, DatumController datum,
-//			FactuurnummerController factuurnummer, OmschrijvingController omschrijving,
-//			Observable<OmschrFactuurHeader> input) {
-//		super(new FactuurHeaderPane(debiteur.getUI(), datum.getUI(),
-//				factuurnummer.getUI(), omschrijving.getUI()));
-//		this.model = Observable.combineLatest(debiteur.getModel(), datum.getModel(),
-//				factuurnummer.getModel(), omschrijving.getModel(), OmschrFactuurHeader::new);
-//		this.factuurnummerController = factuurnummer;
-//
-//		input.map(FactuurHeader::getDebiteur).subscribe(debiteur);
-//		input.map(FactuurHeader::getDatum).subscribe(datum);
-//		input.map(FactuurHeader::getFactuurnummer)
-//				.filter(Optional::isPresent)
-//				.map(Optional::get)
-//				.subscribe(factuurnummer);
-//		input.map(OmschrFactuurHeader::getOmschrijving).subscribe(omschrijving);
-//	}
-
 	public Observable<OmschrFactuurHeader> getModel() {
 		return this.model;
 	}

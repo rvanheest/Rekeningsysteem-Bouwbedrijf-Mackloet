@@ -33,19 +33,6 @@ public class AangenomenListPaneController extends WorkingPaneController {
 		this.btwModel = btw.getModel();
 	}
 
-//	public AangenomenListPaneController(AangenomenListController list, BtwController btw,
-//			Observable<Currency> currency,
-//			Observable<ItemList<AangenomenListItem>> inputList,
-//			Observable<BtwPercentage> inputBtw) {
-//		super(new ListPane(list.getUI(), btw.getUI()));
-//		this.currency = currency;
-//		this.listModel = list.getModel();
-//		this.btwModel = btw.getModel();
-//
-//		inputList.subscribe(list);
-//		inputBtw.subscribe(btw);
-//	}
-
 	public Currency getCurrency() {
 		return this.currency;
 	}
