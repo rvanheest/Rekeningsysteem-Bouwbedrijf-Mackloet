@@ -23,6 +23,7 @@ public class AangenomenListItemPane extends ItemPane {
 	private final MoneyField loonTF;
 	private final MoneyField materiaalTF;
 
+	private final Observable<String> omschrijving;
 	private final Observable<Double> loon;
 	private final Observable<Double> materiaal;
 
@@ -31,6 +32,7 @@ public class AangenomenListItemPane extends ItemPane {
 		this.loonTF = new MoneyField(currency);
 		this.materiaalTF = new MoneyField(currency);
 
+		this.omschrijving = Observables.fromProperty(this.omschrTF.textProperty());
 		this.loon = Observables
 				.fromProperty(this.loonTF.valueProperty())
 				.filter(Objects::nonNull)
@@ -67,7 +69,7 @@ public class AangenomenListItemPane extends ItemPane {
 	}
 
 	public Observable<String> getOmschrijving() {
-		return Observables.fromProperty(this.omschrTF.textProperty());
+		return this.omschrijving;
 	}
 
 	public void setOmschrijving(String omschrijving) {
