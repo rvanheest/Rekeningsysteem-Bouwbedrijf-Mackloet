@@ -9,11 +9,13 @@ import javafx.scene.control.Tab;
 import org.rekeningsysteem.data.aangenomen.AangenomenFactuur;
 import org.rekeningsysteem.data.mutaties.MutatiesFactuur;
 import org.rekeningsysteem.data.offerte.Offerte;
+import org.rekeningsysteem.data.reparaties.ReparatiesFactuur;
 import org.rekeningsysteem.data.util.AbstractRekening;
 import org.rekeningsysteem.ui.AbstractRekeningController;
 import org.rekeningsysteem.ui.aangenomen.AangenomenController;
 import org.rekeningsysteem.ui.mutaties.MutatiesController;
 import org.rekeningsysteem.ui.offerte.OfferteController;
+import org.rekeningsysteem.ui.reparaties.ReparatiesController;
 
 import rx.Observable;
 import rx.subjects.PublishSubject;
@@ -91,8 +93,12 @@ public class RekeningTab extends Tab {
 				.filter(o -> o instanceof Offerte)
 				.cast(Offerte.class)
 				.map(OfferteController::new);
+		Observable<ReparatiesController> reparaties = factuur
+				.filter(m -> m instanceof ReparatiesFactuur)
+				.cast(ReparatiesFactuur.class)
+				.map(ReparatiesController::new);
 
-		return Observable.merge(aangenomen, mutaties, offerte)
+		return Observable.merge(aangenomen, mutaties, offerte, reparaties)
 				.map(c -> new RekeningTab(file.getName(), c, file));
 	}
 
