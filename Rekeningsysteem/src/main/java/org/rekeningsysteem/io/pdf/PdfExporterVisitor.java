@@ -28,6 +28,7 @@ import org.rekeningsysteem.properties.PropertyModelEnum;
 import com.google.inject.Inject;
 
 import de.nixosoft.jlr.JLRGenerator;
+import de.nixosoft.jlr.JLROpener;
 
 public class PdfExporterVisitor implements RekeningVisitor {
 
@@ -67,6 +68,8 @@ public class PdfExporterVisitor implements RekeningVisitor {
 		this.generate(new JLRGenerator(), resultTex, templateDir);
 		
 		FileUtils.deleteDirectory(tempTemplateDir);
+		
+		JLROpener.open(this.saveLocation);
 	}
 
 	@Override
