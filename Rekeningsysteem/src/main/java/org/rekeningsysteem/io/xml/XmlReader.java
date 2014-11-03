@@ -39,7 +39,7 @@ public class XmlReader implements FactuurLoader {
 	}
 
 	@Override
-	public Observable<AbstractRekening> load(File file) {
+	public Observable<? extends AbstractRekening> load(File file) {
 		try {
 			Document doc = this.builder.parse(file);
 			doc.getDocumentElement().normalize();

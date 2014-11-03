@@ -9,14 +9,6 @@ import javafx.scene.control.Tab;
 import org.rekeningsysteem.data.aangenomen.AangenomenFactuur;
 import org.rekeningsysteem.data.offerte.Offerte;
 import org.rekeningsysteem.data.util.AbstractRekening;
-import org.rekeningsysteem.io.FactuurExporter;
-import org.rekeningsysteem.io.pdf.guice.PdfExporterModule;
-import org.rekeningsysteem.io.xml.XmlMaker;
-import org.rekeningsysteem.io.xml.XmlReader;
-import org.rekeningsysteem.io.xml.guice.XmlMakerModule;
-import org.rekeningsysteem.io.xml.guice.XmlReaderModule;
-import org.rekeningsysteem.logging.ConsoleLoggerModule;
-import org.rekeningsysteem.properties.guice.ConfigPropertiesModule;
 import org.rekeningsysteem.ui.AbstractRekeningController;
 import org.rekeningsysteem.ui.aangenomen.AangenomenController;
 import org.rekeningsysteem.ui.offerte.OfferteController;
@@ -24,10 +16,9 @@ import org.rekeningsysteem.ui.offerte.OfferteController;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
-import com.google.inject.Guice;
-
 public class RekeningTab extends Tab {
 
+	private static final IOWorker ioWorker = new IOWorker();
 	private final AbstractRekeningController controller;
 	private final PublishSubject<Boolean> modified = PublishSubject.create();
 	private Optional<File> saveFile;
@@ -83,49 +74,37 @@ public class RekeningTab extends Tab {
 
 	public static Observable<RekeningTab> openFile(File file) {
 		// TODO remove GUICE
-		XmlReader reader = Guice.createInjector(new XmlReaderModule(), new ConsoleLoggerModule())
-				.getInstance(XmlReader.class);
-		Observable<AbstractRekening> factuur = reader.load(file);
+		Observable<? extends AbstractRekening> factuur = ioWorker.load(file);
 		factuur.subscribe(System.out::println);
-		
+
 		Observable<AangenomenController> aangenomen = factuur
 				.filter(a -> a instanceof AangenomenFactuur)
 				.cast(AangenomenFactuur.class)
 				.map(AangenomenController::new);
-		Observable<OfferteController> offerte = factuur.filter(a -> a instanceof Offerte)
+		Observable<OfferteController> offerte = factuur
+				.filter(o -> o instanceof Offerte)
 				.cast(Offerte.class)
 				.map(OfferteController::new);
-		
+
 		return Observable.merge(aangenomen, offerte)
 				.map(c -> new RekeningTab(file.getName(), c, file));
 	}
 
 	public void save() {
-		// TODO remove GUICE
-		XmlMaker maker = Guice.createInjector(new XmlMakerModule(), new ConsoleLoggerModule())
-				.getInstance(XmlMaker.class);
 		this.getModel()
-				.doOnNext(factuur -> this.saveFile.ifPresent(file -> maker.save(factuur, file)))
+				.first()
+				.doOnNext(factuur -> this.saveFile.ifPresent(file -> ioWorker.save(factuur, file)))
 				.map(factuur -> this.getText())
 				.filter(s -> s.endsWith("*"))
 				.map(s -> s.substring(0, s.length() - 1))
-				.subscribe(this::setText)
-				.unsubscribe();
+				.subscribe(this::setText);
 		this.modified.onNext(false);
 	}
 
 	public void export(File file) {
-		if (file != null) {
-			//TODO remove GUICE
-			FactuurExporter pdf = Guice.createInjector(new PdfExporterModule(),
-					new ConfigPropertiesModule(), new ConsoleLoggerModule())
-					.getInstance(FactuurExporter.class);
-			this.getModel().doOnNext(factuur -> pdf.export(factuur, file))
-					.subscribe(factuur -> {
-					},
-							e -> e.printStackTrace())
-					.unsubscribe();
-		}
-		//TODO what if file == null???
+		this.getModel()
+				.first()
+				.subscribe(factuur -> ioWorker.export(factuur, file),
+						e -> e.printStackTrace());
 	}
 }
