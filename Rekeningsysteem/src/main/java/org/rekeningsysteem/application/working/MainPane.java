@@ -21,6 +21,7 @@ import javafx.stage.Stage;
 import org.rekeningsysteem.application.Main;
 import org.rekeningsysteem.rxjavafx.Observables;
 import org.rekeningsysteem.ui.aangenomen.AangenomenController;
+import org.rekeningsysteem.ui.mutaties.MutatiesController;
 import org.rekeningsysteem.ui.offerte.OfferteController;
 
 import rx.Observable;
@@ -177,7 +178,7 @@ public class MainPane extends BorderPane {
 
 	private Observable<RekeningTab> initMutatiesObservable() {
 		return Observables.fromNodeEvents(this.mutaties, ActionEvent.ACTION)
-				.map(event -> new RekeningTab("Mutaties factuur"));
+				.map(event -> new RekeningTab("Mutaties factuur", new MutatiesController()));
 	}
 
 	private Observable<RekeningTab> initReparatiesObservable() {

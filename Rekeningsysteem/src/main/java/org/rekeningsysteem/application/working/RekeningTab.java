@@ -7,10 +7,12 @@ import javafx.scene.control.SplitPane;
 import javafx.scene.control.Tab;
 
 import org.rekeningsysteem.data.aangenomen.AangenomenFactuur;
+import org.rekeningsysteem.data.mutaties.MutatiesFactuur;
 import org.rekeningsysteem.data.offerte.Offerte;
 import org.rekeningsysteem.data.util.AbstractRekening;
 import org.rekeningsysteem.ui.AbstractRekeningController;
 import org.rekeningsysteem.ui.aangenomen.AangenomenController;
+import org.rekeningsysteem.ui.mutaties.MutatiesController;
 import org.rekeningsysteem.ui.offerte.OfferteController;
 
 import rx.Observable;
@@ -81,12 +83,16 @@ public class RekeningTab extends Tab {
 				.filter(a -> a instanceof AangenomenFactuur)
 				.cast(AangenomenFactuur.class)
 				.map(AangenomenController::new);
+		Observable<MutatiesController> mutaties = factuur
+				.filter(m -> m instanceof MutatiesFactuur)
+				.cast(MutatiesFactuur.class)
+				.map(MutatiesController::new);
 		Observable<OfferteController> offerte = factuur
 				.filter(o -> o instanceof Offerte)
 				.cast(Offerte.class)
 				.map(OfferteController::new);
 
-		return Observable.merge(aangenomen, offerte)
+		return Observable.merge(aangenomen, mutaties, offerte)
 				.map(c -> new RekeningTab(file.getName(), c, file));
 	}
 
