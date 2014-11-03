@@ -5,13 +5,11 @@ import java.util.Optional;
 
 import org.rekeningsysteem.data.mutaties.MutatiesBon;
 import org.rekeningsysteem.data.util.Geld;
+import org.rekeningsysteem.ui.list.AbstractListItemController;
 
 import rx.Observable;
 
-public class MutatiesBonController {
-
-	private MutatiesBonPane ui;
-	private Observable<Optional<MutatiesBon>> model;
+public class MutatiesBonController extends AbstractListItemController<MutatiesBon> {
 
 	public MutatiesBonController(Currency currency) {
 		this(new MutatiesBonPane(currency));
@@ -19,30 +17,24 @@ public class MutatiesBonController {
 
 	public MutatiesBonController(Currency currency, MutatiesBon input) {
 		this(currency);
-		this.ui.setOmschrijving(input.getOmschrijving());
-		this.ui.setBonnummer(input.getBonnummer());
-		this.ui.setPrijs(input.getMateriaal().getBedrag());
+		this.getUI().setOmschrijving(input.getOmschrijving());
+		this.getUI().setBonnummer(input.getBonnummer());
+		this.getUI().setPrijs(input.getMateriaal().getBedrag());
 	}
 
 	public MutatiesBonController(MutatiesBonPane ui) {
-		this.ui = ui;
-		
-		Observable<Optional<MutatiesBon>> item = Observable.combineLatest(
-				this.ui.getOmschrijving(), this.ui.getBonnummer(),
-				this.ui.getPrijs().map(Geld::new), MutatiesBon::new)
-				.sample(this.ui.getAddButtonEvent())
-				.map(Optional::of);
-		Observable<Optional<MutatiesBon>> cancel = this.ui.getCancelButtonEvent()
-				.map(event -> Optional.empty());
-		
-		this.model = Observable.merge(item, cancel).first();
+		super(ui, Observable.merge(
+				Observable.combineLatest(ui.getOmschrijving(),
+						ui.getBonnummer(),
+						ui.getPrijs().map(Geld::new), MutatiesBon::new)
+						.sample(ui.getAddButtonEvent())
+						.map(Optional::of),
+				ui.getCancelButtonEvent()
+						.<Optional<MutatiesBon>> map(event -> Optional.empty()))
+				.first());
 	}
 
 	public MutatiesBonPane getUI() {
-		return this.ui;
-	}
-
-	public Observable<Optional<MutatiesBon>> getModel() {
-		return this.model;
+		return (MutatiesBonPane) super.getUI();
 	}
 }

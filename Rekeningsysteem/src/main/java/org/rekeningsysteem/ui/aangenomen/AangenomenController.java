@@ -12,9 +12,8 @@ import org.rekeningsysteem.ui.header.OmschrFactuurHeaderController;
 
 import rx.Observable;
 
-public class AangenomenController extends AbstractRekeningController {
+public class AangenomenController extends AbstractRekeningController<AangenomenFactuur> {
 
-	private final Observable<AangenomenFactuur> model;
 	private final OmschrFactuurHeaderController headerController;
 
 	public AangenomenController() {
@@ -33,15 +32,11 @@ public class AangenomenController extends AbstractRekeningController {
 
 	public AangenomenController(OmschrFactuurHeaderController header,
 			AangenomenListPaneController body) {
-		super(new RekeningSplitPane(header.getUI(), body.getUI()));
-		this.model = Observable.combineLatest(header.getModel(), body.getListModel(),
+		super(new RekeningSplitPane(header.getUI(), body.getUI()),
+		Observable.combineLatest(header.getModel(), body.getListModel(),
 				body.getBtwModel(),
-				(head, list, btw) -> new AangenomenFactuur(head, body.getCurrency(), list, btw));
+				(head, list, btw) -> new AangenomenFactuur(head, body.getCurrency(), list, btw)));
 		this.headerController = header;
-	}
-
-	public Observable<AangenomenFactuur> getModel() {
-		return this.model;
 	}
 
 	@Override

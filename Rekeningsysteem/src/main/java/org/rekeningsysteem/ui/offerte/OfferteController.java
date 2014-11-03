@@ -10,9 +10,8 @@ import org.rekeningsysteem.ui.AbstractRekeningController;
 
 import rx.Observable;
 
-public class OfferteController extends AbstractRekeningController {
+public class OfferteController extends AbstractRekeningController<Offerte> {
 
-	private final Observable<Offerte> model;
 	private final OfferteHeaderController headerController;
 
 	public OfferteController() {
@@ -29,15 +28,10 @@ public class OfferteController extends AbstractRekeningController {
 	}
 
 	public OfferteController(OfferteHeaderController header, TextPaneController body) {
-		super(new RekeningSplitPane(header.getUI(), body.getUI()));
-		this.model = Observable.combineLatest(header.getModel(), body.getModel(),
-				header.getOndertekenen(), Offerte::new);
+		super(new RekeningSplitPane(header.getUI(), body.getUI()),
+				Observable.combineLatest(header.getModel(), body.getModel(),
+				header.getOndertekenen(), Offerte::new));
 		this.headerController = header;
-	}
-
-	@Override
-	public Observable<Offerte> getModel() {
-		return this.model;
 	}
 
 	@Override

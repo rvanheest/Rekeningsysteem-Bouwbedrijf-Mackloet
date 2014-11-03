@@ -11,19 +11,23 @@ import com.google.inject.Guice;
 
 import rx.Observable;
 
-public abstract class AbstractRekeningController {
+public abstract class AbstractRekeningController<M extends AbstractRekening> {
 
 	private final RekeningSplitPane ui;
+	private final Observable<M> model;
 
-	public AbstractRekeningController(RekeningSplitPane ui) {
+	public AbstractRekeningController(RekeningSplitPane ui, Observable<M> model) {
 		this.ui = ui;
+		this.model = model;
 	}
 
 	public RekeningSplitPane getUI() {
 		return this.ui;
 	}
 
-	public abstract Observable<? extends AbstractRekening> getModel();
+	public Observable<M> getModel() {
+		return this.model;
+	}
 
 	public abstract void initFactuurnummer();
 

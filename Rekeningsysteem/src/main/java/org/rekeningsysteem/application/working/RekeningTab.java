@@ -21,7 +21,7 @@ import rx.subjects.PublishSubject;
 public class RekeningTab extends Tab {
 
 	private static final IOWorker ioWorker = new IOWorker();
-	private final AbstractRekeningController controller;
+	private final AbstractRekeningController<? extends AbstractRekening> controller;
 	private final PublishSubject<Boolean> modified = PublishSubject.create();
 	private Optional<File> saveFile;
 
@@ -32,11 +32,11 @@ public class RekeningTab extends Tab {
 		this.setContent(new SplitPane());
 	}
 
-	public RekeningTab(String name, AbstractRekeningController controller) {
+	public RekeningTab(String name, AbstractRekeningController<? extends AbstractRekening> controller) {
 		this(name, controller, null);
 	}
 
-	public RekeningTab(String name, AbstractRekeningController controller, File file) {
+	public RekeningTab(String name, AbstractRekeningController<? extends AbstractRekening> controller, File file) {
 		super(name);
 		this.controller = controller;
 		this.saveFile = Optional.ofNullable(file);
