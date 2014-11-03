@@ -128,7 +128,7 @@ public class MainPane extends BorderPane {
     				tab.initFactuurnummer();
 				});
 			}
-		}).filter(t -> !t.getSaveFile().isPresent())
+		}).filter(t -> t.getSaveFile().isPresent())
 		.subscribe(RekeningTab::save);
 
 		this.initExportObservable()
