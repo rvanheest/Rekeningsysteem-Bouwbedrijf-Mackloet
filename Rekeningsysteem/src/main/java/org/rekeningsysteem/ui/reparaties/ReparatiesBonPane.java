@@ -42,6 +42,8 @@ public class ReparatiesBonPane extends ItemPane {
 		this.materiaal = Observables.fromProperty(this.loonTF.valueProperty())
 				.filter(Objects::nonNull)
 				.map(BigDecimal::doubleValue);
+		
+		this.omschrTF.setPrefColumnCount(20);
 
 		this.getChildren().add(1, this.getContent());
 	}

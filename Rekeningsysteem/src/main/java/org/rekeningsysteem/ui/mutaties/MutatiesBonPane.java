@@ -36,6 +36,8 @@ public class MutatiesBonPane extends ItemPane {
 		this.prijs = Observables.fromProperty(this.prijsTF.valueProperty())
 				.filter(Objects::nonNull)
 				.map(BigDecimal::doubleValue);
+		
+		this.omschrTF.setPrefColumnCount(20);
 
 		this.getChildren().add(1, this.getContent());
 	}

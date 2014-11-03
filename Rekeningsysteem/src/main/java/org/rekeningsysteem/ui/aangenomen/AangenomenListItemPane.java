@@ -41,6 +41,8 @@ public class AangenomenListItemPane extends ItemPane {
 				.fromProperty(this.materiaalTF.valueProperty())
 				.filter(Objects::nonNull)
 				.map(BigDecimal::doubleValue);
+		
+		this.omschrTF.setPrefColumnCount(20);
 
 		this.getChildren().add(1, this.getContent());
 	}
