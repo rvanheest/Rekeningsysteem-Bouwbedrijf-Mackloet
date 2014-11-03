@@ -52,7 +52,7 @@ public class FactuurnummerPane extends Page {
 		return this.factuurnummer;
 	}
 
-	public void setFactuurnummer(String factuurnummer) {
-		this.factNrL.setText(factuurnummer);
+	public void setFactuurnummer(Optional<String> factuurnummer) {
+		this.factNrL.setText(factuurnummer.orElse(emptyText));
 	}
 }

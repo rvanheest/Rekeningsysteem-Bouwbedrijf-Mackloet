@@ -13,38 +13,40 @@ import rx.Observable;
 
 public class AangenomenListPaneController extends WorkingPaneController {
 
-	private final Observable<Currency> currency;
+	private final Currency currency;
 	private final Observable<ItemList<AangenomenListItem>> listModel;
 	private final Observable<BtwPercentage> btwModel;
 
-	public AangenomenListPaneController(Observable<Currency> currency) {
+	public AangenomenListPaneController(Currency currency) {
 		this(new AangenomenListController(currency), new BtwController(), currency);
 	}
 
-	public AangenomenListPaneController(Observable<Currency> currency,
-			Observable<ItemList<AangenomenListItem>> inputList,
-			Observable<BtwPercentage> inputBtw) {
-		this(new AangenomenListController(currency), new BtwController(), currency, inputList, inputBtw);
+	public AangenomenListPaneController(Currency currency, ItemList<AangenomenListItem> inputList,
+			BtwPercentage inputBtw) {
+		this(new AangenomenListController(currency, inputList), new BtwController(inputBtw), currency);
 	}
 
-	public AangenomenListPaneController(AangenomenListController list, BtwController btw, Observable<Currency> currency) {
-		this(list, btw, currency, Observable.empty(), Observable.empty());
-	}
-
-	public AangenomenListPaneController(AangenomenListController list, BtwController btw,
-			Observable<Currency> currency,
-			Observable<ItemList<AangenomenListItem>> inputList,
-			Observable<BtwPercentage> inputBtw) {
+	public AangenomenListPaneController(AangenomenListController list, BtwController btw, Currency currency) {
 		super(new ListPane(list.getUI(), btw.getUI()));
 		this.currency = currency;
 		this.listModel = list.getModel();
 		this.btwModel = btw.getModel();
-
-		inputList.subscribe(list);
-		inputBtw.subscribe(btw);
 	}
 
-	public Observable<Currency> getCurrency() {
+//	public AangenomenListPaneController(AangenomenListController list, BtwController btw,
+//			Observable<Currency> currency,
+//			Observable<ItemList<AangenomenListItem>> inputList,
+//			Observable<BtwPercentage> inputBtw) {
+//		super(new ListPane(list.getUI(), btw.getUI()));
+//		this.currency = currency;
+//		this.listModel = list.getModel();
+//		this.btwModel = btw.getModel();
+//
+//		inputList.subscribe(list);
+//		inputBtw.subscribe(btw);
+//	}
+
+	public Currency getCurrency() {
 		return this.currency;
 	}
 

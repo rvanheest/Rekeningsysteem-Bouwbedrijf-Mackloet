@@ -3,15 +3,24 @@ package org.rekeningsysteem.ui.header;
 import org.rekeningsysteem.data.util.header.Debiteur;
 
 import rx.Observable;
-import rx.Observer;
 
-public class DebiteurController implements Observer<Debiteur> {
+public class DebiteurController {
 
 	private final DebiteurPane ui;
 	private final Observable<Debiteur> model;
 
 	public DebiteurController() {
 		this(new DebiteurPane());
+	}
+
+	public DebiteurController(Debiteur input) {
+		this();
+		this.ui.setNaam(input.getNaam());
+		this.ui.setStraat(input.getStraat());
+		this.ui.setNummer(input.getNummer());
+		this.ui.setPostcode(input.getPostcode());
+		this.ui.setPlaats(input.getPlaats());
+		this.ui.setBtwNummer(input.getBtwNummer().orElse(""));
 	}
 
 	public DebiteurController(DebiteurPane ui) {
@@ -27,24 +36,5 @@ public class DebiteurController implements Observer<Debiteur> {
 
 	public Observable<Debiteur> getModel() {
 		return this.model;
-	}
-
-	@Override
-	public void onCompleted() {
-	}
-
-	@Override
-	public void onError(Throwable e) {
-		e.printStackTrace();
-	}
-
-	@Override
-	public void onNext(Debiteur debiteur) {
-		this.ui.setNaam(debiteur.getNaam());
-		this.ui.setStraat(debiteur.getStraat());
-		this.ui.setNummer(debiteur.getNummer());
-		this.ui.setPostcode(debiteur.getPostcode());
-		this.ui.setPlaats(debiteur.getPlaats());
-		this.ui.setBtwNummer(debiteur.getBtwNummer().orElse(""));
 	}
 }

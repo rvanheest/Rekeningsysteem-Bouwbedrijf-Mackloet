@@ -91,11 +91,9 @@ public class RekeningTab extends Tab {
 		Observable<AangenomenController> aangenomen = factuur
 				.filter(a -> a instanceof AangenomenFactuur)
 				.cast(AangenomenFactuur.class)
-				.map(Observable::just)
 				.map(AangenomenController::new);
 		Observable<OfferteController> offerte = factuur.filter(a -> a instanceof Offerte)
 				.cast(Offerte.class)
-				.map(Observable::just)
 				.map(OfferteController::new);
 		
 		return Observable.merge(aangenomen, offerte)

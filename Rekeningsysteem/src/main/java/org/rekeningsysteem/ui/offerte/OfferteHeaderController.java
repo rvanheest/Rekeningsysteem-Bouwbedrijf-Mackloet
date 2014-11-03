@@ -11,7 +11,6 @@ import org.rekeningsysteem.ui.header.FactuurnummerController;
 import org.rekeningsysteem.ui.header.FactuurnummerPane.FactuurnummerType;
 
 import rx.Observable;
-import rx.Subscription;
 
 public class OfferteHeaderController extends WorkingPaneController {
 
@@ -25,34 +24,20 @@ public class OfferteHeaderController extends WorkingPaneController {
 				new OndertekenenController());
 	}
 
-	public OfferteHeaderController(Observable<FactuurHeader> input, Observable<Boolean> ondertekenenInput) {
-		this(new DebiteurController(), new DatumController(),
-				new FactuurnummerController(FactuurnummerType.OFFERTE),
-				new OndertekenenController(), input, ondertekenenInput);
+	public OfferteHeaderController(FactuurHeader headerInput, Boolean ondertekenenInput) {
+		this(new DebiteurController(headerInput.getDebiteur()), new DatumController(headerInput.getDatum()),
+				new FactuurnummerController(FactuurnummerType.OFFERTE, headerInput.getFactuurnummer()),
+				new OndertekenenController(ondertekenenInput));
 	}
 
 	public OfferteHeaderController(DebiteurController debiteur, DatumController datum,
 			FactuurnummerController offertenummer, OndertekenenController ondertekenen) {
-		this(debiteur, datum, offertenummer, ondertekenen, Observable.empty(), Observable.empty());
-	}
-
-	public OfferteHeaderController(DebiteurController debiteur, DatumController datum,
-			FactuurnummerController offertenummer, OndertekenenController ondertekenen,
-			Observable<FactuurHeader> input, Observable<Boolean> ondertekenenInput) {
 		super(new FactuurHeaderPane(debiteur.getUI(), datum.getUI(),
 				offertenummer.getUI(), ondertekenen.getUI()));
 		this.model = Observable.combineLatest(debiteur.getModel(), datum.getModel(),
 				offertenummer.getModel(), FactuurHeader::new);
 		this.ondertekenen = ondertekenen.getModel();
 		this.offertenummerController = offertenummer;
-
-		input.map(FactuurHeader::getDebiteur).subscribe(debiteur);
-		input.map(FactuurHeader::getDatum).subscribe(datum);
-		input.map(FactuurHeader::getFactuurnummer)
-				.filter(Optional::isPresent)
-				.map(Optional::get)
-				.subscribe(offertenummer);
-		ondertekenenInput.subscribe(ondertekenen);
 	}
 
 	public Observable<FactuurHeader> getModel() {
@@ -63,7 +48,7 @@ public class OfferteHeaderController extends WorkingPaneController {
 		return this.ondertekenen;
 	}
 
-	public Subscription initFactuurnummer(Observable<String> factuurnummer) {
-		return factuurnummer.subscribe(this.offertenummerController);
+	public void initFactuurnummer(Optional<String> offertenummer) {
+		this.offertenummerController.getUI().setFactuurnummer(offertenummer);
 	}
 }

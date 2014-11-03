@@ -1,15 +1,19 @@
 package org.rekeningsysteem.ui.header;
 
 import rx.Observable;
-import rx.Observer;
 
-public class OmschrijvingController implements Observer<String> {
+public class OmschrijvingController {
 
 	private final OmschrijvingPane ui;
 	private final Observable<String> model;
 
 	public OmschrijvingController() {
 		this(new OmschrijvingPane());
+	}
+
+	public OmschrijvingController(String input) {
+		this();
+		this.ui.setOmschrijving(input);
 	}
 
 	public OmschrijvingController(OmschrijvingPane ui) {
@@ -23,19 +27,5 @@ public class OmschrijvingController implements Observer<String> {
 
 	public Observable<String> getModel() {
 		return this.model;
-	}
-
-	@Override
-	public void onCompleted() {
-	}
-
-	@Override
-	public void onError(Throwable e) {
-		e.printStackTrace();
-	}
-
-	@Override
-	public void onNext(String omschrijving) {
-		this.ui.setOmschrijving(omschrijving);
 	}
 }

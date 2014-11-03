@@ -5,15 +5,19 @@ import java.util.Optional;
 import org.rekeningsysteem.ui.header.FactuurnummerPane.FactuurnummerType;
 
 import rx.Observable;
-import rx.Observer;
 
-public class FactuurnummerController implements Observer<String> {
+public class FactuurnummerController {
 
 	private final FactuurnummerPane ui;
 	private final Observable<Optional<String>> model;
 
 	public FactuurnummerController(FactuurnummerType type) {
 		this(new FactuurnummerPane(type));
+	}
+
+	public FactuurnummerController(FactuurnummerType type, Optional<String> input) {
+		this(type);
+		this.ui.setFactuurnummer(input);
 	}
 
 	public FactuurnummerController(FactuurnummerPane ui) {
@@ -27,19 +31,5 @@ public class FactuurnummerController implements Observer<String> {
 
 	public Observable<Optional<String>> getModel() {
 		return this.model;
-	}
-
-	@Override
-	public void onCompleted() {
-	}
-
-	@Override
-	public void onError(Throwable e) {
-		e.printStackTrace();
-	}
-
-	@Override
-	public void onNext(String factuurnummer) {
-		this.ui.setFactuurnummer(factuurnummer);
 	}
 }

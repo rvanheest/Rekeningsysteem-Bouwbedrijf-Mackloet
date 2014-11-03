@@ -1,20 +1,14 @@
 package org.rekeningsysteem.ui.offerte;
 
 import java.util.Currency;
+import java.util.Optional;
 
 import org.rekeningsysteem.application.working.RekeningSplitPane;
 import org.rekeningsysteem.data.offerte.Offerte;
-import org.rekeningsysteem.logging.ConsoleLoggerModule;
-import org.rekeningsysteem.logic.factuurnummer.FactuurnummerManager;
-import org.rekeningsysteem.logic.factuurnummer.guice.FactuurnummerManagerFactory;
-import org.rekeningsysteem.logic.factuurnummer.guice.PropertyFactuurnummerManagerModule;
 import org.rekeningsysteem.properties.PropertyModelEnum;
-import org.rekeningsysteem.properties.guice.ConfigPropertiesModule;
 import org.rekeningsysteem.ui.AbstractRekeningController;
 
 import rx.Observable;
-
-import com.google.inject.Guice;
 
 public class OfferteController extends AbstractRekeningController {
 
@@ -29,10 +23,9 @@ public class OfferteController extends AbstractRekeningController {
 		this(new OfferteHeaderController(), new TextPaneController());
 	}
 
-	public OfferteController(Observable<Offerte> input) {
-		this(new OfferteHeaderController(input.map(Offerte::getFactuurHeader),
-				input.map(Offerte::isOndertekenen)),
-				new TextPaneController(input.map(Offerte::getTekst)));
+	public OfferteController(Offerte input) {
+		this(new OfferteHeaderController(input.getFactuurHeader(), input.isOndertekenen()),
+				new TextPaneController(input.getTekst()));
 	}
 
 	public OfferteController(OfferteHeaderController header, TextPaneController body) {
@@ -49,9 +42,9 @@ public class OfferteController extends AbstractRekeningController {
 
 	@Override
 	public void initFactuurnummer() {
-		FactuurnummerManager manager = Guice.createInjector(new PropertyFactuurnummerManagerModule(), new ConsoleLoggerModule(), new ConfigPropertiesModule())
-				.getInstance(FactuurnummerManagerFactory.class).create(PropertyModelEnum.OFFERTENUMMER);
-		String offertenummer = manager.getFactuurnummer();
-		this.headerController.initFactuurnummer(Observable.from(offertenummer));
+		String offertenummer = this.getFactuurnummerFactory()
+				.create(PropertyModelEnum.OFFERTENUMMER)
+				.getFactuurnummer();
+		this.headerController.initFactuurnummer(Optional.ofNullable(offertenummer));
 	}
 }
