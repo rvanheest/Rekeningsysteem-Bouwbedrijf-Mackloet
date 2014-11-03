@@ -26,7 +26,9 @@ public class AangenomenListController {
 	}
 
 	private static final ItemList<AangenomenListItem> uiToModel(List<? extends AangenomenModel> list) {
-		return list.stream().map(item -> new AangenomenListItem(item.getOmschrijving(), new Geld(item.getLoon()), new Geld(item.getMateriaal()))).collect(Collectors.toCollection(ItemList::new));
+		return list.stream().map(item -> new AangenomenListItem(item.getOmschrijving(),
+				new Geld(item.getLoon()), new Geld(item.getMateriaal())))
+				.collect(Collectors.toCollection(ItemList::new));
 	}
 
 	public AangenomenListController(Currency currency) {
@@ -41,7 +43,7 @@ public class AangenomenListController {
 	public AangenomenListController(Currency currency, AangenomenListPane ui) {
 		this.ui = ui;
 		this.model = this.ui.getData().map(AangenomenListController::uiToModel);
-		
+
 		this.ui.getAddButtonEvent()
 				.map(event -> currency)
 				.map(AangenomenListItemController::new)

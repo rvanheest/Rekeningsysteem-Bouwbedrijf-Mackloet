@@ -30,12 +30,12 @@ public class AangenomenListItemPane extends ItemPane {
 		super("Nieuw artikel");
 		this.loonTF = new MoneyField(currency);
 		this.materiaalTF = new MoneyField(currency);
-		
+
 		this.loon = Observables
 				.fromProperty(this.loonTF.valueProperty())
 				.filter(Objects::nonNull)
 				.map(BigDecimal::doubleValue);
-		
+
 		this.materiaal = Observables
 				.fromProperty(this.materiaalTF.valueProperty())
 				.filter(Objects::nonNull)
