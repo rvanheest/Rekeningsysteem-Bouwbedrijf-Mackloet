@@ -47,13 +47,13 @@ public class BtwPane extends Page {
 	}
 
 	private void initLabels() {
-		this.grid.add(new Label("Loon"), 0, 0);
-		this.grid.add(new Label("Materiaal"), 0, 1);
+		this.grid.add(new Label("Arbeid"), 0, 1);
+		this.grid.add(new Label("Materiaal"), 0, 0);
 	}
 
 	private void initTextFields() {
-		this.grid.add(this.loonTF, 1, 0);
-		this.grid.add(this.materTF, 1, 1);
+		this.grid.add(this.loonTF, 1, 1);
+		this.grid.add(this.materTF, 1, 0);
 	}
 
 	public Observable<Double> getLoon() {

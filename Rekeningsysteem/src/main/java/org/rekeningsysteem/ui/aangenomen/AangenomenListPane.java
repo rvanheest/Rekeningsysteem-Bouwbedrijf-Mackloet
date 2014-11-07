@@ -15,7 +15,7 @@ public class AangenomenListPane extends AbstractListPane<AangenomenModel> {
 	@Override
 	protected List<TableColumn<AangenomenModel, ?>> initTableColumns() {
 		TableColumn<AangenomenModel, String> omschrCol = new TableColumn<>("Omschrijving");
-		TableColumn<AangenomenModel, Double> loonCol = new TableColumn<>("Loon");
+		TableColumn<AangenomenModel, Double> loonCol = new TableColumn<>("Arbeid");
 		TableColumn<AangenomenModel, Double> materiaalCol = new TableColumn<>("Materiaal");
 
 		omschrCol.setMinWidth(300);

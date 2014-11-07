@@ -16,7 +16,7 @@ public class ReparatiesListPane extends AbstractListPane<ReparatiesModel> {
 	protected List<TableColumn<ReparatiesModel, ?>> initTableColumns() {
 		TableColumn<ReparatiesModel, String> omschrCol = new TableColumn<>("Omschrijving");
 		TableColumn<ReparatiesModel, String> bonnrCol = new TableColumn<>("Bonnummer");
-		TableColumn<ReparatiesModel, Double> loonCol = new TableColumn<>("Loon");
+		TableColumn<ReparatiesModel, Double> loonCol = new TableColumn<>("Arbeid");
 		TableColumn<ReparatiesModel, Double> materiaalCol = new TableColumn<>("Materiaal");
 
 		omschrCol.setMinWidth(300);

@@ -55,16 +55,16 @@ public class AangenomenListItemPane extends ItemPane {
 		content.setAlignment(Pos.CENTER);
 
 		Label omschrL = new Label("Omschrijving");
-		Label loonL = new Label("Loon");
+		Label loonL = new Label("Arbeid");
 		Label materiaalL = new Label("Materiaal");
 
 		content.add(omschrL, 0, 0);
-		content.add(loonL, 0, 1);
-		content.add(materiaalL, 0, 2);
+		content.add(loonL, 0, 2);
+		content.add(materiaalL, 0, 1);
 
 		content.add(this.omschrTF, 1, 0);
-		content.add(this.loonTF, 1, 1);
-		content.add(this.materiaalTF, 1, 2);
+		content.add(this.loonTF, 1, 2);
+		content.add(this.materiaalTF, 1, 1);
 
 		return content;
 	}
