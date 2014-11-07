@@ -20,6 +20,9 @@ import javafx.scene.control.TextField;
  * Doesn't support comma separated formatting, unfortunately. The parser gets all uptight about that
  * sort of stuff. There is a fair bit of hacking here too. Need a real i18n expert to do the
  * formatting and parsing work.
+ * @author Richard Bair
+ * @author Richard van Heest - me (modified for my purpose)
+ * @see http://fxexperience.com/2012/02/moneyfield/
  */
 public class MoneyFieldSkin implements Skin<MoneyField> {
 
@@ -81,9 +84,8 @@ public class MoneyFieldSkin implements Skin<MoneyField> {
 				// would end up being acceptable (either fully formatted with dollar symbols,
 				// thousands and decimal separators, or just a number).
 				String t = Optional.ofNullable(this.getText()).orElse("");
-				t = t.substring(0, start) + text + t.substring(end);
-				if (MoneyFieldSkin.this.accept(t)) {
-					super.replaceText(start, end, text);
+				if (MoneyFieldSkin.this.accept(t.substring(0, start) + text + t.substring(end))) {
+					super.replaceText(start, end, text.replace('.', ','));
 				}
 			}
 
@@ -97,8 +99,8 @@ public class MoneyFieldSkin implements Skin<MoneyField> {
 				int start = Math.min(this.getAnchor(), this.getCaretPosition());
 				int end = Math.max(this.getAnchor(), this.getCaretPosition());
 				t = t.substring(0, start) + text + t.substring(end);
-				if (MoneyFieldSkin.this.accept(t)) {
-					super.replaceSelection(text);
+				if (MoneyFieldSkin.this.accept(t.substring(0, start) + text + t.substring(end))) {
+					super.replaceSelection(text.replace('.', ','));
 				}
 			}
 		};
@@ -182,15 +184,21 @@ public class MoneyFieldSkin implements Skin<MoneyField> {
 		if (text.startsWith(currencySymbol)) {
 			text = text.substring(currencySymbol.length()).trim();
 		}
+		
+		String negativePrefix = "-";
+		if (text.startsWith(negativePrefix)) {
+			text = text.substring(negativePrefix.length()).trim();
+		}
 
 		// There must be no illegal characters.
 		// If there is a thousands separator, then it must be used correctly
 		// There may be only a single decimal separator
 		char decimalSeparator = ',';
+		char point = '.';
 		int decimalSeparatorIndex = -1;
 		for (int i = 0; i < text.length(); i++) {
 			char ch = text.charAt(i);
-			if (decimalSeparatorIndex == -1 && ch == decimalSeparator) {
+			if (decimalSeparatorIndex == -1 && (ch == decimalSeparator || ch == point)) {
 				decimalSeparatorIndex = i;
 			}
 			else if (!Character.isDigit(ch)) {
@@ -214,6 +222,10 @@ public class MoneyFieldSkin implements Skin<MoneyField> {
 		this.formatter = (DecimalFormat) NumberFormat.getCurrencyInstance(locale);
 		this.formatter.setParseBigDecimal(true);
 		this.formatter.setCurrency(this.getSkinnable().getCurrency());
+		
+		// this is to support negative numbers in the form of "€ -12,02" (without quotes)
+		this.formatter.setNegativePrefix(this.formatter.getCurrency().getSymbol() + " -");
+		this.formatter.setNegativeSuffix("");
 	}
 
 	private void updateText() {
@@ -234,7 +246,8 @@ public class MoneyFieldSkin implements Skin<MoneyField> {
 			// I have to clean some of this up because the formatter parsing isn't forgiving enough
 			// I am probably incorrect in assuming the currency symbol goes at the front...
 			String symbol = this.getSkinnable().getCurrency().getSymbol();
-			if (text.equals("") || text.equals(symbol)) {
+			String negative = "-";
+			if (text.equals("") || text.equals(symbol) || text.equals(negative) || text.equals(symbol + " " + negative)) {
 				// This thing is just the symbol or empty string, so newValue is going to be 0
 				newValue = value == null ? null : BigDecimal.ZERO;
 			}
@@ -249,10 +262,8 @@ public class MoneyFieldSkin implements Skin<MoneyField> {
 						? (BigDecimal) n
 						: new BigDecimal(n.doubleValue());
 			}
-			if (value != newValue) {
-				if (value == null || newValue == null || !value.equals(newValue)) {
-					this.control.setValue(newValue);
-				}
+			if (value != newValue && (value == null || newValue == null || !value.equals(newValue))) {
+				this.control.setValue(newValue);
 			}
 		}
 		catch (ParseException ex) {
@@ -265,7 +276,6 @@ public class MoneyFieldSkin implements Skin<MoneyField> {
 				// to end up in the wrong place.
 				Platform.runLater(() -> {
 					int caretPosition = this.textField.getCaretPosition();
-//					Currency currency = this.formatter.getCurrency();
 					String currencySymbol = this.getSkinnable().getCurrency().getSymbol();
 					
 					this.textField.insertText(0, currencySymbol + " ");
