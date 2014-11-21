@@ -42,8 +42,8 @@ public class LoonPane extends ItemPane {
 		
 		content.setId("particulier-tabs");
 		content.setTabClosingPolicy(TabClosingPolicy.UNAVAILABLE);
-		content.add(LoonType.INSTANT, this.instantController.getUI());
 		content.add(LoonType.PRODUCT, this.productController.getUI());
+		content.add(LoonType.INSTANT, this.instantController.getUI());
 		
 		this.type = content.getType().cast(LoonType.class);
 		

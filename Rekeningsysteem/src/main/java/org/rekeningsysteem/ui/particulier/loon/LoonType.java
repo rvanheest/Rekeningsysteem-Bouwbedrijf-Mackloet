@@ -4,8 +4,8 @@ import org.rekeningsysteem.ui.particulier.tabpane.ItemType;
 
 public enum LoonType implements ItemType {
 
-	INSTANT("Instant loon"),
-	PRODUCT("Product loon");
+	INSTANT("Loon"),
+	PRODUCT("Loon per uur");
 	
 	private final String tabname;
 	
