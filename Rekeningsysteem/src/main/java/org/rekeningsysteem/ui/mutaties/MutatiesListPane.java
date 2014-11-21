@@ -12,6 +12,10 @@ import org.rekeningsysteem.ui.mutaties.MutatiesListPane.MutatiesModel;
 
 public class MutatiesListPane extends AbstractListPane<MutatiesModel> {
 
+	public MutatiesListPane() {
+		super("Factuurlijst");
+	}
+
 	@Override
 	protected List<TableColumn<MutatiesModel, ?>> initTableColumns() {
 		TableColumn<MutatiesModel, String> omschrCol = new TableColumn<>("Omschrijving");

@@ -23,6 +23,7 @@ import org.rekeningsysteem.rxjavafx.Observables;
 import org.rekeningsysteem.ui.aangenomen.AangenomenController;
 import org.rekeningsysteem.ui.mutaties.MutatiesController;
 import org.rekeningsysteem.ui.offerte.OfferteController;
+import org.rekeningsysteem.ui.particulier.ParticulierController;
 import org.rekeningsysteem.ui.reparaties.ReparatiesController;
 
 import rx.Observable;
@@ -189,7 +190,7 @@ public class MainPane extends BorderPane {
 
 	private Observable<RekeningTab> initParticulierObservable() {
 		return Observables.fromNodeEvents(this.particulier, ActionEvent.ACTION)
-				.map(event -> new RekeningTab("Particulier factuur"));
+				.map(event -> new RekeningTab("Particulier factuur", new ParticulierController()));
 	}
 
 	private Observable<RekeningTab> initOfferteObservable() {

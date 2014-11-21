@@ -216,3 +216,18 @@
 	-fx-min-width: 74;
 	-fx-pref-width: 74;
 }
+
+#particulier-tabs {
+	-fx-side: top;
+}
+#particulier-tabs *.tab-header-background {
+    -fx-background-color: transparent;
+    -fx-effect: innershadow(gaussian, rgba(0, 0, 0, 0.7), 12, 0, 0, 0);
+}
+#particulier-tabs .tab-header-content-spacer {
+    -fx-padding: 0;
+    -fx-border-width: 0px;
+}
+#particulier-tabs .tab-label {
+    -fx-font-size: 1em;
+}

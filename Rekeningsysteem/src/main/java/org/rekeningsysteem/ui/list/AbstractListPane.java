@@ -28,8 +28,8 @@ public abstract class AbstractListPane<T> extends Page {
 	private final Button down = new Button();
 	private final Button add = new Button();
 
-	public AbstractListPane() {
-		super("Factuurlijst");
+	public AbstractListPane(String title) {
+		super(title);
 		
 		this.up.setId("up-button");
 		this.down.setId("down-button");

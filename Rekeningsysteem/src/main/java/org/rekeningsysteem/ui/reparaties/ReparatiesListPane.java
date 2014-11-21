@@ -12,6 +12,10 @@ import org.rekeningsysteem.ui.reparaties.ReparatiesListPane.ReparatiesModel;
 
 public class ReparatiesListPane extends AbstractListPane<ReparatiesModel> {
 
+	public ReparatiesListPane() {
+		super("Factuurlijst");
+	}
+
 	@Override
 	protected List<TableColumn<ReparatiesModel, ?>> initTableColumns() {
 		TableColumn<ReparatiesModel, String> omschrCol = new TableColumn<>("Omschrijving");

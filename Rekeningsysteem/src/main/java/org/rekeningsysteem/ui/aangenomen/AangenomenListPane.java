@@ -12,6 +12,10 @@ import org.rekeningsysteem.ui.list.MoneyCell;
 
 public class AangenomenListPane extends AbstractListPane<AangenomenModel> {
 
+	public AangenomenListPane() {
+		super("Factuurlijst");
+	}
+
 	@Override
 	protected List<TableColumn<AangenomenModel, ?>> initTableColumns() {
 		TableColumn<AangenomenModel, String> omschrCol = new TableColumn<>("Omschrijving");

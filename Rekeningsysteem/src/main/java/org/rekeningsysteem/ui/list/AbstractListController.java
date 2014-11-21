@@ -17,7 +17,8 @@ public abstract class AbstractListController<M extends ListItem, U> {
 	private final AbstractListPane<U> ui;
 	private final Observable<ItemList<M>> model;
 
-	public AbstractListController(Currency currency, AbstractListPane<U> ui, Func1<? super Currency, ? extends AbstractListItemController<M>> func) {
+	public AbstractListController(Currency currency, AbstractListPane<U> ui,
+			Func1<Currency, ? extends AbstractListItemController<? extends M>> func) {
 		this.ui = ui;
 		this.model = this.ui.getData().map(this::uiToModel);
 

@@ -3,18 +3,19 @@ package org.rekeningsysteem.application.working;
 import java.io.File;
 import java.util.Optional;
 
-import javafx.scene.control.SplitPane;
 import javafx.scene.control.Tab;
 
 import org.rekeningsysteem.data.aangenomen.AangenomenFactuur;
 import org.rekeningsysteem.data.mutaties.MutatiesFactuur;
 import org.rekeningsysteem.data.offerte.Offerte;
+import org.rekeningsysteem.data.particulier.ParticulierFactuur;
 import org.rekeningsysteem.data.reparaties.ReparatiesFactuur;
 import org.rekeningsysteem.data.util.AbstractRekening;
 import org.rekeningsysteem.ui.AbstractRekeningController;
 import org.rekeningsysteem.ui.aangenomen.AangenomenController;
 import org.rekeningsysteem.ui.mutaties.MutatiesController;
 import org.rekeningsysteem.ui.offerte.OfferteController;
+import org.rekeningsysteem.ui.particulier.ParticulierController;
 import org.rekeningsysteem.ui.reparaties.ReparatiesController;
 
 import rx.Observable;
@@ -26,13 +27,6 @@ public class RekeningTab extends Tab {
 	private final AbstractRekeningController<? extends AbstractRekening> controller;
 	private final PublishSubject<Boolean> modified = PublishSubject.create();
 	private Optional<File> saveFile;
-
-	@Deprecated
-	public RekeningTab(String name) {
-		super(name);
-		this.controller = null;
-		this.setContent(new SplitPane());
-	}
 
 	public RekeningTab(String name, AbstractRekeningController<? extends AbstractRekening> controller) {
 		this(name, controller, null);
@@ -93,12 +87,16 @@ public class RekeningTab extends Tab {
 				.filter(o -> o instanceof Offerte)
 				.cast(Offerte.class)
 				.map(OfferteController::new);
+		Observable<ParticulierController> particulier = factuur
+				.filter(p -> p instanceof ParticulierFactuur)
+				.cast(ParticulierFactuur.class)
+				.map(ParticulierController::new);
 		Observable<ReparatiesController> reparaties = factuur
 				.filter(m -> m instanceof ReparatiesFactuur)
 				.cast(ReparatiesFactuur.class)
 				.map(ReparatiesController::new);
 
-		return Observable.merge(aangenomen, mutaties, offerte, reparaties)
+		return Observable.merge(aangenomen, mutaties, offerte, particulier, reparaties)
 				.map(c -> new RekeningTab(file.getName(), c, file));
 	}
 
