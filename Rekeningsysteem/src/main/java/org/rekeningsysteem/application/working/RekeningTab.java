@@ -73,7 +73,6 @@ public class RekeningTab extends Tab {
 	public static Observable<RekeningTab> openFile(File file) {
 		// TODO remove GUICE
 		Observable<? extends AbstractRekening> factuur = ioWorker.load(file);
-		factuur.subscribe(System.out::println);
 
 		Observable<AangenomenController> aangenomen = factuur
 				.filter(a -> a instanceof AangenomenFactuur)

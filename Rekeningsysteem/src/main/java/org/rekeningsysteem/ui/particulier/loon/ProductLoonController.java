@@ -18,14 +18,14 @@ public class ProductLoonController {
 
 	public ProductLoonController(Currency currency, ProductLoon input) {
 		this(currency);
-		this.getUI().setOmschrijving(input.getOmschrijving());
 		this.getUI().setUren(input.getUren());
 		this.getUI().setUurloon(input.getUurloon().getBedrag());
 	}
 
 	public ProductLoonController(ProductLoonPane ui) {
 		this.ui = ui;
-		this.model = Observable.combineLatest(ui.getOmschrijving(), ui.getUren(), ui.getUurloon().map(Geld::new), ProductLoon::new);
+		this.model = Observable.combineLatest(ui.getUren(), ui.getUurloon().map(Geld::new),
+				(u, uurloon) -> new ProductLoon("Uurloon à " + uurloon.getBedrag(), u, uurloon));
 	}
 
 	public ProductLoonPane getUI() {

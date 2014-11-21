@@ -68,7 +68,6 @@ public class LoonPane extends ItemPane {
 	}
 
 	public void setProductLoon(ProductLoon loon) {
-		this.productController.getUI().setOmschrijving(loon.getOmschrijving());
 		this.productController.getUI().setUren(loon.getUren());
 		this.productController.getUI().setUurloon(loon.getUurloon().getBedrag());
 	}

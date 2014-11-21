@@ -6,6 +6,7 @@ import java.util.List;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.cell.PropertyValueFactory;
 
+import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.ui.list.AbstractListPane;
 import org.rekeningsysteem.ui.list.MoneyCell;
 import org.rekeningsysteem.ui.particulier.loon.LoonListPane.LoonModel;
@@ -20,33 +21,29 @@ public class LoonListPane extends AbstractListPane<LoonModel> {
 	protected List<TableColumn<LoonModel, ?>> initTableColumns() {
 		TableColumn<LoonModel, String> omschrCol = new TableColumn<>("Omschrijving");
 		TableColumn<LoonModel, Double> urenCol = new TableColumn<>("Uren");
-		TableColumn<LoonModel, Double> uurloonCol = new TableColumn<>("Uurloon");
 		TableColumn<LoonModel, Double> loonCol = new TableColumn<>("Loon");
 		
 		omschrCol.setMinWidth(200);
 		urenCol.setMinWidth(50);
-		uurloonCol.setMinWidth(90);
 		loonCol.setMinWidth(90);
 		
 		omschrCol.setCellValueFactory(new PropertyValueFactory<>("omschrijving"));
 		urenCol.setCellValueFactory(new PropertyValueFactory<>("uren"));
-		uurloonCol.setCellValueFactory(new PropertyValueFactory<>("uurloon"));
 		loonCol.setCellValueFactory(new PropertyValueFactory<>("loon"));
 		
-		uurloonCol.setCellFactory(param -> new MoneyCell<>());
 		loonCol.setCellFactory(param -> new MoneyCell<>());
 		
-		return Arrays.asList(omschrCol, urenCol, uurloonCol, loonCol, this.getDeleteCol());
+		return Arrays.asList(omschrCol, urenCol, loonCol, this.getDeleteCol());
 	}
 
 	public static class LoonModel {
 
 		private final String omschrijving;
 		private final String uren;
-		private final double uurloon;
+		private final Geld uurloon;
 		private final double loon;
 
-		public LoonModel(String omschrijving, String uren, double uurloon, double loon) {
+		public LoonModel(String omschrijving, String uren, Geld uurloon, double loon) {
 			this.omschrijving = omschrijving;
 			this.uren = uren;
 			this.uurloon = uurloon;
@@ -60,8 +57,8 @@ public class LoonListPane extends AbstractListPane<LoonModel> {
 		public String getUren() {
 			return this.uren;
 		}
-
-		public double getUurloon() {
+		
+		public Geld getUurloon() {
 			return this.uurloon;
 		}
 

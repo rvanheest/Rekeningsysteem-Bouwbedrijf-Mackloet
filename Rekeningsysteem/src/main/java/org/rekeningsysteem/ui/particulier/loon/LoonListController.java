@@ -32,13 +32,13 @@ public class LoonListController extends AbstractListController<AbstractLoon, Loo
 		return list.stream().map(item -> {
 			if (item instanceof InstantLoon) {
 				InstantLoon loon = (InstantLoon) item;
-				return new LoonModel(loon.getOmschrijving(), "", 0.0, loon.getLoon().getBedrag());
+				return new LoonModel(loon.getOmschrijving(), "", null, loon.getLoon().getBedrag());
 			}
 			else {
 				assert item instanceof ProductLoon;
 				ProductLoon loon = (ProductLoon) item;
 				return new LoonModel(loon.getOmschrijving(), String.valueOf(loon.getUren()),
-						loon.getUurloon().getBedrag(), loon.getLoon().getBedrag());
+						loon.getUurloon(), loon.getLoon().getBedrag());
 			}
 		}).collect(Collectors.toList());
 	}
@@ -48,10 +48,10 @@ public class LoonListController extends AbstractListController<AbstractLoon, Loo
 		return list.stream().map(item -> {
 			String omschrijving = item.getOmschrijving();
 			String uren = item.getUren();
-			Geld uurloon = new Geld(item.getUurloon());
+			Geld uurloon = item.getUurloon();
 			Geld loon = new Geld(item.getLoon());
 			
-			if ("".equals(uren)) {
+			if (uurloon == null) {
 				return new InstantLoon(omschrijving, loon);
 			}
 			else {
