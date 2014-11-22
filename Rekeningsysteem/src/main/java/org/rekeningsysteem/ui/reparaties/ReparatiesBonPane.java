@@ -62,13 +62,13 @@ public class ReparatiesBonPane extends ItemPane {
 
 		content.add(omschrL, 0, 0);
 		content.add(bonnrL, 0, 1);
-		content.add(loonL, 0, 3);
-		content.add(materiaalL, 0, 2);
+		content.add(loonL, 0, 2);
+		content.add(materiaalL, 0, 3);
 
 		content.add(this.omschrTF, 1, 0);
 		content.add(this.bonnrTF, 1, 1);
-		content.add(this.loonTF, 1, 3);
-		content.add(this.materiaalTF, 1, 2);
+		content.add(this.loonTF, 1, 2);
+		content.add(this.materiaalTF, 1, 3);
 
 		return content;
 	}

@@ -59,13 +59,13 @@ public class AangenomenListItemPane extends ItemPane {
 		Label materiaalL = new Label("Materiaal");
 
 		content.add(omschrL, 0, 0);
-		content.add(loonL, 0, 2);
-		content.add(materiaalL, 0, 1);
+		content.add(loonL, 0, 1);
+		content.add(materiaalL, 0, 2);
 
 		content.add(this.omschrTF, 1, 0);
-		content.add(this.loonTF, 1, 2);
-		content.add(this.materiaalTF, 1, 1);
-
+		content.add(this.loonTF, 1, 1);
+		content.add(this.materiaalTF, 1, 2);
+		
 		return content;
 	}
 

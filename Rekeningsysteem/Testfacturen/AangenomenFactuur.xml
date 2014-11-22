@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<bestand type="AangenomenFactuur">
+    <rekening>
+        <factuurHeader>
+            <debiteur>
+                <naam>Name</naam>
+                <straat>Street</straat>
+                <nummer>Number</nummer>
+                <postcode>1234AB</postcode>
+                <plaats>Place</plaats>
+                <btwNummer>123456789</btwNummer>
+            </debiteur>
+            <datum>
+                <dag>22</dag>
+                <maand>11</maand>
+                <jaar>2014</jaar>
+            </datum>
+            <factuurnummer>82014</factuurnummer>
+            <omschrijving>Voor u verrichte werkzaamheden betreffende renovatie badkamer volgens offertenr. 22012</omschrijving>
+        </factuurHeader>
+        <currency>EUR</currency>
+        <list>
+            <list-item>
+                <omschrijving>Hoofdaannemer</omschrijving>
+                <loon>
+                    <bedrag>5183.75</bedrag>
+                </loon>
+                <materiaal>
+                    <bedrag>2791.25</bedrag>
+                </materiaal>
+            </list-item>
+            <list-item>
+                <omschrijving>Onderaannemer 1</omschrijving>
+                <loon>
+                    <bedrag>1314.8</bedrag>
+                </loon>
+                <materiaal>
+                    <bedrag>1972.2</bedrag>
+                </materiaal>
+            </list-item>
+            <list-item>
+                <omschrijving>Onderaannemer 2</omschrijving>
+                <loon>
+                    <bedrag>5667.0</bedrag>
+                </loon>
+                <materiaal>
+                    <bedrag>2300.0</bedrag>
+                </materiaal>
+            </list-item>
+            <list-item>
+                <omschrijving>In mindering gebracht 16 uur arbeid + container</omschrijving>
+                <loon>
+                    <bedrag>-800.0</bedrag>
+                </loon>
+                <materiaal>
+                    <bedrag>0.0</bedrag>
+                </materiaal>
+            </list-item>
+        </list>
+        <btwPercentage>
+            <loonPercentage>6.0</loonPercentage>
+            <materiaalPercentage>21.0</materiaalPercentage>
+        </btwPercentage>
+    </rekening>
+</bestand>

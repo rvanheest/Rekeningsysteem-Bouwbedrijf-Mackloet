@@ -60,6 +60,8 @@ public class MutatiesBonPane extends ItemPane {
 		content.add(this.omschrTF, 1, 0);
 		content.add(this.bonnrTF, 1, 1);
 		content.add(this.prijsTF, 1, 2);
+		
+		this.omschrTF.requestFocus();
 
 		return content;
 	}
