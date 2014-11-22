@@ -6,6 +6,8 @@ import java.util.Optional;
 import org.rekeningsysteem.application.working.RekeningSplitPane;
 import org.rekeningsysteem.data.reparaties.ReparatiesFactuur;
 import org.rekeningsysteem.data.util.BtwPercentage;
+import org.rekeningsysteem.properties.Optionals;
+import org.rekeningsysteem.properties.PropertiesWorker;
 import org.rekeningsysteem.properties.PropertyModelEnum;
 import org.rekeningsysteem.ui.AbstractRekeningController;
 import org.rekeningsysteem.ui.header.FactuurHeaderController;
@@ -17,7 +19,18 @@ public class ReparatiesController extends AbstractRekeningController<ReparatiesF
 	private final FactuurHeaderController headerController;
 
 	public ReparatiesController() {
-		this(Currency.getInstance("EUR"), new BtwPercentage(0.0, 0.0));
+		this(PropertiesWorker.getInstance());
+	}
+
+	public ReparatiesController(PropertiesWorker properties) {
+		this(properties.getProperty(PropertyModelEnum.VALUTAISO4217)
+				.map(Currency::getInstance)
+				.orElse(Currency.getInstance("EUR")),
+				Optionals.zip(properties.getProperty(PropertyModelEnum.LOONBTWPERCENTAGE)
+						.map(Double::parseDouble),
+						properties.getProperty(PropertyModelEnum.MATERIAALBTWPERCENTAGE)
+								.map(Double::parseDouble), BtwPercentage::new)
+						.orElse(new BtwPercentage(0.0, 0.0)));
 	}
 
 	public ReparatiesController(Currency currency, BtwPercentage btw) {
@@ -30,12 +43,11 @@ public class ReparatiesController extends AbstractRekeningController<ReparatiesF
 						input.getBtwPercentage()));
 	}
 
-	public ReparatiesController(FactuurHeaderController header,
-			ReparatiesListPaneController body) {
+	public ReparatiesController(FactuurHeaderController header, ReparatiesListPaneController body) {
 		super(new RekeningSplitPane(header.getUI(), body.getUI()),
 				Observable.combineLatest(header.getModel(), body.getListModel(),
-				body.getBtwModel(),
-				(head, list, btw) -> new ReparatiesFactuur(head, body.getCurrency(), list, btw)));
+						body.getBtwModel(), (head, list, btw) ->
+						new ReparatiesFactuur(head, body.getCurrency(), list, btw)));
 		this.headerController = header;
 	}
 

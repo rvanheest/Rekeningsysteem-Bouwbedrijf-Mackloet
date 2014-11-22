@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.rekeningsysteem.application.working.RekeningSplitPane;
 import org.rekeningsysteem.data.offerte.Offerte;
+import org.rekeningsysteem.properties.PropertiesWorker;
 import org.rekeningsysteem.properties.PropertyModelEnum;
 import org.rekeningsysteem.ui.AbstractRekeningController;
 
@@ -15,7 +16,13 @@ public class OfferteController extends AbstractRekeningController<Offerte> {
 	private final OfferteHeaderController headerController;
 
 	public OfferteController() {
-		this(Currency.getInstance("EUR"));
+		this(PropertiesWorker.getInstance());
+	}
+
+	public OfferteController(PropertiesWorker properties) {
+		this(properties.getProperty(PropertyModelEnum.VALUTAISO4217)
+				.map(Currency::getInstance)
+				.orElse(Currency.getInstance("EUR")));
 	}
 
 	public OfferteController(Currency currency) {

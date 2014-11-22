@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.rekeningsysteem.application.working.RekeningSplitPane;
 import org.rekeningsysteem.data.mutaties.MutatiesFactuur;
 import org.rekeningsysteem.data.util.BtwPercentage;
+import org.rekeningsysteem.properties.PropertiesWorker;
 import org.rekeningsysteem.properties.PropertyModelEnum;
 import org.rekeningsysteem.ui.AbstractRekeningController;
 import org.rekeningsysteem.ui.header.FactuurHeaderController;
@@ -17,7 +18,14 @@ public class MutatiesController extends AbstractRekeningController<MutatiesFactu
 	private final FactuurHeaderController headerController;
 
 	public MutatiesController() {
-		this(Currency.getInstance("EUR"), new BtwPercentage(0.0, 0.0));
+		this(PropertiesWorker.getInstance());
+	}
+
+	public MutatiesController(PropertiesWorker properties) {
+		this(properties.getProperty(PropertyModelEnum.VALUTAISO4217)
+				.map(Currency::getInstance)
+				.orElse(Currency.getInstance("EUR")),
+				new BtwPercentage(0.0, 0.0));
 	}
 
 	public MutatiesController(Currency currency, BtwPercentage btw) {
@@ -34,8 +42,8 @@ public class MutatiesController extends AbstractRekeningController<MutatiesFactu
 			MutatiesListPaneController body) {
 		super(new RekeningSplitPane(header.getUI(), body.getUI()),
 				Observable.combineLatest(header.getModel(), body.getListModel(),
-				body.getBtwModel(),
-				(head, list, btw) -> new MutatiesFactuur(head, body.getCurrency(), list, btw)));
+						body.getBtwModel(), (head, list, btw) ->
+						new MutatiesFactuur(head, body.getCurrency(), list, btw)));
 		this.headerController = header;
 	}
 

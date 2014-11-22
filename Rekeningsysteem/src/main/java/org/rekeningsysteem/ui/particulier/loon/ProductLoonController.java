@@ -4,6 +4,8 @@ import java.util.Currency;
 
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.data.util.loon.ProductLoon;
+import org.rekeningsysteem.properties.PropertiesWorker;
+import org.rekeningsysteem.properties.PropertyModelEnum;
 
 import rx.Observable;
 
@@ -13,7 +15,14 @@ public class ProductLoonController {
 	private final Observable<ProductLoon> model;
 
 	public ProductLoonController(Currency currency) {
+		this(currency, PropertiesWorker.getInstance());
+	}
+
+	public ProductLoonController(Currency currency, PropertiesWorker properties) {
 		this(new ProductLoonPane(currency));
+		properties.getProperty(PropertyModelEnum.UURLOON)
+				.map(Double::parseDouble)
+				.ifPresent(this.getUI()::setUurloon);
 	}
 
 	public ProductLoonController(Currency currency, ProductLoon input) {

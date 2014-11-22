@@ -15,6 +15,10 @@ public class PdfExporter implements FactuurExporter {
 	public PdfExporter() {
 		this(new PdfExporterVisitor(new PdfListItemVisitor()), ApplicationLogger.getInstance());
 	}
+	
+	public PdfExporter(boolean autoOpen) {
+		this(new PdfExporterVisitor(autoOpen, new PdfListItemVisitor()), ApplicationLogger.getInstance());
+	}
 
 	public PdfExporter(PdfExporterVisitor visitor) {
 		this(visitor, ApplicationLogger.getInstance());

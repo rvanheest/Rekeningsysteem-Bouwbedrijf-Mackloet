@@ -30,15 +30,22 @@ import de.nixosoft.jlr.JLROpener;
 
 public class PdfExporterVisitor implements RekeningVisitor {
 
+	private final boolean autoOpen;
 	private final PropertiesWorker properties;
-	private File saveLocation;
 	private final ListItemVisitor<List<String>> itemVisitor;
+	private File saveLocation;
 
 	public PdfExporterVisitor(ListItemVisitor<List<String>> itemVisitor) {
-		this(PropertiesWorker.getInstance(), itemVisitor);
+		this(true, PropertiesWorker.getInstance(), itemVisitor);
 	}
 
-	public PdfExporterVisitor(PropertiesWorker properties, ListItemVisitor<List<String>> itemVisitor) {
+	public PdfExporterVisitor(boolean autoOpen, ListItemVisitor<List<String>> itemVisitor) {
+		this(autoOpen, PropertiesWorker.getInstance(), itemVisitor);
+	}
+
+	public PdfExporterVisitor(boolean autoOpen, PropertiesWorker properties,
+			ListItemVisitor<List<String>> itemVisitor) {
+		this.autoOpen = autoOpen;
 		this.properties = properties;
 		this.itemVisitor = itemVisitor;
 	}
@@ -70,7 +77,9 @@ public class PdfExporterVisitor implements RekeningVisitor {
 		
 		FileUtils.deleteDirectory(tempTemplateDir);
 		
-//		JLROpener.open(this.saveLocation);
+		if (this.autoOpen) {
+			JLROpener.open(this.saveLocation);
+		}
 	}
 
 	@Override

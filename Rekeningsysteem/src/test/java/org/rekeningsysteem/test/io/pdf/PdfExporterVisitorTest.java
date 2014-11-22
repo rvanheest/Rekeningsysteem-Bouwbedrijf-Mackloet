@@ -24,7 +24,7 @@ public class PdfExporterVisitorTest {
 
 	@Before
 	public void setUp() {
-		this.visitor = new PdfExporterVisitor(this.properties, this.itemVisitor);
+		this.visitor = new PdfExporterVisitor(false, this.properties, this.itemVisitor);
 		this.visitor.setSaveLocation(this.mockedFile);
 	}
 

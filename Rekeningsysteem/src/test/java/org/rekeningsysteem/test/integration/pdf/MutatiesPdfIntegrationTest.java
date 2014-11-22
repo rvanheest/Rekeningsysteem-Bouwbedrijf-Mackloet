@@ -21,7 +21,7 @@ public class MutatiesPdfIntegrationTest {
 
 	@Before
 	public void setUp() {
-		this.exporter = new PdfExporter();
+		this.exporter = new PdfExporter(false);
 	}
 
 	@Test

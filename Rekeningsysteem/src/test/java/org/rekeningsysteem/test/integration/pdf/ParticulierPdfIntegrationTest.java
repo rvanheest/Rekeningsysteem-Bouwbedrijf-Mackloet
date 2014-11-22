@@ -68,7 +68,7 @@ public class ParticulierPdfIntegrationTest {
 
 	@Before
 	public void setUp() {
-		this.exporter = new PdfExporter();
+		this.exporter = new PdfExporter(false);
 	}
 
 	@Test
