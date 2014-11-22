@@ -30,7 +30,6 @@ public abstract class AbstractRekeningController<M extends AbstractRekening> {
 	public abstract void initFactuurnummer();
 
 	protected final Func1<PropertyKey, FactuurnummerManager> getFactuurnummerFactory() {
-		// TODO Deze PropertyFactuurnummerManager checken
 		return PropertyFactuurnummerManager::new;
 	}
 }

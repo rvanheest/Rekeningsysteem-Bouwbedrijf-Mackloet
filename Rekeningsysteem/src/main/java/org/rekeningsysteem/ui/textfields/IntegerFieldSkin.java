@@ -6,6 +6,8 @@ import java.text.ParseException;
 import java.util.Locale;
 import java.util.Optional;
 
+import org.rekeningsysteem.logging.ApplicationLogger;
+
 import javafx.beans.InvalidationListener;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -163,7 +165,7 @@ public class IntegerFieldSkin implements Skin<IntegerField> {
 			}
 		}
 		catch (ParseException ex) {
-			ex.printStackTrace();
+			ApplicationLogger.getInstance().error(ex);
 		}
 		finally {
 			this.ignoreValueUpdate = false;

@@ -7,6 +7,8 @@ import java.text.ParseException;
 import java.util.Locale;
 import java.util.Optional;
 
+import org.rekeningsysteem.logging.ApplicationLogger;
+
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.event.ActionEvent;
@@ -267,7 +269,7 @@ public class MoneyFieldSkin implements Skin<MoneyField> {
 			}
 		}
 		catch (ParseException ex) {
-			ex.printStackTrace();
+			ApplicationLogger.getInstance().error(ex);
 		}
 		finally {
 			this.ignoreValueUpdate = false;

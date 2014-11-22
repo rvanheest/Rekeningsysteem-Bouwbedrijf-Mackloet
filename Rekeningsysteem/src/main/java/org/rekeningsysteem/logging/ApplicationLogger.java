@@ -44,7 +44,8 @@ public class ApplicationLogger {
 			logger.addAppender(fileAppender);
 		}
 		catch (IOException e) {
-			e.printStackTrace();
+			// should not happen
+			consoleInstance().fatal("Failure in FileAppender", e);
 		}
 
 		return logger;
