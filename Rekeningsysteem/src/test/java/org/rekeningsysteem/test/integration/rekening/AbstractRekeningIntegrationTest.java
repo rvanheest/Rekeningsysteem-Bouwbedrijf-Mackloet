@@ -11,12 +11,8 @@ import org.junit.Test;
 import org.rekeningsysteem.data.util.AbstractRekening;
 import org.rekeningsysteem.io.FactuurLoader;
 import org.rekeningsysteem.io.FactuurSaver;
-import org.rekeningsysteem.io.xml.guice.XmlMakerModule;
-import org.rekeningsysteem.io.xml.guice.XmlReaderModule;
-import org.rekeningsysteem.logging.ConsoleLoggerModule;
-
-import com.google.inject.Guice;
-import com.google.inject.Injector;
+import org.rekeningsysteem.io.xml.XmlMaker;
+import org.rekeningsysteem.io.xml.XmlReader;
 
 public abstract class AbstractRekeningIntegrationTest {
 
@@ -51,11 +47,8 @@ public abstract class AbstractRekeningIntegrationTest {
 
 	@Test
 	public void testXML() {
-		Injector injector = Guice.createInjector(new XmlMakerModule(), new XmlReaderModule(),
-				new ConsoleLoggerModule());
-
-		FactuurSaver maker = injector.getInstance(FactuurSaver.class);
-		FactuurLoader reader = injector.getInstance(FactuurLoader.class);
+		FactuurSaver maker = new XmlMaker();
+		FactuurLoader reader = new XmlReader();
 
 		maker.save(this.rekening, this.file);
 

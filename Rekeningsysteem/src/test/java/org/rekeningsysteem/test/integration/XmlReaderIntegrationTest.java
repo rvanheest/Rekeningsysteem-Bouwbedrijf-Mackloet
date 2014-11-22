@@ -15,23 +15,16 @@ import org.rekeningsysteem.data.reparaties.ReparatiesFactuur;
 import org.rekeningsysteem.io.FactuurLoader;
 import org.rekeningsysteem.io.xml.OldXmlReader;
 import org.rekeningsysteem.io.xml.XmlReader;
-import org.rekeningsysteem.io.xml.guice.XmlReaderModule;
-
-import com.google.inject.Guice;
-import com.google.inject.Injector;
 
 public class XmlReaderIntegrationTest {
 
-	private Injector injector;
 	private FactuurLoader newLoader;
 	private FactuurLoader oldLoader;
 
 	@Before
 	public void setUp() {
-		this.injector = Guice.createInjector(new XmlReaderModule());
-
-		this.newLoader = this.injector.getInstance(XmlReader.class);
-		this.oldLoader = this.injector.getInstance(OldXmlReader.class);
+		this.newLoader = new XmlReader();
+		this.oldLoader = new OldXmlReader();
 	}
 
 	@Test

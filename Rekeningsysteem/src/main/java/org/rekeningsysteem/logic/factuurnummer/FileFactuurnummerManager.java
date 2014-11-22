@@ -7,11 +7,9 @@ import java.util.Optional;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
+import org.rekeningsysteem.logging.ApplicationLogger;
 import org.rekeningsysteem.properties.PropertiesWorker;
 import org.rekeningsysteem.properties.PropertyKey;
-
-import com.google.inject.Inject;
-import com.google.inject.assistedinject.Assisted;
 
 public class FileFactuurnummerManager implements FactuurnummerManager {
 
@@ -19,13 +17,16 @@ public class FileFactuurnummerManager implements FactuurnummerManager {
 	private Optional<String> factNr;
 	private final Logger logger;
 
-	@Inject
-	public FileFactuurnummerManager(PropertiesWorker worker, @Assisted PropertyKey fileProp, Logger logger) {
+	public FileFactuurnummerManager(PropertyKey key) {
+		this(PropertiesWorker.getInstance(), key, ApplicationLogger.getInstance());
+	}
+
+	public FileFactuurnummerManager(PropertiesWorker worker, PropertyKey fileProp, Logger logger) {
 		this.file = worker.getProperty(fileProp).map(File::new);
 		this.factNr = Optional.empty();
 		this.logger = logger;
 	}
-	
+
 	private Optional<String> readFromFile() {
 		return this.file.map(f -> {
 			try {

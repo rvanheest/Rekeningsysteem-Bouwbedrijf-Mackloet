@@ -30,8 +30,6 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
 
-import com.google.inject.Inject;
-
 public class MainPane extends BorderPane {
 
 	private RekeningToolbar toolbar;
@@ -47,7 +45,6 @@ public class MainPane extends BorderPane {
 	private Button pdf;
 	private Button settings;
 
-	@Inject
 	public MainPane(Stage stage) {
 		this.setId("main-pane");
 		this.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);

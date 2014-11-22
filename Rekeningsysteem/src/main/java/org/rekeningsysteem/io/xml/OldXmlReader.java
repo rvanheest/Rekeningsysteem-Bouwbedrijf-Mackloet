@@ -9,6 +9,8 @@ import java.util.Currency;
 
 import javax.management.modelmbean.XMLParseException;
 import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.rekeningsysteem.data.mutaties.MutatiesBon;
 import org.rekeningsysteem.data.mutaties.MutatiesFactuur;
@@ -39,14 +41,21 @@ import org.xml.sax.SAXException;
 
 import rx.Observable;
 
-import com.google.inject.Inject;
-
 public class OldXmlReader implements FactuurLoader {
 
 	private Currency currency;
 	private DocumentBuilder builder;
 
-	@Inject
+	public OldXmlReader() {
+		try {
+			this.builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+		}
+		catch (ParserConfigurationException e) {
+			// TODO should not happen!!! Logging.
+			e.printStackTrace();
+		}
+	}
+	
 	public OldXmlReader(DocumentBuilder builder) {
 		this.builder = builder;
 	}
@@ -190,7 +199,7 @@ public class OldXmlReader implements FactuurLoader {
 	}
 
 	private Observable<AnderArtikel> makeAnderArtikel(Node node) {
-		Node temp = ((Element) node).getElementsByTagName("artikel").item(0); //TODO gaat dit wel goed? er zit nog een niveau tussen...
+		Node temp = ((Element) node).getElementsByTagName("artikel").item(0);
 		Observable<String> omschrijving = this.getNodeValue(temp, "omschrijving");
 		Observable<Geld> prijs = this.getNodeValue(((Element) node).getElementsByTagName("prijs")).flatMap(this::makeGeld);
 

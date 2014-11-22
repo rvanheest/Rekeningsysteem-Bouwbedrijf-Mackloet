@@ -9,12 +9,7 @@ import org.rekeningsysteem.data.offerte.Offerte;
 import org.rekeningsysteem.data.util.header.Debiteur;
 import org.rekeningsysteem.data.util.header.FactuurHeader;
 import org.rekeningsysteem.io.FactuurExporter;
-import org.rekeningsysteem.io.pdf.guice.PdfExporterModule;
-import org.rekeningsysteem.logging.ConsoleLoggerModule;
-import org.rekeningsysteem.properties.guice.ConfigPropertiesModule;
-
-import com.google.inject.Guice;
-import com.google.inject.Injector;
+import org.rekeningsysteem.io.pdf.PdfExporter;
 
 public class OffertePdfIntegrationTest {
 
@@ -48,9 +43,7 @@ public class OffertePdfIntegrationTest {
 
 	@Before
 	public void setUp() {
-		Injector injector = Guice.createInjector(new PdfExporterModule(),
-				new ConfigPropertiesModule(), new ConsoleLoggerModule());
-		this.exporter = injector.getInstance(FactuurExporter.class);
+		this.exporter = new PdfExporter();
 	}
 
 	@Test

@@ -47,19 +47,6 @@
 			<scope>test</scope>
 		</dependency>
 		
-		<!-- Dependency injection -->
-		<dependency>
-			<groupId>com.google.inject</groupId>
-			<artifactId>guice</artifactId>
-			<version>4.0-beta5</version>
-		</dependency>
-
-		<dependency>
-			<groupId>com.google.inject.extensions</groupId>
-			<artifactId>guice-assistedinject</artifactId>
-			<version>4.0-beta5</version>
-		</dependency>
-		
 		<!-- Reactive Programming -->
 		<dependency>
 			<groupId>com.netflix.rxjava</groupId>

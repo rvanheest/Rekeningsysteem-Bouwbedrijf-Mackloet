@@ -20,12 +20,6 @@ import org.rekeningsysteem.data.util.loon.AbstractLoon;
 import org.rekeningsysteem.data.util.loon.InstantLoon;
 import org.rekeningsysteem.data.util.loon.ProductLoon;
 import org.rekeningsysteem.io.pdf.PdfExporter;
-import org.rekeningsysteem.io.pdf.guice.PdfExporterModule;
-import org.rekeningsysteem.logging.ConsoleLoggerModule;
-import org.rekeningsysteem.properties.guice.ConfigPropertiesModule;
-
-import com.google.inject.Guice;
-import com.google.inject.Injector;
 
 public class ParticulierPdfIntegrationTest {
 
@@ -74,9 +68,7 @@ public class ParticulierPdfIntegrationTest {
 
 	@Before
 	public void setUp() {
-		Injector injector = Guice.createInjector(new PdfExporterModule(),
-				new ConfigPropertiesModule(), new ConsoleLoggerModule());
-		this.exporter = injector.getInstance(PdfExporter.class);
+		this.exporter = new PdfExporter();
 	}
 
 	@Test

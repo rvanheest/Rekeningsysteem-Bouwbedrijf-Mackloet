@@ -42,7 +42,7 @@ public class ReparatiesController extends AbstractRekeningController<ReparatiesF
 	@Override
 	public void initFactuurnummer() {
 		String factuurnummer = this.getFactuurnummerFactory()
-				.create(PropertyModelEnum.FACTUURNUMMER)
+				.call(PropertyModelEnum.FACTUURNUMMER)
 				.getFactuurnummer();
 		this.headerController.initFactuurnummer(Optional.ofNullable(factuurnummer));
 	}

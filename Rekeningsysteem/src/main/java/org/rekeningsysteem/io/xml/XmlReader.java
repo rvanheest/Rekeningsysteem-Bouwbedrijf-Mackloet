@@ -2,15 +2,18 @@ package org.rekeningsysteem.io.xml;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 
+import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.rekeningsysteem.data.util.AbstractRekening;
 import org.rekeningsysteem.io.FactuurLoader;
-import org.rekeningsysteem.io.xml.guice.UnmarshallerMap;
 import org.rekeningsysteem.io.xml.root.AangenomenFactuurRoot;
 import org.rekeningsysteem.io.xml.root.MutatiesFactuurRoot;
 import org.rekeningsysteem.io.xml.root.OfferteRoot;
@@ -24,16 +27,36 @@ import org.xml.sax.SAXException;
 
 import rx.Observable;
 
-import com.google.inject.Inject;
-
 public class XmlReader implements FactuurLoader {
 
+	//TODO can we refactor out this map?
 	private final Map<Class<? extends Root<?>>, Unmarshaller> map;
 	private DocumentBuilder builder;
 
-	@Inject
-	public XmlReader(@UnmarshallerMap Map<Class<? extends Root<?>>, Unmarshaller> map,
-			DocumentBuilder builder) {
+	public XmlReader() {
+		this.map = new HashMap<>();
+		
+		try {
+			this.builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+
+    		this.map.put(AangenomenFactuurRoot.class,
+    				JAXBContext.newInstance(AangenomenFactuurRoot.class).createUnmarshaller());
+    		this.map.put(MutatiesFactuurRoot.class,
+    				JAXBContext.newInstance(MutatiesFactuurRoot.class).createUnmarshaller());
+    		this.map.put(OfferteRoot.class,
+    				JAXBContext.newInstance(OfferteRoot.class).createUnmarshaller());
+    		this.map.put(ParticulierFactuurRoot.class,
+    				JAXBContext.newInstance(ParticulierFactuurRoot.class).createUnmarshaller());
+    		this.map.put(ReparatiesFactuurRoot.class,
+    				JAXBContext.newInstance(ReparatiesFactuurRoot.class).createUnmarshaller());
+		}
+		catch (JAXBException | ParserConfigurationException e) {
+			// TODO should not happen!!! Logging.
+			e.printStackTrace();
+		}
+	}
+
+	public XmlReader(Map<Class<? extends Root<?>>, Unmarshaller> map, DocumentBuilder builder) {
 		this.map = map;
 		this.builder = builder;
 	}

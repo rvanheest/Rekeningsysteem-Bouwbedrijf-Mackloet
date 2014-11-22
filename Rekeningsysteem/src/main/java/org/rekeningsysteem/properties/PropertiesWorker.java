@@ -9,22 +9,29 @@ import java.util.Properties;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
-import org.rekeningsysteem.properties.guice.PropertiesFile;
-import org.rekeningsysteem.properties.guice.PropertiesObject;
+import org.rekeningsysteem.logging.ApplicationLogger;
 
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
-
-@Singleton
 public class PropertiesWorker {
+
+	private static PropertiesWorker __instance;
+
+	public static PropertiesWorker getInstance() {
+		if (__instance == null) {
+			__instance = new PropertiesWorker(new Properties(), new File("config.properties"),
+					ApplicationLogger.getInstance());
+		}
+		return __instance;
+	}
+
+	public static PropertiesWorker getInstance(Properties properties, File file, Logger logger) {
+		return new PropertiesWorker(properties, file, logger);
+	}
 
 	private final Properties properties;
 	private final File file;
 	private Logger logger;
 
-	@Inject
-	public PropertiesWorker(@PropertiesObject Properties properties, @PropertiesFile File file,
-			Logger logger) {
+	public PropertiesWorker(Properties properties, File file, Logger logger) {
 		this.properties = properties;
 		this.file = file;
 		this.logger = logger;

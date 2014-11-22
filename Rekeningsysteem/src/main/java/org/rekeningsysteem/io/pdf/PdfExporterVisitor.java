@@ -25,8 +25,6 @@ import org.rekeningsysteem.exception.PdfException;
 import org.rekeningsysteem.properties.PropertiesWorker;
 import org.rekeningsysteem.properties.PropertyModelEnum;
 
-import com.google.inject.Inject;
-
 import de.nixosoft.jlr.JLRGenerator;
 import de.nixosoft.jlr.JLROpener;
 
@@ -36,7 +34,10 @@ public class PdfExporterVisitor implements RekeningVisitor {
 	private File saveLocation;
 	private final ListItemVisitor<List<String>> itemVisitor;
 
-	@Inject
+	public PdfExporterVisitor(ListItemVisitor<List<String>> itemVisitor) {
+		this(PropertiesWorker.getInstance(), itemVisitor);
+	}
+
 	public PdfExporterVisitor(PropertiesWorker properties, ListItemVisitor<List<String>> itemVisitor) {
 		this.properties = properties;
 		this.itemVisitor = itemVisitor;
@@ -61,7 +62,7 @@ public class PdfExporterVisitor implements RekeningVisitor {
 		File resultTex = new File(tempTemplateDir.getAbsolutePath() + "\\" + pdfName + ".tex");
 		
 		File templateDir = templateTex.getParentFile();
-		
+
 		PdfConverter converter = new PdfConverter(templateDir);
 		convert.accept(converter);
 		this.parse(converter, templateTex, resultTex);
@@ -69,7 +70,7 @@ public class PdfExporterVisitor implements RekeningVisitor {
 		
 		FileUtils.deleteDirectory(tempTemplateDir);
 		
-		JLROpener.open(this.saveLocation);
+//		JLROpener.open(this.saveLocation);
 	}
 
 	@Override

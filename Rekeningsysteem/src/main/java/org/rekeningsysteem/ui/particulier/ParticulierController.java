@@ -44,7 +44,7 @@ public class ParticulierController extends AbstractRekeningController<Particulie
 	@Override
 	public void initFactuurnummer() {
 		String factuurnummer = this.getFactuurnummerFactory()
-				.create(PropertyModelEnum.FACTUURNUMMER)
+				.call(PropertyModelEnum.FACTUURNUMMER)
 				.getFactuurnummer();
 		this.headerController.initFactuurnummer(Optional.ofNullable(factuurnummer));
 	}

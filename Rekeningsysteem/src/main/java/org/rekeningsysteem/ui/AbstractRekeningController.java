@@ -2,14 +2,12 @@ package org.rekeningsysteem.ui;
 
 import org.rekeningsysteem.application.working.RekeningSplitPane;
 import org.rekeningsysteem.data.util.AbstractRekening;
-import org.rekeningsysteem.logging.ConsoleLoggerModule;
-import org.rekeningsysteem.logic.factuurnummer.guice.FactuurnummerManagerFactory;
-import org.rekeningsysteem.logic.factuurnummer.guice.PropertyFactuurnummerManagerModule;
-import org.rekeningsysteem.properties.guice.ConfigPropertiesModule;
-
-import com.google.inject.Guice;
+import org.rekeningsysteem.logic.factuurnummer.FactuurnummerManager;
+import org.rekeningsysteem.logic.factuurnummer.PropertyFactuurnummerManager;
+import org.rekeningsysteem.properties.PropertyKey;
 
 import rx.Observable;
+import rx.functions.Func1;
 
 public abstract class AbstractRekeningController<M extends AbstractRekening> {
 
@@ -31,9 +29,8 @@ public abstract class AbstractRekeningController<M extends AbstractRekening> {
 
 	public abstract void initFactuurnummer();
 
-	protected final FactuurnummerManagerFactory getFactuurnummerFactory() {
-		return Guice.createInjector(new PropertyFactuurnummerManagerModule(),
-				new ConsoleLoggerModule(), new ConfigPropertiesModule())
-				.getInstance(FactuurnummerManagerFactory.class);
+	protected final Func1<PropertyKey, FactuurnummerManager> getFactuurnummerFactory() {
+		// TODO Deze PropertyFactuurnummerManager checken
+		return PropertyFactuurnummerManager::new;
 	}
 }

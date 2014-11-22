@@ -6,18 +6,17 @@ import java.util.Optional;
 import org.rekeningsysteem.properties.PropertiesWorker;
 import org.rekeningsysteem.properties.PropertyKey;
 
-import com.google.inject.Inject;
-import com.google.inject.assistedinject.Assisted;
-
 public class PropertyFactuurnummerManager implements FactuurnummerManager {
 
 	private final PropertiesWorker worker;
 	private final PropertyKey key;
 	private Optional<String> factNr;
 
-	@Inject
-	public PropertyFactuurnummerManager(PropertiesWorker worker,
-			@Assisted PropertyKey key) {
+	public PropertyFactuurnummerManager(PropertyKey key) {
+		this(PropertiesWorker.getInstance(), key);
+	}
+
+	public PropertyFactuurnummerManager(PropertiesWorker worker, PropertyKey key) {
 		this.worker = worker;
 		this.key = key;
 		this.factNr = Optional.empty();

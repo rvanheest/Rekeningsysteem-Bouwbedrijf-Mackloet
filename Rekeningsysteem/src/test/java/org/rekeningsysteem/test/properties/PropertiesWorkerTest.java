@@ -48,7 +48,7 @@ public class PropertiesWorkerTest {
 
 	@Before
 	public void setUp() throws IOException {
-		this.worker = new PropertiesWorker(this.properties, file, this.logger);
+		this.worker = PropertiesWorker.getInstance(this.properties, file, this.logger);
 		verify(this.properties).load((InputStream) anyObject());
 	}
 
@@ -89,14 +89,14 @@ public class PropertiesWorkerTest {
 	@Test
 	public void testLoadFails() throws IOException {
 		doThrow(new IOException()).when(this.properties).load((InputStream) anyObject());
-		new PropertiesWorker(this.properties, file, this.logger);
+		PropertiesWorker.getInstance(this.properties, file, this.logger);
 
 		verify(this.logger).error(anyString(), (Throwable) anyObject());
 	}
 
 	@Test
 	public void testLoadFile_FileNotFound() {
-		new PropertiesWorker(this.properties, new File("bestaatniet.txt"), this.logger);
+		PropertiesWorker.getInstance(this.properties, new File("bestaatniet.txt"), this.logger);
 
 		verify(this.logger).error(anyString(), (Throwable) anyObject());
 	}
