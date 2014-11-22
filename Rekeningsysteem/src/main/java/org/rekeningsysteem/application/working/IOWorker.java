@@ -21,10 +21,7 @@ public class IOWorker {
 	private final FactuurLoader oldLoader;
 
 	public IOWorker() {
-		this.saver = new XmlMaker();
-		this.exporter = new PdfExporter();
-		this.loader = new XmlReader();
-		this.oldLoader = new OldXmlReader();
+		this(new XmlMaker(), new PdfExporter(), new XmlReader(), new OldXmlReader());
 	}
 
 	public IOWorker(FactuurSaver saver, FactuurExporter exporter, FactuurLoader loader,

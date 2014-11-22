@@ -89,7 +89,6 @@ public class XmlReaderIntegrationTest {
 		this.newLoader.load(new File("src\\test\\resources\\OldXml\\PartFactuur.xml"))
 				.forEach(rek -> Assert.fail("item received: " + rek),
 						error -> assertTrue(error instanceof IllegalArgumentException));
-		;
 	}
 
 	@Test

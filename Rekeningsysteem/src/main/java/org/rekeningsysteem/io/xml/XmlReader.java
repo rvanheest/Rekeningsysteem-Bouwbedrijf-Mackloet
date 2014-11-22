@@ -20,6 +20,7 @@ import org.rekeningsysteem.io.xml.root.OfferteRoot;
 import org.rekeningsysteem.io.xml.root.ParticulierFactuurRoot;
 import org.rekeningsysteem.io.xml.root.ReparatiesFactuurRoot;
 import org.rekeningsysteem.io.xml.root.Root;
+import org.rekeningsysteem.logging.ApplicationLogger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -29,30 +30,35 @@ import rx.Observable;
 
 public class XmlReader implements FactuurLoader {
 
-	//TODO can we refactor out this map?
 	private final Map<Class<? extends Root<?>>, Unmarshaller> map;
 	private DocumentBuilder builder;
 
 	public XmlReader() {
 		this.map = new HashMap<>();
-		
+
 		try {
 			this.builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 
-    		this.map.put(AangenomenFactuurRoot.class,
-    				JAXBContext.newInstance(AangenomenFactuurRoot.class).createUnmarshaller());
-    		this.map.put(MutatiesFactuurRoot.class,
-    				JAXBContext.newInstance(MutatiesFactuurRoot.class).createUnmarshaller());
-    		this.map.put(OfferteRoot.class,
-    				JAXBContext.newInstance(OfferteRoot.class).createUnmarshaller());
-    		this.map.put(ParticulierFactuurRoot.class,
-    				JAXBContext.newInstance(ParticulierFactuurRoot.class).createUnmarshaller());
-    		this.map.put(ReparatiesFactuurRoot.class,
-    				JAXBContext.newInstance(ReparatiesFactuurRoot.class).createUnmarshaller());
+			this.map.put(AangenomenFactuurRoot.class,
+					JAXBContext.newInstance(AangenomenFactuurRoot.class).createUnmarshaller());
+			this.map.put(MutatiesFactuurRoot.class,
+					JAXBContext.newInstance(MutatiesFactuurRoot.class).createUnmarshaller());
+			this.map.put(OfferteRoot.class,
+					JAXBContext.newInstance(OfferteRoot.class).createUnmarshaller());
+			this.map.put(ParticulierFactuurRoot.class,
+					JAXBContext.newInstance(ParticulierFactuurRoot.class).createUnmarshaller());
+			this.map.put(ReparatiesFactuurRoot.class,
+					JAXBContext.newInstance(ReparatiesFactuurRoot.class).createUnmarshaller());
 		}
-		catch (JAXBException | ParserConfigurationException e) {
-			// TODO should not happen!!! Logging.
-			e.printStackTrace();
+		catch (JAXBException e) {
+			// Should not happen
+			ApplicationLogger.getInstance().fatal("JAXBContext or Unmarshaller could not be "
+					+ "made. (should not happen)", e);
+		}
+		catch (ParserConfigurationException e) {
+			// Should not happen
+			ApplicationLogger.getInstance().fatal("DocumentBuilder could not be made. "
+					+ "(should not happen)", e);
 		}
 	}
 

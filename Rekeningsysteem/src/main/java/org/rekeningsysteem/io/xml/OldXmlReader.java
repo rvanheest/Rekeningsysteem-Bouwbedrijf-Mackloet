@@ -33,6 +33,7 @@ import org.rekeningsysteem.data.util.loon.AbstractLoon;
 import org.rekeningsysteem.data.util.loon.ProductLoon;
 import org.rekeningsysteem.exception.GeldParseException;
 import org.rekeningsysteem.io.FactuurLoader;
+import org.rekeningsysteem.logging.ApplicationLogger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -51,11 +52,12 @@ public class OldXmlReader implements FactuurLoader {
 			this.builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 		}
 		catch (ParserConfigurationException e) {
-			// TODO should not happen!!! Logging.
-			e.printStackTrace();
+			// Should not happen
+			ApplicationLogger.getInstance().fatal("DocumentBuilder could not be made. "
+					+ "(should not happen)", e);
 		}
 	}
-	
+
 	public OldXmlReader(DocumentBuilder builder) {
 		this.builder = builder;
 	}
@@ -70,7 +72,8 @@ public class OldXmlReader implements FactuurLoader {
 		}
 	}
 
-	private Observable<? extends AbstractRekening> loadRekening(File file) throws SAXException, IOException {
+	private Observable<? extends AbstractRekening> loadRekening(File file) throws SAXException,
+			IOException {
 		Document doc = this.builder.parse(file);
 		doc.getDocumentElement().normalize();
 		Node factuur = doc.getElementsByTagName("bestand").item(0).getFirstChild();
@@ -95,7 +98,7 @@ public class OldXmlReader implements FactuurLoader {
 					+ "Nodenaam = " + soort + "."));
 		}
 	}
-	
+
 	private Observable<String> getNodeValue(Node node, String s) {
 		return this.getNodeValue(((Element) node).getElementsByTagName(s));
 	}
@@ -130,10 +133,8 @@ public class OldXmlReader implements FactuurLoader {
 					}
 					else {
 						// corrupte file: verschillende valuta's
-						System.out.println(s);
-						System.out.println("\t" + this.currency);
-						return Observable.error(new IllegalArgumentException("This file is corrupt. "
-								+ "It has multiple currencies."));
+						return Observable.error(new IllegalArgumentException(
+								"This file is corrupt. It has multiple currencies."));
 					}
 
 				default:
@@ -165,34 +166,43 @@ public class OldXmlReader implements FactuurLoader {
 		Observable<String> postcode = this.getNodeValue(node, "postcode");
 		Observable<String> plaats = this.getNodeValue(node, "plaats");
 		Observable<String> btwnr = this.getNodeValue(node, "btwnr");
-		
+
 		Observable<Boolean> empty = btwnr.isEmpty();
-		
+
 		return empty.filter(b -> b)
-				.flatMap(b -> b ? Observable.zip(naam, straat, nummer, postcode, plaats, Debiteur::new)
-						: Observable.zip(naam, straat, nummer, postcode, plaats, btwnr, Debiteur::new));
+				.flatMap(b -> b ? Observable.zip(naam, straat, nummer, postcode, plaats,
+						Debiteur::new)
+						: Observable.zip(naam, straat, nummer, postcode, plaats, btwnr,
+								Debiteur::new));
 	}
 
 	private Observable<OmschrFactuurHeader> makeFactuurHeader(Node node) {
-		Observable<Debiteur> debiteur = this.makeDebiteur(((Element) node).getElementsByTagName("debiteur").item(0));
-		Observable<LocalDate> datum = this.makeDatum(((Element) node).getElementsByTagName("datum").item(0));
+		Observable<Debiteur> debiteur = this.makeDebiteur(((Element) node).getElementsByTagName(
+				"debiteur").item(0));
+		Observable<LocalDate> datum = this.makeDatum(((Element) node).getElementsByTagName("datum")
+				.item(0));
 		Observable<String> factuurnummer = this.getNodeValue(node, "factuurnummer");
 		Observable<String> omschrijving = this.getNodeValue(node, "omschrijving");
 
-		return Observable.zip(debiteur, datum, factuurnummer, omschrijving, OmschrFactuurHeader::new);
+		return Observable.zip(debiteur, datum, factuurnummer, omschrijving,
+				OmschrFactuurHeader::new);
 	}
 
 	private Observable<FactuurHeader> makeFactuurHeaderWithoutOmschrijving(Node node) {
-		Observable<Debiteur> debiteur = this.makeDebiteur(((Element) node).getElementsByTagName("debiteur").item(0));
-		Observable<LocalDate> datum = this.makeDatum(((Element) node).getElementsByTagName("datum").item(0));
+		Observable<Debiteur> debiteur = this.makeDebiteur(((Element) node).getElementsByTagName(
+				"debiteur").item(0));
+		Observable<LocalDate> datum = this.makeDatum(((Element) node).getElementsByTagName("datum")
+				.item(0));
 		Observable<String> factuurnummer = this.getNodeValue(node, "factuurnummer");
 
 		return Observable.zip(debiteur, datum, factuurnummer, FactuurHeader::new);
 	}
 
 	private Observable<FactuurHeader> makeOfferteFactuurHeader(Node node) {
-		Observable<Debiteur> debiteur = this.makeDebiteur(((Element) node).getElementsByTagName("debiteur").item(0));
-		Observable<LocalDate> datum = this.makeDatum(((Element) node).getElementsByTagName("datum").item(0));
+		Observable<Debiteur> debiteur = this.makeDebiteur(((Element) node).getElementsByTagName(
+				"debiteur").item(0));
+		Observable<LocalDate> datum = this.makeDatum(((Element) node).getElementsByTagName("datum")
+				.item(0));
 		Observable<String> offertenummer = this.getNodeValue(node, "offertenummer");
 
 		return Observable.zip(debiteur, datum, offertenummer, FactuurHeader::new);
@@ -201,7 +211,8 @@ public class OldXmlReader implements FactuurLoader {
 	private Observable<AnderArtikel> makeAnderArtikel(Node node) {
 		Node temp = ((Element) node).getElementsByTagName("artikel").item(0);
 		Observable<String> omschrijving = this.getNodeValue(temp, "omschrijving");
-		Observable<Geld> prijs = this.getNodeValue(((Element) node).getElementsByTagName("prijs")).flatMap(this::makeGeld);
+		Observable<Geld> prijs = this.getNodeValue(((Element) node).getElementsByTagName("prijs"))
+				.flatMap(this::makeGeld);
 
 		return Observable.zip(omschrijving, prijs, AnderArtikel::new);
 	}
@@ -211,13 +222,16 @@ public class OldXmlReader implements FactuurLoader {
 		Observable<String> omschrijving = this.getNodeValue(node, "omschrijving");
 		Observable<Integer> prijsPer = this.getNodeValue(node, "prijsper").map(Integer::parseInt);
 		Observable<String> eenheid = this.getNodeValue(node, "eenheid");
-		Observable<Geld> verkoopPrijs = this.getNodeValue(node, "verkoopprijs").flatMap(this::makeGeld);
-		
-		return Observable.zip(artikelNummer, omschrijving, prijsPer, eenheid, verkoopPrijs, EsselinkArtikel::new);
+		Observable<Geld> verkoopPrijs = this.getNodeValue(node, "verkoopprijs")
+				.flatMap(this::makeGeld);
+
+		return Observable.zip(artikelNummer, omschrijving, prijsPer, eenheid, verkoopPrijs,
+				EsselinkArtikel::new);
 	}
 
 	private Observable<GebruiktEsselinkArtikel> makeGebruiktArtikelEsselink(Node node) {
-		Observable<EsselinkArtikel> artikel = this.makeArtikelEsselink(((Element) node).getElementsByTagName("artikel").item(0));
+		Observable<EsselinkArtikel> artikel = this.makeArtikelEsselink(((Element) node)
+				.getElementsByTagName("artikel").item(0));
 		Observable<Double> aantal = this.getNodeValue(node, "aantal").map(Double::parseDouble);
 
 		return Observable.zip(artikel, aantal, GebruiktEsselinkArtikel::new);
@@ -227,7 +241,8 @@ public class OldXmlReader implements FactuurLoader {
 		Observable<Geld> uurloon = this.getNodeValue(node, "uurloon").flatMap(this::makeGeld);
 		Observable<Double> uren = this.getNodeValue(node, "uren").map(Double::parseDouble);
 
-		return Observable.zip(uurloon, uren, (ul, ur) -> new ProductLoon("Uurloon à " + ul.formattedString(), ur, ul));
+		return Observable.zip(uurloon, uren,
+				(ul, ur) -> new ProductLoon("Uurloon à " + ul.formattedString(), ur, ul));
 	}
 
 	private Observable<BtwPercentage> makeEnkelBtw(Node node) {
@@ -237,54 +252,72 @@ public class OldXmlReader implements FactuurLoader {
 	}
 
 	private Observable<BtwPercentage> makeDubbelBtw(Node node) {
-		Observable<Double> btwArt = this.getNodeValue(node, "btwpercentageart").map(Double::parseDouble);
-		Observable<Double> btwLoon = this.getNodeValue(node, "btwpercentageloon").map(Double::parseDouble);
+		Observable<Double> btwArt = this.getNodeValue(node, "btwpercentageart")
+				.map(Double::parseDouble);
+		Observable<Double> btwLoon = this.getNodeValue(node, "btwpercentageloon")
+				.map(Double::parseDouble);
 
 		return Observable.zip(btwLoon, btwArt, BtwPercentage::new);
 	}
 
 	public Observable<ParticulierFactuur> makeParticulierFactuur1(Node node) {
 		Node al = ((Element) node).getElementsByTagName("artikellijst").item(0);
-		NodeList gal = ((Element) al).getElementsByTagName("gebruiktartikellijst").item(0).getChildNodes();
+		NodeList gal = ((Element) al).getElementsByTagName("gebruiktartikellijst").item(0)
+				.getChildNodes();
 
 		Observable<OmschrFactuurHeader> header = this.makeFactuurHeader(node);
-		Observable<ItemList<ParticulierArtikel>> itemList = Observable.range(0, gal.getLength())
+		Observable<ItemList<ParticulierArtikel>> itemList = Observable
+				.range(0, gal.getLength())
 				.map(gal::item)
 				.<ParticulierArtikel> flatMap(item -> {
 					switch (item.getNodeName()) {
-						case "gebruiktartikelander" : return this.makeAnderArtikel(item);
-						case "gebruiktartikelesselink" : return this.makeGebruiktArtikelEsselink(item);
-						default : return Observable.error(new IllegalArgumentException("Unknown artikel type found."));
+						case "gebruiktartikelander":
+							return this.makeAnderArtikel(item);
+						case "gebruiktartikelesselink":
+							return this.makeGebruiktArtikelEsselink(item);
+						default:
+							return Observable.error(new IllegalArgumentException(
+									"Unknown artikel type found."));
 					}
 				})
 				.collect(new ItemList<>(), Collection::add);
-		
-		Observable<ItemList<AbstractLoon>> loonList = this.makeLoon(((Element) node).getElementsByTagName("loon").item(0))
+
+		Observable<ItemList<AbstractLoon>> loonList = this.makeLoon(
+				((Element) node).getElementsByTagName("loon").item(0))
 				.collect(new ItemList<>(), Collection::add);
-		
-		return Observable.zip(header, itemList, loonList, this.makeEnkelBtw(node), (h, item, loon, btw) -> new ParticulierFactuur(h, this.currency, item, loon, btw));
+
+		return Observable.zip(header, itemList, loonList, this.makeEnkelBtw(node), (h, item, loon,
+				btw) -> new ParticulierFactuur(h, this.currency, item, loon, btw));
 	}
 
 	private Observable<ParticulierFactuur> makeParticulierFactuur2(Node node) {
 		Node al = ((Element) node).getElementsByTagName("artikellijst").item(0);
-		NodeList gal = ((Element) al).getElementsByTagName("gebruiktartikellijst").item(0).getChildNodes();
+		NodeList gal = ((Element) al).getElementsByTagName("gebruiktartikellijst").item(0)
+				.getChildNodes();
 
 		Observable<OmschrFactuurHeader> header = this.makeFactuurHeader(node);
-		Observable<ItemList<ParticulierArtikel>> itemList = Observable.range(0, gal.getLength())
+		Observable<ItemList<ParticulierArtikel>> itemList = Observable
+				.range(0, gal.getLength())
 				.map(gal::item)
 				.<ParticulierArtikel> flatMap(item -> {
 					switch (item.getNodeName()) {
-						case "gebruiktartikelander" : return this.makeAnderArtikel(item);
-						case "gebruiktartikelesselink" : return this.makeGebruiktArtikelEsselink(item);
-						default : return Observable.error(new IllegalArgumentException("Unknown artikel type found."));
+						case "gebruiktartikelander":
+							return this.makeAnderArtikel(item);
+						case "gebruiktartikelesselink":
+							return this.makeGebruiktArtikelEsselink(item);
+						default:
+							return Observable.error(new IllegalArgumentException(
+									"Unknown artikel type found."));
 					}
 				})
 				.collect(new ItemList<>(), Collection::add);
-		
-		Observable<ItemList<AbstractLoon>> loonList = this.makeLoon(((Element) node).getElementsByTagName("loon").item(0))
+
+		Observable<ItemList<AbstractLoon>> loonList = this.makeLoon(
+				((Element) node).getElementsByTagName("loon").item(0))
 				.collect(new ItemList<>(), Collection::add);
-		
-		return Observable.zip(header, itemList, loonList, this.makeDubbelBtw(node), (h, item, loon, btw) -> new ParticulierFactuur(h, this.currency, item, loon, btw));
+
+		return Observable.zip(header, itemList, loonList, this.makeDubbelBtw(node), (h, item, loon,
+				btw) -> new ParticulierFactuur(h, this.currency, item, loon, btw));
 	}
 
 	private Observable<MutatiesBon> makeMutatiesBon(Node node) {
@@ -305,8 +338,9 @@ public class OldXmlReader implements FactuurLoader {
 				.map(bonnen::item)
 				.flatMap(this::makeMutatiesBon)
 				.collect(new ItemList<>(), Collection::add);
-		
-		return Observable.zip(header, itemList, (h, il) -> new MutatiesFactuur(h, this.currency, il, btw));
+
+		return Observable.zip(header, itemList, (h, il) -> new MutatiesFactuur(h, this.currency,
+				il, btw));
 	}
 
 	private Observable<ReparatiesBon> makeReparatiesBon(Node node) {
@@ -314,7 +348,7 @@ public class OldXmlReader implements FactuurLoader {
 		Observable<String> bonnummer = this.getNodeValue(node, "bonnummer");
 		Observable<Geld> uurloon = this.getNodeValue(node, "uurloon").flatMap(this::makeGeld);
 		Observable<Geld> materiaal = this.getNodeValue(node, "materiaal").flatMap(this::makeGeld);
-		
+
 		return Observable.zip(omschrijving, bonnummer, uurloon, materiaal, ReparatiesBon::new);
 	}
 
@@ -328,14 +362,16 @@ public class OldXmlReader implements FactuurLoader {
 				.map(bonnen::item)
 				.flatMap(this::makeReparatiesBon)
 				.collect(new ItemList<>(), Collection::add);
-		
-		return Observable.zip(header, itemList, (h, il) -> new ReparatiesFactuur(h, this.currency, il, btw));
+
+		return Observable.zip(header, itemList, (h, il) -> new ReparatiesFactuur(h, this.currency,
+				il, btw));
 	}
 
 	private Observable<Offerte> makeOfferte(Node node) {
 		Observable<FactuurHeader> header = this.makeOfferteFactuurHeader(node);
 		Observable<String> tekst = this.getNodeValue(node, "tekst");
-		Observable<Boolean> ondertekenen = this.getNodeValue(node, "ondertekenen").map(Boolean::parseBoolean);
+		Observable<Boolean> ondertekenen = this.getNodeValue(node, "ondertekenen")
+				.map(Boolean::parseBoolean);
 
 		return Observable.zip(header, tekst, ondertekenen, Offerte::new);
 	}
