@@ -13,6 +13,7 @@ public class MutatiesBonController extends AbstractListItemController<MutatiesBo
 
 	public MutatiesBonController(Currency currency) {
 		this(new MutatiesBonPane(currency));
+		this.getUI().setOmschrijving("Bonnummer");
 	}
 
 	public MutatiesBonController(Currency currency, MutatiesBon input) {

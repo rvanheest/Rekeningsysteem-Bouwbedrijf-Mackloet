@@ -13,6 +13,7 @@ public class ReparatiesBonController extends AbstractListItemController<Reparati
 
 	public ReparatiesBonController(Currency currency) {
 		this(new ReparatiesBonPane(currency));
+		this.getUI().setOmschrijving("Bonnummer");
 	}
 
 	public ReparatiesBonController(Currency currency, ReparatiesBon input) {
