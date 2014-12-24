@@ -1,5 +1,7 @@
 package org.rekeningsysteem.application;
 
+import java.sql.SQLException;
+
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
@@ -15,8 +17,11 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.stage.WindowEvent;
 import javafx.util.Duration;
 
+import org.rekeningsysteem.io.database.Database;
+import org.rekeningsysteem.logging.ApplicationLogger;
 import org.rekeningsysteem.rxjavafx.Observables;
 
 import rx.Observable;
@@ -58,6 +63,15 @@ public class Main extends Application {
 		Scene scene = new Scene(layerPane, 1061, 728);
 		scene.getStylesheets().add(getResource("/layout.css"));
 
+		stage.addEventHandler(WindowEvent.WINDOW_HIDDEN, event -> {
+			try {
+				System.out.println("closing stage");
+				Database.closeInstance();
+			}
+			catch (SQLException e) {
+				ApplicationLogger.getInstance().error("Could not close database.", e);
+			}
+		});
 		stage.getIcons().add(new Image(getResource("/images/icon.gif")));
 		stage.setScene(scene);
 		stage.initStyle(StageStyle.UNDECORATED);

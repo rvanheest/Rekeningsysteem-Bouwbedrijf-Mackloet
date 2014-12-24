@@ -18,6 +18,8 @@ public enum PropertyModelEnum implements PropertyKey {
 	
 	DATE_FORMAT("dateformat"),
 	
+	DATABASE("database"),
+	
 	PDF_AANGENOMEN_TEMPLATE("pdfaangenomentemplate"),
 	PDF_MUTATIES_TEMPLATE("pdfmutatiestemplate"),
 	PDF_OFFERTE_TEMPLATE("pdfoffertetemplate"),
