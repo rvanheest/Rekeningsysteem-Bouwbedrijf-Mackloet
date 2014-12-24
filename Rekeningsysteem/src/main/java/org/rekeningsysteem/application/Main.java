@@ -65,7 +65,6 @@ public class Main extends Application {
 
 		stage.addEventHandler(WindowEvent.WINDOW_HIDDEN, event -> {
 			try {
-				System.out.println("closing stage");
 				Database.closeInstance();
 			}
 			catch (SQLException e) {

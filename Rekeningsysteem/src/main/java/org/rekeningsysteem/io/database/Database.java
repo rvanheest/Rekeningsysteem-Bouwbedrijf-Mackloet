@@ -83,16 +83,11 @@ public class Database implements AutoCloseable {
 			try (Statement statement = this.connection.createStatement();
 					ResultSet result = statement.executeQuery(query)) {
 				while (result.next()) {
-					try {
-						subscriber.onNext(resultComposer.call(result));
-					}
-					catch (Exception e) {
-						subscriber.onError(e);
-					}
+					subscriber.onNext(resultComposer.call(result));
 				}
 				subscriber.onCompleted();
 			}
-			catch (SQLException e) {
+			catch (Exception e) {
 				subscriber.onError(e);
 			}
 		}).subscribeOn(Schedulers.io());
