@@ -67,33 +67,22 @@ public class Database implements AutoCloseable {
 	}
 
 	public Observable<Integer> update(String query) {
-		String s = "UPDATE: " + query;
-		System.out.println(s);
 		return Observable.create((Subscriber<? super Integer> subscriber) -> {
-			System.out.println(s + " - start: " + Thread.currentThread().getName());
 			try (Statement statement = this.connection.createStatement()) {
-				System.out.println(s + " - try 1: " + Thread.currentThread().getName());
 				subscriber.onNext(statement.executeUpdate(query));
-				System.out.println(s + " - try 2: " + Thread.currentThread().getName());
 				subscriber.onCompleted();
-				System.out.println(s + " - try 3: " + Thread.currentThread().getName());
 			}
 			catch (SQLException e) {
 				subscriber.onError(e);
 			}
-			System.out.println(s + " - end: " + Thread.currentThread().getName());
 		}).subscribeOn(Schedulers.io());
 	}
 
 	public <A> Observable<A> query(String query, ExFunc1<ResultSet, A> resultComposer) {
-		String s = "UPDATE: " + query;
-		System.out.println(s);
 		return Observable.create((Subscriber<? super A> subscriber) -> {
-			System.out.println(s + " - start: " + Thread.currentThread().getName());
 			try (Statement statement = this.connection.createStatement();
 					ResultSet result = statement.executeQuery(query)) {
 				while (result.next()) {
-					System.out.println(s + " - try 1: " + Thread.currentThread().getName());
 					try {
 						subscriber.onNext(resultComposer.call(result));
 					}
@@ -101,14 +90,11 @@ public class Database implements AutoCloseable {
 						subscriber.onError(e);
 					}
 				}
-				System.out.println(s + " - try 2: " + Thread.currentThread().getName());
 				subscriber.onCompleted();
-				System.out.println(s + " - try 3: " + Thread.currentThread().getName());
 			}
 			catch (SQLException e) {
 				subscriber.onError(e);
 			}
-			System.out.println(s + " - end: " + Thread.currentThread().getName());
 		}).subscribeOn(Schedulers.io());
 	}
 }
