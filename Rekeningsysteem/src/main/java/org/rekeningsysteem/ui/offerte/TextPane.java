@@ -17,6 +17,8 @@ public class TextPane extends Page {
 		
 		this.getChildren().add(this.textTA);
 		this.textTA.setPrefColumnCount(50);
+		this.textTA.setPrefRowCount(20);
+		this.textTA.setWrapText(true);
 	}
 
 	public Observable<String> getText() {
