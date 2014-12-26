@@ -10,6 +10,8 @@ import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.event.EventType;
 import javafx.scene.Node;
+import javafx.scene.control.MenuItem;
+import javafx.stage.Window;
 import rx.Observable;
 import rx.Subscriber;
 
@@ -17,6 +19,28 @@ public enum Observables {
 	; // no class instances
 
 	public static <T extends Event> Observable<T> fromNodeEvents(Node source, EventType<T> eventType) {
+		return Observable.create((Subscriber<? super T> subscriber) -> {
+			EventHandler<T> handler = subscriber::onNext;
+
+			source.addEventHandler(eventType, handler);
+
+			subscriber.add(JavaFxSubscriptions.unsubscribeInEventDispatchThread(() ->
+					source.removeEventHandler(eventType, handler)));
+		}).subscribeOn(JavaFxScheduler.getInstance());
+	}
+
+	public static <T extends Event> Observable<T> fromNodeEvents(Window source, EventType<T> eventType) {
+		return Observable.create((Subscriber<? super T> subscriber) -> {
+			EventHandler<T> handler = subscriber::onNext;
+
+			source.addEventHandler(eventType, handler);
+
+			subscriber.add(JavaFxSubscriptions.unsubscribeInEventDispatchThread(() ->
+					source.removeEventHandler(eventType, handler)));
+		}).subscribeOn(JavaFxScheduler.getInstance());
+	}
+
+	public static <T extends Event> Observable<T> fromNodeEvents(MenuItem source, EventType<T> eventType) {
 		return Observable.create((Subscriber<? super T> subscriber) -> {
 			EventHandler<T> handler = subscriber::onNext;
 
