@@ -78,23 +78,28 @@ public class XmlReader implements FactuurLoader {
 			switch (type) {
 				case "AangenomenFactuur": {
 					Unmarshaller unmarshaller = this.map.get(AangenomenFactuurRoot.class);
-					return this.readXML(unmarshaller, doc).map(Root::getRekening);
+					Observable<? extends AbstractRekening> result = this.readXML(unmarshaller, doc).map(Root::getRekening);
+					return result;
 				}
 				case "MutatiesFactuur": {
 					Unmarshaller unmarshaller = this.map.get(MutatiesFactuurRoot.class);
-					return this.readXML(unmarshaller, doc).map(Root::getRekening);
+					Observable<? extends AbstractRekening> result = this.readXML(unmarshaller, doc).map(Root::getRekening);
+					return result;
 				}
 				case "Offerte": {
 					Unmarshaller unmarshaller = this.map.get(OfferteRoot.class);
-					return this.readXML(unmarshaller, doc).map(Root::getRekening);
+					Observable<? extends AbstractRekening> result = this.readXML(unmarshaller, doc).map(Root::getRekening);
+					return result;
 				}
 				case "ParticulierFactuur": {
 					Unmarshaller unmarshaller = this.map.get(ParticulierFactuurRoot.class);
-					return this.readXML(unmarshaller, doc).map(Root::getRekening);
+					Observable<? extends AbstractRekening> result = this.readXML(unmarshaller, doc).map(Root::getRekening);
+					return result;
 				}
 				case "ReparatiesFactuur": {
 					Unmarshaller unmarshaller = this.map.get(ReparatiesFactuurRoot.class);
-					return this.readXML(unmarshaller, doc).map(Root::getRekening);
+					Observable<? extends AbstractRekening> result = this.readXML(unmarshaller, doc).map(Root::getRekening);
+					return result;
 				}
 				default:
 					return Observable.error(new IllegalArgumentException("This typ (" + type
