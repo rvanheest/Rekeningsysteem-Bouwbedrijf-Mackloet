@@ -46,36 +46,41 @@ public class Main extends Application {
 
 	@Override
 	public void start(Stage stage) {
-		main = this;
-		this.modalDimmer.setId("modalDimmer");
-
-		Observable.merge(Observables.fromNodeEvents(this.modalDimmer, MouseEvent.MOUSE_CLICKED),
-				Observables.fromNodeEvents(this.modalDimmer, KeyEvent.KEY_PRESSED)
-						.filter(event -> event.getCode() == KeyCode.ESCAPE))
-				.doOnNext(Event::consume)
-				.doOnNext(event -> this.hideModalMessage())
-				.subscribe();
-
-		this.modalDimmer.setVisible(false);
-
-		StackPane layerPane = new StackPane(new Root(stage), this.modalDimmer);
-
-		Scene scene = new Scene(layerPane, 1061, 728);
-		scene.getStylesheets().add(getResource("/layout.css"));
-
-		stage.addEventHandler(WindowEvent.WINDOW_HIDDEN, event -> {
-			try {
-				Database.closeInstance();
-			}
-			catch (SQLException e) {
-				ApplicationLogger.getInstance().error("Could not close database.", e);
-			}
-		});
-		stage.getIcons().add(new Image(getResource("/images/icon.gif")));
-		stage.setScene(scene);
-		stage.initStyle(StageStyle.UNDECORATED);
-		stage.setTitle("Rekeningsysteem Mackloet");
-		stage.show();
+		try {
+    		main = this;
+    		this.modalDimmer.setId("modalDimmer");
+    
+    		Observable.merge(Observables.fromNodeEvents(this.modalDimmer, MouseEvent.MOUSE_CLICKED),
+    				Observables.fromNodeEvents(this.modalDimmer, KeyEvent.KEY_PRESSED)
+    						.filter(event -> event.getCode() == KeyCode.ESCAPE))
+    				.doOnNext(Event::consume)
+    				.doOnNext(event -> this.hideModalMessage())
+    				.subscribe();
+    
+    		this.modalDimmer.setVisible(false);
+    
+    		StackPane layerPane = new StackPane(new Root(stage), this.modalDimmer);
+    
+    		Scene scene = new Scene(layerPane, 1061, 728);
+    		scene.getStylesheets().add(getResource("/layout.css"));
+    
+    		stage.addEventHandler(WindowEvent.WINDOW_HIDDEN, event -> {
+    			try {
+    				Database.closeInstance();
+    			}
+    			catch (SQLException e) {
+    				ApplicationLogger.getInstance().error("Could not close database.", e);
+    			}
+    		});
+    		stage.getIcons().add(new Image(getResource("/images/icon.gif")));
+    		stage.setScene(scene);
+    		stage.initStyle(StageStyle.UNDECORATED);
+    		stage.setTitle("Rekeningsysteem Mackloet");
+    		stage.show();
+		}
+		catch (Exception e) {
+			ApplicationLogger.getInstance().error("Exception caught on toplevel", e);
+		}
 	}
 
 	public void showModalMessage(Node message) {
