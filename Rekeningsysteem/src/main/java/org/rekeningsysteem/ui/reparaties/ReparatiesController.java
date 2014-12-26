@@ -6,7 +6,6 @@ import java.util.Optional;
 import org.rekeningsysteem.application.working.RekeningSplitPane;
 import org.rekeningsysteem.data.reparaties.ReparatiesFactuur;
 import org.rekeningsysteem.data.util.BtwPercentage;
-import org.rekeningsysteem.properties.Optionals;
 import org.rekeningsysteem.properties.PropertiesWorker;
 import org.rekeningsysteem.properties.PropertyModelEnum;
 import org.rekeningsysteem.ui.AbstractRekeningController;
@@ -26,11 +25,7 @@ public class ReparatiesController extends AbstractRekeningController<ReparatiesF
 		this(properties.getProperty(PropertyModelEnum.VALUTAISO4217)
 				.map(Currency::getInstance)
 				.orElse(Currency.getInstance("EUR")),
-				Optionals.zip(properties.getProperty(PropertyModelEnum.LOONBTWPERCENTAGE)
-						.map(Double::parseDouble),
-						properties.getProperty(PropertyModelEnum.MATERIAALBTWPERCENTAGE)
-								.map(Double::parseDouble), BtwPercentage::new)
-						.orElse(new BtwPercentage(0.0, 0.0)));
+				new BtwPercentage(0.0, 0.0));
 	}
 
 	public ReparatiesController(Currency currency, BtwPercentage btw) {

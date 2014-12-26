@@ -39,7 +39,7 @@ public class ReparatiesBonPane extends ItemPane {
 		this.loon = Observables.fromProperty(this.loonTF.valueProperty())
 				.filter(Objects::nonNull)
 				.map(BigDecimal::doubleValue);
-		this.materiaal = Observables.fromProperty(this.loonTF.valueProperty())
+		this.materiaal = Observables.fromProperty(this.materiaalTF.valueProperty())
 				.filter(Objects::nonNull)
 				.map(BigDecimal::doubleValue);
 		
