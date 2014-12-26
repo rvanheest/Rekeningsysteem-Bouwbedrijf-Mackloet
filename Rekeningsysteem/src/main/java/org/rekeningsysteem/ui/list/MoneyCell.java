@@ -15,7 +15,6 @@ public class MoneyCell<T> extends TableCell<T, Double> {
 		if (item != null) {
 			double value = item.doubleValue();
 			this.setTextFill(value == 0 ? Color.BLACK : value < 0 ? Color.RED : Color.GREEN);
-			// TODO or positive -> black?
 		}
 		this.setAlignment(Pos.BASELINE_RIGHT);
 	}
