@@ -14,8 +14,7 @@ public class ApplicationLogger {
 
 	public static Logger getInstance() {
 		if (__instance == null) {
-			// TODO change consoleInstance() to fileInstance() before production
-			__instance = consoleInstance();
+			__instance = fileInstance();
 		}
 		return __instance;
 	}
