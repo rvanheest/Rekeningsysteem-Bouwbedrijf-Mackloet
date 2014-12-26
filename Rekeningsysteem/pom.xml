@@ -1,7 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	
+
 	<groupId>com.mackloet</groupId>
 	<artifactId>Rekeningsysteem</artifactId>
 	<version>0.0.1</version>
@@ -12,12 +12,19 @@
 	<organization>
 		<name>Bouwbedrijf Mackloet en Zn.</name>
 	</organization>
-	
+
+	<repositories>
+		<repository>
+			<id>jlrrepo</id>
+			<url>file://${basedir}/jlrrepo</url>
+		</repository>
+	</repositories>
+
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<targetJdk>1.8</targetJdk>
 	</properties>
-	
+
 	<developers>
 		<developer>
 			<id>richard</id>
@@ -30,7 +37,7 @@
 			<timezone>+1</timezone>
 		</developer>
 	</developers>
-	
+
 	<dependencies>
 		<!-- Testing utilities -->
 		<dependency>
@@ -46,37 +53,40 @@
 			<version>1.9.5</version>
 			<scope>test</scope>
 		</dependency>
-		
+
 		<!-- Reactive Programming -->
 		<dependency>
 			<groupId>com.netflix.rxjava</groupId>
 			<artifactId>rxjava-core</artifactId>
 			<version>0.19.6</version>
 		</dependency>
-		
+
 		<!-- Commons utilities -->
 		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
 			<version>2.4</version>
 		</dependency>
-		
+
 		<!-- Logging -->
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
 			<version>1.2.17</version>
 		</dependency>
-		
+
 		<!-- PDF generator via LaTeX -->
+		<!-- Note that this is from the local repository defined above. It can 
+			be downloaded from http://www.nixo-soft.de/en/category/Downloads/page/libs/JavaLatexReport.php 
+			After downloading, use mvn install:install-file -Dfile=<path-to-jar> -DgroupId="jlr" 
+			-DartifactId="jlr" -Dversion="0" -Dpackaging="jar" -DlocalRepositoryPath="${basedir}/jlrrepo" 
+			to install this dependency. -->
 		<dependency>
 			<groupId>jlr</groupId>
 			<artifactId>jlr</artifactId>
 			<version>0</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/lib/jlr.jar</systemPath>
 		</dependency>
-		
+
 		<!-- SQLite database connector -->
 		<dependency>
 			<groupId>org.xerial</groupId>
@@ -84,7 +94,7 @@
 			<version>3.7.15-M1</version>
 		</dependency>
 	</dependencies>
-	
+
 	<build>
 		<plugins>
 			<plugin>
@@ -96,7 +106,7 @@
 					<target>1.8</target>
 				</configuration>
 			</plugin>
-			
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-eclipse-plugin</artifactId>
@@ -106,19 +116,28 @@
 					<downloadJavadocs>true</downloadJavadocs>
 				</configuration>
 			</plugin>
-			
+
 			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
 				<configuration>
 					<archive>
 						<manifest>
-							<mainClass><!-- TODO still to fill in --></mainClass>
+							<addClasspath>true</addClasspath>
+							<mainClass>org.rekeningsysteem.application.Main</mainClass>
 						</manifest>
 					</archive>
 					<descriptorRefs>
 						<descriptorRef>jar-with-dependencies</descriptorRef>
 					</descriptorRefs>
 				</configuration>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
