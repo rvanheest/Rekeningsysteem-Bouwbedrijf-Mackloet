@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<bestand type="Offerte">
+    <rekening>
+        <factuurHeader>
+            <debiteur>
+                <naam>Name</naam>
+                <straat>Street</straat>
+                <nummer>Number</nummer>
+                <postcode>1234AB</postcode>
+                <plaats>Place</plaats>
+                <btwNummer>Test123</btwNummer>
+            </debiteur>
+            <datum>
+                <dag>26</dag>
+                <maand>12</maand>
+                <jaar>2014</jaar>
+            </datum>
+            <factuurnummer>92014</factuurnummer>
+        </factuurHeader>
+        <tekst>Bij deze ontvangt u van ons geheel vrijblijvend een prijsopgave betreffende het werk in de woning in uw straat en in uw plaats.
+
+Berekend is kamer 1, kamer 2, het bovenste gedeelte van kamer 3 en de vloeren in kamer 4, kamer 5 en kmaer 6. Lijm en voegmortel in de prijs inbegrepen, uitgezonderd voegmortel voor de vloer. Het overstrijken van de vloer in kamer 1 en 2 is mee berekend.
+
+Wij kunnen u dit aanbieden voor de prijs van € 12.345.678,90.
+Prijs is excl. btw.
+
+Vertrouwende u een passende offerte te kunnen aanbieden verblijven wij.
+
+Vr. groet,
+
+Ik</tekst>
+        <ondertekenen>true</ondertekenen>
+    </rekening>
+</bestand>
