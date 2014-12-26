@@ -118,7 +118,6 @@ public class GebruiktEsselinkArtikelPane extends GridPane {
 			this.add(this.aantalTF, 1, 4);
 		}
 		catch (SQLException e) {
-			// TODO Action needs to be taken at this point!
 			ApplicationLogger.getInstance().fatal("Database exception: probably the database was not found!", e);
 		}
 	}
