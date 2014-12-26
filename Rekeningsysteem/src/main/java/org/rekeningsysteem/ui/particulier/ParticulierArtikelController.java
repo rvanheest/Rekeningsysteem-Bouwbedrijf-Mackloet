@@ -4,7 +4,6 @@ import java.util.Currency;
 import java.util.Optional;
 
 import org.rekeningsysteem.data.particulier.AnderArtikel;
-import org.rekeningsysteem.data.particulier.GebruiktEsselinkArtikel;
 import org.rekeningsysteem.data.particulier.ParticulierArtikel;
 import org.rekeningsysteem.ui.list.AbstractListItemController;
 
@@ -19,11 +18,6 @@ public class ParticulierArtikelController extends AbstractListItemController<Par
 	public ParticulierArtikelController(Currency currency, AnderArtikel input) {
 		this(currency);
 		this.getUI().setAnderArtikel(input);
-	}
-
-	public ParticulierArtikelController(Currency currency, GebruiktEsselinkArtikel input) {
-		this(currency);
-		this.getUI().setGebruiktEsselinkArtikel(input);
 	}
 
 	public ParticulierArtikelController(ParticulierArtikelPane ui) {

@@ -6,7 +6,6 @@ import javafx.scene.Node;
 import javafx.scene.control.TabPane.TabClosingPolicy;
 
 import org.rekeningsysteem.data.particulier.AnderArtikel;
-import org.rekeningsysteem.data.particulier.EsselinkArtikel;
 import org.rekeningsysteem.data.particulier.GebruiktEsselinkArtikel;
 import org.rekeningsysteem.ui.list.ItemPane;
 import org.rekeningsysteem.ui.particulier.tabpane.ItemTabPane;
@@ -66,16 +65,5 @@ public class ParticulierArtikelPane extends ItemPane {
 
 	public Observable<GebruiktEsselinkArtikel> getGebruiktEsselinkArtikel() {
 		return this.gebruiktController.getModel();
-	}
-
-	public void setGebruiktEsselinkArtikel(GebruiktEsselinkArtikel gebruikt) {
-		EsselinkArtikel artikel = gebruikt.getArtikel();
-		
-		this.gebruiktController.getUI().setArtikelnummer(artikel.getArtikelNummer());
-		this.gebruiktController.getUI().setOmschrijving(artikel.getOmschrijving());
-		this.gebruiktController.getUI().setPrijsPer(artikel.getPrijsPer());
-		this.gebruiktController.getUI().setEenheid(artikel.getEenheid());
-		this.gebruiktController.getUI().setVerkoopPrijs(artikel.getVerkoopPrijs().getBedrag());
-		this.gebruiktController.getUI().setAantal(gebruikt.getAantal());
 	}
 }
