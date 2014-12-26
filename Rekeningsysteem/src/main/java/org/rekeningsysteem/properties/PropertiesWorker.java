@@ -58,7 +58,7 @@ public class PropertiesWorker {
 
 	private void save() {
 		try (OutputStream stream = FileUtils.openOutputStream(this.file)) {
-			this.properties.store(stream, "test123");
+			this.properties.store(stream, "");
 		}
 		catch (IOException e) {
 			this.logger.error(e.getMessage(), e);
