@@ -6,6 +6,8 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import org.rekeningsysteem.properties.PropertiesWorker;
+import org.rekeningsysteem.properties.PropertyModelEnum;
 import org.rekeningsysteem.rxjavafx.Observables;
 
 public class WindowButtons extends VBox {
@@ -32,7 +34,11 @@ public class WindowButtons extends VBox {
 				.subscribe(event -> this.toggleMaximized());
 
 		this.getChildren().addAll(closeBtn, minBtn, maxBtn);
-//		this.toggleMaximized(); TODO uncomment this
+		
+		PropertiesWorker.getInstance().getProperty(PropertyModelEnum.FULL_SCREEN)
+				.map(Boolean::parseBoolean)
+				.filter(b -> b)
+				.ifPresent(b -> this.toggleMaximized());
 	}
 
 	public void toggleMaximized() {
