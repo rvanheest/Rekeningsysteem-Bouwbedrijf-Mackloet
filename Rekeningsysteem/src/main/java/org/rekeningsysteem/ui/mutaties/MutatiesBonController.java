@@ -24,14 +24,13 @@ public class MutatiesBonController extends AbstractListItemController<MutatiesBo
 	}
 
 	public MutatiesBonController(MutatiesBonPane ui) {
-		super(ui, Observable.merge(
-				Observable.combineLatest(ui.getOmschrijving(),
-						ui.getBonnummer(),
-						ui.getPrijs().map(Geld::new), MutatiesBon::new)
-						.sample(ui.getAddButtonEvent())
-						.map(Optional::of),
-				ui.getCancelButtonEvent()
-						.<Optional<MutatiesBon>> map(event -> Optional.empty()))
+		super(ui, Observable.combineLatest(ui.getOmschrijving(),
+				ui.getBonnummer(),
+				ui.getPrijs().map(Geld::new), MutatiesBon::new)
+				.sample(ui.getAddButtonEvent())
+				.map(Optional::of)
+				.mergeWith(ui.getCancelButtonEvent()
+						.map(event -> Optional.empty()))
 				.first());
 	}
 

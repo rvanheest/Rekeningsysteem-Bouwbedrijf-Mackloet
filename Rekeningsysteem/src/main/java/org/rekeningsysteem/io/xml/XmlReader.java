@@ -113,7 +113,7 @@ public class XmlReader implements FactuurLoader {
 
 	private Observable<Root<?>> readXML(Unmarshaller unmarshaller, Node node) {
 		try {
-			return Observable.from((Root<?>) unmarshaller.unmarshal(node));
+			return Observable.just((Root<?>) unmarshaller.unmarshal(node));
 		}
 		catch (JAXBException e) {
 			return Observable.error(e);

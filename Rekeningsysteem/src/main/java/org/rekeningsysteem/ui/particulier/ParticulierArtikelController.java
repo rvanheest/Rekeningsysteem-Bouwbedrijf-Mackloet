@@ -7,8 +7,6 @@ import org.rekeningsysteem.data.particulier.AnderArtikel;
 import org.rekeningsysteem.data.particulier.ParticulierArtikel;
 import org.rekeningsysteem.ui.list.AbstractListItemController;
 
-import rx.Observable;
-
 public class ParticulierArtikelController extends AbstractListItemController<ParticulierArtikel> {
 
 	public ParticulierArtikelController(Currency currency) {
@@ -21,19 +19,18 @@ public class ParticulierArtikelController extends AbstractListItemController<Par
 	}
 
 	public ParticulierArtikelController(ParticulierArtikelPane ui) {
-		super(ui, Observable.merge(
-				ui.getType().flatMap(type -> {
-					switch (type) {
-						case ESSELINK:
-							return ui.getGebruiktEsselinkArtikel();
-						case ANDER:
-							return ui.getAnderArtikel();
-						default:
-							return null;
-							// Does never happen!!!
-					}
-				}).sample(ui.getAddButtonEvent()).map(Optional::of),
-				ui.getCancelButtonEvent().map(event -> Optional.<ParticulierArtikel> empty()))
+		super(ui, ui.getType().flatMap(type -> {
+			switch (type) {
+				case ESSELINK:
+					return ui.getGebruiktEsselinkArtikel();
+				case ANDER:
+					return ui.getAnderArtikel();
+				default:
+					return null;
+					// Does never happen!!!
+			}
+		}).sample(ui.getAddButtonEvent()).map(Optional::of)
+				.mergeWith(ui.getCancelButtonEvent().map(event -> Optional.empty()))
 				.first());
 	}
 
