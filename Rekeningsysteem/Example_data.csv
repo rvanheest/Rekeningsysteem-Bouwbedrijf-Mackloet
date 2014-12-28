@@ -1,0 +1,9 @@
+artikelnummer;omschrijving;prijsPer;Eenheid;verkoopprijs
+123456;test123;13;foo;15.93
+456789;test456;10;bar;15.93
+789123;test789;10;baz;15.93
+147258;test147;17;qux;15.93
+258369;test258;11;quux;15.93
+369147;test369;19;corge;15.93
+159357;test159;19;grault;15.93
+357159;test357;12;garply;15.93
