@@ -19,6 +19,7 @@ import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
 
 import org.rekeningsysteem.application.Main;
+import org.rekeningsysteem.application.settings.SettingsPane;
 import org.rekeningsysteem.rxjavafx.Observables;
 import org.rekeningsysteem.ui.aangenomen.AangenomenController;
 import org.rekeningsysteem.ui.mutaties.MutatiesController;
@@ -125,14 +126,17 @@ public class MainPane extends BorderPane {
 			if (!tab.getSaveFile().isPresent()) {
 				this.showSaveFileChooser(stage).ifPresent(file -> {
 					tab.setSaveFile(file);
-    				tab.initFactuurnummer();
+					tab.initFactuurnummer();
 				});
 			}
 		}).filter(t -> t.getSaveFile().isPresent())
-		.subscribe(RekeningTab::save);
+				.subscribe(RekeningTab::save);
 
 		this.initExportObservable()
 				.subscribe(tab -> this.showExportFileChooser(stage).ifPresent(tab::export));
+
+		this.initSettingsObservable(stage)
+				.subscribe(Main.getMain()::showModalMessage);
 	}
 
 	private Observable<File> showOpenFileChooser(Stage stage) {
@@ -164,7 +168,7 @@ public class MainPane extends BorderPane {
 				.map(file -> file.getName())
 				.map(s -> s.substring(0, s.length() - 3) + "pdf")
 				.orElse(""));
-		
+
 		chooser.getExtensionFilters().addAll(new ExtensionFilter("PDF", "*.pdf"));
 
 		return Optional.ofNullable(chooser.showSaveDialog(stage));
@@ -209,5 +213,10 @@ public class MainPane extends BorderPane {
 	private Observable<RekeningTab> initExportObservable() {
 		return Observables.fromNodeEvents(this.pdf, ActionEvent.ACTION)
 				.map(event -> this.tabpane.getSelectedTab());
+	}
+
+	private Observable<SettingsPane> initSettingsObservable(Stage stage) {
+		return Observables.fromNodeEvents(this.settings, ActionEvent.ACTION)
+				.map(event -> new SettingsPane(stage));
 	}
 }
