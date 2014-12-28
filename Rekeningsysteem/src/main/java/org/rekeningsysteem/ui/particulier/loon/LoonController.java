@@ -8,8 +8,6 @@ import org.rekeningsysteem.data.util.loon.InstantLoon;
 import org.rekeningsysteem.data.util.loon.ProductLoon;
 import org.rekeningsysteem.ui.list.AbstractListItemController;
 
-import rx.Observable;
-
 public class LoonController extends AbstractListItemController<AbstractLoon> {
 
 	public LoonController(Currency currency) {
@@ -27,19 +25,18 @@ public class LoonController extends AbstractListItemController<AbstractLoon> {
 	}
 
 	public LoonController(LoonPane ui) {
-		super(ui, Observable.merge(
-				ui.getType().flatMap(type -> {
-					switch (type) {
-						case INSTANT:
-							return ui.getInstantLoon();
-						case PRODUCT:
-							return ui.getProductLoon();
-						default:
-							return null;
-							// Does never happen!!!
-					}
-				}).sample(ui.getAddButtonEvent()).map(Optional::of),
-				ui.getCancelButtonEvent().map(event -> Optional.<AbstractLoon> empty()))
+		super(ui, ui.getType().flatMap(type -> {
+			switch (type) {
+				case INSTANT:
+					return ui.getInstantLoon();
+				case PRODUCT:
+					return ui.getProductLoon();
+				default:
+					return null;
+					// Does never happen!!!
+			}
+		}).sample(ui.getAddButtonEvent()).map(Optional::of)
+				.mergeWith(ui.getCancelButtonEvent().map(event -> Optional.empty()))
 				.first());
 	}
 

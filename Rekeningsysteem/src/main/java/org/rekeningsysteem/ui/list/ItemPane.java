@@ -25,8 +25,7 @@ public abstract class ItemPane extends VBox {
 
 		// block mouse events
 		Observables.fromNodeEvents(this, MouseEvent.MOUSE_CLICKED)
-				.doOnNext(Event::consume)
-				.subscribe();
+				.subscribe(Event::consume);
 
 		Label title = new Label(titleString);
 		title.setId("title");

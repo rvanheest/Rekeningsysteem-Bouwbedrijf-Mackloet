@@ -114,7 +114,7 @@ public class OldXmlReader implements FactuurLoader {
 		if (n == null) {
 			return Observable.empty();
 		}
-		return Observable.from(n.getNodeValue());
+		return Observable.just(n.getNodeValue());
 	}
 
 	private Observable<Geld> makeGeld(String s) {
@@ -123,13 +123,13 @@ public class OldXmlReader implements FactuurLoader {
 		try {
 			switch (ss.length) {
 				case 1:
-					return Observable.from(new Geld(ss[0]));
+					return Observable.just(new Geld(ss[0]));
 				case 2:
 					if (this.currency == null || this.currency.getSymbol().equals(ss[0])) {
 						this.currency = Currency.getAvailableCurrencies().parallelStream()
 								.filter(cur -> ss[0].equals(cur.getSymbol()))
 								.findFirst().get();
-						return Observable.from(new Geld(ss[1]));
+						return Observable.just(new Geld(ss[1]));
 					}
 					else {
 						// corrupte file: verschillende valuta's
@@ -280,11 +280,11 @@ public class OldXmlReader implements FactuurLoader {
 									"Unknown artikel type found."));
 					}
 				})
-				.collect(new ItemList<>(), Collection::add);
+				.collect(ItemList::new, Collection::add);
 
 		Observable<ItemList<AbstractLoon>> loonList = this.makeLoon(
 				((Element) node).getElementsByTagName("loon").item(0))
-				.collect(new ItemList<>(), Collection::add);
+				.collect(ItemList::new, Collection::add);
 
 		return Observable.zip(header, itemList, loonList, this.makeEnkelBtw(node), (h, item, loon,
 				btw) -> new ParticulierFactuur(h, this.currency, item, loon, btw));
@@ -310,11 +310,11 @@ public class OldXmlReader implements FactuurLoader {
 									"Unknown artikel type found."));
 					}
 				})
-				.collect(new ItemList<>(), Collection::add);
+				.collect(ItemList::new, Collection::add);
 
 		Observable<ItemList<AbstractLoon>> loonList = this.makeLoon(
 				((Element) node).getElementsByTagName("loon").item(0))
-				.collect(new ItemList<>(), Collection::add);
+				.collect(ItemList::new, Collection::add);
 
 		return Observable.zip(header, itemList, loonList, this.makeDubbelBtw(node), (h, item, loon,
 				btw) -> new ParticulierFactuur(h, this.currency, item, loon, btw));
@@ -337,7 +337,7 @@ public class OldXmlReader implements FactuurLoader {
 		Observable<ItemList<MutatiesBon>> itemList = Observable.range(0, bonnen.getLength())
 				.map(bonnen::item)
 				.flatMap(this::makeMutatiesBon)
-				.collect(new ItemList<>(), Collection::add);
+				.collect(ItemList::new, Collection::add);
 
 		return Observable.zip(header, itemList, (h, il) -> new MutatiesFactuur(h, this.currency,
 				il, btw));
@@ -361,7 +361,7 @@ public class OldXmlReader implements FactuurLoader {
 		Observable<ItemList<ReparatiesBon>> itemList = Observable.range(0, bonnen.getLength())
 				.map(bonnen::item)
 				.flatMap(this::makeReparatiesBon)
-				.collect(new ItemList<>(), Collection::add);
+				.collect(ItemList::new, Collection::add);
 
 		return Observable.zip(header, itemList, (h, il) -> new ReparatiesFactuur(h, this.currency,
 				il, btw));

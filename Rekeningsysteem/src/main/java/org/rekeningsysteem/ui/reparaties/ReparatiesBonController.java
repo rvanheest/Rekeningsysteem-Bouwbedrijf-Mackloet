@@ -25,15 +25,14 @@ public class ReparatiesBonController extends AbstractListItemController<Reparati
 	}
 
 	public ReparatiesBonController(ReparatiesBonPane ui) {
-		super(ui, Observable.merge(
-				Observable.combineLatest(ui.getOmschrijving(),
-						ui.getBonnummer(),
-						ui.getLoon().map(Geld::new),
-						ui.getMateriaal().map(Geld::new), ReparatiesBon::new)
-						.sample(ui.getAddButtonEvent())
-						.map(Optional::of),
-				ui.getCancelButtonEvent()
-						.<Optional<ReparatiesBon>> map(event -> Optional.empty()))
+		super(ui, Observable.combineLatest(ui.getOmschrijving(),
+				ui.getBonnummer(),
+				ui.getLoon().map(Geld::new),
+				ui.getMateriaal().map(Geld::new), ReparatiesBon::new)
+				.sample(ui.getAddButtonEvent())
+				.map(Optional::of)
+				.mergeWith(ui.getCancelButtonEvent()
+						.map(event -> Optional.empty()))
 				.first());
 	}
 

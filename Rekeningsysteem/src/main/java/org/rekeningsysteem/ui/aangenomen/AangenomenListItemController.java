@@ -23,14 +23,13 @@ public class AangenomenListItemController extends AbstractListItemController<Aan
 	}
 
 	public AangenomenListItemController(AangenomenListItemPane ui) {
-		super(ui, Observable.merge(
-				Observable.combineLatest(ui.getOmschrijving(),
-						ui.getLoon().map(Geld::new),
-						ui.getMateriaal().map(Geld::new), AangenomenListItem::new)
-						.sample(ui.getAddButtonEvent())
-						.map(Optional::of),
-				ui.getCancelButtonEvent()
-						.<Optional<AangenomenListItem>> map(event -> Optional.empty()))
+		super(ui, Observable.combineLatest(ui.getOmschrijving(),
+				ui.getLoon().map(Geld::new),
+				ui.getMateriaal().map(Geld::new), AangenomenListItem::new)
+				.sample(ui.getAddButtonEvent())
+				.map(Optional::of)
+				.mergeWith(ui.getCancelButtonEvent()
+						.map(event -> Optional.empty()))
 				.first());
 	}
 
