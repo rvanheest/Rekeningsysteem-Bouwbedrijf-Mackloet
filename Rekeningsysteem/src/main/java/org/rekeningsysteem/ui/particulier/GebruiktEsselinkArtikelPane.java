@@ -38,7 +38,7 @@ public class GebruiktEsselinkArtikelPane extends GridPane {
 	private Observable<EsselinkArtikel> selectedItem;
 	private Observable<Double> aantal;
 	
-	private Func1<String, String> currentToggle = artNrQuery;
+	private Func1<String, String> currentToggle = omschrQuery;
 
 	public GebruiktEsselinkArtikelPane(Currency currency) {
 		try {
@@ -48,11 +48,11 @@ public class GebruiktEsselinkArtikelPane extends GridPane {
     		
     		RadioButton artNr = new RadioButton("Artikelnummer");
     		artNr.setToggleGroup(searchType);
-    		artNr.setSelected(true);
+    		artNr.setSelected(false);
     		
     		RadioButton omschr = new RadioButton("Omschrijving");
     		omschr.setToggleGroup(searchType);
-    		omschr.setSelected(false);
+    		omschr.setSelected(true);
     		
     		SearchBox searchField = new SearchBox(currency);
     		
