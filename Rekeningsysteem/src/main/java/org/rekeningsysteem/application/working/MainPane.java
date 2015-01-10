@@ -20,6 +20,8 @@ import javafx.stage.Stage;
 
 import org.rekeningsysteem.application.Main;
 import org.rekeningsysteem.application.settings.SettingsPane;
+import org.rekeningsysteem.properties.PropertiesWorker;
+import org.rekeningsysteem.properties.PropertyModelEnum;
 import org.rekeningsysteem.rxjavafx.Observables;
 import org.rekeningsysteem.ui.aangenomen.AangenomenController;
 import org.rekeningsysteem.ui.mutaties.MutatiesController;
@@ -45,6 +47,8 @@ public class MainPane extends BorderPane {
 	private Button save;
 	private Button pdf;
 	private Button settings;
+	
+	private final PropertiesWorker properties = PropertiesWorker.getInstance();
 
 	public MainPane(Stage stage) {
 		this.setId("main-pane");
@@ -125,6 +129,7 @@ public class MainPane extends BorderPane {
 		this.initSaveObservable().doOnNext(tab -> {
 			if (!tab.getSaveFile().isPresent()) {
 				this.showSaveFileChooser(stage).ifPresent(file -> {
+					this.saveLastSaveLocationProperty(file);
 					tab.setSaveFile(file);
 					tab.initFactuurnummer();
 				});
@@ -133,16 +138,26 @@ public class MainPane extends BorderPane {
 				.subscribe(RekeningTab::save);
 
 		this.initExportObservable()
-				.subscribe(tab -> this.showExportFileChooser(stage).ifPresent(tab::export));
+				.subscribe(tab -> this.showExportFileChooser(stage).ifPresent(file -> {
+					this.saveLastSaveLocationProperty(file);
+					tab.export(file);
+				}));
 
 		this.initSettingsObservable(stage)
 				.subscribe(Main.getMain()::showModalMessage);
 	}
 
+	private void saveLastSaveLocationProperty(File file) {
+		this.properties.setProperty(PropertyModelEnum.LAST_SAVE_LOCATION, file.getParentFile().getPath());
+	}
+
 	private Observable<File> showOpenFileChooser(Stage stage) {
+		File initDir = new File(this.properties.getProperty(PropertyModelEnum.LAST_SAVE_LOCATION)
+				.orElse(System.getProperty("user.dir")));
+		
 		FileChooser chooser = new FileChooser();
 		chooser.setTitle("Open een factuur");
-		chooser.setInitialDirectory(new File(System.getProperty("user.dir")));
+		chooser.setInitialDirectory(initDir);
 		chooser.getExtensionFilters().addAll(new ExtensionFilter("XML", "*.xml"));
 
 		return Observable.create((Subscriber<? super File> subscriber) -> {
@@ -152,18 +167,24 @@ public class MainPane extends BorderPane {
 	}
 
 	private Optional<File> showSaveFileChooser(Stage stage) {
+		File initDir = new File(this.properties.getProperty(PropertyModelEnum.LAST_SAVE_LOCATION)
+				.orElse(System.getProperty("user.dir")));
+		
 		FileChooser chooser = new FileChooser();
 		chooser.setTitle("Sla een factuur op");
-		chooser.setInitialDirectory(new File(System.getProperty("user.dir")));
+		chooser.setInitialDirectory(initDir);
 		chooser.getExtensionFilters().addAll(new ExtensionFilter("XML", "*.xml"));
 
 		return Optional.ofNullable(chooser.showSaveDialog(stage));
 	}
 
 	private Optional<File> showExportFileChooser(Stage stage) {
+		File initDir = new File(this.properties.getProperty(PropertyModelEnum.LAST_SAVE_LOCATION)
+				.orElse(System.getProperty("user.dir")));
+		
 		FileChooser chooser = new FileChooser();
 		chooser.setTitle("Exporteer een factuur");
-		chooser.setInitialDirectory(new File(System.getProperty("user.dir")));
+		chooser.setInitialDirectory(initDir);
 		chooser.setInitialFileName(this.tabpane.getSelectedTab().getSaveFile()
 				.map(file -> file.getName())
 				.map(s -> s.substring(0, s.length() - 3) + "pdf")
@@ -202,6 +223,7 @@ public class MainPane extends BorderPane {
 	private Observable<RekeningTab> initOpenObservable(Stage stage) {
 		return Observables.fromNodeEvents(this.open, ActionEvent.ACTION)
 				.flatMap(event -> this.showOpenFileChooser(stage))
+				.doOnNext(this::saveLastSaveLocationProperty)
 				.flatMap(RekeningTab::openFile);
 	}
 
