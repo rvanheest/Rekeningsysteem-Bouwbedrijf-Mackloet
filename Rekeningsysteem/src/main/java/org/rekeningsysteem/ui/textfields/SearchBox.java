@@ -49,7 +49,7 @@ public class SearchBox extends Region {
 		this.setPrefSize(250, 24);
 		this.setMaxHeight(24);
 		
-		this.textBox.setPromptText("Search");
+		this.textBox.setPromptText("Zoek...");
 		this.textProperty().subscribe(s -> this.clearButton.setVisible(!s.isEmpty()));
 		
 		this.clearButton.setVisible(false);
