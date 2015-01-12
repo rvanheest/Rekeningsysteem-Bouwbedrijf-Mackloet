@@ -12,7 +12,6 @@ import org.rekeningsysteem.properties.PropertyModelEnum;
 
 import rx.Observable;
 import rx.Subscriber;
-import rx.schedulers.Schedulers;
 
 public class Database implements AutoCloseable {
 
@@ -75,7 +74,7 @@ public class Database implements AutoCloseable {
 			catch (SQLException e) {
 				subscriber.onError(e);
 			}
-		}).subscribeOn(Schedulers.io());
+		});
 	}
 
 	public <A> Observable<A> query(String query, ExFunc1<ResultSet, A> resultComposer) {
@@ -90,6 +89,6 @@ public class Database implements AutoCloseable {
 			catch (Exception e) {
 				subscriber.onError(e);
 			}
-		}).subscribeOn(Schedulers.io());
+		});
 	}
 }
