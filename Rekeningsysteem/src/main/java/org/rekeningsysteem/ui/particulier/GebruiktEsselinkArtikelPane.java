@@ -19,12 +19,14 @@ import org.rekeningsysteem.data.particulier.EsselinkArtikel;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.io.database.Database;
 import org.rekeningsysteem.logging.ApplicationLogger;
+import org.rekeningsysteem.rxjavafx.JavaFxScheduler;
 import org.rekeningsysteem.rxjavafx.Observables;
 import org.rekeningsysteem.ui.textfields.NumberField;
 import org.rekeningsysteem.ui.textfields.SearchBox;
 
 import rx.Observable;
 import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 public class GebruiktEsselinkArtikelPane extends GridPane {
 	
@@ -68,13 +70,17 @@ public class GebruiktEsselinkArtikelPane extends GridPane {
 			searchField.textProperty().filter(s -> s.length() >= 4)
 					.map(s -> s.replace("\'", "\'\'"))
 					.map(s -> this.currentToggle.call(s))
-					.<Observable<EsselinkArtikel>> map(s -> database.query(s,
-							result -> new EsselinkArtikel(
-									result.getString("artikelnummer"),
-									result.getString("omschrijving"),
-									result.getInt("prijsPer"),
-									result.getString("eenheid"),
-									new Geld(result.getDouble("verkoopprijs")))))
+					.observeOn(Schedulers.io())
+					.<Observable<EsselinkArtikel>> map(s -> database.query(s, result -> {
+						String artikelNummer = result.getString("artikelnummer");
+						String omschrijving = result.getString("omschrijving");
+						int prijsPer = result.getInt("prijsPer");
+						String eenheid = result.getString("eenheid");
+						Geld verkoopPrijs = new Geld(result.getDouble("verkoopprijs"));
+						
+						return new EsselinkArtikel(artikelNummer, omschrijving, prijsPer, eenheid, verkoopPrijs);
+					}))
+					.observeOn(JavaFxScheduler.getInstance())
 					.subscribe(searchField::populateMenu);
 			
 			this.selectedItem = searchField.getSelectedItem();
