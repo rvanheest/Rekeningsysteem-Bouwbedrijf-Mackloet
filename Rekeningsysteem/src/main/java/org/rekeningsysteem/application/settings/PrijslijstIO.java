@@ -27,6 +27,7 @@ import org.rekeningsysteem.rxjavafx.Observables;
 
 import rx.Observable;
 import rx.Subscriber;
+import rx.schedulers.Schedulers;
 
 public class PrijslijstIO extends Tab {
 
@@ -44,24 +45,35 @@ public class PrijslijstIO extends Tab {
 
 		Observables.fromNodeEvents(this.startButton, ActionEvent.ACTION)
 				.flatMap(e -> this.showOpenFileChooser(stage))
-				.doOnNext(f -> this.startButton.setDisable(true))
-				.doOnNext(f -> closeButton.setDisable(true))
-				.<Integer> flatMap(file -> this.clearData().flatMap(i -> this.importData(file)
+				.doOnNext(f -> {
+					this.startButton.setDisable(true);
+					closeButton.setDisable(true);
+				})
+				.observeOn(Schedulers.io())
+				.flatMap(file -> this.clearData()
+						.flatMap(i -> this.readFile(file))
+						.flatMap(query -> {
+							try {
+								return Database.getInstance().update(query);
+							}
+							catch (SQLException e) {
+								return Observable.error(e);
+							}
+						})
+						.scan(0, (cum, x) -> cum + 1)
 						.observeOn(JavaFxScheduler.getInstance())
-						.doOnCompleted(() -> closeButton.setDisable(false))
-						.doOnCompleted(() -> this.startButton.setDisable(false))
-						.doOnCompleted(() -> this.progressLabel.setText("Artikelen importeren "
-								+ "is voltooid"))))
+						.doOnCompleted(() -> {
+							closeButton.setDisable(false);
+							this.startButton.setDisable(false);
+							this.progressLabel.setText("Artikelen importeren is voltooid");
+						}))
 				.map(i -> "Voortgang: " + i + " items toegevoegd")
-				.doOnNext(this.progressLabel::setText)
-				.subscribe(i -> {
-				},
-						e -> {
-							this.progressLabel.setText("Er is een fout opgetreden. Zie de log "
-									+ "voor info.");
-							ApplicationLogger.getInstance().error("Error occurred in importing "
-									+ "new data", e);
-						});
+				.subscribe(this.progressLabel::setText, e -> {
+					this.progressLabel.setText("Er is een fout opgetreden. Zie de log "
+							+ "voor info.");
+					ApplicationLogger.getInstance().error("Error occurred in importing "
+							+ "new data", e);
+				});
 
 		GridPane content = new GridPane();
 		content.setPadding(new Insets(8));
@@ -96,7 +108,9 @@ public class PrijslijstIO extends Tab {
 		}
 	}
 
-	private Observable<Integer> importData(File csv) {
+	private Observable<String> readFile(File csv) {
+		// TODO replace this implementation with the Apache Commons CSV parser
+		// http://commons.apache.org/proper/commons-csv/
 		try {
 			String regex = ";(?=([^\"]*\"[^\"]*\")*[^\"]*$)";
 
@@ -109,11 +123,9 @@ public class PrijslijstIO extends Tab {
 					.skip(1)
 					.map(list -> "INSERT INTO Artikellijst VALUES ('" + list.get(0) + "', '"
 							+ list.get(1).replace("\'", "\'\'") + "', '" + list.get(2) + "', '"
-							+ list.get(3) + "', '" + list.get(4).replace(',', '.') + "');")
-					.flatMap(Database.getInstance()::update)
-					.scan(0, (cum, x) -> cum + 1);
+							+ list.get(3) + "', '" + list.get(4).replace(',', '.') + "');");
 		}
-		catch (SQLException | FileNotFoundException e) {
+		catch (FileNotFoundException e) {
 			return Observable.error(e);
 		}
 	}
