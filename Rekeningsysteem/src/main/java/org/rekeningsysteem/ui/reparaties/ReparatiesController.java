@@ -1,11 +1,14 @@
 package org.rekeningsysteem.ui.reparaties;
 
+import java.time.LocalDate;
 import java.util.Currency;
 import java.util.Optional;
 
 import org.rekeningsysteem.application.working.RekeningSplitPane;
 import org.rekeningsysteem.data.reparaties.ReparatiesFactuur;
 import org.rekeningsysteem.data.util.BtwPercentage;
+import org.rekeningsysteem.data.util.header.Debiteur;
+import org.rekeningsysteem.data.util.header.FactuurHeader;
 import org.rekeningsysteem.properties.PropertiesWorker;
 import org.rekeningsysteem.properties.PropertyModelEnum;
 import org.rekeningsysteem.ui.AbstractRekeningController;
@@ -29,7 +32,9 @@ public class ReparatiesController extends AbstractRekeningController<ReparatiesF
 	}
 
 	public ReparatiesController(Currency currency, BtwPercentage btw) {
-		this(new FactuurHeaderController(), new ReparatiesListPaneController(currency, btw));
+		this(new FactuurHeaderController(new FactuurHeader(new Debiteur("Woongoed GO",
+				"Landbouwweg", "1", "3241MV", "Middelharnis", "NL.0025.45.094.B.01"),
+				LocalDate.now())), new ReparatiesListPaneController(currency, btw));
 	}
 
 	public ReparatiesController(ReparatiesFactuur input) {
