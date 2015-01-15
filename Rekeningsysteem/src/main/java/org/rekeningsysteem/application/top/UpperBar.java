@@ -1,15 +1,15 @@
 package org.rekeningsysteem.application.top;
 
+import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
-import javafx.geometry.Point2D;
+import javafx.scene.control.Button;
 import javafx.scene.control.ToolBar;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
-import javafx.stage.Stage;
+import javafx.scene.layout.VBox;
 
 import org.rekeningsysteem.application.Main;
 import org.rekeningsysteem.rxjavafx.Observables;
@@ -18,50 +18,53 @@ import rx.Observable;
 
 public class UpperBar extends ToolBar {
 
-	public UpperBar(Stage stage) {
-		this.setId("mainToolBar");
+	private final ImageView logo = new ImageView(new Image(Main.getResource("/images/logo.png")));
+	private final ImageView name = new ImageView(new Image(Main.getResource("/images/name.png")));
 
+	private final Region leftSpacer = new Region();
+	private final Region rightSpacer = new Region();
+
+	private final Button closeBtn = new Button();
+	private final Button minBtn = new Button();
+	private final Button maxBtn = new Button();
+
+	private final Observable<ActionEvent> closeButtonEvents;
+	private final Observable<ActionEvent> minButtonEvents;
+	private final Observable<ActionEvent> maxButtonEvents;
+
+	public UpperBar() {
+		this.setId("mainToolBar");
+		this.getItems().addAll(this.logo, this.leftSpacer, this.name, this.rightSpacer,
+				new VBox(4, this.closeBtn, this.minBtn, this.maxBtn));
 		this.setPrefHeight(66);
 		this.setMinHeight(66);
 		this.setMaxHeight(66);
 
-		ImageView logo = new ImageView(new Image(Main.getResource("/images/logo.png")));
-		HBox.setMargin(logo, new Insets(0, 0, 0, 5));
-		this.getItems().add(logo);
+		HBox.setMargin(this.logo, new Insets(0, 0, 0, 5));
+		this.name.setId("name-image");
 
-		Region spacer = new Region();
-		HBox.setHgrow(spacer, Priority.ALWAYS);
-		this.getItems().add(spacer);
+		HBox.setHgrow(this.leftSpacer, Priority.ALWAYS);
+		HBox.setHgrow(this.rightSpacer, Priority.ALWAYS);
 
-		ImageView name = new ImageView(new Image(Main.getResource("/images/name.png")));
-		name.setId("name-image");
-		this.getItems().add(name);
+		this.closeBtn.setId("window-close");
+		this.closeButtonEvents = Observables.fromNodeEvents(this.closeBtn, ActionEvent.ACTION);
 
-		Region spacer2 = new Region();
-		HBox.setHgrow(spacer2, Priority.ALWAYS);
-		this.getItems().add(spacer2);
+		this.minBtn.setId("window-min");
+		this.minButtonEvents = Observables.fromNodeEvents(this.minBtn, ActionEvent.ACTION);
 
-		WindowButtons windowButtons = new WindowButtons(stage);
-		this.getItems().add(windowButtons);
+		this.maxBtn.setId("window-max");
+		this.maxButtonEvents = Observables.fromNodeEvents(this.maxBtn, ActionEvent.ACTION);
+	}
 
-		Observables.fromNodeEvents(this, MouseEvent.MOUSE_CLICKED)
-				.filter(event -> event.getClickCount() == 2)
-				.doOnNext(MouseEvent::consume)
-				.subscribe(event -> windowButtons.toggleMaximized());
+	public Observable<ActionEvent> getCloseButtonEvents() {
+		return this.closeButtonEvents;
+	}
 
-		Observable<Point2D> pressed = Observables.fromNodeEvents(this, MouseEvent.MOUSE_PRESSED)
-				.doOnNext(MouseEvent::consume)
-				.filter(event -> !windowButtons.isMaximized())
-				.filter(event -> event.getClickCount() == 1)
-				.map(event -> new Point2D(event.getSceneX(), event.getSceneY()));
-		Observable<Point2D> dragged = Observables.fromNodeEvents(this, MouseEvent.MOUSE_DRAGGED)
-				.doOnNext(MouseEvent::consume)
-				.filter(event -> !windowButtons.isMaximized())
-				.filter(event -> event.getClickCount() == 1)
-				.map(event -> new Point2D(event.getScreenX(), event.getScreenY()));
-		Observable.combineLatest(dragged, pressed.sample(dragged), Point2D::subtract)
-				.doOnNext(point -> stage.setX(point.getX()))
-				.doOnNext(point -> stage.setY(point.getY()))
-				.subscribe();
+	public Observable<ActionEvent> getMinButtonEvents() {
+		return this.minButtonEvents;
+	}
+
+	public Observable<ActionEvent> getMaxButtonEvents() {
+		return this.maxButtonEvents;
 	}
 }
