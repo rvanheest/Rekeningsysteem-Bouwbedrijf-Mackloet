@@ -1,6 +1,7 @@
 package org.rekeningsysteem.application.working;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Optional;
 
 import javafx.scene.control.Tab;
@@ -18,6 +19,7 @@ import org.rekeningsysteem.ui.offerte.OfferteController;
 import org.rekeningsysteem.ui.particulier.ParticulierController;
 import org.rekeningsysteem.ui.reparaties.ReparatiesController;
 
+import de.nixosoft.jlr.JLROpener;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
@@ -28,11 +30,13 @@ public class RekeningTab extends Tab {
 	private final PublishSubject<Boolean> modified = PublishSubject.create();
 	private Optional<File> saveFile;
 
-	public RekeningTab(String name, AbstractRekeningController<? extends AbstractRekening> controller) {
+	public RekeningTab(String name,
+			AbstractRekeningController<? extends AbstractRekening> controller) {
 		this(name, controller, null);
 	}
 
-	public RekeningTab(String name, AbstractRekeningController<? extends AbstractRekening> controller, File file) {
+	public RekeningTab(String name,
+			AbstractRekeningController<? extends AbstractRekening> controller, File file) {
 		super(name);
 		this.controller = controller;
 		this.saveFile = Optional.ofNullable(file);
@@ -71,31 +75,43 @@ public class RekeningTab extends Tab {
 	}
 
 	public static Observable<RekeningTab> openFile(File file) {
-		Observable<? extends AbstractRekening> factuur = ioWorker.load(file);
+		if (file.getName().endsWith(".pdf")) {
+			try {
+				JLROpener.open(file);
+				return Observable.empty();
+			}
+			catch (IOException e) {
+				return Observable.error(e);
+			}
+		}
+		else if (file.getName().endsWith(".xml")) {
+			Observable<? extends AbstractRekening> factuur = ioWorker.load(file);
 
-		Observable<AangenomenController> aangenomen = factuur
-				.filter(a -> a instanceof AangenomenFactuur)
-				.cast(AangenomenFactuur.class)
-				.map(AangenomenController::new);
-		Observable<MutatiesController> mutaties = factuur
-				.filter(m -> m instanceof MutatiesFactuur)
-				.cast(MutatiesFactuur.class)
-				.map(MutatiesController::new);
-		Observable<OfferteController> offerte = factuur
-				.filter(o -> o instanceof Offerte)
-				.cast(Offerte.class)
-				.map(OfferteController::new);
-		Observable<ParticulierController> particulier = factuur
-				.filter(p -> p instanceof ParticulierFactuur)
-				.cast(ParticulierFactuur.class)
-				.map(ParticulierController::new);
-		Observable<ReparatiesController> reparaties = factuur
-				.filter(m -> m instanceof ReparatiesFactuur)
-				.cast(ReparatiesFactuur.class)
-				.map(ReparatiesController::new);
+			Observable<AangenomenController> aangenomen = factuur
+					.filter(a -> a instanceof AangenomenFactuur)
+					.cast(AangenomenFactuur.class)
+					.map(AangenomenController::new);
+			Observable<MutatiesController> mutaties = factuur
+					.filter(m -> m instanceof MutatiesFactuur)
+					.cast(MutatiesFactuur.class)
+					.map(MutatiesController::new);
+			Observable<OfferteController> offerte = factuur
+					.filter(o -> o instanceof Offerte)
+					.cast(Offerte.class)
+					.map(OfferteController::new);
+			Observable<ParticulierController> particulier = factuur
+					.filter(p -> p instanceof ParticulierFactuur)
+					.cast(ParticulierFactuur.class)
+					.map(ParticulierController::new);
+			Observable<ReparatiesController> reparaties = factuur
+					.filter(m -> m instanceof ReparatiesFactuur)
+					.cast(ReparatiesFactuur.class)
+					.map(ReparatiesController::new);
 
-		return Observable.merge(aangenomen, mutaties, offerte, particulier, reparaties)
-				.map(c -> new RekeningTab(file.getName(), c, file));
+			return Observable.merge(aangenomen, mutaties, offerte, particulier, reparaties)
+					.map(c -> new RekeningTab(file.getName(), c, file));
+		}
+		return Observable.empty();
 	}
 
 	public void save() {
