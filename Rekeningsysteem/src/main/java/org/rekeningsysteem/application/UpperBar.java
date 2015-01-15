@@ -1,4 +1,4 @@
-package org.rekeningsysteem.application.top;
+package org.rekeningsysteem.application;
 
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
@@ -11,7 +11,6 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 
-import org.rekeningsysteem.application.Main;
 import org.rekeningsysteem.rxjavafx.Observables;
 
 import rx.Observable;
