@@ -171,7 +171,7 @@ public class MainPane extends BorderPane {
 		FileChooser chooser = new FileChooser();
 		chooser.setTitle("Open een factuur");
 		chooser.setInitialDirectory(initDir);
-		chooser.getExtensionFilters().addAll(new ExtensionFilter("XML", "*.xml"));
+		chooser.getExtensionFilters().addAll(new ExtensionFilter("XML, PDF", "*.xml", "*.pdf"));
 
 		return Observable.create((Subscriber<? super File> subscriber) -> {
 			subscriber.onNext(chooser.showOpenDialog(stage));
