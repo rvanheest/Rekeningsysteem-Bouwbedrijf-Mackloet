@@ -17,11 +17,9 @@ public class ItemList<E extends ListItem> extends ArrayList<E> implements Bedrag
 
 	@Override
 	public Totalen getTotalen() {
-		return this.parallelStream().reduce(new Totalen(),
-				ItemList::makeTotalen,
-				Totalen::plus);
+		return this.parallelStream().reduce(new Totalen(), ItemList::makeTotalen, Totalen::plus);
 	}
-	
+
 	protected static Totalen makeTotalen(Totalen t, ListItem li) {
 		return t.withLoon(t.getLoon().add(li.getLoon()))
 				.withMateriaal(t.getMateriaal().add(li.getMateriaal()));
