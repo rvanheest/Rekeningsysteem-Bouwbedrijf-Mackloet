@@ -6,7 +6,6 @@ import java.util.Optional;
 import org.rekeningsysteem.application.working.RekeningSplitPane;
 import org.rekeningsysteem.data.particulier.ParticulierFactuur;
 import org.rekeningsysteem.data.util.BtwPercentage;
-import org.rekeningsysteem.properties.Optionals;
 import org.rekeningsysteem.properties.PropertiesWorker;
 import org.rekeningsysteem.properties.PropertyModelEnum;
 import org.rekeningsysteem.ui.AbstractRekeningController;
@@ -27,11 +26,13 @@ public class ParticulierController extends AbstractRekeningController<Particulie
 		this(properties.getProperty(PropertyModelEnum.VALUTAISO4217)
 				.map(Currency::getInstance)
 				.orElse(Currency.getInstance("EUR")),
-				Optionals.zip(properties.getProperty(PropertyModelEnum.LOONBTWPERCENTAGE)
-						.map(Double::parseDouble),
-						properties.getProperty(PropertyModelEnum.MATERIAALBTWPERCENTAGE)
-								.map(Double::parseDouble), BtwPercentage::new)
-						.orElse(new BtwPercentage(6.0, 21.0)));
+				properties.getProperty(PropertyModelEnum.LOONBTWPERCENTAGE)
+        				.map(Double::parseDouble)
+        				.<BtwPercentage> flatMap(l -> properties
+        						.getProperty(PropertyModelEnum.MATERIAALBTWPERCENTAGE)
+        						.map(Double::parseDouble)
+        						.map(m -> new BtwPercentage(l, m)))
+        				.orElse(new BtwPercentage(6, 21)));
 	}
 
 	public ParticulierController(Currency currency, BtwPercentage btw) {
