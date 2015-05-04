@@ -6,8 +6,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.rekeningsysteem.data.particulier.AnderArtikel;
 import org.rekeningsysteem.data.util.Geld;
+import org.rekeningsysteem.test.data.EqualsHashCodeTest;
+import org.rekeningsysteem.test.data.util.ListItemTest;
 
-public class AnderArtikelTest extends ParticulierArtikelTest {
+public class AnderArtikelTest extends EqualsHashCodeTest implements ListItemTest {
 
 	private AnderArtikel artikel;
 	private final String omschrijving = "omschrijving";
@@ -53,19 +55,6 @@ public class AnderArtikelTest extends ParticulierArtikelTest {
 		assertEquals(this.prijs, this.artikel.getTotaal());
 	}
 	
-	@Test
-	@Override
-	public void testToArray() {
-		assertArrayEquals(new String[] {
-				"",
-				this.omschrijving,
-				"",
-				"",
-				this.prijs.formattedString(),
-				""
-		}, this.artikel.toArray());
-	}
-
 	@Test
 	public void testEqualsFalseOtherOmschrijving() {
 		AnderArtikel aa2 = new AnderArtikel(this.omschrijving + ".", this.prijs);

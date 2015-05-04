@@ -5,7 +5,7 @@ import java.util.Objects;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.data.util.visitor.ListItemVisitor;
 
-public final class AnderArtikel extends ParticulierArtikel {
+public final class AnderArtikel implements ParticulierArtikel {
 
 	private final String omschrijving;
 	private final Geld prijs;
@@ -37,18 +37,6 @@ public final class AnderArtikel extends ParticulierArtikel {
 	@Override
 	public <T> T accept(ListItemVisitor<T> visitor) {
 		return visitor.visit(this);
-	}
-
-	@Override
-	public String[] toArray() {
-		return new String[] {
-				"",
-				this.omschrijving,
-				"",
-				"",
-				this.prijs.formattedString(),
-				""
-		};
 	}
 
 	@Override
