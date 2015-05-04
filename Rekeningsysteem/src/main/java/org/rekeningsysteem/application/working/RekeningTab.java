@@ -109,14 +109,14 @@ public class RekeningTab extends Tab {
 					.map(ReparatiesController::new);
 
 			return Observable.merge(aangenomen, mutaties, offerte, particulier, reparaties)
-					.map(c -> new RekeningTab(file.getName(), c, file));
+					.map(c -> new RekeningTab(file.getName(), c, file))
+					.single();
 		}
 		return Observable.empty();
 	}
 
 	public void save() {
-		this.getModel()
-				.first()
+		this.getModel().first()
 				.doOnNext(factuur -> this.saveFile.ifPresent(file -> ioWorker.save(factuur, file)))
 				.map(factuur -> this.getText())
 				.filter(s -> s.endsWith("*"))
@@ -126,9 +126,7 @@ public class RekeningTab extends Tab {
 	}
 
 	public void export(File file) {
-		this.getModel()
-				.first()
-				.subscribe(factuur -> ioWorker.export(factuur, file),
-						e -> e.printStackTrace());
+		this.getModel().first()
+				.subscribe(factuur -> ioWorker.export(factuur, file));
 	}
 }

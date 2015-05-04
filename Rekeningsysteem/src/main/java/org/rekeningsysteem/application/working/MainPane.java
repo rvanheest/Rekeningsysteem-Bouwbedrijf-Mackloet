@@ -4,7 +4,6 @@ import java.io.File;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Function;
 
 import javafx.event.ActionEvent;
 import javafx.scene.control.Button;
@@ -30,23 +29,22 @@ import org.rekeningsysteem.ui.particulier.ParticulierController;
 import org.rekeningsysteem.ui.reparaties.ReparatiesController;
 
 import rx.Observable;
-import rx.Subscriber;
-import rx.Subscription;
+import rx.functions.Action1;
 
 public class MainPane extends BorderPane {
 
-	private RekeningToolbar toolbar;
-	private RekeningTabpane tabpane;
+	private final RekeningToolbar toolbar;
+	private final RekeningTabpane tabpane;
 
-	private Button aangenomen;
-	private Button mutaties;
-	private Button reparaties;
-	private Button particulier;
-	private Button offerte;
-	private Button open;
-	private Button save;
-	private Button pdf;
-	private Button settings;
+	private final Button aangenomen = new Button();
+	private final Button mutaties = new Button();
+	private final Button reparaties = new Button();
+	private final Button particulier = new Button();
+	private final Button offerte = new Button();
+	private final Button open = new Button();
+	private final Button save = new Button();
+	private final Button pdf = new Button();
+	private final Button settings = new Button();
 
 	private final PropertiesWorker properties = PropertiesWorker.getInstance();
 
@@ -69,62 +67,47 @@ public class MainPane extends BorderPane {
 
 		this.initButtonHandlers(stage);
 
-		Observable<Boolean> hasNoTabs = Observables.fromObservableList(this.tabpane.getTabs())
-				.map(List::isEmpty);
-		hasNoTabs.subscribe(this.save::setDisable);
-		hasNoTabs.subscribe(this.pdf::setDisable);
+		Observables.fromObservableList(this.tabpane.getTabs())
+				.map(List::isEmpty)
+				.forEach(listEmpty -> {
+					this.save.setDisable(listEmpty);
+					this.pdf.setDisable(listEmpty);
+				});
 	}
 
 	private void initButtons() {
-		this.aangenomen = new Button();
 		this.aangenomen.setGraphic(new ImageView(new Image(Main
 				.getResource("/images/aangenomen.png"))));
-
-		this.mutaties = new Button();
 		this.mutaties.setGraphic(new ImageView(new Image(Main
 				.getResource("/images/mutaties.png"))));
-
-		this.reparaties = new Button();
 		this.reparaties.setGraphic(new ImageView(new Image(Main
 				.getResource("/images/reparaties.png"))));
-
-		this.particulier = new Button();
 		this.particulier.setGraphic(new ImageView(new Image(Main
 				.getResource("/images/particulier.png"))));
-
-		this.offerte = new Button();
 		this.offerte.setGraphic(new ImageView(new Image(Main
 				.getResource("/images/offerte.png"))));
-
-		this.open = new Button();
 		this.open.setGraphic(new ImageView(new Image(Main
 				.getResource("/images/openen.png"))));
-
-		this.save = new Button();
 		this.save.setGraphic(new ImageView(new Image(Main
 				.getResource("/images/opslaan.png"))));
-
-		this.pdf = new Button();
 		this.pdf.setGraphic(new ImageView(new Image(Main
 				.getResource("/images/pdf.png"))));
-
-		this.settings = new Button();
 		this.settings.setId("settings-button");
 		this.settings.setGraphic(new ImageView(new Image(Main
 				.getResource("/images/settings.png"))));
 	}
 
 	private void initButtonHandlers(Stage stage) {
-		Function<Observable<RekeningTab>, Subscription> addSelect = (tab) -> tab
-				.doOnNext(this.tabpane::addTab)
-				.doOnNext(this.tabpane::selectTab)
-				.subscribe();
-		addSelect.apply(this.initAangenomenObservable());
-		addSelect.apply(this.initMutatiesObservable());
-		addSelect.apply(this.initReparatiesObservable());
-		addSelect.apply(this.initParticulierObservable());
-		addSelect.apply(this.initOfferteObservable());
-		addSelect.apply(this.initOpenObservable(stage));
+		Action1<Observable<RekeningTab>> addSelect = (tabs) -> tabs.forEach(tab -> {
+			this.tabpane.addTab(tab);
+			this.tabpane.selectTab(tab);
+		});
+		addSelect.call(this.initAangenomenObservable());
+		addSelect.call(this.initMutatiesObservable());
+		addSelect.call(this.initReparatiesObservable());
+		addSelect.call(this.initParticulierObservable());
+		addSelect.call(this.initOfferteObservable());
+		addSelect.call(this.initOpenObservable(stage));
 
 		this.initSaveObservable()
 				.doOnNext(tab -> {
@@ -173,10 +156,8 @@ public class MainPane extends BorderPane {
 		chooser.setInitialDirectory(initDir);
 		chooser.getExtensionFilters().addAll(new ExtensionFilter("XML, PDF", "*.xml", "*.pdf"));
 
-		return Observable.create((Subscriber<? super File> subscriber) -> {
-			subscriber.onNext(chooser.showOpenDialog(stage));
-			subscriber.onCompleted();
-		}).filter(Objects::nonNull);
+		return Observable.just(chooser.showOpenDialog(stage))
+				.filter(Objects::nonNull);
 	}
 
 	private Optional<File> showSaveFileChooser(Stage stage) {

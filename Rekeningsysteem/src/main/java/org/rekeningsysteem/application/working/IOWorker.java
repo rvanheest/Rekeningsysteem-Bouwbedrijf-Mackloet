@@ -41,7 +41,6 @@ public class IOWorker {
 	}
 
 	public Observable<? extends AbstractRekening> load(File file) {
-		return this.loader.load(file)
-				.onErrorResumeNext(throwable -> this.oldLoader.load(file));
+		return this.loader.load(file).onErrorResumeNext(t -> this.oldLoader.load(file));
 	}
 }

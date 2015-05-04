@@ -14,7 +14,7 @@ import javafx.scene.layout.BorderPane;
 
 public class RekeningSplitPane extends BorderPane {
 
-	private List<WorkingPane> panes;
+	private final List<WorkingPane> panes;
 
 	public RekeningSplitPane(WorkingPane... panes) {
 		this.panes = Arrays.asList(panes);
