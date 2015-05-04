@@ -1,7 +1,5 @@
 package org.rekeningsysteem.application.working;
 
-import java.util.List;
-
 import javafx.scene.Node;
 import javafx.scene.control.ToolBar;
 
@@ -13,10 +11,5 @@ public class RekeningToolbar extends ToolBar {
 		this.setId("rekening-toolbar");
 		this.setMinHeight(29);
 		this.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
-	}
-
-	@Deprecated
-	public RekeningToolbar(List<Node> nodes) {
-		this(nodes.toArray(new Node[0]));
 	}
 }

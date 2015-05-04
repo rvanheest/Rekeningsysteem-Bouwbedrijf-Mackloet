@@ -132,8 +132,7 @@ public class SearchBox extends Region {
 				.map(hBoxPos -> new Point2D(
 						hBoxPos.getX() + this.contextMenu.getScene().getX() + this.contextMenu.getX() - this.infoBox.getPrefWidth() - 10,
                         hBoxPos.getY() + this.contextMenu.getScene().getY() + this.contextMenu.getY() - 10))
-				.doOnNext(d -> this.infoPopup.show(this.getScene().getWindow(), d.getX(), d.getY()))
-				.subscribe();
+				.forEach(d -> this.infoPopup.show(this.getScene().getWindow(), d.getX(), d.getY()));
 		
 		CustomMenuItem menu = new CustomMenuItem(hBox);
 		menu.getStyleClass().add("search-menu-item");

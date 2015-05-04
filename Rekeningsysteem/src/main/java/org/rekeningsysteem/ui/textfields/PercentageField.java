@@ -19,7 +19,7 @@ public class PercentageField extends Control {
 
 	public static final int DEFAULT_PREF_COLUMN_COUNT = 12;
 
-	private ObjectProperty<BigDecimal> value = new SimpleObjectProperty<BigDecimal>(this, "percentage");
+	private final ObjectProperty<BigDecimal> value = new SimpleObjectProperty<>(this, "percentage");
 
 	public final BigDecimal getValue() {
 		return this.value.get();
@@ -33,7 +33,7 @@ public class PercentageField extends Control {
 		return this.value;
 	}
 
-	private BooleanProperty editable = new SimpleBooleanProperty(this, "editable", true);
+	private final BooleanProperty editable = new SimpleBooleanProperty(this, "editable", true);
 
 	public final boolean isEditable() {
 		return this.editable.getValue();
@@ -47,7 +47,7 @@ public class PercentageField extends Control {
 		return this.editable;
 	}
 
-	private StringProperty promptText = new StringPropertyBase("") {
+	private final StringProperty promptText = new StringPropertyBase("") {
 
 		@Override
 		protected void invalidated() {
@@ -82,7 +82,8 @@ public class PercentageField extends Control {
 		this.promptText.set(value);
 	}
 
-	private IntegerProperty prefColumnCount = new IntegerPropertyBase(DEFAULT_PREF_COLUMN_COUNT) {
+	private final IntegerProperty prefColumnCount = new IntegerPropertyBase(
+			DEFAULT_PREF_COLUMN_COUNT) {
 
 		@Override
 		public void set(int value) {
@@ -116,7 +117,7 @@ public class PercentageField extends Control {
 		this.prefColumnCount.setValue(value);
 	}
 
-	private ObjectProperty<EventHandler<ActionEvent>> onAction = new ObjectPropertyBase<EventHandler<ActionEvent>>() {
+	private final ObjectProperty<EventHandler<ActionEvent>> onAction = new ObjectPropertyBase<EventHandler<ActionEvent>>() {
 
 		@Override
 		protected void invalidated() {
@@ -151,7 +152,7 @@ public class PercentageField extends Control {
 	}
 
 	@Override
-	protected String getUserAgentStylesheet() {
+	public String getUserAgentStylesheet() {
 		return this.getClass().getResource("/percentagefield.css").toExternalForm();
 	}
 }

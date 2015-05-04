@@ -8,29 +8,21 @@ import org.rekeningsysteem.data.util.visitor.RekeningVisitor;
 
 public class Offerte extends AbstractRekening {
 
-	private String tekst;
-	private boolean ondertekenen;
+	private final String tekst;
+	private final boolean ondertekenen;
 
 	public Offerte(FactuurHeader header, String tekst, boolean ondertekenen) {
 		super(header);
-		this.setTekst(tekst);
-		this.setOndertekenen(ondertekenen);
+		this.tekst = tekst;
+		this.ondertekenen = ondertekenen;
 	}
 
 	public String getTekst() {
 		return this.tekst;
 	}
 
-	public final void setTekst(String tekst) {
-		this.tekst = tekst;
-	}
-
 	public boolean isOndertekenen() {
 		return this.ondertekenen;
-	}
-
-	public final void setOndertekenen(boolean ondertekenen) {
-		this.ondertekenen = ondertekenen;
 	}
 
 	@Override

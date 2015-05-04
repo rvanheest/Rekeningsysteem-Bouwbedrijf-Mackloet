@@ -6,7 +6,7 @@ import java.util.Optional;
 
 public class OmschrFactuurHeader extends FactuurHeader {
 
-	private String omschrijving;
+	private final String omschrijving;
 
 	public OmschrFactuurHeader(Debiteur debiteur, LocalDate datum, String factuurnummer,
 			String omschrijving) {
@@ -27,10 +27,6 @@ public class OmschrFactuurHeader extends FactuurHeader {
 
 	public String getOmschrijving() {
 		return this.omschrijving;
-	}
-
-	public void setOmschrijving(String omschrijving) {
-		this.omschrijving = omschrijving;
 	}
 
 	@Override

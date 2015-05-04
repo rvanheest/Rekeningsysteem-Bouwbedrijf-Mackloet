@@ -58,22 +58,8 @@ public class FactuurHeaderTest extends EqualsHashCodeTest {
 	}
 
 	@Test
-	public void testSetDebiteur() {
-		Debiteur deb2 = new Debiteur("", "", "", "", "", "");
-		this.header.setDebiteur(deb2);
-		assertEquals(deb2, this.header.getDebiteur());
-	}
-
-	@Test
 	public void testGetDatum() {
 		assertEquals(this.datum, this.header.getDatum());
-	}
-
-	@Test
-	public void testSetDatum() {
-		LocalDate datum2 = LocalDate.of(1992, 7, 30);
-		this.header.setDatum(datum2);
-		assertEquals(datum2, this.header.getDatum());
 	}
 
 	@Test

@@ -9,8 +9,8 @@ import rx.Observable;
 
 public class TextPane extends Page {
 
-	private TextArea textTA = new TextArea();
-	private Observable<String> text = Observables.fromProperty(this.textTA.textProperty());
+	private final TextArea textTA = new TextArea();
+	private final Observable<String> text = Observables.fromProperty(this.textTA.textProperty());
 
 	public TextPane() {
 		super("Offerte tekst");

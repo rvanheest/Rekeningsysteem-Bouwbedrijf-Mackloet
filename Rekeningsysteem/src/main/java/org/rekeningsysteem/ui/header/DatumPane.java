@@ -13,8 +13,8 @@ import rx.Observable;
 
 public class DatumPane extends Page {
 
-	private DatePicker datePicker = new DatePicker(LocalDate.now());
-	private Observable<LocalDate> datum = Observables.fromProperty(this.datePicker.valueProperty());
+	private final DatePicker datePicker = new DatePicker(LocalDate.now());
+	private final Observable<LocalDate> datum = Observables.fromProperty(this.datePicker.valueProperty());
 
 	public DatumPane() {
 		super("Datum");

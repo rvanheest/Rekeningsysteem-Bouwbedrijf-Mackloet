@@ -30,7 +30,7 @@ public class Main extends Application {
 
 	private static Main main;
 
-	private final StackPane modalDimmer = new StackPane();
+	private final StackPane popup = new StackPane();
 
 	public static void main(String[] args) {
 		Application.launch();
@@ -47,36 +47,35 @@ public class Main extends Application {
 	@Override
 	public void start(Stage stage) {
 		try {
-    		main = this;
-    		this.modalDimmer.setId("modalDimmer");
-    
-    		Observable.merge(Observables.fromNodeEvents(this.modalDimmer, MouseEvent.MOUSE_CLICKED),
-    				Observables.fromNodeEvents(this.modalDimmer, KeyEvent.KEY_PRESSED)
-    						.filter(event -> event.getCode() == KeyCode.ESCAPE))
-    				.doOnNext(Event::consume)
-    				.doOnNext(event -> this.hideModalMessage())
-    				.subscribe();
-    
-    		this.modalDimmer.setVisible(false);
-    
-    		StackPane layerPane = new StackPane(new Root(stage), this.modalDimmer);
-    
-    		Scene scene = new Scene(layerPane, 1061, 728);
-    		scene.getStylesheets().add(getResource("/layout.css"));
-    
-    		stage.addEventHandler(WindowEvent.WINDOW_HIDDEN, event -> {
-    			try {
-    				Database.closeInstance();
-    			}
-    			catch (SQLException e) {
-    				ApplicationLogger.getInstance().error("Could not close database.", e);
-    			}
-    		});
-    		stage.getIcons().add(new Image(getResource("/images/icon.gif")));
-    		stage.setScene(scene);
-    		stage.initStyle(StageStyle.UNDECORATED);
-    		stage.setTitle("Rekeningsysteem Mackloet");
-    		stage.show();
+			main = this;
+			this.popup.setId("modalDimmer");
+
+			Observable.merge(Observables.fromNodeEvents(this.popup, MouseEvent.MOUSE_CLICKED),
+					Observables.fromNodeEvents(this.popup, KeyEvent.KEY_PRESSED)
+							.filter(event -> event.getCode() == KeyCode.ESCAPE))
+					.doOnNext(Event::consume)
+					.forEach(event -> this.hideModalMessage());
+
+			this.popup.setVisible(false);
+
+			StackPane layerPane = new StackPane(new Root(stage), this.popup);
+
+			Scene scene = new Scene(layerPane, 1061, 728);
+			scene.getStylesheets().add(getResource("/layout.css"));
+
+			stage.addEventHandler(WindowEvent.WINDOW_HIDDEN, event -> {
+				try {
+					Database.closeInstance();
+				}
+				catch (SQLException e) {
+					ApplicationLogger.getInstance().error("Could not close database.", e);
+				}
+			});
+			stage.getIcons().add(new Image(getResource("/images/icon.gif")));
+			stage.setScene(scene);
+			stage.initStyle(StageStyle.UNDECORATED);
+			stage.setTitle("Rekeningsysteem Mackloet");
+			stage.show();
 		}
 		catch (Exception e) {
 			ApplicationLogger.getInstance().error("Exception caught on toplevel", e);
@@ -84,25 +83,25 @@ public class Main extends Application {
 	}
 
 	public void showModalMessage(Node message) {
-		this.modalDimmer.getChildren().add(message);
-		this.modalDimmer.setOpacity(0);
-		this.modalDimmer.setVisible(true);
-		this.modalDimmer.setCache(true);
+		this.popup.getChildren().add(message);
+		this.popup.setOpacity(0);
+		this.popup.setVisible(true);
+		this.popup.setCache(true);
 
-		KeyValue kv = new KeyValue(this.modalDimmer.opacityProperty(), 1, Interpolator.EASE_BOTH);
+		KeyValue kv = new KeyValue(this.popup.opacityProperty(), 1, Interpolator.EASE_BOTH);
 		KeyFrame kf = new KeyFrame(Duration.millis(250),
-				event -> this.modalDimmer.setCache(false), kv);
+				event -> this.popup.setCache(false), kv);
 		Timeline timeline = new Timeline(kf);
 		timeline.play();
 	}
 
 	public void hideModalMessage() {
-		this.modalDimmer.setCache(true);
-		KeyValue kv = new KeyValue(this.modalDimmer.opacityProperty(), 0, Interpolator.EASE_BOTH);
+		this.popup.setCache(true);
+		KeyValue kv = new KeyValue(this.popup.opacityProperty(), 0, Interpolator.EASE_BOTH);
 		KeyFrame kf = new KeyFrame(Duration.millis(250), event -> {
-			this.modalDimmer.setCache(false);
-			this.modalDimmer.setVisible(false);
-			this.modalDimmer.getChildren().clear();
+			this.popup.setCache(false);
+			this.popup.setVisible(false);
+			this.popup.getChildren().clear();
 		}, kv);
 
 		Timeline line = new Timeline(kf);

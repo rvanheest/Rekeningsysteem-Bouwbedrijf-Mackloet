@@ -1,6 +1,5 @@
 package org.rekeningsysteem.test.data.particulier;
 
-import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
@@ -9,8 +8,10 @@ import org.junit.Test;
 import org.rekeningsysteem.data.particulier.EsselinkArtikel;
 import org.rekeningsysteem.data.particulier.GebruiktEsselinkArtikel;
 import org.rekeningsysteem.data.util.Geld;
+import org.rekeningsysteem.test.data.EqualsHashCodeTest;
+import org.rekeningsysteem.test.data.util.ListItemTest;
 
-public class GebruiktEsselinkArtikelTest extends ParticulierArtikelTest {
+public class GebruiktEsselinkArtikelTest extends EqualsHashCodeTest implements ListItemTest {
 
 	private GebruiktEsselinkArtikel gebruiktArtikel;
 	private final EsselinkArtikel artikel = new EsselinkArtikel("artikelnummer", "omschrijving", 2,
@@ -62,19 +63,6 @@ public class GebruiktEsselinkArtikelTest extends ParticulierArtikelTest {
 		assertEquals(new Geld(2.5), this.gebruiktArtikel.getTotaal());
 	}
 	
-	@Test
-	@Override
-	public void testToArray() {
-		assertArrayEquals(new String[] {
-				"artikelnummer",
-				"omschrijving",
-				"2",
-				"eenheid",
-				new Geld(1).formattedString(),
-				"5.0"
-		}, this.gebruiktArtikel.toArray());
-	}
-
 	@Test
 	public void testEqualsFalseOtherEsselinkAritkel() {
 		EsselinkArtikel ea = new EsselinkArtikel("", "", 1, "", new Geld(2));

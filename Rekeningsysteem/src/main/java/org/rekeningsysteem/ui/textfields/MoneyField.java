@@ -63,12 +63,12 @@ import javafx.scene.control.Control;
  * </pre>
  */
 public class MoneyField extends Control {
-	
+
 	/**
 	 * The default value for {@link #prefColumnCount}.
 	 */
 	public static final int DEFAULT_PREF_COLUMN_COUNT = 12;
-	
+
 	/**
 	 * The {@code MoneyField}'s currency to display, or <tt>null</tt> if no currency is displayed.
 	 */
@@ -90,7 +90,7 @@ public class MoneyField extends Control {
 	 * The value of the MoneyField. If null, the value will be treated as "0", but will still
 	 * actually be null.
 	 */
-	private ObjectProperty<BigDecimal> value = new SimpleObjectProperty<>(this, "value");
+	private final ObjectProperty<BigDecimal> value = new SimpleObjectProperty<>(this, "value");
 
 	public final BigDecimal getValue() {
 		return this.value.get();
@@ -108,7 +108,7 @@ public class MoneyField extends Control {
 	 * Indicates whether this MoneyField can be edited by the user. If true, the "readonly" pseudo
 	 * class will be false, but if false, the "readonly" pseudo class will be true.
 	 */
-	private BooleanProperty editable = new SimpleBooleanProperty(this, "editable", true);
+	private final BooleanProperty editable = new SimpleBooleanProperty(this, "editable", true);
 
 	public final boolean isEditable() {
 		return this.editable.getValue();
@@ -126,7 +126,7 @@ public class MoneyField extends Control {
 	 * The {@code MoneyField}'s prompt text to display, or <tt>null</tt> if no prompt text is
 	 * displayed.
 	 */
-	private StringProperty promptText = new StringPropertyBase("") {
+	private final StringProperty promptText = new StringPropertyBase("") {
 
 		@Override
 		protected void invalidated() {
@@ -165,7 +165,8 @@ public class MoneyField extends Control {
 	 * The preferred number of text columns. This is used for calculating the {@code MoneyField}'s
 	 * preferred width.
 	 */
-	private IntegerProperty prefColumnCount = new IntegerPropertyBase(DEFAULT_PREF_COLUMN_COUNT) {
+	private final IntegerProperty prefColumnCount = new IntegerPropertyBase(
+			DEFAULT_PREF_COLUMN_COUNT) {
 
 		@Override
 		public void set(int value) {
@@ -205,7 +206,7 @@ public class MoneyField extends Control {
 	 *
 	 * The action handler is normally called when the user types the ENTER key.
 	 */
-	private ObjectProperty<EventHandler<ActionEvent>> onAction = new ObjectPropertyBase<EventHandler<ActionEvent>>() {
+	private final ObjectProperty<EventHandler<ActionEvent>> onAction = new ObjectPropertyBase<EventHandler<ActionEvent>>() {
 
 		@Override
 		protected void invalidated() {
@@ -237,16 +238,17 @@ public class MoneyField extends Control {
 
 	/**
 	 * Creates a new MoneyField. The style class is set to "money-field".
+	 * 
 	 * @param currency The currency of the money
 	 */
 	public MoneyField(Currency currency) {
 		this.setCurrency(currency);
-		
+
 		this.getStyleClass().setAll("money-field");
 	}
 
 	@Override
-	protected String getUserAgentStylesheet() {
+	public String getUserAgentStylesheet() {
 		return this.getClass().getResource("/moneyfield.css").toExternalForm();
 	}
 }

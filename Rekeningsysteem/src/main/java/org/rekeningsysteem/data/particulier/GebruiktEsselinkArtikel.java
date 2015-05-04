@@ -5,7 +5,7 @@ import java.util.Objects;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.data.util.visitor.ListItemVisitor;
 
-public final class GebruiktEsselinkArtikel extends ParticulierArtikel {
+public final class GebruiktEsselinkArtikel implements ParticulierArtikel {
 
 	private final EsselinkArtikel artikel;
 	private final double aantal;
@@ -44,19 +44,6 @@ public final class GebruiktEsselinkArtikel extends ParticulierArtikel {
 	@Override
 	public <T> T accept(ListItemVisitor<T> visitor) {
 		return visitor.visit(this);
-	}
-
-	@Override
-	public String[] toArray() {
-		EsselinkArtikel artikel = this.getArtikel();
-		return new String[] {
-				artikel.getArtikelNummer(),
-				artikel.getOmschrijving(),
-				String.valueOf(artikel.getPrijsPer()),
-				artikel.getEenheid(),
-				artikel.getVerkoopPrijs().formattedString(),
-				String.valueOf(this.aantal)
-		};
 	}
 
 	@Override

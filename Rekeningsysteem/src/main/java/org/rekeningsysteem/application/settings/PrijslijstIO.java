@@ -26,7 +26,6 @@ import org.rekeningsysteem.rxjavafx.JavaFxScheduler;
 import org.rekeningsysteem.rxjavafx.Observables;
 
 import rx.Observable;
-import rx.Subscriber;
 import rx.schedulers.Schedulers;
 
 public class PrijslijstIO extends Tab {
@@ -93,10 +92,8 @@ public class PrijslijstIO extends Tab {
 		chooser.setInitialDirectory(new File(System.getProperty("user.dir")));
 		chooser.getExtensionFilters().addAll(new ExtensionFilter("CSV", "*.csv"));
 
-		return Observable.create((Subscriber<? super File> subscriber) -> {
-			subscriber.onNext(chooser.showOpenDialog(stage));
-			subscriber.onCompleted();
-		}).filter(Objects::nonNull);
+		return Observable.just(chooser.showOpenDialog(stage))
+				.filter(Objects::nonNull);
 	}
 
 	private Observable<Integer> clearData() {

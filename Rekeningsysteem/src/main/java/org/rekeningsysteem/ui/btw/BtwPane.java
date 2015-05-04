@@ -15,13 +15,13 @@ import rx.Observable;
 
 public class BtwPane extends Page {
 
-	private GridPane grid = new GridPane();
+	private final GridPane grid = new GridPane();
 
-	private PercentageField loonTF;
-	private PercentageField materTF;
+	private final PercentageField loonTF;
+	private final PercentageField materTF;
 
-	private Observable<Double> loon;
-	private Observable<Double> materiaal;
+	private final Observable<Double> loon;
+	private final Observable<Double> materiaal;
 
 	public BtwPane() {
 		super("BTW percentages");

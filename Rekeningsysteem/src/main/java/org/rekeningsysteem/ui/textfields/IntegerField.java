@@ -17,7 +17,7 @@ public class IntegerField extends Control {
 
 	public static final int DEFAULT_PREF_COLUMN_COUNT = 12;
 
-	private ObjectProperty<Integer> value = new SimpleObjectProperty<Integer>(this, "aantal");
+	private final ObjectProperty<Integer> value = new SimpleObjectProperty<>(this, "aantal");
 
 	public final Integer getValue() {
 		return this.value.get();
@@ -31,7 +31,7 @@ public class IntegerField extends Control {
 		return this.value;
 	}
 
-	private BooleanProperty editable = new SimpleBooleanProperty(this, "editable", true);
+	private final BooleanProperty editable = new SimpleBooleanProperty(this, "editable", true);
 
 	public final boolean isEditable() {
 		return this.editable.getValue();
@@ -45,7 +45,7 @@ public class IntegerField extends Control {
 		return this.editable;
 	}
 
-	private StringProperty promptText = new StringPropertyBase("") {
+	private final StringProperty promptText = new StringPropertyBase("") {
 
 		@Override
 		protected void invalidated() {
@@ -80,7 +80,7 @@ public class IntegerField extends Control {
 		this.promptText.set(value);
 	}
 
-	private IntegerProperty prefColumnCount = new IntegerPropertyBase(DEFAULT_PREF_COLUMN_COUNT) {
+	private final IntegerProperty prefColumnCount = new IntegerPropertyBase(DEFAULT_PREF_COLUMN_COUNT) {
 
 		@Override
 		public void set(int value) {
@@ -114,7 +114,7 @@ public class IntegerField extends Control {
 		this.prefColumnCount.setValue(value);
 	}
 
-	private ObjectProperty<EventHandler<ActionEvent>> onAction = new ObjectPropertyBase<EventHandler<ActionEvent>>() {
+	private final ObjectProperty<EventHandler<ActionEvent>> onAction = new ObjectPropertyBase<EventHandler<ActionEvent>>() {
 
 		@Override
 		protected void invalidated() {
@@ -149,7 +149,7 @@ public class IntegerField extends Control {
 	}
 
 	@Override
-	protected String getUserAgentStylesheet() {
+	public String getUserAgentStylesheet() {
 		return this.getClass().getResource("/integerfield.css").toExternalForm();
 	}
 }

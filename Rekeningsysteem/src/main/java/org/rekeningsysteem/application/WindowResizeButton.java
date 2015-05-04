@@ -31,11 +31,13 @@ public class WindowResizeButton extends Region {
 				.map(s -> !s.isEmpty() ? s.get(0).getVisualBounds()
 						: Screen.getScreensForRectangle(0, 0, 1, 1).get(0).getVisualBounds());
 
-		Observable.combineLatest(pressed, dragged, bounds, (press, dragg, bound) -> new Point2D(
-				Math.min(bound.getMaxX(), dragg.getX() + press.getX()),
-				Math.min(bound.getMaxY(), dragg.getY() + press.getY())))
-				.doOnNext(p -> stage.setWidth(Math.max(stageMinWidth, p.getX() - stage.getX())))
-				.doOnNext(p -> stage.setHeight(Math.max(stageMinHeight, p.getY() - stage.getY())))
-				.subscribe();
+		Observable.combineLatest(pressed, dragged, bounds,
+				(press, dragg, bound) -> new Point2D(
+						Math.min(bound.getMaxX(), dragg.getX() + press.getX()),
+						Math.min(bound.getMaxY(), dragg.getY() + press.getY())))
+				.forEach(point -> {
+					stage.setWidth(Math.max(stageMinWidth, point.getX() - stage.getX()));
+					stage.setHeight(Math.max(stageMinHeight, point.getY() - stage.getY()));
+				});
 	}
 }

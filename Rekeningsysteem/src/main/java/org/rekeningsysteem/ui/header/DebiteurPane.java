@@ -15,21 +15,21 @@ import rx.Observable;
 
 public class DebiteurPane extends Page {
 
-	private GridPane grid = new GridPane();
+	private final GridPane grid = new GridPane();
 
-	private TextField naamTF = new TextField();
-	private TextField straatTF = new TextField();
-	private TextField nummerTF = new TextField();
-	private TextField postcodeTF = new PostcodeTextField();
-	private TextField plaatsTF = new TextField();
-	private TextField btwTF = new TextField();
+	private final TextField naamTF = new TextField();
+	private final TextField straatTF = new TextField();
+	private final TextField nummerTF = new TextField();
+	private final TextField postcodeTF = new PostcodeTextField();
+	private final TextField plaatsTF = new TextField();
+	private final TextField btwTF = new TextField();
 
-	private Observable<String> naam = Observables.fromProperty(this.naamTF.textProperty());
-	private Observable<String> straat = Observables.fromProperty(this.straatTF.textProperty());
-	private Observable<String> nummer = Observables.fromProperty(this.nummerTF.textProperty());
-	private Observable<String> postcode = Observables.fromProperty(this.postcodeTF.textProperty());
-	private Observable<String> plaats = Observables.fromProperty(this.plaatsTF.textProperty());
-	private Observable<String> btw = Observables.fromProperty(this.btwTF.textProperty());
+	private final Observable<String> naam = Observables.fromProperty(this.naamTF.textProperty());
+	private final Observable<String> straat = Observables.fromProperty(this.straatTF.textProperty());
+	private final Observable<String> nummer = Observables.fromProperty(this.nummerTF.textProperty());
+	private final Observable<String> postcode = Observables.fromProperty(this.postcodeTF.textProperty());
+	private final Observable<String> plaats = Observables.fromProperty(this.plaatsTF.textProperty());
+	private final Observable<String> btw = Observables.fromProperty(this.btwTF.textProperty());
 
 	public DebiteurPane() {
 		super("Debiteur");
