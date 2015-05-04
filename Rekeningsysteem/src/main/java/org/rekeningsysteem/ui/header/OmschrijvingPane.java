@@ -9,8 +9,8 @@ import rx.Observable;
 
 public class OmschrijvingPane extends Page {
 
-	private TextArea omschrTA = new TextArea();
-	private Observable<String> omschrijving = Observables
+	private final TextArea omschrTA = new TextArea();
+	private final Observable<String> omschrijving = Observables
 			.fromProperty(this.omschrTA.textProperty());
 
 	public OmschrijvingPane() {

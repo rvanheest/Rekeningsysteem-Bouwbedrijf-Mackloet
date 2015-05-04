@@ -2,7 +2,7 @@ package org.rekeningsysteem.ui;
 
 public abstract class WorkingPaneController {
 
-	private WorkingPane ui;
+	private final WorkingPane ui;
 
 	public WorkingPaneController(WorkingPane ui) {
 		this.ui = ui;

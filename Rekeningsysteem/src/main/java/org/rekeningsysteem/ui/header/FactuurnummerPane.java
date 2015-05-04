@@ -29,23 +29,18 @@ public class FactuurnummerPane extends Page {
 
 	private static final String emptyText = "Er is nog geen factuurnummer toegekend aan deze factuur";
 
-	private Label factNrL = new Label(emptyText);
-	private Observable<Optional<String>> factuurnummer;
+	private final Label factNrL = new Label(emptyText);
+	private final Observable<Optional<String>> factuurnummer;
 
 	public FactuurnummerPane(FactuurnummerType type) {
 		super(type.getType());
 
 		this.getChildren().add(this.factNrL);
 
-		Observable<String> text = Observables.fromProperty(this.factNrL.textProperty());
-		this.factuurnummer = text.map(s -> {
-			if (Objects.isNull(s) || s.isEmpty() || emptyText.equals(s)) {
-				return Optional.empty();
-			}
-				else {
-					return Optional.of(s);
-				}
-			});
+		this.factuurnummer = Observables.fromProperty(this.factNrL.textProperty())
+				.map(s -> Objects.isNull(s) || s.isEmpty() || emptyText.equals(s)
+						? Optional.empty()
+						: Optional.of(s));
 	}
 
 	public Observable<Optional<String>> getFactuurnummer() {

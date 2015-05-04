@@ -33,7 +33,7 @@ public class MoneyFieldSkin implements Skin<MoneyField> {
 	 * a {@code Skin} and a {@code Control}. When a {@code Skin} is set on a {@code Control}, this
 	 * variable is automatically updated.
 	 */
-	private MoneyField control;
+	private final MoneyField control;
 
 	/**
 	 * This textField is used to represent the MoneyField.
@@ -44,7 +44,7 @@ public class MoneyFieldSkin implements Skin<MoneyField> {
 	 * This is the formatter which will be used to format the money when editing (it just gives us
 	 * the amount)
 	 */
-	private DecimalFormat formatter;
+	private final DecimalFormat formatter;
 
 	/**
 	 * This flag is set whenever MoneyFieldSkin is going to set the value itself. When it does that,
@@ -146,7 +146,13 @@ public class MoneyFieldSkin implements Skin<MoneyField> {
 		});
 
 		// Make sure the text is updated to the initial state of the MoneyField value
-		this.updateLocale();
+		this.formatter = (DecimalFormat) NumberFormat.getCurrencyInstance(new Locale("nl", "NL"));
+		this.formatter.setParseBigDecimal(true);
+		this.formatter.setCurrency(this.getSkinnable().getCurrency());
+		
+		// this is to support negative numbers in the form of "€ -12,02" (without quotes)
+		this.formatter.setNegativePrefix(this.formatter.getCurrency().getSymbol() + " -");
+		this.formatter.setNegativeSuffix("");
 		this.updateText();
 	}
 
@@ -219,17 +225,6 @@ public class MoneyFieldSkin implements Skin<MoneyField> {
 		return true;
 	}
 	
-	private void updateLocale() {
-		Locale locale = new Locale("nl", "NL");
-		this.formatter = (DecimalFormat) NumberFormat.getCurrencyInstance(locale);
-		this.formatter.setParseBigDecimal(true);
-		this.formatter.setCurrency(this.getSkinnable().getCurrency());
-		
-		// this is to support negative numbers in the form of "€ -12,02" (without quotes)
-		this.formatter.setNegativePrefix(this.formatter.getCurrency().getSymbol() + " -");
-		this.formatter.setNegativeSuffix("");
-	}
-
 	private void updateText() {
 		Optional<BigDecimal> value = Optional.ofNullable(this.control.getValue());
 		this.textField.setText(value.map(this.formatter::format).orElse(""));

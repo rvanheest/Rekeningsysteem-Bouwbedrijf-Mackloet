@@ -19,9 +19,9 @@ import javafx.scene.control.TextField;
 
 public class NumberFieldSkin implements Skin<NumberField> {
 
-	private NumberField control;
+	private final NumberField control;
 	private TextField textField;
-	private DecimalFormat formatter;
+	private final DecimalFormat formatter;
 	private boolean ignoreValueUpdate = false;
 
 	private final InvalidationListener numberFieldFocusListener = obs -> {
@@ -100,7 +100,8 @@ public class NumberFieldSkin implements Skin<NumberField> {
 		});
 
 		// Make sure the text is updated to the initial state of the PercentageField value
-		this.updateLocale();
+		this.formatter = (DecimalFormat) NumberFormat.getNumberInstance(Locale.getDefault());
+		this.formatter.setParseBigDecimal(true);
 		this.updateText();
 	}
 
@@ -145,12 +146,6 @@ public class NumberFieldSkin implements Skin<NumberField> {
 		}
 		
 		return true;
-	}
-
-	private void updateLocale() {
-		Locale locale = Locale.getDefault();
-		this.formatter = (DecimalFormat) NumberFormat.getNumberInstance(locale);
-		this.formatter.setParseBigDecimal(true);
 	}
 
 	private void updateText() {
