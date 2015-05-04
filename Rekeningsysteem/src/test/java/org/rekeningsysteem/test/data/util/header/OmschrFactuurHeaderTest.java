@@ -46,6 +46,17 @@ public class OmschrFactuurHeaderTest extends FactuurHeaderTest {
 	}
 
 	@Test
+	public void testThirdConstructorWithOptionalFactuurnummer() {
+		OmschrFactuurHeader header = new OmschrFactuurHeader(this.getInstance().getDebiteur(),
+				this.getInstance().getDatum(), this.getInstance().getFactuurnummer(), this.omschrijving);
+		
+		assertEquals(this.getInstance().getDebiteur(), header.getDebiteur());
+		assertEquals(this.getInstance().getDatum(), header.getDatum());
+		assertEquals(Optional.of("32013"), header.getFactuurnummer());
+		assertEquals(this.omschrijving, header.getOmschrijving());
+	}
+
+	@Test
 	public void testEqualsFalseOtherOmschrijving() {
 		assertFalse(this.getInstance().equals(
 				new OmschrFactuurHeader(this.getTestDebiteur(), this.getTestDatum(),
