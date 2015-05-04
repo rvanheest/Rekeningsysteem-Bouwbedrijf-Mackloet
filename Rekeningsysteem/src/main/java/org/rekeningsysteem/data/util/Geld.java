@@ -8,14 +8,29 @@ import org.rekeningsysteem.exception.GeldParseException;
 
 public final class Geld {
 
-	private double bedrag;
+	private final double bedrag;
 
 	public Geld(double bedrag) {
-		this.setBedrag(bedrag);
+		this.bedrag = Double.valueOf(Math.round(bedrag * 100)) / 100;
 	}
 
 	public Geld(String bedrag) throws GeldParseException {
-		this.setBedrag(bedrag);
+		// (-?) = misschien een '-'symbool (negatie)
+		// (\\d?\\d?\\d?\\.?)* = cijfers voor de komma misschien gegroepeerd in drietallen,
+		// eventueel gevolgd door een punt
+		// (,\\d+)? = misschien een komma, gevolgd door een onbepaalde hoeveelheid decimalen.
+		if (bedrag.matches("^(-?)(\\d?\\d?\\d?\\.?)*(,\\d+)?$")) {
+			String modified = bedrag.replaceAll("\\.", "").replace(',', '.');
+			this.bedrag = Double.valueOf(Math.round(Double.parseDouble(modified) * 100)) / 100;
+		}
+		else if (bedrag.matches("^(-?)(\\d?\\d?\\d?\\,?)*(.\\d+)?$")) {
+			String modified = bedrag.replaceAll("\\,", "");
+			this.bedrag = Double.valueOf(Math.round(Double.parseDouble(modified) * 100)) / 100;
+		}
+		else {
+			throw new GeldParseException("Kan de String '" + bedrag + "' niet parsen naar een "
+					+ "geldig Geld-bedrag.");
+		}
 	}
 
 	public Geld(Geld geld) {
@@ -24,29 +39,6 @@ public final class Geld {
 
 	public double getBedrag() {
 		return this.bedrag;
-	}
-
-	private void setBedrag(double bedrag) {
-		this.bedrag = Double.valueOf(Math.round(bedrag * 100)) / 100;
-	}
-
-	private void setBedrag(String bedrag) throws GeldParseException {
-		// (-?) = misschien een '-'symbool (negatie)
-		// (\\d?\\d?\\d?\\.?)* = cijfers voor de komma misschien gegroepeerd in drietallen,
-		// eventueel gevolgd door een punt
-		// (,\\d+)? = misschien een komma, gevolgd door een onbepaalde hoeveelheid decimalen.
-		if (bedrag.matches("^(-?)(\\d?\\d?\\d?\\.?)*(,\\d+)?$")) {
-			String modified = bedrag.replaceAll("\\.", "").replace(',', '.');
-			this.setBedrag(Double.parseDouble(modified));
-		}
-		else if (bedrag.matches("^(-?)(\\d?\\d?\\d?\\,?)*(.\\d+)?$")) {
-			String modified = bedrag.replaceAll("\\,", "");
-			this.setBedrag(Double.parseDouble(modified));
-		}
-		else {
-			throw new GeldParseException("Kan de String '" + bedrag + "' niet parsen naar een "
-					+ "geldig Geld-bedrag.");
-		}
 	}
 
 	public String formattedString() {

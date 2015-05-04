@@ -8,7 +8,7 @@ import org.rekeningsysteem.data.util.header.FactuurHeader;
 public abstract class AbstractFactuur<E extends ListItem> extends AbstractRekening
 		implements BedragManager {
 
-	private Currency currency;
+	private final Currency currency;
 	private final ItemList<E> itemList;
 	private final BtwPercentage btwPercentage;
 
@@ -22,10 +22,6 @@ public abstract class AbstractFactuur<E extends ListItem> extends AbstractRekeni
 
 	public Currency getCurrency() {
 		return this.currency;
-	}
-
-	public final void setCurrency(Currency currency) {
-		this.currency = currency;
 	}
 
 	public ItemList<E> getItemList() {

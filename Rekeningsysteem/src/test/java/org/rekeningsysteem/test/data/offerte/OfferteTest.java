@@ -35,21 +35,8 @@ public final class OfferteTest extends AbstractRekeningTest {
 	}
 
 	@Test
-	public void testSetTekst() {
-		String temp = "Lorem ipsum dolor sit amet, consectetur.";
-		this.getInstance().setTekst(temp);
-		assertEquals(temp, this.getInstance().getTekst());
-	}
-
-	@Test
 	public void testIsOndertekenen() {
 		assertTrue(this.getInstance().isOndertekenen());
-	}
-
-	@Test
-	public void testSetOndertekenen() {
-		this.getInstance().setOndertekenen(false);
-		assertFalse(this.getInstance().isOndertekenen());
 	}
 
 	@Test

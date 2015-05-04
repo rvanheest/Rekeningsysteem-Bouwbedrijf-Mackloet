@@ -5,7 +5,6 @@ import static org.junit.Assert.assertFalse;
 import static org.mockito.Mockito.*;
 
 import java.util.Currency;
-import java.util.Locale;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -48,13 +47,6 @@ public abstract class AbstractFactuurTest<E extends ListItem> extends AbstractRe
 	}
 
 	@Test
-	public void testSetValuta() {
-		Currency c = Currency.getInstance(Locale.US);
-		this.getInstance().setCurrency(c);
-		assertEquals(c, this.getInstance().getCurrency());
-	}
-
-	@Test
 	public void testGetItemList() {
 		assertEquals(new ItemList<E>(), this.getInstance().getItemList());
 	}
@@ -89,13 +81,6 @@ public abstract class AbstractFactuurTest<E extends ListItem> extends AbstractRe
 		AbstractFactuur<E> factuur2 = this.makeInstance();
 		factuur2.getItemList().add(this.item);
 		
-		assertFalse(this.getInstance().equals(factuur2));
-	}
-
-	@Test
-	public void testEqualsFalseOtherValuta() {
-		AbstractFactuur<E> factuur2 = this.makeInstance();
-		factuur2.setCurrency(Currency.getInstance(Locale.US));
 		assertFalse(this.getInstance().equals(factuur2));
 	}
 }

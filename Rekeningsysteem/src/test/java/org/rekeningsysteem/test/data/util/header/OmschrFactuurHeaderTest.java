@@ -35,12 +35,6 @@ public class OmschrFactuurHeaderTest extends FactuurHeaderTest {
 	}
 
 	@Test
-	public void testSetOmschrijving() {
-		this.getInstance().setOmschrijving("foobar");
-		assertEquals("foobar", this.getInstance().getOmschrijving());
-	}
-
-	@Test
 	public void testSecondConstructorWithOmschrijving() {
 		OmschrFactuurHeader header = new OmschrFactuurHeader(this.getInstance().getDebiteur(), this
 				.getInstance().getDatum(), this.omschrijving);

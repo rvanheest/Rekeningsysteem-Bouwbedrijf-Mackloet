@@ -6,8 +6,8 @@ import java.util.Optional;
 
 public class FactuurHeader {
 
-	private Debiteur debiteur;
-	private LocalDate datum;
+	private final Debiteur debiteur;
+	private final LocalDate datum;
 	private Optional<String> factuurnummer;
 
 	public FactuurHeader(Debiteur debiteur, LocalDate datum, String factuurnummer) {
@@ -28,16 +28,8 @@ public class FactuurHeader {
 		return this.debiteur;
 	}
 
-	public void setDebiteur(Debiteur debiteur) {
-		this.debiteur = debiteur;
-	}
-
 	public LocalDate getDatum() {
 		return this.datum;
-	}
-
-	public void setDatum(LocalDate datum) {
-		this.datum = datum;
 	}
 
 	public Optional<String> getFactuurnummer() {
