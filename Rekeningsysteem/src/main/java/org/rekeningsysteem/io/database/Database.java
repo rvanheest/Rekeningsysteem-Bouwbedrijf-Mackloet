@@ -37,16 +37,9 @@ public class Database implements AutoCloseable {
 	}
 
 	private Database(PropertiesWorker worker) throws SQLException {
-		try {
-			Class.forName("org.sqlite.JDBC");
-			
-			File file = worker.getProperty(PropertyModelEnum.DATABASE).map(File::new).orElseThrow(() -> new SQLException("Did not find the database location."));
-			
-			this.connection = DriverManager.getConnection("jdbc:sqlite:" + file.getPath());
-		}
-		catch (ClassNotFoundException e) {
-			throw new SQLException("Class \"org.sqlite.JDBC\" was not found", e);
-		}
+		this(worker.getProperty(PropertyModelEnum.DATABASE)
+					.map(File::new)
+					.orElseThrow(() -> new SQLException("Did not find the database location.")));
 	}
 
 	public Database(File file) throws SQLException {
