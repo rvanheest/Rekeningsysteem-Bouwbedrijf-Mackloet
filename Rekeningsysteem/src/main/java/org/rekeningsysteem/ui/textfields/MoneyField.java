@@ -244,9 +244,9 @@ public class MoneyField extends Control {
 		
 		this.getStyleClass().setAll("money-field");
 	}
-
+	
 	@Override
-	protected String getUserAgentStylesheet() {
+	public String getUserAgentStylesheet() {
 		return this.getClass().getResource("/moneyfield.css").toExternalForm();
 	}
 }

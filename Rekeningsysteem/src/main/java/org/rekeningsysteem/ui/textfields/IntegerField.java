@@ -149,7 +149,7 @@ public class IntegerField extends Control {
 	}
 
 	@Override
-	protected String getUserAgentStylesheet() {
+	public String getUserAgentStylesheet() {
 		return this.getClass().getResource("/integerfield.css").toExternalForm();
 	}
 }

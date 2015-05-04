@@ -151,7 +151,7 @@ public class NumberField extends Control {
 	}
 
 	@Override
-	protected String getUserAgentStylesheet() {
+	public String getUserAgentStylesheet() {
 		return this.getClass().getResource("/numberfield.css").toExternalForm();
 	}
 }

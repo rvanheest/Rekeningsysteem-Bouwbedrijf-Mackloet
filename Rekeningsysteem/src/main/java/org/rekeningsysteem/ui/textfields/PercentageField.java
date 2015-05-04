@@ -151,7 +151,7 @@ public class PercentageField extends Control {
 	}
 
 	@Override
-	protected String getUserAgentStylesheet() {
+	public String getUserAgentStylesheet() {
 		return this.getClass().getResource("/percentagefield.css").toExternalForm();
 	}
 }
