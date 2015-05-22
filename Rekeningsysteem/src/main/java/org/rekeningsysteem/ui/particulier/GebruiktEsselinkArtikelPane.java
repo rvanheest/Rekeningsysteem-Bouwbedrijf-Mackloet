@@ -16,24 +16,18 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 
 import org.rekeningsysteem.data.particulier.EsselinkArtikel;
-import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.io.database.Database;
 import org.rekeningsysteem.logging.ApplicationLogger;
+import org.rekeningsysteem.logic.database.ArtikellijstDBInteraction;
 import org.rekeningsysteem.rxjavafx.JavaFxScheduler;
 import org.rekeningsysteem.rxjavafx.Observables;
 import org.rekeningsysteem.ui.textfields.NumberField;
 import org.rekeningsysteem.ui.textfields.SearchBox;
 
 import rx.Observable;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 public class GebruiktEsselinkArtikelPane extends GridPane {
-
-	private static final Func1<String, String> artNrQuery = s ->
-			"SELECT * FROM Artikellijst WHERE artikelnummer LIKE '" + s + "%';";
-	private static final Func1<String, String> omschrQuery = s ->
-			"SELECT * FROM Artikellijst WHERE omschrijving LIKE '%" + s + "%';";
 
 	private final NumberField aantalTF = new NumberField();
 
@@ -47,6 +41,7 @@ public class GebruiktEsselinkArtikelPane extends GridPane {
 	public GebruiktEsselinkArtikelPane(Currency currency) {
 		try {
 			Database database = Database.getInstance();
+			ArtikellijstDBInteraction interaction = new ArtikellijstDBInteraction(database);
 			SearchBox searchField = new SearchBox(currency);
 
 			this.artNr.setToggleGroup(this.searchType);
@@ -61,22 +56,20 @@ public class GebruiktEsselinkArtikelPane extends GridPane {
 			searchField.textProperty().filter(s -> s.length() < 4)
 					.subscribe(s -> searchField.hideContextMenu());
 
+			Observable<Toggle> toggles = Observables.fromProperty(this.searchType
+					.selectedToggleProperty());
 			searchField.textProperty().filter(s -> s.length() >= 4)
-					.map(s -> s.replace("\'", "\'\'"))
-					.map(this::getQuery)
 					.observeOn(Schedulers.io())
-					.<Observable<EsselinkArtikel>> map(s -> database.query(s, result -> {
-						String artNr = result.getString("artikelnummer");
-						String omschr = result.getString("omschrijving");
-						int prijsPer = result.getInt("prijsPer");
-						String eenheid = result.getString("eenheid");
-						Geld verkoopPrijs = new Geld(result.getDouble("verkoopprijs"));
-
-						return new EsselinkArtikel(artNr, omschr, prijsPer, eenheid, verkoopPrijs);
-					}))
+					.withLatestFrom(toggles, (s, toggle) -> {
+						if (toggle == this.artNr) {
+							return interaction.getWithArtikelnummer(s);
+						}
+						assert toggle == this.omschr;
+						return interaction.getWithOmschrijving(s);
+					})
 					.observeOn(JavaFxScheduler.getInstance())
 					.subscribe(searchField::populateMenu);
-			
+
 			this.selectedItem = searchField.getSelectedItem();
 
 			this.setPadding(new Insets(8));
@@ -120,17 +113,6 @@ public class GebruiktEsselinkArtikelPane extends GridPane {
 		catch (SQLException e) {
 			ApplicationLogger.getInstance().fatal(
 					"Database exception: probably the database was not found!", e);
-		}
-	}
-
-	private String getQuery(String s) {
-		Toggle toggle = this.searchType.getSelectedToggle();
-		if (toggle == this.artNr) {
-			return artNrQuery.call(s);
-		}
-		else {
-			assert toggle == this.omschr;
-			return omschrQuery.call(s);
 		}
 	}
 
