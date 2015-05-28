@@ -12,6 +12,7 @@ import org.rekeningsysteem.properties.PropertyModelEnum;
 
 import rx.Observable;
 import rx.Subscriber;
+import rx.schedulers.Schedulers;
 
 public class Database implements AutoCloseable {
 
@@ -57,23 +58,24 @@ public class Database implements AutoCloseable {
 		__instance = null;
 		this.connection.close();
 	}
-
-	public Observable<Integer> update(String query) {
+	
+	public Observable<Integer> update(QueryEnumeration query) {
 		return Observable.create((Subscriber<? super Integer> subscriber) -> {
 			try (Statement statement = this.connection.createStatement()) {
-				subscriber.onNext(statement.executeUpdate(query));
+				String queryString = query.getQuery();
+				subscriber.onNext(statement.executeUpdate(queryString));
 				subscriber.onCompleted();
 			}
 			catch (SQLException e) {
 				subscriber.onError(e);
 			}
-		});
+		}).subscribeOn(Schedulers.io());
 	}
-
-	public <A> Observable<A> query(String query, ExFunc1<ResultSet, A> resultComposer) {
+	
+	public <A> Observable<A> query(QueryEnumeration query, ExFunc1<ResultSet, A> resultComposer) {
 		return Observable.create((Subscriber<? super A> subscriber) -> {
 			try (Statement statement = this.connection.createStatement();
-					ResultSet result = statement.executeQuery(query)) {
+					ResultSet result = statement.executeQuery(query.getQuery())) {
 				while (result.next()) {
 					subscriber.onNext(resultComposer.call(result));
 				}
@@ -82,6 +84,6 @@ public class Database implements AutoCloseable {
 			catch (Exception e) {
 				subscriber.onError(e);
 			}
-		});
+		}).subscribeOn(Schedulers.io());
 	}
 }

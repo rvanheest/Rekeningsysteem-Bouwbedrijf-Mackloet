@@ -21,6 +21,7 @@ import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
 
 import org.rekeningsysteem.io.database.Database;
+import org.rekeningsysteem.io.database.QueryEnumeration;
 import org.rekeningsysteem.logging.ApplicationLogger;
 import org.rekeningsysteem.rxjavafx.JavaFxScheduler;
 import org.rekeningsysteem.rxjavafx.Observables;
@@ -98,14 +99,14 @@ public class PrijslijstIO extends Tab {
 
 	private Observable<Integer> clearData() {
 		try {
-			return Database.getInstance().update("DELETE FROM Artikellijst");
+			return Database.getInstance().update(PrijslijstQueries.CLEAR_ARTIKELLIJST);
 		}
 		catch (SQLException e) {
 			return Observable.error(e);
 		}
 	}
 
-	private Observable<String> readFile(File csv) {
+	private Observable<QueryEnumeration> readFile(File csv) {
 		// TODO replace this implementation with the Apache Commons CSV parser
 		// http://commons.apache.org/proper/commons-csv/
 		try {
@@ -118,12 +119,28 @@ public class PrijslijstIO extends Tab {
 							: s)
 					.buffer(5)
 					.skip(1)
-					.map(list -> "INSERT INTO Artikellijst VALUES ('" + list.get(0) + "', '"
+					.map(list -> () -> "INSERT INTO Artikellijst VALUES ('" + list.get(0) + "', '"
 							+ list.get(1).replace("\'", "\'\'") + "', '" + list.get(2) + "', '"
 							+ list.get(3) + "', '" + list.get(4).replace(',', '.') + "');");
 		}
 		catch (FileNotFoundException e) {
 			return Observable.error(e);
+		}
+	}
+
+	private enum PrijslijstQueries implements QueryEnumeration {
+
+		CLEAR_ARTIKELLIJST("DELETE FROM Artikellijst");
+
+		private final String query;
+
+		PrijslijstQueries(String query) {
+			this.query = query;
+		}
+
+		@Override
+		public String getQuery() {
+			return this.query;
 		}
 	}
 }

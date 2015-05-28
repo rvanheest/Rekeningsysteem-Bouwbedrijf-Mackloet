@@ -3,15 +3,16 @@ package org.rekeningsysteem.logic.database;
 import org.rekeningsysteem.data.particulier.EsselinkArtikel;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.io.database.Database;
+import org.rekeningsysteem.io.database.QueryEnumeration;
 
 import rx.Observable;
 import rx.functions.Func1;
 
 public class ArtikellijstDBInteraction {
 
-	private static final Func1<String, String> artNrQuery = s ->
+	private static final Func1<String, QueryEnumeration> artNrQuery = s -> () ->
 			"SELECT * FROM Artikellijst WHERE artikelnummer LIKE '" + s + "%';";
-	private static final Func1<String, String> omschrQuery = s ->
+	private static final Func1<String, QueryEnumeration> omschrQuery = s -> () ->
 			"SELECT * FROM Artikellijst WHERE omschrijving LIKE '%" + s + "%';";
 
 	private final Database database;
@@ -28,11 +29,11 @@ public class ArtikellijstDBInteraction {
 		return this.getWith(text).call(omschrQuery);
 	}
 	
-	private Func1<Func1<String, String>, Observable<EsselinkArtikel>> getWith(String text) {
+	private Func1<Func1<String, QueryEnumeration>, Observable<EsselinkArtikel>> getWith(String text) {
 		return factory -> this.getFromDatabase(factory.call(text.replace("\'", "\'\'")));
 	}
 	
-	private Observable<EsselinkArtikel> getFromDatabase(String query) {
+	private Observable<EsselinkArtikel> getFromDatabase(QueryEnumeration query) {
 		return this.database.query(query, result -> {
 			String artNr = result.getString("artikelnummer");
 			String omschr = result.getString("omschrijving");
