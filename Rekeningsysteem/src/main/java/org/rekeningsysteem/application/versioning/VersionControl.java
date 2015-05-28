@@ -7,6 +7,7 @@ import org.rekeningsysteem.io.database.V04Queries;
 
 import rx.Observable;
 import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 public class VersionControl {
 
@@ -62,18 +63,21 @@ public class VersionControl {
 	public Observable<Boolean> versionTableExists() {
 		return this.database.query(V04Queries.VERSION_TABLE_EXISTS,
 				result -> result.getString("name"))
+				.subscribeOn(Schedulers.io())
 				.isEmpty()
 				.map(b -> !b);
 	}
 
 	public Observable<String> getVersion() {
 		return this.database.query(V04Queries.GET_DB_VERSION,
-				result -> result.getString("version"));
+				result -> result.getString("version"))
+				.subscribeOn(Schedulers.io());
 	}
 
 	public Observable<Integer> getTableCount() {
 		return this.database.query(V04Queries.TABLE_COUNT,
-				result -> result.getInt("count"));
+				result -> result.getInt("count"))
+				.subscribeOn(Schedulers.io());
 	}
 
 	public Observable<Integer> initDatabase(String version) {
