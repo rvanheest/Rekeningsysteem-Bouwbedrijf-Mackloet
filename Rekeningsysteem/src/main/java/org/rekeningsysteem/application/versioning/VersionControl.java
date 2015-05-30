@@ -48,7 +48,7 @@ public class VersionControl {
 		else if ("v0.3".equals(dbVersion)) {
 			QueryEnumeration query = getV04Queries()
 					.append(insertVersion.call(mavenVersion));
-			return this.database.update(query);
+			return this.database.update(query).subscribeOn(Schedulers.io());
 		}
 		System.out.println("state is not recognized");
 		return Observable.error(new IllegalArgumentException("the version of the database "
