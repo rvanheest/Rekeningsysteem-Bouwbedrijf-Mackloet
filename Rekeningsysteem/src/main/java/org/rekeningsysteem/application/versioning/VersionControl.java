@@ -2,8 +2,6 @@ package org.rekeningsysteem.application.versioning;
 
 import org.rekeningsysteem.io.database.Database;
 import org.rekeningsysteem.io.database.QueryEnumeration;
-import org.rekeningsysteem.io.database.V03Queries;
-import org.rekeningsysteem.io.database.V04Queries;
 
 import rx.Observable;
 import rx.functions.Func1;
