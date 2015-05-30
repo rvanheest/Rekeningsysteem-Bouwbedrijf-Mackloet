@@ -4,7 +4,7 @@ public enum V04Queries implements QueryEnumeration {
 
 	VERSION_TABLE_EXISTS("SELECT name FROM sqlite_master WHERE type='table' AND name='Metadata';"),
 
-	GET_DB_VERSION("SELECT version FROM Metadatal"),
+	GET_DB_VERSION("SELECT version FROM Metadata"),
 
 	TABLE_COUNT("SELECT COUNT(name) AS 'count' FROM sqlite_master WHERE type='table';"),
 
