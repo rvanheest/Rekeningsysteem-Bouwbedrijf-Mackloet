@@ -1,16 +1,12 @@
-package org.rekeningsysteem.ui.textfields;
+package org.rekeningsysteem.ui.textfields.searchbox;
 
 import java.util.Currency;
 
 import javafx.event.ActionEvent;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
-import javafx.geometry.Side;
-import javafx.scene.control.Button;
-import javafx.scene.control.ContextMenu;
 import javafx.scene.control.CustomMenuItem;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
@@ -24,11 +20,7 @@ import org.rekeningsysteem.rxjavafx.Observables;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
-public class SearchBox extends Region {
-
-	private final TextField textBox = new TextField();
-	private final Button clearButton = new Button();
-	private final ContextMenu contextMenu = new ContextMenu();
+public class EsselinkSearchBox extends AbstractSearchBox<EsselinkArtikel> {
 
 	private final PublishSubject<EsselinkArtikel> selectedItem = PublishSubject.create();
 	
@@ -41,23 +33,10 @@ public class SearchBox extends Region {
 	
 	private final Currency currency;
 
-	public SearchBox(Currency currency) {
+	public EsselinkSearchBox(Currency currency) {
+		super("Zoek artikel...");
 		this.currency = currency;
-		
-		this.setId("searchBox");
-		this.setMinHeight(24);
-		this.setPrefSize(250, 24);
-		this.setMaxHeight(24);
-		
-		this.textBox.setPromptText("Zoek...");
-		this.textProperty().subscribe(s -> this.clearButton.setVisible(!s.isEmpty()));
-		
-		this.clearButton.setVisible(false);
-		Observables.fromNodeEvents(this.clearButton, ActionEvent.ACTION)
-				.doOnNext(e -> this.textBox.setText(""))
-				.subscribe(e -> this.textBox.requestFocus());
-		
-		this.getChildren().addAll(this.textBox, this.clearButton);
+		this.setId("esselinkSearchBox");
 		
 		this.infoBox.setId("search-info-box");
 		this.infoBox.setFillWidth(true);
@@ -84,22 +63,7 @@ public class SearchBox extends Region {
 	}
 	
 	@Override
-	protected void layoutChildren() {
-        this.textBox.resize(getWidth(),getHeight());
-        this.clearButton.resizeRelocate(getWidth()-18,6,12,13);
-    }
-	
-	public void populateMenu(Observable<EsselinkArtikel> eas) {
-		this.contextMenu.getItems().clear();
-		this.contextMenu.hide();
-		
-		eas.observeOn(JavaFxScheduler.getInstance())
-				.doOnNext(this::populateMenu)
-				.doOnCompleted(() -> this.contextMenu.show(this, Side.BOTTOM, 10, -5))
-				.subscribe();
-	}
-
-	private void populateMenu(EsselinkArtikel ea) {
+	void populateMenu(EsselinkArtikel ea) {
 		Label artNrLabel = new Label(ea.getArtikelNummer());
 		artNrLabel.getStyleClass().add("artikelnummer-label");
         artNrLabel.setAlignment(Pos.CENTER_RIGHT);
@@ -122,6 +86,8 @@ public class SearchBox extends Region {
 				+ ea.getPrijsPer() + " " + ea.getEenheid();
 		
 		Observables.fromProperty(popRegion.opacityProperty())
+				.doOnNext(n -> System.out.println(Thread.currentThread().getName()))
+				//TODO waarom wordt de doOnNext 2x uitgeprint?
 				.map(Number::doubleValue)
 				.filter(d -> d == 1)
 				.subscribeOn(JavaFxScheduler.getInstance()) // used here as a workaround for RT-14396
@@ -142,19 +108,8 @@ public class SearchBox extends Region {
 				.subscribe(this.selectedItem);
 	}
 
+	@Override
 	public Observable<EsselinkArtikel> getSelectedItem() {
 		return this.selectedItem.asObservable();
-	}
-
-	public Observable<String> textProperty() {
-		return Observables.fromProperty(this.textBox.textProperty());
-	}
-
-	public void hideContextMenu() {
-		this.contextMenu.hide();
-	}
-
-	public void clear() {
-		this.textBox.clear();
 	}
 }

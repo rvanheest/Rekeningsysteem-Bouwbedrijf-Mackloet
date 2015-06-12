@@ -1,22 +1,33 @@
 package org.rekeningsysteem.ui.header;
 
+import java.sql.SQLException;
 import java.util.Optional;
 
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
 
+import org.rekeningsysteem.data.util.header.Debiteur;
+import org.rekeningsysteem.io.database.Database;
+import org.rekeningsysteem.logging.ApplicationLogger;
+import org.rekeningsysteem.logic.database.DebiteurDBInteraction;
+import org.rekeningsysteem.rxjavafx.JavaFxScheduler;
 import org.rekeningsysteem.rxjavafx.Observables;
 import org.rekeningsysteem.ui.Page;
 import org.rekeningsysteem.ui.textfields.PostcodeTextField;
+import org.rekeningsysteem.ui.textfields.searchbox.AbstractSearchBox;
+import org.rekeningsysteem.ui.textfields.searchbox.DebiteurSearchBox;
 
 import rx.Observable;
+import rx.schedulers.Schedulers;
 
 public class DebiteurPane extends Page {
 
 	private final GridPane grid = new GridPane();
 
+	private final AbstractSearchBox<Debiteur> naamSearchBox = new DebiteurSearchBox();
 	private final TextField naamTF = new TextField();
 	private final TextField straatTF = new TextField();
 	private final TextField nummerTF = new TextField();
@@ -37,11 +48,14 @@ public class DebiteurPane extends Page {
 		this.grid.setHgap(10);
 		this.grid.setVgap(1);
 		this.grid.setAlignment(Pos.TOP_CENTER);
+		
+		VBox box = new VBox(1, this.naamSearchBox, this.grid);
 
 		this.initLabels();
 		this.initTextFields();
+		this.initSearchBox();
 
-		this.getChildren().add(this.grid);
+		this.getChildren().add(box);
 
 		// this causes every TF to be 20 columns since we're in a GridPane
 		this.naamTF.setPrefColumnCount(20);
@@ -73,6 +87,40 @@ public class DebiteurPane extends Page {
 		this.postcodeTF.setPromptText("postcode");
 		this.plaatsTF.setPromptText("plaats");
 		this.btwTF.setPromptText("btw nummer");
+	}
+	
+	private void initSearchBox() {
+		try {
+			Database database = Database.getInstance();
+			DebiteurDBInteraction interaction = new DebiteurDBInteraction(database);
+
+			this.naamSearchBox.textProperty()
+					.filter(s -> s.length() == 0)
+					.subscribe(s -> this.naamSearchBox.hideContextMenu());
+
+			this.naamSearchBox.textProperty()
+					.filter(s -> s.length() > 0)
+					.observeOn(Schedulers.io())
+					.map(interaction::getWithNaam)
+					.observeOn(JavaFxScheduler.getInstance())
+					.subscribe(this.naamSearchBox::populateMenu);
+
+			this.naamSearchBox.getSelectedItem()
+					.subscribe(debiteur -> {
+						this.setNaam(debiteur.getNaam());
+						this.setStraat(debiteur.getStraat());
+						this.setNummer(debiteur.getNummer());
+						this.setPostcode(debiteur.getPostcode());
+						this.setPlaats(debiteur.getPlaats());
+						this.setBtwNummer(debiteur.getBtwNummer().orElse(""));
+
+						this.naamSearchBox.clear();
+					});
+		}
+		catch (SQLException e) {
+			ApplicationLogger.getInstance()
+					.fatal("Database exception: propably the database was not found!", e);
+		}
 	}
 
 	public Observable<String> getNaam() {

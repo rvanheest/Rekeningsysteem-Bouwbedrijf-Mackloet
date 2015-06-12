@@ -22,7 +22,8 @@ import org.rekeningsysteem.logic.database.ArtikellijstDBInteraction;
 import org.rekeningsysteem.rxjavafx.JavaFxScheduler;
 import org.rekeningsysteem.rxjavafx.Observables;
 import org.rekeningsysteem.ui.textfields.NumberField;
-import org.rekeningsysteem.ui.textfields.SearchBox;
+import org.rekeningsysteem.ui.textfields.searchbox.AbstractSearchBox;
+import org.rekeningsysteem.ui.textfields.searchbox.EsselinkSearchBox;
 
 import rx.Observable;
 import rx.schedulers.Schedulers;
@@ -42,7 +43,7 @@ public class GebruiktEsselinkArtikelPane extends GridPane {
 		try {
 			Database database = Database.getInstance();
 			ArtikellijstDBInteraction interaction = new ArtikellijstDBInteraction(database);
-			SearchBox searchField = new SearchBox(currency);
+			AbstractSearchBox<EsselinkArtikel> searchField = new EsselinkSearchBox(currency);
 
 			this.artNr.setToggleGroup(this.searchType);
 			this.artNr.setSelected(false);
@@ -86,16 +87,16 @@ public class GebruiktEsselinkArtikelPane extends GridPane {
 			spacer.setPadding(new Insets(5, 0, 5, 0));
 
 			Label artNrOmschr = new Label("geen artikel geselecteerd");
-			artNrOmschr.getStyleClass().add("no-item-found");
-			this.selectedItem.doOnNext(ea -> artNrOmschr.getStyleClass().remove("no-item-found"))
-					.map(ea -> ea.getArtikelNummer() + "\t" + ea.getOmschrijving())
-					.subscribe(artNrOmschr::setText);
-
 			Label extraInfo = new Label();
-			this.selectedItem.map(ea -> currency.getSymbol() + " "
-					+ ea.getVerkoopPrijs().getBedrag() + " per "
-					+ ea.getPrijsPer() + " " + ea.getEenheid())
-					.subscribe(extraInfo::setText);
+			artNrOmschr.getStyleClass().add("no-item-found");
+			this.selectedItem.subscribe(ea -> {
+				artNrOmschr.getStyleClass().remove("no-item-found");
+				artNrOmschr.setText(ea.getArtikelNummer() + "\t" + ea.getOmschrijving());
+				extraInfo.setText(currency.getSymbol() + " " + ea.getVerkoopPrijs().getBedrag()
+						+ " per " + ea.getPrijsPer() + " " + ea.getEenheid());
+				
+				searchField.clear();
+			});
 
 			this.aantal = Observables.fromProperty(this.aantalTF.valueProperty())
 					.filter(Objects::nonNull)
