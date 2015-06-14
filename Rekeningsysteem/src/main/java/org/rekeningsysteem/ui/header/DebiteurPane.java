@@ -95,11 +95,11 @@ public class DebiteurPane extends Page {
 			DebiteurDBInteraction interaction = new DebiteurDBInteraction(database);
 
 			this.naamSearchBox.textProperty()
-					.filter(s -> s.length() == 0)
+					.filter(s -> s.length() < 2)
 					.subscribe(s -> this.naamSearchBox.hideContextMenu());
 
 			this.naamSearchBox.textProperty()
-					.filter(s -> s.length() > 0)
+					.filter(s -> s.length() >= 2)
 					.observeOn(Schedulers.io())
 					.map(interaction::getWithNaam)
 					.observeOn(JavaFxScheduler.getInstance())
