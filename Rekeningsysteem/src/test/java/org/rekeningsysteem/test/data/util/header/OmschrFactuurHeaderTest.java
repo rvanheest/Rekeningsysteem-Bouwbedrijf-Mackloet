@@ -66,7 +66,7 @@ public class OmschrFactuurHeaderTest extends FactuurHeaderTest {
 	@Test
 	@Override
 	public void testToString() {
-		assertEquals("<FactuurHeader[<Debiteur[Optional.empty, RvH, PB, 116, 3241TA, MH, "
+		assertEquals("<FactuurHeader[<Debiteur[RvH, PB, 116, 3241TA, MH, "
 				+ "Optional.empty]>, " + this.getTestDatum().toString() + ", Optional[32013], "
 				+ "voor u uitgevoerde werkzaamheden]>", this.getInstance().toString());
 	}
