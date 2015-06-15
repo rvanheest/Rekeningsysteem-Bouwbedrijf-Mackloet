@@ -48,13 +48,13 @@ public class VersionControl {
 					.append(insertVersion.call(mavenVersion));
 			return this.database.update(query).subscribeOn(Schedulers.io());
 		}
-		System.out.println("state is not recognized");
 		return Observable.error(new IllegalArgumentException("the version of the database "
 				+ "is not valid"));
 	}
 
 	public static String getMavenVersion() {
 		return "v0.4";
+		// TODO switch lines
 		// return VersionControl.class.getPackage().getImplementationVersion();
 	}
 
@@ -101,6 +101,8 @@ public class VersionControl {
 				.append(V04Queries.CREATE_OMSCHRIJVING_INDEX)
 				.append(V04Queries.CREATE_DEBITEUR)
 				.append(V04Queries.CREATE_BTW_DEBITEUR)
+				.append(V04Queries.CREATE_TOTAAL_DEBITEUR_VIEW)
+				.append(V04Queries.CREATE_TOTAAL_DEBITEUR_TRIGGER)
 				.append(V04Queries.CREATE_METADATA);
 	}
 }
