@@ -1,11 +1,11 @@
 package org.rekeningsysteem.logic.database;
 
 import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import org.rekeningsysteem.data.particulier.EsselinkArtikel;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.io.database.Database;
-import org.rekeningsysteem.io.database.ExFunc1;
 import org.rekeningsysteem.io.database.QueryEnumeration;
 
 import rx.Observable;
@@ -23,23 +23,21 @@ public class ArtikellijstDBInteraction extends DBInteraction<EsselinkArtikel> {
 	}
 
 	public Observable<EsselinkArtikel> getWithArtikelnummer(String text) {
-		return this.with(text).call(artNrQuery);
+		return this.getFromDatabase(artNrQuery, text);
 	}
 	
 	public Observable<EsselinkArtikel> getWithOmschrijving(String text) {
-		return this.with(text).call(omschrQuery);
+		return this.getFromDatabase(omschrQuery, text);
 	}
-	
-	@Override
-	ExFunc1<ResultSet, EsselinkArtikel> resultExtractor() {
-		return result -> {
-			String artNr = result.getString("artikelnummer");
-			String omschr = result.getString("omschrijving");
-			int prijsPer = result.getInt("prijsPer");
-			String eenheid = result.getString("eenheid");
-			Geld verkoopPrijs = new Geld(result.getDouble("verkoopprijs"));
 
-			return new EsselinkArtikel(artNr, omschr, prijsPer, eenheid, verkoopPrijs);
-		};
+	@Override
+	EsselinkArtikel resultExtractor(ResultSet result) throws SQLException {
+		String artNr = result.getString("artikelnummer");
+		String omschr = result.getString("omschrijving");
+		int prijsPer = result.getInt("prijsPer");
+		String eenheid = result.getString("eenheid");
+		Geld verkoopPrijs = new Geld(result.getDouble("verkoopprijs"));
+
+		return new EsselinkArtikel(artNr, omschr, prijsPer, eenheid, verkoopPrijs);
 	}
 }
