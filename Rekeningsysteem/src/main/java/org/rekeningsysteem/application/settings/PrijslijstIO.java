@@ -99,7 +99,7 @@ public class PrijslijstIO extends Tab {
 
 	private Observable<Integer> clearData() {
 		try {
-			return Database.getInstance().update(PrijslijstQueries.CLEAR_ARTIKELLIJST);
+			return Database.getInstance().update(() -> "DELETE FROM Artikellijst");
 		}
 		catch (SQLException e) {
 			return Observable.error(e);
@@ -125,22 +125,6 @@ public class PrijslijstIO extends Tab {
 		}
 		catch (FileNotFoundException e) {
 			return Observable.error(e);
-		}
-	}
-
-	private enum PrijslijstQueries implements QueryEnumeration {
-
-		CLEAR_ARTIKELLIJST("DELETE FROM Artikellijst");
-
-		private final String query;
-
-		PrijslijstQueries(String query) {
-			this.query = query;
-		}
-
-		@Override
-		public String getQuery() {
-			return this.query;
 		}
 	}
 }
