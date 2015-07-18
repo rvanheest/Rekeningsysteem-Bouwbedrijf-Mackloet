@@ -32,7 +32,7 @@ public enum V04Queries implements QueryEnumeration {
 			+ "d.nummer, d.postcode, d.plaats, b.btwNummer "
 			+ "FROM Debiteur d NATURAL LEFT JOIN BTWDebiteur b;"),
 
-	CREATE_TOTAAL_DEBITEUR_TRIGGER("CREATE TRIGGER InsertDebiteurBtwDebiteur\n"
+	CREATE_TOTAAL_DEBITEUR_INSERT_TRIGGER("CREATE TRIGGER InsertDebiteurBtwDebiteur\n"
 			+ "INSTEAD OF INSERT ON TotaalDebiteur\n"
 			+ "WHEN NOT EXISTS (SELECT 1 FROM Debiteur WHERE naam=NEW.naam AND straat=NEW.straat AND nummer=NEW.nummer AND postcode=NEW. postcode AND plaats=NEW.plaats)\n"
 			+ "\n"
@@ -48,6 +48,36 @@ public enum V04Queries implements QueryEnumeration {
 			+ "AND NOT EXISTS (SELECT 1 FROM BTWDebiteur WHERE debiteurID=Debiteur.debiteurID AND btwNummer=NEW.btwNummer);\n"
 			+ "\n"
 			+ "END;"),
+	
+	CREATE_TOTAAL_DEBITEUR_DELETE_TRIGGER("CREATE TRIGGER DeleteDebiteurBtwDebiteur\n"
+			+ "INSTEAD OF DELETE ON TotaalDebiteur\n"
+			+ "\n"
+			+ "BEGIN\n"
+			+ "\n"
+			+ "DELETE FROM BTWDebiteur\n"
+			+ "WHERE BTWDebiteur.btwNummer = OLD.btwNummer\n"
+			+ "AND BTWDebiteur.btwNummer = (SELECT btwNummer FROM BTWDebiteur WHERE debiteurID = (SELECT debiteurID FROM Debiteur WHERE naam = OLD.naam AND straat = OLD.straat AND nummer = OLD.nummer AND postcode = OLD.postcode AND plaats = OLD.plaats));\n"
+			+ "\n"
+			+ "DELETE FROM Debiteur\n"
+			+ "WHERE naam = OLD.naam AND straat = OLD.straat AND nummer = OLD.nummer AND postcode = OLD.postcode AND plaats = OLD.plaats;\n"
+			+ "\n"
+			+ "END"),
+	
+	CREATE_TOTAAL_DEBITEUR_UPDATE_TRIGGER("CREATE TRIGGER UpdateDebiteurBtwDebiteur\n"
+			+ "INSTEAD OF UPDATE ON TotaalDebiteur\n"
+			+ "\n"
+			+ "BEGIN\n"
+			+ "\n"
+			+ "UPDATE BTWDebiteur\n"
+			+ "SET btwNummer = NEW.btwNummer\n"
+			+ "WHERE btwNummer = OLD.btwNummer\n"
+			+ "AND btwNummer = (SELECT btwNummer FROM BTWDebiteur WHERE debiteurID = (SELECT debiteurID FROM Debiteur WHERE naam = OLD.naam AND straat = OLD.straat AND nummer = OLD.nummer AND postcode = OLD.postcode AND plaats = OLD.plaats));\n"
+			+ "\n"
+			+ "UPDATE Debiteur\n"
+			+ "SET naam = NEW.naam, straat = NEW.straat, nummer = NEW.nummer, postcode = NEW.postcode, plaats = NEW.plaats\n"
+			+ "WHERE naam = OLD.naam AND straat = OLD.straat AND nummer = OLD.nummer AND postcode = OLD.postcode AND plaats = OLD.plaats;\n"
+			+ "\n"
+			+ "END"),
 
 	CREATE_METADATA("CREATE TABLE Metadata (version TEXT NOT NULL);");
 

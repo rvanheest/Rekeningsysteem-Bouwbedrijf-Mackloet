@@ -102,7 +102,9 @@ public class VersionControl {
 				.append(V04Queries.CREATE_DEBITEUR)
 				.append(V04Queries.CREATE_BTW_DEBITEUR)
 				.append(V04Queries.CREATE_TOTAAL_DEBITEUR_VIEW)
-				.append(V04Queries.CREATE_TOTAAL_DEBITEUR_TRIGGER)
+				.append(V04Queries.CREATE_TOTAAL_DEBITEUR_INSERT_TRIGGER)
+				.append(V04Queries.CREATE_TOTAAL_DEBITEUR_DELETE_TRIGGER)
+				.append(V04Queries.CREATE_TOTAAL_DEBITEUR_UPDATE_TRIGGER)
 				.append(V04Queries.CREATE_METADATA);
 	}
 }

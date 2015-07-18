@@ -7,18 +7,21 @@ import java.util.Optional;
 
 import javafx.event.ActionEvent;
 import javafx.scene.control.Button;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
+import javafx.scene.layout.StackPane;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
 
 import org.rekeningsysteem.application.Main;
 import org.rekeningsysteem.application.settings.SettingsPane;
+import org.rekeningsysteem.io.database.Database;
 import org.rekeningsysteem.properties.PropertiesWorker;
 import org.rekeningsysteem.properties.PropertyModelEnum;
 import org.rekeningsysteem.rxjavafx.Observables;
@@ -29,12 +32,15 @@ import org.rekeningsysteem.ui.particulier.ParticulierController;
 import org.rekeningsysteem.ui.reparaties.ReparatiesController;
 
 import rx.Observable;
-import rx.functions.Action1;
+import rx.functions.Func0;
 
 public class MainPane extends BorderPane {
 
 	private final RekeningToolbar toolbar;
+	private final StackPane centerPane;
 	private final RekeningTabpane tabpane;
+	private SettingsPane settingsPane = null;
+	private final Func0<SettingsPane> settingsPaneFactory;
 
 	private final Button aangenomen = new Button();
 	private final Button mutaties = new Button();
@@ -44,11 +50,11 @@ public class MainPane extends BorderPane {
 	private final Button open = new Button();
 	private final Button save = new Button();
 	private final Button pdf = new Button();
-	private final Button settings = new Button();
+	private final ToggleButton settings = new ToggleButton();
 
 	private final PropertiesWorker properties = PropertiesWorker.getInstance();
 
-	public MainPane(Stage stage) {
+	public MainPane(Stage stage, Database database) {
 		this.setId("main-pane");
 		this.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
 
@@ -61,18 +67,13 @@ public class MainPane extends BorderPane {
 				this.reparaties, this.particulier, this.offerte, this.open,
 				this.save, this.pdf, spacer, this.settings);
 		this.tabpane = new RekeningTabpane();
-
+		this.settingsPaneFactory = () -> new SettingsPane(stage, this.settings, database);
+		this.centerPane = new StackPane(this.tabpane);
+		
 		this.setTop(this.toolbar);
-		this.setCenter(this.tabpane);
+		this.setCenter(this.centerPane);
 
 		this.initButtonHandlers(stage);
-
-		Observables.fromObservableList(this.tabpane.getTabs())
-				.map(List::isEmpty)
-				.forEach(listEmpty -> {
-					this.save.setDisable(listEmpty);
-					this.pdf.setDisable(listEmpty);
-				});
 	}
 
 	private void initButtons() {
@@ -98,16 +99,16 @@ public class MainPane extends BorderPane {
 	}
 
 	private void initButtonHandlers(Stage stage) {
-		Action1<Observable<RekeningTab>> addSelect = (tabs) -> tabs.forEach(tab -> {
-			this.tabpane.addTab(tab);
-			this.tabpane.selectTab(tab);
-		});
-		addSelect.call(this.initAangenomenObservable());
-		addSelect.call(this.initMutatiesObservable());
-		addSelect.call(this.initReparatiesObservable());
-		addSelect.call(this.initParticulierObservable());
-		addSelect.call(this.initOfferteObservable());
-		addSelect.call(this.initOpenObservable(stage));
+		this.initAangenomenObservable()
+				.mergeWith(this.initMutatiesObservable())
+				.mergeWith(this.initReparatiesObservable())
+				.mergeWith(this.initParticulierObservable())
+				.mergeWith(this.initOfferteObservable())
+				.mergeWith(this.initOpenObservable(stage))
+				.subscribe(tab -> {
+					this.tabpane.addTab(tab);
+					this.tabpane.selectTab(tab);
+				});
 
 		this.initSaveObservable()
 				.doOnNext(tab -> {
@@ -138,8 +139,35 @@ public class MainPane extends BorderPane {
 					tab.export(file);
 				}));
 
-		this.initSettingsObservable(stage)
-				.subscribe(Main.getMain()::showModalMessage);
+		Observables.fromProperty(this.settings.selectedProperty())
+				.subscribe(selected -> {
+					if (selected) {
+						assert this.settingsPane == null;
+						this.settingsPane = this.settingsPaneFactory.call();
+						this.centerPane.getChildren().add(this.settingsPane);
+					}
+					else {
+						assert this.settingsPane != null;
+						this.centerPane.getChildren().remove(this.settingsPane);
+						this.settingsPane = null;
+					}
+					
+					this.aangenomen.setDisable(selected);
+					this.mutaties.setDisable(selected);
+					this.reparaties.setDisable(selected);
+					this.particulier.setDisable(selected);
+					this.offerte.setDisable(selected);
+					this.open.setDisable(selected);
+				});
+		
+		Observable.combineLatest(Observables.fromObservableList(this.tabpane.getTabs())
+				.map(List::isEmpty),
+				Observables.fromProperty(this.settings.selectedProperty()),
+				(Boolean listEmpty, Boolean settingsSelected) -> listEmpty || settingsSelected)
+				.forEach(disable -> {
+					this.save.setDisable(disable);
+					this.pdf.setDisable(disable);
+				});
 	}
 
 	private void saveLastSaveLocationProperty(File file) {
@@ -229,10 +257,5 @@ public class MainPane extends BorderPane {
 	private Observable<RekeningTab> initExportObservable() {
 		return Observables.fromNodeEvents(this.pdf, ActionEvent.ACTION)
 				.map(event -> this.tabpane.getSelectedTab());
-	}
-
-	private Observable<SettingsPane> initSettingsObservable(Stage stage) {
-		return Observables.fromNodeEvents(this.settings, ActionEvent.ACTION)
-				.map(event -> new SettingsPane(stage));
 	}
 }

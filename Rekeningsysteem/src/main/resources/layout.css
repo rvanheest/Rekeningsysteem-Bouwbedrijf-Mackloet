@@ -1,6 +1,26 @@
 #modalDimmer {
 	-fx-background-color: rgb(0,0,0,0.6);
 }
+#debiteur-table .table-cell .button,
+#debiteur-table #add-button,
+#debiteur-table #edit-button {
+	-fx-background-color: null;
+	-fx-background-radius: 0.0;
+	-fx-background-insets: 0.0;
+	-fx-padding: 0 15 0 15;
+}
+#debiteur-table #add-button {
+	-fx-graphic: url("images/add.png");
+}
+#debiteur-table #edit-button {
+	-fx-graphic: url("images/edit.png");
+}
+#debiteur-table #add-button:hover {
+	-fx-graphic: url("images/addHover.png");
+}
+#debiteur-table #edit-button:hover {
+	-fx-graphic: url("images/editHover.png");
+}
 
 #root {
     -fx-background-color: #333333;
@@ -64,7 +84,7 @@
     -fx-border-image-repeat: stretch;
     -fx-spacing: 0.0;
 }
-#rekening-toolbar .button {
+#rekening-toolbar .button, #rekening-toolbar .toggle-button {
     -fx-background-color: null;
     -fx-background-radius: 0.0;
     -fx-background-insets: 0.0;
@@ -72,7 +92,7 @@
     -fx-border-color: transparent #6e737d transparent rgba(255.0,255.0,255.0,0.3), transparent rgba(255, 255, 255, 0.3) transparent transparent;
     -fx-border-insets: 0.0, 0.0 1.0 0.0 1.0;
 }
-#rekening-toolbar .button:hover {
+#rekening-toolbar .button:hover, #rekening-toolbar .toggle-button:hover {
     -fx-background-color: rgba(255.0,255.0,255.0,0.4);
 }
 #rekening-toolbar #settings-button {
@@ -80,18 +100,22 @@
     -fx-border-insets: 0.0, 0.0 1.0 0.0 1.0;
 }
 
-#rekening-tabs {
+#rekening-tabs,
+#settings-tabs {
 	-fx-side: top;
 }
-#rekening-tabs *.tab-header-background {
+#rekening-tabs *.tab-header-background,
+#settings-tabs *.tab-header-background {
     -fx-background-color: #51555c;
     -fx-effect: innershadow(gaussian, rgba(0, 0, 0, 0.7), 12, 0, 0, 0);
 }
-#rekening-tabs .tab-header-content-spacer {
+#rekening-tabs .tab-header-content-spacer,
+#settings-tabs .tab-header-content-spacer {
     -fx-padding: 0;
     -fx-border-width: 0px;
 }
-#rekening-tabs .tab-label {
+#rekening-tabs .tab-label,
+#settings-tabs .tab-label {
     -fx-font-size: 1em;
 }
 

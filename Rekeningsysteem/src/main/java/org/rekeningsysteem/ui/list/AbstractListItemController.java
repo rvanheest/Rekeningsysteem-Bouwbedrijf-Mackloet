@@ -2,11 +2,9 @@ package org.rekeningsysteem.ui.list;
 
 import java.util.Optional;
 
-import org.rekeningsysteem.data.util.ListItem;
-
 import rx.Observable;
 
-public abstract class AbstractListItemController<M extends ListItem> {
+public abstract class AbstractListItemController<M> {
 
 	private final ItemPane ui;
 	private final Observable<Optional<M>> model;

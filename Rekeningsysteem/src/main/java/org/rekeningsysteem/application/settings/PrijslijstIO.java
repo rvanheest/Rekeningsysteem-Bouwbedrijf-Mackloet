@@ -12,6 +12,7 @@ import java.util.Objects;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBase;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
 import javafx.scene.layout.GridPane;
@@ -36,9 +37,9 @@ public class PrijslijstIO extends Tab {
 			+ "wanneer nieuwe data wordt geimporteerd!");
 	private final Button startButton = new Button("Start");
 
-	public PrijslijstIO(Stage stage, Button closeButton) {
+	public PrijslijstIO(Stage stage, ButtonBase closeButton) {
 		super("Esselink artikel data");
-
+		
 		this.progressLabel.getStyleClass().add("no-item-found");
 		this.warningLabel.setTextFill(Color.RED);
 		this.warningLabel.setWrapText(true);
@@ -76,6 +77,7 @@ public class PrijslijstIO extends Tab {
 				});
 
 		GridPane content = new GridPane();
+		content.getStyleClass().addAll("working-pane", "page");
 		content.setPadding(new Insets(8));
 		content.setHgap(10);
 		content.setVgap(5);

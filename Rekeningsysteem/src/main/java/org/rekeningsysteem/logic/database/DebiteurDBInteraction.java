@@ -9,6 +9,7 @@ import org.rekeningsysteem.io.database.QueryEnumeration;
 
 import rx.Observable;
 import rx.functions.Func1;
+import rx.functions.Func2;
 
 public class DebiteurDBInteraction extends DBInteraction<Debiteur> {
 
@@ -22,6 +23,20 @@ public class DebiteurDBInteraction extends DBInteraction<Debiteur> {
         			+ deb.getNaam() + "', '" + deb.getStraat() + "', '"
         			+ deb.getNummer() + "', '" + deb.getPostcode() + "', '" + deb.getPlaats()
         			+ deb.getBtwNummer().map(s -> "', '" + s).orElse("") + "');";
+	private static final Func1<Debiteur, QueryEnumeration> debDelete = deb -> () ->
+			"DELETE FROM TotaalDebiteur WHERE naam = '"
+			+ deb.getNaam() + "' AND straat = '" + deb.getStraat() + "' AND nummer = '"
+			+ deb.getNummer() + "' AND postcode = '" + deb.getPostcode() + "' AND plaats = '"
+			+ deb.getPlaats() + deb.getBtwNummer().map(s ->  "' AND btwNummer = '" + s).orElse("") + "';";
+	private static final Func2<Debiteur, Debiteur, QueryEnumeration> debUpdate = (debOld, debNew) -> () ->
+			"UPDATE TotaalDebiteur SET naam = '" + debNew.getNaam()
+			+ "', straat = '" + debNew.getStraat() + "', nummer = '" + debNew.getNummer()
+			+ "', postcode = '" + debNew.getPostcode() + "', plaats = '" + debNew.getPlaats()
+			+ debNew.getBtwNummer().map(s -> "', btwNummer = '" + s).orElse("")
+			+ "' WHERE naam = '" + debOld.getNaam() + "' AND straat = '" + debOld.getStraat()
+			+ "' AND nummer = '" + debOld.getNummer() + "' AND postcode = '" + debOld.getPostcode()
+			+ "' AND plaats = '" + debOld.getPlaats()
+			+ debOld.getBtwNummer().map(s -> "' AND btwNummer = '" + s).orElse("") + "';";
 
 	public DebiteurDBInteraction(Database database) {
 		super(database);
@@ -29,6 +44,14 @@ public class DebiteurDBInteraction extends DBInteraction<Debiteur> {
 
 	public Observable<Integer> addDebiteur(Debiteur debiteur) {
 		return this.update(debInsert.call(debiteur));
+	}
+
+	public Observable<Integer> deleteDebiteur(Debiteur debiteur) {
+		return this.update(debDelete.call(debiteur));
+	}
+
+	public Observable<Integer> updateDebiteur(Debiteur oldDebiteur, Debiteur newDebiteur) {
+		return this.update(debUpdate.call(oldDebiteur, newDebiteur));
 	}
 
 	public Observable<Debiteur> getAll() {

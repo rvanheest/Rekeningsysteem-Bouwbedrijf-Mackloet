@@ -16,7 +16,9 @@ import rx.Observable;
 
 public abstract class ItemPane extends VBox {
 
-	private final Button addBtn = new Button("Voeg toe");
+	protected final Label title;
+	
+	protected final Button addBtn = new Button("Voeg toe");
 	private final Button cancelBtn = new Button("Annuleren");
 
 	public ItemPane(String titleString) {
@@ -27,10 +29,10 @@ public abstract class ItemPane extends VBox {
 		Observables.fromNodeEvents(this, MouseEvent.MOUSE_CLICKED)
 				.subscribe(Event::consume);
 
-		Label title = new Label(titleString);
-		title.setId("title");
-		title.setMaxWidth(Double.MAX_VALUE);
-		this.getChildren().add(title);
+		this.title = new Label(titleString);
+		this.title.setId("title");
+		this.title.setMaxWidth(Double.MAX_VALUE);
+		this.getChildren().add(this.title);
 
 		this.cancelBtn.setId("cancelButton");
 		HBox.setMargin(this.cancelBtn, new Insets(0, 8, 0, 0));

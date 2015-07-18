@@ -63,7 +63,7 @@ public class Main extends Application {
 
 			this.popup.setVisible(false);
 
-			StackPane layerPane = new StackPane(new Root(stage), this.popup);
+			StackPane layerPane = new StackPane(new Root(stage, database), this.popup);
 
 			Scene scene = new Scene(layerPane, 1061, 728);
 			scene.getStylesheets().add(getResource("/layout.css"));
