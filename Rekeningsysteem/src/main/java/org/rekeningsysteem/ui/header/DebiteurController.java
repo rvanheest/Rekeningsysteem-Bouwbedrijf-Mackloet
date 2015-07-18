@@ -20,6 +20,7 @@ public class DebiteurController {
 
 	private final DebiteurPane ui;
 	private final Observable<Debiteur> model;
+	private final Observable<Boolean> saveDebiteur;
 	private final SearchBoxController<Debiteur> searchBoxController;
 
 	public DebiteurController() {
@@ -34,14 +35,21 @@ public class DebiteurController {
 		this.ui.setPostcode(input.getPostcode());
 		this.ui.setPlaats(input.getPlaats());
 		this.ui.setBtwNummer(input.getBtwNummer().orElse(""));
+		this.ui.setSaveSelected(false);
 	}
 
 	public DebiteurController(Function<AbstractSearchBox<Debiteur>, DebiteurPane> uiFactory) {
 		this.searchBoxController = new SearchBoxController<>(new DebiteurSearchBox());
 		this.ui = uiFactory.apply(this.searchBoxController.getUI());
+		this.saveDebiteur = this.ui.isSaveSelected();
 		this.model = Observable.combineLatest(this.ui.getNaam(), this.ui.getStraat(),
 				this.ui.getNummer(), this.ui.getPostcode(), this.ui.getPlaats(),
-				this.ui.getBtwnummer(), Debiteur::new);
+				this.ui.getBtwnummer(), Debiteur::new)
+				.publish(debs -> debs.skip(1) // this extra publish needs to be done because
+											  // otherwise the saveSelect(false) will always be
+											  // overruled by the latest update
+						.doOnNext(d -> this.ui.setSaveSelected(true))
+						.switchMap(d -> debs));
 
 		this.initSearchBox();
 	}
@@ -52,6 +60,10 @@ public class DebiteurController {
 
 	public Observable<Debiteur> getModel() {
 		return this.model;
+	}
+
+	public Observable<Boolean> isSaveSelected() {
+		return this.saveDebiteur;
 	}
 
 	private void initSearchBox() {
@@ -87,6 +99,7 @@ public class DebiteurController {
 						this.ui.setBtwNummer(debiteur.getBtwNummer().orElse(""));
 
 						naamSearchBox.clear();
+						this.ui.setSaveSelected(false);
 					});
 		}
 		catch (SQLException e) {

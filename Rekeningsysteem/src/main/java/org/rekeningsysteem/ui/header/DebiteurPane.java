@@ -3,6 +3,7 @@ package org.rekeningsysteem.ui.header;
 import java.util.Optional;
 
 import javafx.geometry.Pos;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
@@ -27,6 +28,7 @@ public class DebiteurPane extends Page {
 	private final TextField postcodeTF = new PostcodeTextField();
 	private final TextField plaatsTF = new TextField();
 	private final TextField btwTF = new TextField();
+	private final CheckBox saveDebiteur = new CheckBox("Sla deze debiteur op");
 
 	private final Observable<String> naam = Observables.fromProperty(this.naamTF.textProperty());
 	private final Observable<String> straat = Observables.fromProperty(this.straatTF.textProperty());
@@ -34,6 +36,7 @@ public class DebiteurPane extends Page {
 	private final Observable<String> postcode = Observables.fromProperty(this.postcodeTF.textProperty());
 	private final Observable<String> plaats = Observables.fromProperty(this.plaatsTF.textProperty());
 	private final Observable<String> btw = Observables.fromProperty(this.btwTF.textProperty());
+	private final Observable<Boolean> saveSelected = Observables.fromProperty(this.saveDebiteur.selectedProperty());
 
 	public DebiteurPane(AbstractSearchBox<Debiteur> naamSearchBox) {
 		super("Debiteur");
@@ -43,8 +46,10 @@ public class DebiteurPane extends Page {
 		this.grid.setHgap(10);
 		this.grid.setVgap(1);
 		this.grid.setAlignment(Pos.TOP_CENTER);
+		
+		this.setSaveSelected(false);
 
-		VBox box = new VBox(1, this.naamSearchBox, this.grid);
+		VBox box = new VBox(1, this.naamSearchBox, new VBox(10, this.grid, this.saveDebiteur));
 
 		this.initLabels();
 		this.initTextFields();
@@ -130,5 +135,13 @@ public class DebiteurPane extends Page {
 
 	public void setBtwNummer(String btw) {
 		this.btwTF.setText(btw);
+	}
+
+	public Observable<Boolean> isSaveSelected() {
+		return this.saveSelected;
+	}
+
+	public void setSaveSelected(boolean saveSelected) {
+		this.saveDebiteur.setSelected(saveSelected);
 	}
 }
