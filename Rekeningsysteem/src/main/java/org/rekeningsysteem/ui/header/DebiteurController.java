@@ -1,6 +1,7 @@
 package org.rekeningsysteem.ui.header;
 
 import java.sql.SQLException;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
 import org.rekeningsysteem.data.util.header.Debiteur;
@@ -60,8 +61,10 @@ public class DebiteurController {
 
 			AbstractSearchBox<Debiteur> naamSearchBox = this.searchBoxController.getUI();
 			naamSearchBox.textProperty()
+					.throttleWithTimeout(300, TimeUnit.MILLISECONDS)
 					.publish(text -> {
 						text.filter(s -> s.length() < 2)
+								.observeOn(JavaFxScheduler.getInstance())
 								.subscribe(s -> naamSearchBox.hideContextMenu());
 
 						text.filter(s -> s.length() >= 2)

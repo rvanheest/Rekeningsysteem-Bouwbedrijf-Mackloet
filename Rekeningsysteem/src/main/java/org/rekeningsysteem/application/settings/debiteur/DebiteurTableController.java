@@ -8,8 +8,10 @@ import org.rekeningsysteem.application.Main;
 import org.rekeningsysteem.application.settings.debiteur.DebiteurTable.DebiteurTableModel;
 import org.rekeningsysteem.data.util.header.Debiteur;
 import org.rekeningsysteem.logic.database.DebiteurDBInteraction;
+import org.rekeningsysteem.rxjavafx.JavaFxScheduler;
 
 import rx.Observable;
+import rx.schedulers.Schedulers;
 
 public class DebiteurTableController {
 
@@ -32,7 +34,9 @@ public class DebiteurTableController {
 				.doOnNext(optItem -> Main.getMain().hideModalMessage())
 				.filter(Optional::isPresent)
 				.map(Optional::get)
+				.observeOn(Schedulers.io())
 				.flatMap(db::addDebiteur, (debiteur, i) -> debiteur)
+				.observeOn(JavaFxScheduler.getInstance())
 				.flatMap(debiteur -> this.model.first().doOnNext(list -> list.add(debiteur)))
 				.map(this::modelToUI)
 				.subscribe(this.ui::setData);
@@ -49,8 +53,10 @@ public class DebiteurTableController {
 										.doOnNext(optItem -> Main.getMain().hideModalMessage())
 										.filter(Optional::isPresent)
 										.map(Optional::get)
+										.observeOn(Schedulers.io())
 										.flatMap(newDebiteur -> db.updateDebiteur(old, newDebiteur), (newDebiteur, i) -> newDebiteur);
 							})
+							.observeOn(JavaFxScheduler.getInstance())
 							.flatMap(newDebiteur -> this.model.first().doOnNext(list -> list.set(index, newDebiteur)))
 							.map(this::modelToUI);
 				})

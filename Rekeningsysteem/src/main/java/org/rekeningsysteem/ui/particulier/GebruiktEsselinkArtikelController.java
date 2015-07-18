@@ -2,6 +2,7 @@ package org.rekeningsysteem.ui.particulier;
 
 import java.sql.SQLException;
 import java.util.Currency;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
 import org.rekeningsysteem.data.particulier.EsselinkArtikel;
@@ -65,8 +66,10 @@ public class GebruiktEsselinkArtikelController {
 								});
 
 						return searchField.textProperty()
+								.throttleWithTimeout(300, TimeUnit.MILLISECONDS)
 								.<EsselinkArtikel> publish(text -> {
 									text.filter(s -> s.length() < 4)
+											.observeOn(JavaFxScheduler.getInstance())
 											.subscribe(s -> searchField.hideContextMenu());
 
 									return text.filter(s -> s.length() >= 4)

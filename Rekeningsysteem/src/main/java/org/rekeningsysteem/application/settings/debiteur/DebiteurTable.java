@@ -16,11 +16,13 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
+import org.rekeningsysteem.rxjavafx.JavaFxScheduler;
 import org.rekeningsysteem.rxjavafx.Observables;
 import org.rekeningsysteem.ui.list.ButtonCell;
 
 import rx.Observable;
 import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 public class DebiteurTable extends VBox {
 
@@ -30,10 +32,10 @@ public class DebiteurTable extends VBox {
 	private final Button add = new Button();
 	private final Button modify = new Button();
 	
-	private final Func1<DebiteurTableModel, Observable<Integer>> deleteAction;
+	private final Func1<DebiteurTableModel, Observable<Integer>> dbDelete;
 
-	public DebiteurTable(Func1<DebiteurTableModel, Observable<Integer>> deleteAction) {
-		this.deleteAction = deleteAction;
+	public DebiteurTable(Func1<DebiteurTableModel, Observable<Integer>> dbDelete) {
+		this.dbDelete = dbDelete;
 		
 		this.setId("debiteur-table");
 		this.add.setId("add-button");
@@ -91,7 +93,9 @@ public class DebiteurTable extends VBox {
 			ButtonCell<DebiteurTableModel> buttonCell = new ButtonCell<>(button);
 			Observables.fromNodeEvents(button, ActionEvent.ACTION)
 					.map(event -> buttonCell.getTableView().getItems().get(buttonCell.getIndex()))
-					.flatMap(this.deleteAction, (model, res) -> model)
+					.observeOn(Schedulers.io())
+					.flatMap(this.dbDelete, (model, res) -> model)
+					.observeOn(JavaFxScheduler.getInstance())
 					.subscribe(this.data::remove);
 			return buttonCell;
 		});
