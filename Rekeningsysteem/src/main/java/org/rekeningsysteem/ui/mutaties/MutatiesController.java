@@ -9,6 +9,7 @@ import org.rekeningsysteem.data.mutaties.MutatiesFactuur;
 import org.rekeningsysteem.data.util.BtwPercentage;
 import org.rekeningsysteem.data.util.header.Debiteur;
 import org.rekeningsysteem.data.util.header.FactuurHeader;
+import org.rekeningsysteem.io.database.Database;
 import org.rekeningsysteem.properties.PropertiesWorker;
 import org.rekeningsysteem.properties.PropertyModelEnum;
 import org.rekeningsysteem.ui.AbstractRekeningController;
@@ -18,38 +19,47 @@ import rx.Observable;
 
 public class MutatiesController extends AbstractRekeningController<MutatiesFactuur> {
 
-	private final FactuurHeaderController headerController;
+	private final FactuurHeaderController header;
+	private final MutatiesListPaneController list;
 
-	public MutatiesController() {
-		this(PropertiesWorker.getInstance());
+	public MutatiesController(Database database) {
+		this(PropertiesWorker.getInstance(), database);
 	}
 
-	public MutatiesController(PropertiesWorker properties) {
+	public MutatiesController(PropertiesWorker properties, Database database) {
 		this(properties.getProperty(PropertyModelEnum.VALUTAISO4217)
 				.map(Currency::getInstance)
 				.orElse(Currency.getInstance("EUR")),
-				new BtwPercentage(0.0, 0.0));
+				new BtwPercentage(0.0, 0.0), database);
 	}
 
-	public MutatiesController(Currency currency, BtwPercentage btw) {
+	public MutatiesController(Currency currency, BtwPercentage btw, Database database) {
 		this(new FactuurHeaderController(new FactuurHeader(new Debiteur("Woongoed GO",
 				"Landbouwweg", "1", "3241MV", "Middelharnis", "NL.0025.45.094.B.01"),
-				LocalDate.now())), new MutatiesListPaneController(currency, btw));
+				LocalDate.now()), database), new MutatiesListPaneController(currency, btw));
 	}
 
-	public MutatiesController(MutatiesFactuur input) {
-		this(new FactuurHeaderController(input.getFactuurHeader()),
+	public MutatiesController(MutatiesFactuur input, Database database) {
+		this(new FactuurHeaderController(input.getFactuurHeader(), database),
 				new MutatiesListPaneController(input.getCurrency(), input.getItemList(),
 						input.getBtwPercentage()));
 	}
 
-	public MutatiesController(FactuurHeaderController header,
-			MutatiesListPaneController body) {
+	public MutatiesController(FactuurHeaderController header, MutatiesListPaneController body) {
 		super(new RekeningSplitPane(header.getUI(), body.getUI()),
 				Observable.combineLatest(header.getModel(), body.getListModel(),
 						body.getBtwModel(), (head, list, btw) ->
 						new MutatiesFactuur(head, body.getCurrency(), list, btw)));
-		this.headerController = header;
+		this.header = header;
+		this.list = body;
+	}
+
+	public FactuurHeaderController getHeaderController() {
+		return this.header;
+	}
+
+	public MutatiesListPaneController getListController() {
+		return this.list;
 	}
 
 	@Override
@@ -57,6 +67,13 @@ public class MutatiesController extends AbstractRekeningController<MutatiesFactu
 		String factuurnummer = this.getFactuurnummerFactory()
 				.call(PropertyModelEnum.FACTUURNUMMER)
 				.getFactuurnummer();
-		this.headerController.initFactuurnummer(Optional.ofNullable(factuurnummer));
+		this.header.getFactuurnummerController()
+				.getUI()
+				.setFactuurnummer(Optional.ofNullable(factuurnummer));
+	}
+
+	@Override
+	public Observable<Boolean> getSaveSelected() {
+		return this.header.getDebiteurController().isSaveSelected().first();
 	}
 }

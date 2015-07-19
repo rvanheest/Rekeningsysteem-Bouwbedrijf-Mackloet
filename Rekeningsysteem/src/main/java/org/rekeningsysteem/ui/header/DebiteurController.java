@@ -1,12 +1,9 @@
 package org.rekeningsysteem.ui.header;
 
-import java.sql.SQLException;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
 import org.rekeningsysteem.data.util.header.Debiteur;
-import org.rekeningsysteem.io.database.Database;
-import org.rekeningsysteem.logging.ApplicationLogger;
 import org.rekeningsysteem.logic.database.DebiteurDBInteraction;
 import org.rekeningsysteem.rxjavafx.JavaFxScheduler;
 import org.rekeningsysteem.ui.textfields.searchbox.AbstractSearchBox;
@@ -23,12 +20,12 @@ public class DebiteurController {
 	private final Observable<Boolean> saveDebiteur;
 	private final SearchBoxController<Debiteur> searchBoxController;
 
-	public DebiteurController() {
-		this(DebiteurPane::new);
+	public DebiteurController(DebiteurDBInteraction db) {
+		this(DebiteurPane::new, db);
 	}
 
-	public DebiteurController(Debiteur input) {
-		this();
+	public DebiteurController(Debiteur input, DebiteurDBInteraction db) {
+		this(db);
 		this.ui.setNaam(input.getNaam());
 		this.ui.setStraat(input.getStraat());
 		this.ui.setNummer(input.getNummer());
@@ -38,20 +35,43 @@ public class DebiteurController {
 		this.ui.setSaveSelected(false);
 	}
 
-	public DebiteurController(Function<AbstractSearchBox<Debiteur>, DebiteurPane> uiFactory) {
-		this.searchBoxController = new SearchBoxController<>(new DebiteurSearchBox());
+	public DebiteurController(Function<AbstractSearchBox<Debiteur>, DebiteurPane> uiFactory, DebiteurDBInteraction db) {
+		DebiteurSearchBox ui = new DebiteurSearchBox();
+		this.searchBoxController = new SearchBoxController<>(ui);
 		this.ui = uiFactory.apply(this.searchBoxController.getUI());
 		this.saveDebiteur = this.ui.isSaveSelected();
 		this.model = Observable.combineLatest(this.ui.getNaam(), this.ui.getStraat(),
 				this.ui.getNummer(), this.ui.getPostcode(), this.ui.getPlaats(),
 				this.ui.getBtwnummer(), Debiteur::new)
-				.publish(debs -> debs.skip(1) // this extra publish needs to be done because
-											  // otherwise the saveSelect(false) will always be
-											  // overruled by the latest update
-						.doOnNext(d -> this.ui.setSaveSelected(true))
-						.switchMap(d -> debs));
+				.publish(debs -> {
+					debs.skip(1).subscribe(d -> this.ui.setSaveSelected(true));
+					return debs;
+				});
 
-		this.initSearchBox();
+		ui.textProperty()
+				.throttleWithTimeout(300, TimeUnit.MILLISECONDS, JavaFxScheduler.getInstance())
+				.publish(text -> text.filter(s -> s.length() < 2)
+							.doOnNext(s -> ui.hideContextMenu())
+							.switchMap(s -> text)
+							.filter(s -> s.length() >= 2)
+							.observeOn(Schedulers.io())
+							.map(db::getWithNaam)
+							.observeOn(JavaFxScheduler.getInstance())
+							.doOnNext(ui::populateMenu))
+				.subscribe();
+
+		ui.getSelectedItem()
+				.subscribe(debiteur -> {
+					this.ui.setNaam(debiteur.getNaam());
+					this.ui.setStraat(debiteur.getStraat());
+					this.ui.setNummer(debiteur.getNummer());
+					this.ui.setPostcode(debiteur.getPostcode());
+					this.ui.setPlaats(debiteur.getPlaats());
+					this.ui.setBtwNummer(debiteur.getBtwNummer().orElse(""));
+
+					ui.clear();
+					this.ui.setSaveSelected(false);
+				});
 	}
 
 	public DebiteurPane getUI() {
@@ -64,47 +84,5 @@ public class DebiteurController {
 
 	public Observable<Boolean> isSaveSelected() {
 		return this.saveDebiteur;
-	}
-
-	private void initSearchBox() {
-		try {
-			Database database = Database.getInstance();
-			DebiteurDBInteraction interaction = new DebiteurDBInteraction(database);
-
-			AbstractSearchBox<Debiteur> naamSearchBox = this.searchBoxController.getUI();
-			naamSearchBox.textProperty()
-					.throttleWithTimeout(300, TimeUnit.MILLISECONDS)
-					.publish(text -> {
-						text.filter(s -> s.length() < 2)
-								.observeOn(JavaFxScheduler.getInstance())
-								.subscribe(s -> naamSearchBox.hideContextMenu());
-
-						text.filter(s -> s.length() >= 2)
-								.observeOn(Schedulers.io())
-								.map(interaction::getWithNaam)
-								.observeOn(JavaFxScheduler.getInstance())
-								.subscribe(naamSearchBox::populateMenu);
-
-						return text;
-					})
-					.subscribe();
-
-			naamSearchBox.getSelectedItem()
-					.subscribe(debiteur -> {
-						this.ui.setNaam(debiteur.getNaam());
-						this.ui.setStraat(debiteur.getStraat());
-						this.ui.setNummer(debiteur.getNummer());
-						this.ui.setPostcode(debiteur.getPostcode());
-						this.ui.setPlaats(debiteur.getPlaats());
-						this.ui.setBtwNummer(debiteur.getBtwNummer().orElse(""));
-
-						naamSearchBox.clear();
-						this.ui.setSaveSelected(false);
-					});
-		}
-		catch (SQLException e) {
-			ApplicationLogger.getInstance()
-					.fatal("Database exception: propably the database was not found!", e);
-		}
 	}
 }

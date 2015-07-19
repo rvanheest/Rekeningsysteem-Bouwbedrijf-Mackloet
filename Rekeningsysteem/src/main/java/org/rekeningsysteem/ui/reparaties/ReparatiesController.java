@@ -9,6 +9,7 @@ import org.rekeningsysteem.data.reparaties.ReparatiesFactuur;
 import org.rekeningsysteem.data.util.BtwPercentage;
 import org.rekeningsysteem.data.util.header.Debiteur;
 import org.rekeningsysteem.data.util.header.FactuurHeader;
+import org.rekeningsysteem.io.database.Database;
 import org.rekeningsysteem.properties.PropertiesWorker;
 import org.rekeningsysteem.properties.PropertyModelEnum;
 import org.rekeningsysteem.ui.AbstractRekeningController;
@@ -18,27 +19,28 @@ import rx.Observable;
 
 public class ReparatiesController extends AbstractRekeningController<ReparatiesFactuur> {
 
-	private final FactuurHeaderController headerController;
+	private final FactuurHeaderController header;
+	private final ReparatiesListPaneController list;
 
-	public ReparatiesController() {
-		this(PropertiesWorker.getInstance());
+	public ReparatiesController(Database database) {
+		this(PropertiesWorker.getInstance(), database);
 	}
 
-	public ReparatiesController(PropertiesWorker properties) {
+	public ReparatiesController(PropertiesWorker properties, Database database) {
 		this(properties.getProperty(PropertyModelEnum.VALUTAISO4217)
 				.map(Currency::getInstance)
 				.orElse(Currency.getInstance("EUR")),
-				new BtwPercentage(0.0, 0.0));
+				new BtwPercentage(0.0, 0.0), database);
 	}
 
-	public ReparatiesController(Currency currency, BtwPercentage btw) {
+	public ReparatiesController(Currency currency, BtwPercentage btw, Database database) {
 		this(new FactuurHeaderController(new FactuurHeader(new Debiteur("Woongoed GO",
 				"Landbouwweg", "1", "3241MV", "Middelharnis", "NL.0025.45.094.B.01"),
-				LocalDate.now())), new ReparatiesListPaneController(currency, btw));
+				LocalDate.now()), database), new ReparatiesListPaneController(currency, btw));
 	}
 
-	public ReparatiesController(ReparatiesFactuur input) {
-		this(new FactuurHeaderController(input.getFactuurHeader()),
+	public ReparatiesController(ReparatiesFactuur input, Database database) {
+		this(new FactuurHeaderController(input.getFactuurHeader(), database),
 				new ReparatiesListPaneController(input.getCurrency(), input.getItemList(),
 						input.getBtwPercentage()));
 	}
@@ -48,7 +50,16 @@ public class ReparatiesController extends AbstractRekeningController<ReparatiesF
 				Observable.combineLatest(header.getModel(), body.getListModel(),
 						body.getBtwModel(), (head, list, btw) ->
 						new ReparatiesFactuur(head, body.getCurrency(), list, btw)));
-		this.headerController = header;
+		this.header = header;
+		this.list = body;
+	}
+
+	public FactuurHeaderController getHeaderController() {
+		return this.header;
+	}
+
+	public ReparatiesListPaneController getListController() {
+		return this.list;
 	}
 
 	@Override
@@ -56,6 +67,13 @@ public class ReparatiesController extends AbstractRekeningController<ReparatiesF
 		String factuurnummer = this.getFactuurnummerFactory()
 				.call(PropertyModelEnum.FACTUURNUMMER)
 				.getFactuurnummer();
-		this.headerController.initFactuurnummer(Optional.ofNullable(factuurnummer));
+		this.header.getFactuurnummerController()
+				.getUI()
+				.setFactuurnummer(Optional.ofNullable(factuurnummer));
+	}
+
+	@Override
+	public Observable<Boolean> getSaveSelected() {
+		return this.header.getDebiteurController().isSaveSelected().first();
 	}
 }

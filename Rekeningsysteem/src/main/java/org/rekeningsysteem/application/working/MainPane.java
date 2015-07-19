@@ -36,6 +36,8 @@ import rx.functions.Func0;
 
 public class MainPane extends BorderPane {
 
+	private final Database database;
+
 	private final RekeningToolbar toolbar;
 	private final StackPane centerPane;
 	private final RekeningTabpane tabpane;
@@ -55,6 +57,8 @@ public class MainPane extends BorderPane {
 	private final PropertiesWorker properties = PropertiesWorker.getInstance();
 
 	public MainPane(Stage stage, Database database) {
+		this.database = database;
+
 		this.setId("main-pane");
 		this.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
 
@@ -67,9 +71,9 @@ public class MainPane extends BorderPane {
 				this.reparaties, this.particulier, this.offerte, this.open,
 				this.save, this.pdf, spacer, this.settings);
 		this.tabpane = new RekeningTabpane();
-		this.settingsPaneFactory = () -> new SettingsPane(stage, this.settings, database);
+		this.settingsPaneFactory = () -> new SettingsPane(stage, this.settings, this.database);
 		this.centerPane = new StackPane(this.tabpane);
-		
+
 		this.setTop(this.toolbar);
 		this.setCenter(this.centerPane);
 
@@ -120,7 +124,7 @@ public class MainPane extends BorderPane {
 						});
 					}
 				})
-				.filter(t -> t.getSaveFile().isPresent())
+				.filter(tab -> tab.getSaveFile().isPresent())
 				.subscribe(RekeningTab::save);
 
 		this.initExportObservable()
@@ -159,7 +163,7 @@ public class MainPane extends BorderPane {
 					this.offerte.setDisable(selected);
 					this.open.setDisable(selected);
 				});
-		
+
 		Observable.combineLatest(Observables.fromObservableList(this.tabpane.getTabs())
 				.map(List::isEmpty),
 				Observables.fromProperty(this.settings.selectedProperty()),
@@ -219,34 +223,34 @@ public class MainPane extends BorderPane {
 
 	private Observable<RekeningTab> initAangenomenObservable() {
 		return Observables.fromNodeEvents(this.aangenomen, ActionEvent.ACTION)
-				.map(event -> new RekeningTab("Aangenomen factuur", new AangenomenController()));
+				.map(event -> new RekeningTab("Aangenomen factuur", new AangenomenController(this.database), this.database));
 	}
 
 	private Observable<RekeningTab> initMutatiesObservable() {
 		return Observables.fromNodeEvents(this.mutaties, ActionEvent.ACTION)
-				.map(event -> new RekeningTab("Mutaties factuur", new MutatiesController()));
+				.map(event -> new RekeningTab("Mutaties factuur", new MutatiesController(this.database), this.database));
 	}
 
 	private Observable<RekeningTab> initReparatiesObservable() {
 		return Observables.fromNodeEvents(this.reparaties, ActionEvent.ACTION)
-				.map(event -> new RekeningTab("Reparaties factuur", new ReparatiesController()));
+				.map(event -> new RekeningTab("Reparaties factuur", new ReparatiesController(this.database), this.database));
 	}
 
 	private Observable<RekeningTab> initParticulierObservable() {
 		return Observables.fromNodeEvents(this.particulier, ActionEvent.ACTION)
-				.map(event -> new RekeningTab("Particulier factuur", new ParticulierController()));
+				.map(event -> new RekeningTab("Particulier factuur", new ParticulierController(this.database), this.database));
 	}
 
 	private Observable<RekeningTab> initOfferteObservable() {
 		return Observables.fromNodeEvents(this.offerte, ActionEvent.ACTION)
-				.map(event -> new RekeningTab("Offerte", new OfferteController()));
+				.map(event -> new RekeningTab("Offerte", new OfferteController(this.database), this.database));
 	}
 
 	private Observable<RekeningTab> initOpenObservable(Stage stage) {
 		return Observables.fromNodeEvents(this.open, ActionEvent.ACTION)
 				.flatMap(event -> this.showOpenFileChooser(stage))
 				.doOnNext(this::saveLastSaveLocationProperty)
-				.flatMap(RekeningTab::openFile);
+				.flatMap(file -> RekeningTab.openFile(file, this.database));
 	}
 
 	private Observable<RekeningTab> initSaveObservable() {

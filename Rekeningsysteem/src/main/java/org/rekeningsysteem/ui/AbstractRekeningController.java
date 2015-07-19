@@ -27,6 +27,8 @@ public abstract class AbstractRekeningController<M extends AbstractRekening> {
 		return this.model;
 	}
 
+	public abstract Observable<Boolean> getSaveSelected();
+
 	public abstract void initFactuurnummer();
 
 	protected final Func1<PropertyKey, FactuurnummerManager> getFactuurnummerFactory() {
