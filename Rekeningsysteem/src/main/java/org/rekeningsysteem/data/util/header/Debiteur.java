@@ -1,5 +1,8 @@
 package org.rekeningsysteem.data.util.header;
 
+import static java.util.Optional.empty;
+import static java.util.Optional.ofNullable;
+
 import java.util.Objects;
 import java.util.Optional;
 
@@ -13,16 +16,16 @@ public final class Debiteur {
 	private final Optional<String> btwNummer;
 
 	public Debiteur(String naam, String straat, String nummer, String postcode, String plaats) {
-		this(naam, straat, nummer, postcode, plaats, Optional.empty());
+		this(naam, straat, nummer, postcode, plaats, empty());
 	}
 
 	public Debiteur(String naam, String straat, String nummer, String postcode, String plaats,
 			String btwNummer) {
-		this(naam, straat, nummer, postcode, plaats, Optional.ofNullable(btwNummer));
+		this(naam, straat, nummer, postcode, plaats, ofNullable(btwNummer));
 	}
 
-	public Debiteur(String naam, String straat, String nummer, String postcode, String plaats,
-			Optional<String> btwNummer) {
+	public Debiteur(String naam, String straat, String nummer,
+			String postcode, String plaats, Optional<String> btwNummer) {
 		this.naam = naam;
 		this.straat = straat;
 		this.nummer = nummer;
@@ -71,7 +74,8 @@ public final class Debiteur {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(this.naam, this.straat, this.nummer, this.postcode, this.plaats,
+		return Objects.hash(this.naam, this.straat, this.nummer, this.postcode,
+				this.plaats,
 				this.btwNummer);
 	}
 

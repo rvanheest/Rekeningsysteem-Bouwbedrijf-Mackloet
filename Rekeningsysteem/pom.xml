@@ -130,6 +130,8 @@
 						<manifest>
 							<addClasspath>true</addClasspath>
 							<mainClass>org.rekeningsysteem.application.Main</mainClass>
+							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                			<addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
 						</manifest>
 					</archive>
 					<descriptorRefs>

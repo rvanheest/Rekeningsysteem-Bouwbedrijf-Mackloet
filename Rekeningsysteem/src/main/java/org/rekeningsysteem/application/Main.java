@@ -20,6 +20,7 @@ import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
 import javafx.util.Duration;
 
+import org.rekeningsysteem.application.versioning.VersionControl;
 import org.rekeningsysteem.io.database.Database;
 import org.rekeningsysteem.logging.ApplicationLogger;
 import org.rekeningsysteem.rxjavafx.Observables;
@@ -47,6 +48,10 @@ public class Main extends Application {
 	@Override
 	public void start(Stage stage) {
 		try {
+			Database database = Database.getInstance();
+			VersionControl vc = new VersionControl(database);
+			vc.checkDBVersioning().subscribe();
+
 			main = this;
 			this.popup.setId("modalDimmer");
 
@@ -58,7 +63,7 @@ public class Main extends Application {
 
 			this.popup.setVisible(false);
 
-			StackPane layerPane = new StackPane(new Root(stage), this.popup);
+			StackPane layerPane = new StackPane(new Root(stage, database), this.popup);
 
 			Scene scene = new Scene(layerPane, 1061, 728);
 			scene.getStylesheets().add(getResource("/layout.css"));

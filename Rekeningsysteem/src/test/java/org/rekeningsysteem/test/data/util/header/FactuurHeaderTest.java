@@ -104,7 +104,8 @@ public class FactuurHeaderTest extends EqualsHashCodeTest {
 
 	@Test
 	public void testToString() {
-		assertEquals("<FactuurHeader[<Debiteur[RvH, PB, 116, 3241TA, MH, Optional.empty]>, "
-				+ this.datum.toString() + ", Optional[32013]]>", this.header.toString());
+		assertEquals("<FactuurHeader[<Debiteur[RvH, PB, 116, 3241TA, MH, "
+				+ "Optional.empty]>, " + this.datum.toString() + ", Optional[32013]]>",
+				this.header.toString());
 	}
 }

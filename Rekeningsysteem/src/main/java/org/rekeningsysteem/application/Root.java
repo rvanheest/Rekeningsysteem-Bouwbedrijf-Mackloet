@@ -12,6 +12,7 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 import org.rekeningsysteem.application.working.MainPane;
+import org.rekeningsysteem.io.database.Database;
 import org.rekeningsysteem.properties.PropertiesWorker;
 import org.rekeningsysteem.properties.PropertyModelEnum;
 import org.rekeningsysteem.rxjavafx.Observables;
@@ -29,7 +30,7 @@ public class Root extends BorderPane {
 	private final PublishSubject<Rectangle2D> windowBounds = PublishSubject.create();
 	private final BehaviorSubject<Boolean> max;
 
-	public Root(Stage stage) {
+	public Root(Stage stage, Database database) {
 		this.setId("root");
 
 		Boolean fullscreen = PropertiesWorker.getInstance()
@@ -39,7 +40,7 @@ public class Root extends BorderPane {
 		this.max = BehaviorSubject.create(fullscreen);
 
 		this.setTop(this.upperBar);
-		this.setCenter(new MainPane(stage));
+		this.setCenter(new MainPane(stage, database));
 
 		this.resizeButton = new WindowResizeButton(stage, 1061, 728);
 		this.resizeButton.setManaged(false);

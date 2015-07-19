@@ -12,6 +12,7 @@ import java.util.Objects;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBase;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
 import javafx.scene.layout.GridPane;
@@ -21,6 +22,7 @@ import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
 
 import org.rekeningsysteem.io.database.Database;
+import org.rekeningsysteem.io.database.QueryEnumeration;
 import org.rekeningsysteem.logging.ApplicationLogger;
 import org.rekeningsysteem.rxjavafx.JavaFxScheduler;
 import org.rekeningsysteem.rxjavafx.Observables;
@@ -35,9 +37,9 @@ public class PrijslijstIO extends Tab {
 			+ "wanneer nieuwe data wordt geimporteerd!");
 	private final Button startButton = new Button("Start");
 
-	public PrijslijstIO(Stage stage, Button closeButton) {
+	public PrijslijstIO(Stage stage, ButtonBase closeButton) {
 		super("Esselink artikel data");
-
+		
 		this.progressLabel.getStyleClass().add("no-item-found");
 		this.warningLabel.setTextFill(Color.RED);
 		this.warningLabel.setWrapText(true);
@@ -75,6 +77,7 @@ public class PrijslijstIO extends Tab {
 				});
 
 		GridPane content = new GridPane();
+		content.getStyleClass().addAll("working-pane", "page");
 		content.setPadding(new Insets(8));
 		content.setHgap(10);
 		content.setVgap(5);
@@ -98,14 +101,14 @@ public class PrijslijstIO extends Tab {
 
 	private Observable<Integer> clearData() {
 		try {
-			return Database.getInstance().update("DELETE FROM Artikellijst");
+			return Database.getInstance().update(() -> "DELETE FROM Artikellijst");
 		}
 		catch (SQLException e) {
 			return Observable.error(e);
 		}
 	}
 
-	private Observable<String> readFile(File csv) {
+	private Observable<QueryEnumeration> readFile(File csv) {
 		// TODO replace this implementation with the Apache Commons CSV parser
 		// http://commons.apache.org/proper/commons-csv/
 		try {
@@ -118,7 +121,7 @@ public class PrijslijstIO extends Tab {
 							: s)
 					.buffer(5)
 					.skip(1)
-					.map(list -> "INSERT INTO Artikellijst VALUES ('" + list.get(0) + "', '"
+					.map(list -> () -> "INSERT INTO Artikellijst VALUES ('" + list.get(0) + "', '"
 							+ list.get(1).replace("\'", "\'\'") + "', '" + list.get(2) + "', '"
 							+ list.get(3) + "', '" + list.get(4).replace(',', '.') + "');");
 		}

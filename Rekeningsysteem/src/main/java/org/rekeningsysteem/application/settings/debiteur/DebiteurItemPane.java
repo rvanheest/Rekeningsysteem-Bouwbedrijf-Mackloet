@@ -1,34 +1,28 @@
-package org.rekeningsysteem.ui.header;
+package org.rekeningsysteem.application.settings.debiteur;
 
 import java.util.Optional;
 
 import javafx.geometry.Pos;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.VBox;
 
-import org.rekeningsysteem.data.util.header.Debiteur;
 import org.rekeningsysteem.rxjavafx.Observables;
-import org.rekeningsysteem.ui.Page;
+import org.rekeningsysteem.ui.list.ItemPane;
 import org.rekeningsysteem.ui.textfields.PostcodeTextField;
-import org.rekeningsysteem.ui.textfields.searchbox.AbstractSearchBox;
 
 import rx.Observable;
 
-public class DebiteurPane extends Page {
+public class DebiteurItemPane extends ItemPane {
 
 	private final GridPane grid = new GridPane();
 
-	private final AbstractSearchBox<Debiteur> naamSearchBox;
 	private final TextField naamTF = new TextField();
 	private final TextField straatTF = new TextField();
 	private final TextField nummerTF = new TextField();
 	private final TextField postcodeTF = new PostcodeTextField();
 	private final TextField plaatsTF = new TextField();
 	private final TextField btwTF = new TextField();
-	private final CheckBox saveDebiteur = new CheckBox("Sla deze debiteur op");
 
 	private final Observable<String> naam = Observables.fromProperty(this.naamTF.textProperty());
 	private final Observable<String> straat = Observables.fromProperty(this.straatTF.textProperty());
@@ -36,25 +30,18 @@ public class DebiteurPane extends Page {
 	private final Observable<String> postcode = Observables.fromProperty(this.postcodeTF.textProperty());
 	private final Observable<String> plaats = Observables.fromProperty(this.plaatsTF.textProperty());
 	private final Observable<String> btw = Observables.fromProperty(this.btwTF.textProperty());
-	private final Observable<Boolean> saveSelected = Observables.fromProperty(this.saveDebiteur.selectedProperty());
 
-	public DebiteurPane(AbstractSearchBox<Debiteur> naamSearchBox) {
-		super("Debiteur");
-
-		this.naamSearchBox = naamSearchBox;
+	public DebiteurItemPane() {
+		super("Nieuwe debiteur");
 
 		this.grid.setHgap(10);
 		this.grid.setVgap(1);
 		this.grid.setAlignment(Pos.TOP_CENTER);
-		
-		this.setSaveSelected(false);
-
-		VBox box = new VBox(1, this.naamSearchBox, new VBox(10, this.grid, this.saveDebiteur));
 
 		this.initLabels();
 		this.initTextFields();
 
-		this.getChildren().add(box);
+		this.getChildren().add(1, this.grid);
 
 		// this causes every TF to be 20 columns since we're in a GridPane
 		this.naamTF.setPrefColumnCount(20);
@@ -86,6 +73,11 @@ public class DebiteurPane extends Page {
 		this.postcodeTF.setPromptText("postcode");
 		this.plaatsTF.setPromptText("plaats");
 		this.btwTF.setPromptText("btw nummer");
+	}
+
+	public void setAsUpdate() {
+		this.title.setText("Debiteur aanpassen");
+		this.addBtn.setText("Aanpassen");
 	}
 
 	public Observable<String> getNaam() {
@@ -135,13 +127,5 @@ public class DebiteurPane extends Page {
 
 	public void setBtwNummer(String btw) {
 		this.btwTF.setText(btw);
-	}
-
-	public Observable<Boolean> isSaveSelected() {
-		return this.saveSelected;
-	}
-
-	public void setSaveSelected(boolean saveSelected) {
-		this.saveDebiteur.setSelected(saveSelected);
 	}
 }

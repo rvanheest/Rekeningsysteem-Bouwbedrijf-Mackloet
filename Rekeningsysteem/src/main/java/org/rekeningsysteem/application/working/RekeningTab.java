@@ -12,6 +12,9 @@ import org.rekeningsysteem.data.offerte.Offerte;
 import org.rekeningsysteem.data.particulier.ParticulierFactuur;
 import org.rekeningsysteem.data.reparaties.ReparatiesFactuur;
 import org.rekeningsysteem.data.util.AbstractRekening;
+import org.rekeningsysteem.data.util.header.FactuurHeader;
+import org.rekeningsysteem.io.database.Database;
+import org.rekeningsysteem.logic.database.DebiteurDBInteraction;
 import org.rekeningsysteem.ui.AbstractRekeningController;
 import org.rekeningsysteem.ui.aangenomen.AangenomenController;
 import org.rekeningsysteem.ui.mutaties.MutatiesController;
@@ -26,20 +29,22 @@ import rx.subjects.PublishSubject;
 public class RekeningTab extends Tab {
 
 	private static final IOWorker ioWorker = new IOWorker();
-	private final AbstractRekeningController<? extends AbstractRekening> controller;
+
 	private final PublishSubject<Boolean> modified = PublishSubject.create();
+	private final AbstractRekeningController<? extends AbstractRekening> controller;
 	private Optional<File> saveFile;
+	private final DebiteurDBInteraction debiteurDB;
 
 	public RekeningTab(String name,
-			AbstractRekeningController<? extends AbstractRekening> controller) {
-		this(name, controller, null);
+			AbstractRekeningController<? extends AbstractRekening> controller, Database database) {
+		this(name, controller, null, database);
 	}
 
-	public RekeningTab(String name,
-			AbstractRekeningController<? extends AbstractRekening> controller, File file) {
+	public RekeningTab(String name, AbstractRekeningController<? extends AbstractRekening> controller, File file, Database database) {
 		super(name);
 		this.controller = controller;
 		this.saveFile = Optional.ofNullable(file);
+		this.debiteurDB = new DebiteurDBInteraction(database);
 
 		this.setContent(this.controller.getUI());
 
@@ -76,7 +81,7 @@ public class RekeningTab extends Tab {
 		this.controller.initFactuurnummer();
 	}
 
-	public static Observable<RekeningTab> openFile(File file) {
+	public static Observable<RekeningTab> openFile(File file, Database database) {
 		if (file.getName().endsWith(".pdf")) {
 			try {
 				JLROpener.open(file);
@@ -92,26 +97,26 @@ public class RekeningTab extends Tab {
 			Observable<AangenomenController> aangenomen = factuur
 					.filter(a -> a instanceof AangenomenFactuur)
 					.cast(AangenomenFactuur.class)
-					.map(AangenomenController::new);
+					.map(fact -> new AangenomenController(fact, database));
 			Observable<MutatiesController> mutaties = factuur
 					.filter(m -> m instanceof MutatiesFactuur)
 					.cast(MutatiesFactuur.class)
-					.map(MutatiesController::new);
+					.map(fact -> new MutatiesController(fact, database));
 			Observable<OfferteController> offerte = factuur
 					.filter(o -> o instanceof Offerte)
 					.cast(Offerte.class)
-					.map(OfferteController::new);
+					.map(fact -> new OfferteController(fact, database));
 			Observable<ParticulierController> particulier = factuur
 					.filter(p -> p instanceof ParticulierFactuur)
 					.cast(ParticulierFactuur.class)
-					.map(ParticulierController::new);
+					.map(fact -> new ParticulierController(fact, database));
 			Observable<ReparatiesController> reparaties = factuur
 					.filter(m -> m instanceof ReparatiesFactuur)
 					.cast(ReparatiesFactuur.class)
-					.map(ReparatiesController::new);
+					.map(fact -> new ReparatiesController(fact, database));
 
 			return Observable.merge(aangenomen, mutaties, offerte, particulier, reparaties)
-					.map(c -> new RekeningTab(file.getName(), c, file))
+					.map(c -> new RekeningTab(file.getName(), c, file, database))
 					.single();
 		}
 		return Observable.empty();
@@ -120,7 +125,13 @@ public class RekeningTab extends Tab {
 	public void save() {
 		this.getModel().first()
 				.doOnNext(factuur -> this.saveFile.ifPresent(file -> ioWorker.save(factuur, file)))
-				.map(factuur -> this.getText())
+				.publish(rekening -> this.controller.getSaveSelected()
+						.filter(select -> select)
+						.flatMap(select -> rekening
+								.map(AbstractRekening::getFactuurHeader)
+								.map(FactuurHeader::getDebiteur))
+						.flatMap(this.debiteurDB::addDebiteur))
+				.map(i -> this.getText())
 				.filter(s -> s.endsWith("*"))
 				.map(s -> s.substring(0, s.length() - 1))
 				.subscribe(this::setText);

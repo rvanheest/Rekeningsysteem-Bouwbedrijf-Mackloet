@@ -57,11 +57,11 @@ public class Database implements AutoCloseable {
 		__instance = null;
 		this.connection.close();
 	}
-
-	public Observable<Integer> update(String query) {
+	
+	public Observable<Integer> update(QueryEnumeration query) {
 		return Observable.create((Subscriber<? super Integer> subscriber) -> {
 			try (Statement statement = this.connection.createStatement()) {
-				subscriber.onNext(statement.executeUpdate(query));
+				subscriber.onNext(statement.executeUpdate(query.getQuery()));
 				subscriber.onCompleted();
 			}
 			catch (SQLException e) {
@@ -69,11 +69,11 @@ public class Database implements AutoCloseable {
 			}
 		});
 	}
-
-	public <A> Observable<A> query(String query, ExFunc1<ResultSet, A> resultComposer) {
+	
+	public <A> Observable<A> query(QueryEnumeration query, ExFunc1<ResultSet, A> resultComposer) {
 		return Observable.create((Subscriber<? super A> subscriber) -> {
 			try (Statement statement = this.connection.createStatement();
-					ResultSet result = statement.executeQuery(query)) {
+					ResultSet result = statement.executeQuery(query.getQuery())) {
 				while (result.next()) {
 					subscriber.onNext(resultComposer.call(result));
 				}

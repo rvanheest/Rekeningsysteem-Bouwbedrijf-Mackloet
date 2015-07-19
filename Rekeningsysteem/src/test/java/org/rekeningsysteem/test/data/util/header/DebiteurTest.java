@@ -38,7 +38,7 @@ public class DebiteurTest extends EqualsHashCodeTest {
 		super.setUp();
 		this.debiteur = this.makeInstance();
 	}
-
+	
 	@Test
 	public void testGetNaam() {
 		assertEquals(this.naam, this.debiteur.getNaam());
