@@ -20,6 +20,7 @@ public enum PropertyModelEnum implements PropertyKey {
 	
 	DATABASE("database"),
 	LAST_SAVE_LOCATION("lastsavelocation"),
+	LAST_SAVE_LOCATION_OFFERTE("lastsavelocationofferte"),
 	
 	PDF_AANGENOMEN_TEMPLATE("pdfaangenomentemplate"),
 	PDF_MUTATIES_TEMPLATE("pdfmutatiestemplate"),
