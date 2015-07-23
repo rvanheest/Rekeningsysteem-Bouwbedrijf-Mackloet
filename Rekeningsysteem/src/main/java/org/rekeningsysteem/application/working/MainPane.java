@@ -183,6 +183,10 @@ public class MainPane extends BorderPane {
 		File initDir = new File(this.properties.getProperty(PropertyModelEnum.LAST_SAVE_LOCATION)
 				.orElse(System.getProperty("user.dir")));
 
+		if (!initDir.exists()) {
+			initDir = new File(System.getProperty("user.dir"));
+		}
+
 		FileChooser chooser = new FileChooser();
 		chooser.setTitle("Open een factuur");
 		chooser.setInitialDirectory(initDir);
@@ -196,6 +200,10 @@ public class MainPane extends BorderPane {
 		File initDir = new File(this.properties.getProperty(PropertyModelEnum.LAST_SAVE_LOCATION)
 				.orElse(System.getProperty("user.dir")));
 
+		if (!initDir.exists()) {
+			initDir = new File(System.getProperty("user.dir"));
+		}
+
 		FileChooser chooser = new FileChooser();
 		chooser.setTitle("Sla een factuur op");
 		chooser.setInitialDirectory(initDir);
@@ -207,6 +215,10 @@ public class MainPane extends BorderPane {
 	private Optional<File> showExportFileChooser(Stage stage) {
 		File initDir = new File(this.properties.getProperty(PropertyModelEnum.LAST_SAVE_LOCATION)
 				.orElse(System.getProperty("user.dir")));
+
+		if (!initDir.exists()) {
+			initDir = new File(System.getProperty("user.dir"));
+		}
 
 		FileChooser chooser = new FileChooser();
 		chooser.setTitle("Exporteer een factuur");
