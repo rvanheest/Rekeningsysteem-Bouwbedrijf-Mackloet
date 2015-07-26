@@ -21,8 +21,10 @@ import javafx.stage.Stage;
 
 import org.rekeningsysteem.application.Main;
 import org.rekeningsysteem.application.settings.SettingsPane;
+import org.rekeningsysteem.data.offerte.Offerte;
 import org.rekeningsysteem.io.database.Database;
 import org.rekeningsysteem.properties.PropertiesWorker;
+import org.rekeningsysteem.properties.PropertyKey;
 import org.rekeningsysteem.properties.PropertyModelEnum;
 import org.rekeningsysteem.rxjavafx.Observables;
 import org.rekeningsysteem.ui.aangenomen.AangenomenController;
@@ -115,29 +117,51 @@ public class MainPane extends BorderPane {
 				});
 
 		this.initSaveObservable()
-				.doOnNext(tab -> {
-					if (!tab.getSaveFile().isPresent()) {
-						this.showSaveFileChooser(stage).ifPresent(file -> {
-							this.saveLastSaveLocationProperty(file);
-							tab.setSaveFile(file);
-							tab.initFactuurnummer();
-						});
-					}
-				})
+				.flatMap(tab -> tab.getModel()
+							.map(rekening -> rekening instanceof Offerte)
+							.doOnNext(isOfferte -> {
+								if (!tab.getSaveFile().isPresent()) {
+									if (isOfferte) {
+										this.showSaveFileChooserOfferte(stage).ifPresent(file -> {
+											this.saveLastSaveLocationOfferteProperty(file);
+											tab.setSaveFile(file);
+											tab.initFactuurnummer();
+										});
+									}
+									else {
+										this.showSaveFileChooser(stage).ifPresent(file -> {
+											this.saveLastSaveLocationProperty(file);
+											tab.setSaveFile(file);
+											tab.initFactuurnummer();
+										});
+									}
+								}
+							}), (tab, isOfferte) -> tab)
 				.filter(tab -> tab.getSaveFile().isPresent())
 				.subscribe(RekeningTab::save);
 
 		this.initExportObservable()
-				.doOnNext(tab -> {
-					if (!tab.getSaveFile().isPresent()) {
-						this.showSaveFileChooser(stage).ifPresent(file -> {
-							this.saveLastSaveLocationProperty(file);
-							tab.setSaveFile(file);
-							tab.initFactuurnummer();
-						});
-						tab.save();
-					}
-				})
+				.flatMap(tab -> tab.getModel()
+						.map(rekening -> rekening instanceof Offerte)
+						.doOnNext(isOfferte -> {
+							if (!tab.getSaveFile().isPresent()) {
+								if (isOfferte) {
+									this.showSaveFileChooserOfferte(stage).ifPresent(file -> {
+										this.saveLastSaveLocationOfferteProperty(file);
+										tab.setSaveFile(file);
+										tab.initFactuurnummer();
+									});
+								}
+								else {
+									this.showSaveFileChooser(stage).ifPresent(file -> {
+										this.saveLastSaveLocationProperty(file);
+										tab.setSaveFile(file);
+										tab.initFactuurnummer();
+									});
+								}
+								tab.save();
+							}
+						}), (tab, isOfferte) -> tab)
 				.subscribe(tab -> this.showExportFileChooser(stage).ifPresent(file -> {
 					this.saveLastSaveLocationProperty(file);
 					tab.export(file);
@@ -179,9 +203,18 @@ public class MainPane extends BorderPane {
 				file.getParentFile().getPath());
 	}
 
+	private void saveLastSaveLocationOfferteProperty(File file) {
+		this.properties.setProperty(PropertyModelEnum.LAST_SAVE_LOCATION_OFFERTE,
+				file.getParentFile().getPath());
+	}
+
 	private Observable<File> showOpenFileChooser(Stage stage) {
 		File initDir = new File(this.properties.getProperty(PropertyModelEnum.LAST_SAVE_LOCATION)
 				.orElse(System.getProperty("user.dir")));
+
+		if (!initDir.exists()) {
+			initDir = new File(System.getProperty("user.dir"));
+		}
 
 		FileChooser chooser = new FileChooser();
 		chooser.setTitle("Open een factuur");
@@ -192,9 +225,13 @@ public class MainPane extends BorderPane {
 				.filter(Objects::nonNull);
 	}
 
-	private Optional<File> showSaveFileChooser(Stage stage) {
-		File initDir = new File(this.properties.getProperty(PropertyModelEnum.LAST_SAVE_LOCATION)
+	private Optional<File> showSaveFileChooser(PropertyKey key, Stage stage) {
+		File initDir = new File(this.properties.getProperty(key)
 				.orElse(System.getProperty("user.dir")));
+
+		if (!initDir.exists()) {
+			initDir = new File(System.getProperty("user.dir"));
+		}
 
 		FileChooser chooser = new FileChooser();
 		chooser.setTitle("Sla een factuur op");
@@ -203,10 +240,22 @@ public class MainPane extends BorderPane {
 
 		return Optional.ofNullable(chooser.showSaveDialog(stage));
 	}
+	
+	private Optional<File> showSaveFileChooser(Stage stage) {
+		return this.showSaveFileChooser(PropertyModelEnum.LAST_SAVE_LOCATION, stage);
+	}
+
+	private Optional<File> showSaveFileChooserOfferte(Stage stage) {
+		return this.showSaveFileChooser(PropertyModelEnum.LAST_SAVE_LOCATION_OFFERTE, stage);
+	}
 
 	private Optional<File> showExportFileChooser(Stage stage) {
 		File initDir = new File(this.properties.getProperty(PropertyModelEnum.LAST_SAVE_LOCATION)
 				.orElse(System.getProperty("user.dir")));
+
+		if (!initDir.exists()) {
+			initDir = new File(System.getProperty("user.dir"));
+		}
 
 		FileChooser chooser = new FileChooser();
 		chooser.setTitle("Exporteer een factuur");

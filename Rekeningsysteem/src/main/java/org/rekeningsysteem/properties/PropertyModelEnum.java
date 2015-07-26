@@ -7,6 +7,7 @@ public enum PropertyModelEnum implements PropertyKey {
 
 	OFFERTENUMMER("offertenummer"),
 	OFFERTENUMMERFILE("offertenummerfile"),
+	OFFERTE_DEFAULT_TEXT_LOCATION("offertedefaulttextlocation"),
 
 	LOONBTWPERCENTAGE("loonbtwpercentage"),
 	MATERIAALBTWPERCENTAGE("materiaalbtwpercentage"),
@@ -20,6 +21,7 @@ public enum PropertyModelEnum implements PropertyKey {
 	
 	DATABASE("database"),
 	LAST_SAVE_LOCATION("lastsavelocation"),
+	LAST_SAVE_LOCATION_OFFERTE("lastsavelocationofferte"),
 	
 	PDF_AANGENOMEN_TEMPLATE("pdfaangenomentemplate"),
 	PDF_MUTATIES_TEMPLATE("pdfmutatiestemplate"),

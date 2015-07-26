@@ -4,7 +4,7 @@ import org.rekeningsysteem.io.database.Database;
 
 public class DebiteurSettingsTabController {
 
-	private DebiteurSettingsTab ui;
+	private final DebiteurSettingsTab ui;
 
 	public DebiteurSettingsTabController(Database database) {
 		this(new DebiteurTablePaneController(database));

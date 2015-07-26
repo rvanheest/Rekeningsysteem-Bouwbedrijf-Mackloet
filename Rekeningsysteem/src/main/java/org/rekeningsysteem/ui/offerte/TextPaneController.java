@@ -1,5 +1,6 @@
 package org.rekeningsysteem.ui.offerte;
 
+import org.rekeningsysteem.logic.offerte.DefaultOfferteTextHandler;
 import org.rekeningsysteem.ui.WorkingPane;
 import org.rekeningsysteem.ui.WorkingPaneController;
 
@@ -30,6 +31,13 @@ public class TextPaneController extends WorkingPaneController {
 
 		this.ui = ui;
 		this.model = this.ui.getText();
+
+		DefaultOfferteTextHandler textHandler = new DefaultOfferteTextHandler();
+		String text = textHandler.getDefaultText();
+		if (!text.startsWith("\n\n")) {
+			text = "\n\n" + text;
+		}
+		this.ui.setText(text);
 	}
 
 	public Observable<String> getModel() {

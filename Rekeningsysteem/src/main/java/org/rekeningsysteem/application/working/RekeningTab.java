@@ -95,24 +95,19 @@ public class RekeningTab extends Tab {
 			Observable<? extends AbstractRekening> factuur = ioWorker.load(file);
 
 			Observable<AangenomenController> aangenomen = factuur
-					.filter(a -> a instanceof AangenomenFactuur)
-					.cast(AangenomenFactuur.class)
+					.ofType(AangenomenFactuur.class)
 					.map(fact -> new AangenomenController(fact, database));
 			Observable<MutatiesController> mutaties = factuur
-					.filter(m -> m instanceof MutatiesFactuur)
-					.cast(MutatiesFactuur.class)
+					.ofType(MutatiesFactuur.class)
 					.map(fact -> new MutatiesController(fact, database));
 			Observable<OfferteController> offerte = factuur
-					.filter(o -> o instanceof Offerte)
-					.cast(Offerte.class)
+					.ofType(Offerte.class)
 					.map(fact -> new OfferteController(fact, database));
 			Observable<ParticulierController> particulier = factuur
-					.filter(p -> p instanceof ParticulierFactuur)
-					.cast(ParticulierFactuur.class)
+					.ofType(ParticulierFactuur.class)
 					.map(fact -> new ParticulierController(fact, database));
 			Observable<ReparatiesController> reparaties = factuur
-					.filter(m -> m instanceof ReparatiesFactuur)
-					.cast(ReparatiesFactuur.class)
+					.ofType(ReparatiesFactuur.class)
 					.map(fact -> new ReparatiesController(fact, database));
 
 			return Observable.merge(aangenomen, mutaties, offerte, particulier, reparaties)
