@@ -1,6 +1,7 @@
 package org.rekeningsysteem.application.settings;
 
 import org.rekeningsysteem.application.settings.debiteur.DebiteurSettingsTabController;
+import org.rekeningsysteem.application.settings.offerte.DefaultOfferteTextTabController;
 import org.rekeningsysteem.io.database.Database;
 
 import javafx.scene.control.ButtonBase;
@@ -15,7 +16,8 @@ public class SettingsPane extends TabPane {
 
 		PrijslijstIO prijslijstTab = new PrijslijstIO(stage, closeButton);
 		DebiteurSettingsTabController debiteurTab = new DebiteurSettingsTabController(database);
+		DefaultOfferteTextTabController offerteTab = new DefaultOfferteTextTabController();
 		
-		this.getTabs().addAll(prijslijstTab, debiteurTab.getUI());
+		this.getTabs().addAll(prijslijstTab, debiteurTab.getUI(), offerteTab.getUI());
 	}
 }

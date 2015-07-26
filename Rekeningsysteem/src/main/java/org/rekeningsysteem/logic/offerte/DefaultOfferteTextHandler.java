@@ -37,10 +37,16 @@ public class DefaultOfferteTextHandler {
 				.orElse("");
 	}
 
-	public void setDefaultText(String s) throws IOException, NoSuchFileException {
+	/**
+	 * Stores the text in the file that was supplied by the constructor.
+	 * @param text the text to be stored
+	 * @throws IOException in case an IO exception occurs while writing to the file
+	 * @throws NoSuchFileException if there was no file supplied by the constructor
+	 */
+	public void setDefaultText(String text) throws IOException, NoSuchFileException {
 		if (this.file.isPresent()) {
 			File f = this.file.get();
-			FileUtils.writeStringToFile(f, s, false);
+			FileUtils.writeStringToFile(f, text, false);
 		}
 		else {
 			throw new NoSuchFileException("Er bestaat geen file waarin deze tekst kan "
