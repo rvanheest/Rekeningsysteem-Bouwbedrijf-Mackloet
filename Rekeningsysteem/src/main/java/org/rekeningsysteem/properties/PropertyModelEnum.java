@@ -7,6 +7,7 @@ public enum PropertyModelEnum implements PropertyKey {
 
 	OFFERTENUMMER("offertenummer"),
 	OFFERTENUMMERFILE("offertenummerfile"),
+	OFFERTE_DEFAULT_TEXT_LOCATION("offertedefaulttextlocation"),
 
 	LOONBTWPERCENTAGE("loonbtwpercentage"),
 	MATERIAALBTWPERCENTAGE("materiaalbtwpercentage"),
