@@ -18,7 +18,7 @@ public abstract class AbstractListPaneController<M extends ListItem> extends Wor
 
 	public AbstractListPaneController(AbstractListController<M, ?> list, BtwController btw,
 			Currency currency) {
-		super(new ListPane(list.getUI(), btw.getUI()));
+		super(new BtwListPane(list.getUI(), btw.getUI()));
 		this.currency = currency;
 		this.listModel = list.getModel();
 		this.btwModel = btw.getModel();

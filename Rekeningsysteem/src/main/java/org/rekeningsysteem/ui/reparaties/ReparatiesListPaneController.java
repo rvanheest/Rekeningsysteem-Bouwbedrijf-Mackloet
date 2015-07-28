@@ -3,25 +3,36 @@ package org.rekeningsysteem.ui.reparaties;
 import java.util.Currency;
 
 import org.rekeningsysteem.data.reparaties.ReparatiesBon;
-import org.rekeningsysteem.data.util.BtwPercentage;
 import org.rekeningsysteem.data.util.ItemList;
-import org.rekeningsysteem.ui.btw.BtwController;
-import org.rekeningsysteem.ui.list.AbstractListPaneController;
+import org.rekeningsysteem.ui.WorkingPaneController;
+import org.rekeningsysteem.ui.list.ListPane;
 
-public class ReparatiesListPaneController extends AbstractListPaneController<ReparatiesBon> {
+import rx.Observable;
 
-	public ReparatiesListPaneController(Currency currency, BtwPercentage btw) {
-		this(new ReparatiesListController(currency), new BtwController(btw), currency);
+public class ReparatiesListPaneController extends WorkingPaneController {
+
+	private final Currency currency;
+	private final Observable<ItemList<ReparatiesBon>> listModel;
+
+	public ReparatiesListPaneController(Currency currency) {
+		this(new ReparatiesListController(currency), currency);
 	}
 
-	public ReparatiesListPaneController(Currency currency, ItemList<ReparatiesBon> inputList,
-			BtwPercentage inputBtw) {
-		this(new ReparatiesListController(currency, inputList), new BtwController(inputBtw),
-				currency);
+	public ReparatiesListPaneController(Currency currency, ItemList<ReparatiesBon> inputList) {
+		this(new ReparatiesListController(currency, inputList), currency);
 	}
 
-	public ReparatiesListPaneController(ReparatiesListController list, BtwController btw,
-			Currency currency) {
-		super(list, btw, currency);
+	public ReparatiesListPaneController(ReparatiesListController list, Currency currency) {
+		super(new ListPane(list.getUI()));
+		this.currency = currency;
+		this.listModel = list.getModel();
+	}
+
+	public Currency getCurrency() {
+		return this.currency;
+	}
+
+	public Observable<ItemList<ReparatiesBon>> getListModel() {
+		return this.listModel;
 	}
 }

@@ -29,27 +29,25 @@ public class ReparatiesController extends AbstractRekeningController<ReparatiesF
 	public ReparatiesController(PropertiesWorker properties, Database database) {
 		this(properties.getProperty(PropertyModelEnum.VALUTAISO4217)
 				.map(Currency::getInstance)
-				.orElse(Currency.getInstance("EUR")),
-				new BtwPercentage(0.0, 0.0), database);
+				.orElse(Currency.getInstance("EUR")), database);
 	}
 
-	public ReparatiesController(Currency currency, BtwPercentage btw, Database database) {
+	public ReparatiesController(Currency currency, Database database) {
 		this(new FactuurHeaderController(new FactuurHeader(new Debiteur("Woongoed GO",
 				"Landbouwweg", "1", "3241MV", "Middelharnis", "NL.0025.45.094.B.01"),
-				LocalDate.now()), database), new ReparatiesListPaneController(currency, btw));
+				LocalDate.now()), database), new ReparatiesListPaneController(currency));
 	}
 
 	public ReparatiesController(ReparatiesFactuur input, Database database) {
 		this(new FactuurHeaderController(input.getFactuurHeader(), database),
-				new ReparatiesListPaneController(input.getCurrency(), input.getItemList(),
-						input.getBtwPercentage()));
+				new ReparatiesListPaneController(input.getCurrency(), input.getItemList()));
 	}
 
 	public ReparatiesController(FactuurHeaderController header, ReparatiesListPaneController body) {
 		super(new RekeningSplitPane(header.getUI(), body.getUI()),
 				Observable.combineLatest(header.getModel(), body.getListModel(),
-						body.getBtwModel(), (head, list, btw) ->
-						new ReparatiesFactuur(head, body.getCurrency(), list, btw)));
+						(head, list) -> new ReparatiesFactuur(head, body.getCurrency(), list,
+								new BtwPercentage(0.0, 0.0))));
 		this.header = header;
 		this.list = body;
 	}
