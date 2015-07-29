@@ -22,7 +22,6 @@ import org.rekeningsysteem.data.particulier.ParticulierArtikel;
 import org.rekeningsysteem.data.particulier.ParticulierFactuur;
 import org.rekeningsysteem.data.reparaties.ReparatiesBon;
 import org.rekeningsysteem.data.reparaties.ReparatiesFactuur;
-import org.rekeningsysteem.data.util.BtwPercentage;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.data.util.ItemList;
 import org.rekeningsysteem.data.util.header.Debiteur;
@@ -53,18 +52,18 @@ public class OldXmlReaderTest {
 
 		ItemList<ParticulierArtikel> itemList = new ItemList<>();
 		itemList.add(new GebruiktEsselinkArtikel(new EsselinkArtikel("12345",
-				"testomschr", 1, "Zak", new Geld(46.14)), 6.0));
+				"testomschr", 1, "Zak", new Geld(46.14)), 6.0, 19.0));
 		itemList.add(new GebruiktEsselinkArtikel(new EsselinkArtikel("1234",
-				"testomschr2", 1, "zak", new Geld(5.95)), 6.0));
+				"testomschr2", 1, "zak", new Geld(5.95)), 6.0, 19.0));
 		itemList.add(new GebruiktEsselinkArtikel(new EsselinkArtikel("7985464",
-				"testomschr3", 1, "emmer", new Geld(42.32)), 20.0));
-		itemList.add(new AnderArtikel("Ander artikel", new Geld(50.00)));
+				"testomschr3", 1, "emmer", new Geld(42.32)), 20.0, 19.0));
+		itemList.add(new AnderArtikel("Ander artikel", new Geld(50.00), 19.0));
 
 		ItemList<AbstractLoon> loonList = new ItemList<>();
-		loonList.add(new ProductLoon("Uurloon à 5,60", 20.0, new Geld(5.60)));
+		loonList.add(new ProductLoon("Uurloon à 5,60", 20.0, new Geld(5.60), 19.0));
 
-		ParticulierFactuur expected = new ParticulierFactuur(factuurHeader, Currency.getInstance("EUR"), itemList,
-				loonList, new BtwPercentage(19.0, 19.0));
+		ParticulierFactuur expected = new ParticulierFactuur(factuurHeader,
+				Currency.getInstance("EUR"), itemList, loonList);
 
 		this.reader.load(file).forEach(rek -> assertEquals(expected, rek));
 	}
@@ -79,16 +78,16 @@ public class OldXmlReaderTest {
 
 		ItemList<ParticulierArtikel> itemList = new ItemList<>();
 		itemList.add(new GebruiktEsselinkArtikel(new EsselinkArtikel("456123",
-				"testomschr", 1, "zak", new Geld(9.83)), 20.0));
+				"testomschr", 1, "zak", new Geld(9.83)), 20.0, 21.0));
 		itemList.add(new GebruiktEsselinkArtikel(new EsselinkArtikel("789456123",
-				"testomschr2", 1, "emmer", new Geld(42.32)), 6.0));
-		itemList.add(new AnderArtikel("test", new Geld(20.00)));
+				"testomschr2", 1, "emmer", new Geld(42.32)), 6.0, 21.0));
+		itemList.add(new AnderArtikel("test", new Geld(20.00), 21.0));
 
 		ItemList<AbstractLoon> loonList = new ItemList<>();
-		loonList.add(new ProductLoon("Uurloon à 6,50", 3.0, new Geld(6.50)));
+		loonList.add(new ProductLoon("Uurloon à 6,50", 3.0, new Geld(6.50), 6.0));
 
-		ParticulierFactuur expected = new ParticulierFactuur(factuurHeader, Currency.getInstance("EUR"), itemList,
-				loonList, new BtwPercentage(6.0, 21.0));
+		ParticulierFactuur expected = new ParticulierFactuur(factuurHeader,
+				Currency.getInstance("EUR"), itemList, loonList);
 
 		this.reader.load(file).forEach(rek -> assertEquals(expected, rek));
 	}
@@ -103,15 +102,15 @@ public class OldXmlReaderTest {
 
 		ItemList<ParticulierArtikel> itemList = new ItemList<>();
 		itemList.add(new GebruiktEsselinkArtikel(new EsselinkArtikel("123456",
-				"testomschr", 1, "stuks", new Geld(1078.80)), 12.0));
+				"testomschr", 1, "stuks", new Geld(1078.80)), 12.0, 0.0));
 		itemList.add(new GebruiktEsselinkArtikel(new EsselinkArtikel("456789",
-				"testomschr2", 1, "stuks", new Geld(1078.80)), 11.0));
+				"testomschr2", 1, "stuks", new Geld(1078.80)), 11.0, 0.0));
 
 		ItemList<AbstractLoon> loonList = new ItemList<>();
-		loonList.add(new ProductLoon("Uurloon à 2,50", 1.0, new Geld(2.50)));
+		loonList.add(new ProductLoon("Uurloon à 2,50", 1.0, new Geld(2.50), 0.0));
 
-		ParticulierFactuur expected = new ParticulierFactuur(factuurHeader, Currency.getInstance("EUR"), itemList,
-				loonList, new BtwPercentage(0.0, 0.0));
+		ParticulierFactuur expected = new ParticulierFactuur(factuurHeader,
+				Currency.getInstance("EUR"), itemList, loonList);
 
 		this.reader.load(file).forEach(rek -> assertEquals(expected, rek));
 	}
@@ -127,8 +126,8 @@ public class OldXmlReaderTest {
 		ItemList<MutatiesBon> itemList = new ItemList<>();
 		itemList.add(new MutatiesBon("Bonnummer", "13151", new Geld(2135131.00)));
 
-		MutatiesFactuur expected = new MutatiesFactuur(factuurHeader, Currency.getInstance("EUR"), itemList,
-				new BtwPercentage(0.0, 0.0));
+		MutatiesFactuur expected = new MutatiesFactuur(factuurHeader,
+				Currency.getInstance("EUR"), itemList);
 
 		this.reader.load(file).forEach(rek -> assertEquals(expected, rek));
 	}
@@ -144,8 +143,8 @@ public class OldXmlReaderTest {
 		ItemList<ReparatiesBon> itemList = new ItemList<>();
 		itemList.add(new ReparatiesBon("Bonnummer", "35343134", new Geld(50), new Geld(60)));
 
-		ReparatiesFactuur expected = new ReparatiesFactuur(factuurHeader, Currency.getInstance("EUR"),
-				itemList, new BtwPercentage(0.0, 0.0));
+		ReparatiesFactuur expected = new ReparatiesFactuur(factuurHeader,
+				Currency.getInstance("EUR"), itemList);
 
 		this.reader.load(file).forEach(rek -> assertEquals(expected, rek));
 	}
