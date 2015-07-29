@@ -6,7 +6,7 @@ import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.data.util.ListItem;
 import org.rekeningsysteem.data.util.visitor.ListItemVisitor;
 
-public class ReparatiesBon implements ListItem {
+public class ReparatiesBon extends ListItem {
 
 	private final String omschrijving;
 	private final String bonnummer;

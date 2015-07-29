@@ -10,102 +10,101 @@ import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
+import java.util.Currency;
 import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
 import org.rekeningsysteem.data.aangenomen.AangenomenFactuur;
 import org.rekeningsysteem.data.aangenomen.AangenomenListItem;
-import org.rekeningsysteem.data.util.BtwPercentage;
+import org.rekeningsysteem.data.util.AbstractFactuur;
 import org.rekeningsysteem.data.util.ItemList;
 import org.rekeningsysteem.data.util.header.Debiteur;
+import org.rekeningsysteem.data.util.header.FactuurHeader;
 import org.rekeningsysteem.data.util.header.OmschrFactuurHeader;
+import org.rekeningsysteem.data.util.visitor.RekeningVisitor;
 import org.rekeningsysteem.logic.factuurnummer.FactuurnummerManager;
 import org.rekeningsysteem.test.data.util.AbstractFactuurTest;
 
 public class AangenomenFactuurTest extends AbstractFactuurTest<AangenomenListItem> {
 
-	private OmschrFactuurHeader header;
-
-	@Override
-	protected AangenomenFactuur getInstance() {
-		return (AangenomenFactuur) super.getInstance();
-	}
-
-	@Override
-	protected OmschrFactuurHeader getTestFactuurHeader() {
-		return this.header;
-	}
+	private AangenomenFactuur factuur;
+	private final OmschrFactuurHeader header = new OmschrFactuurHeader(
+			new Debiteur("a", "b", "c", "d", "e"), LocalDate.of(1992, 7, 30), "f");
+	@Mock private RekeningVisitor visitor;
 
 	@Override
 	protected AangenomenFactuur makeInstance() {
-		return new AangenomenFactuur(this.getTestFactuurHeader(), this.getTestCurrency(),
-				new ItemList<AangenomenListItem>(), this.getTestBtwPercentage());
+		return (AangenomenFactuur) super.makeInstance();
+	}
+
+	@Override
+	protected AbstractFactuur<AangenomenListItem> makeInstance(FactuurHeader otherHeader,
+			Currency currency, ItemList<AangenomenListItem> itemList) {
+		return new AangenomenFactuur(this.header, currency, itemList);
 	}
 
 	@Override
 	protected AangenomenFactuur makeNotInstance() {
-		BtwPercentage old = this.getTestBtwPercentage();
-		return new AangenomenFactuur(this.getTestFactuurHeader(), this.getTestCurrency(),
-				new ItemList<>(), new BtwPercentage(old.getLoonPercentage() + 1,
-						old.getMateriaalPercentage()));
+		return (AangenomenFactuur) super.makeNotInstance();
+	}
+
+	@Override
+	protected AangenomenFactuur makeNotInstance(FactuurHeader otherHeader,
+			Currency currency, ItemList<AangenomenListItem> itemList) {
+		OmschrFactuurHeader otherHeader2 = new OmschrFactuurHeader(
+				new Debiteur("", "", "", "", ""), LocalDate.of(1992, 7, 30), "");
+		return new AangenomenFactuur(otherHeader2, currency, itemList);
 	}
 
 	@Before
 	@Override
 	public void setUp() {
-		this.header = new OmschrFactuurHeader(new Debiteur("a", "b", "c", "d", "e"),
-				LocalDate.of(1992, 7, 30), "f");
 		super.setUp();
+		this.factuur = this.makeInstance();
 	}
-	
+
 	@Test
 	@Override
 	public void testInitFactuurnummer() {
+		// this test is overriden because we have another factuurheader here
 		assertFalse(this.header.getFactuurnummer().isPresent());
-		
+
 		FactuurnummerManager manager = mock(FactuurnummerManager.class);
 		when(manager.getFactuurnummer()).thenReturn("12014");
-		
-		this.getInstance().initFactuurnummer(manager);
-		
+
+		this.factuur.initFactuurnummer(manager);
+
 		assertEquals(Optional.of("12014"), this.header.getFactuurnummer());
 		verify(manager).getFactuurnummer();
 	}
-	
+
 	@Test
 	@Override
 	public void testSameFactuurnummer() {
+		// this test is overriden because we have another factuurheader here
 		this.header.setFactuurnummer("12013");
 		assertTrue(this.header.getFactuurnummer().isPresent());
-		
+
 		FactuurnummerManager manager = mock(FactuurnummerManager.class);
-		this.getInstance().initFactuurnummer(manager);
-		
+		this.factuur.initFactuurnummer(manager);
+
 		assertEquals(Optional.of("12013"), this.header.getFactuurnummer());
 		verifyZeroInteractions(manager);
 	}
 
 	@Test
 	public void testAccept() throws Exception {
-		this.getInstance().accept(this.getMockedVisitor());
+		this.factuur.accept(this.visitor);
 
-		verify(this.getMockedVisitor()).visit(eq(this.getInstance()));
-	}
-
-	@Test
-	@Override
-	public void testEqualsFalseOtherFactuurHeader() {
-		this.header = new OmschrFactuurHeader(new Debiteur("", "", "", "", ""),
-				LocalDate.now(), "test", "foo");
-		assertFalse(this.getInstance().equals(this.makeInstance()));
+		verify(this.visitor).visit(eq(this.factuur));
 	}
 
 	@Test
 	public void testToString() {
 		String expected = "<AangenomenFactuur[<FactuurHeader[<Debiteur[a, b, c, d, e, "
-				+ "Optional.empty]>, 1992-07-30, Optional.empty, f]>, EUR, [], "
-				+ "<BtwPercentage[50.0, 100.0]>]>";
-		assertEquals(expected, this.getInstance().toString());
+				+ "Optional.empty]>, 1992-07-30, Optional.empty, f]>, EUR, itemList]>";
+		assertEquals(expected, this.factuur.toString());
 	}
 }

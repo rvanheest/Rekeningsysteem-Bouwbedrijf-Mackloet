@@ -7,10 +7,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.rekeningsysteem.data.reparaties.ReparatiesBon;
 import org.rekeningsysteem.data.util.Geld;
-import org.rekeningsysteem.test.data.EqualsHashCodeTest;
 import org.rekeningsysteem.test.data.util.ListItemTest;
 
-public class ReparatiesBonTest extends EqualsHashCodeTest implements ListItemTest {
+public class ReparatiesBonTest extends ListItemTest {
 
 	private ReparatiesBon bon;
 	private final String omschrijving = "omschrijving";
@@ -19,21 +18,21 @@ public class ReparatiesBonTest extends EqualsHashCodeTest implements ListItemTes
 	private final Geld materiaal = new Geld(12);
 
 	@Override
-	protected Object makeInstance() {
+	protected ReparatiesBon makeInstance() {
 		return new ReparatiesBon(this.omschrijving, this.bonnummer, this.loon, this.materiaal);
 	}
 
 	@Override
-	protected Object makeNotInstance() {
+	protected ReparatiesBon makeNotInstance() {
 		return new ReparatiesBon(this.omschrijving + ".", this.bonnummer, this.loon,
 				this.materiaal);
 	}
 
-	@Override
 	@Before
+	@Override
 	public void setUp() {
 		super.setUp();
-		this.bon = new ReparatiesBon(this.omschrijving, this.bonnummer, this.loon, this.materiaal);
+		this.bon = this.makeInstance();
 	}
 
 	@Test
@@ -47,21 +46,13 @@ public class ReparatiesBonTest extends EqualsHashCodeTest implements ListItemTes
 	}
 
 	@Test
-	@Override
 	public void testGetLoon() {
 		assertEquals(this.loon, this.bon.getLoon());
 	}
 
 	@Test
-	@Override
 	public void testGetMateriaal() {
 		assertEquals(this.materiaal, this.bon.getMateriaal());
-	}
-
-	@Test
-	@Override
-	public void testGetTotaal() {
-		assertEquals(new Geld(13), this.bon.getTotaal());
 	}
 
 	@Test

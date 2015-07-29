@@ -8,31 +8,30 @@ import org.junit.Test;
 import org.rekeningsysteem.data.particulier.EsselinkArtikel;
 import org.rekeningsysteem.data.particulier.GebruiktEsselinkArtikel;
 import org.rekeningsysteem.data.util.Geld;
-import org.rekeningsysteem.test.data.EqualsHashCodeTest;
-import org.rekeningsysteem.test.data.util.ListItemTest;
 
-public class GebruiktEsselinkArtikelTest extends EqualsHashCodeTest implements ListItemTest {
+public class GebruiktEsselinkArtikelTest extends ParticulierArtikelTest {
 
 	private GebruiktEsselinkArtikel gebruiktArtikel;
 	private final EsselinkArtikel artikel = new EsselinkArtikel("artikelnummer", "omschrijving", 2,
 			"eenheid", new Geld(1));
 	private final double aantal = 5;
+	private final double btwPercentage = 10;
 
 	@Override
-	protected Object makeInstance() {
-		return new GebruiktEsselinkArtikel(this.artikel, this.aantal);
+	protected GebruiktEsselinkArtikel makeInstance() {
+		return new GebruiktEsselinkArtikel(this.artikel, this.aantal, this.btwPercentage);
 	}
 
 	@Override
-	protected Object makeNotInstance() {
-		return new GebruiktEsselinkArtikel(this.artikel, this.aantal + 1);
+	protected GebruiktEsselinkArtikel makeNotInstance() {
+		return new GebruiktEsselinkArtikel(this.artikel, this.aantal + 1, this.btwPercentage);
 	}
 
-	@Override
 	@Before
+	@Override
 	public void setUp() {
 		super.setUp();
-		this.gebruiktArtikel = new GebruiktEsselinkArtikel(this.artikel, this.aantal);
+		this.gebruiktArtikel = this.makeInstance();
 	}
 
 	@Test
@@ -46,42 +45,40 @@ public class GebruiktEsselinkArtikelTest extends EqualsHashCodeTest implements L
 	}
 
 	@Test
-	@Override
-	public void testGetLoon() {
-		assertEquals(new Geld(0), this.gebruiktArtikel.getLoon());
-	}
-
-	@Test
-	@Override
 	public void testGetMateriaal() {
 		assertEquals(new Geld(2.5), this.gebruiktArtikel.getMateriaal());
 	}
 
 	@Test
-	@Override
-	public void testGetTotaal() {
-		assertEquals(new Geld(2.5), this.gebruiktArtikel.getTotaal());
+	public void testGetMateriaalBtwPercentage() {
+		assertEquals(this.btwPercentage, this.gebruiktArtikel.getMateriaalBtwPercentage(), 0.0);
 	}
-	
+
 	@Test
 	public void testEqualsFalseOtherEsselinkAritkel() {
 		EsselinkArtikel ea = new EsselinkArtikel("", "", 1, "", new Geld(2));
-		GebruiktEsselinkArtikel gea = new GebruiktEsselinkArtikel(ea, this.aantal);
+		GebruiktEsselinkArtikel gea = new GebruiktEsselinkArtikel(ea, this.aantal,
+				this.btwPercentage);
 		assertFalse(this.gebruiktArtikel.equals(gea));
 	}
 
 	@Test
 	public void testEqualsFalseOtherAantal() {
-		double aant = 4;
-		GebruiktEsselinkArtikel gea = new GebruiktEsselinkArtikel(this.artikel, aant);
+		GebruiktEsselinkArtikel gea = new GebruiktEsselinkArtikel(this.artikel, this.aantal + 1,
+				this.btwPercentage);
+		assertFalse(this.gebruiktArtikel.equals(gea));
+	}
+
+	@Test
+	public void testEqualsFalseOtherMateriaalBtwPercentage() {
+		GebruiktEsselinkArtikel gea = new GebruiktEsselinkArtikel(this.artikel, this.aantal,
+				this.btwPercentage + 1);
 		assertFalse(this.gebruiktArtikel.equals(gea));
 	}
 
 	@Test
 	public void testToString() {
-		assertEquals(
-				"<GebruiktEsselinkArtikel[<EsselinkArtikel[artikelnummer, omschrijving, 2, "
-						+ "eenheid, <Geld[1,00]>]>, 5.0]>",
-				this.gebruiktArtikel.toString());
+		assertEquals("<GebruiktEsselinkArtikel[<EsselinkArtikel[artikelnummer, omschrijving, 2, "
+				+ "eenheid, <Geld[1,00]>]>, 5.0, 10.0]>", this.gebruiktArtikel.toString());
 	}
 }

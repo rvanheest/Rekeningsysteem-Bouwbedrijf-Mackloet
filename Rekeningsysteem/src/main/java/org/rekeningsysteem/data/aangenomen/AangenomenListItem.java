@@ -2,22 +2,25 @@ package org.rekeningsysteem.data.aangenomen;
 
 import java.util.Objects;
 
+import org.rekeningsysteem.data.util.BtwListItem;
 import org.rekeningsysteem.data.util.Geld;
-import org.rekeningsysteem.data.util.ListItem;
 import org.rekeningsysteem.data.util.visitor.ListItemVisitor;
 
-public final class AangenomenListItem implements ListItem {
+public final class AangenomenListItem extends BtwListItem {
 
 	private final String omschrijving;
 	private final Geld loon;
+	private final double loonBtwPercentage;
 	private final Geld materiaal;
-	private final Geld totaal;
+	private final double materiaalBtwPercentage;
 
-	public AangenomenListItem(String omschrijving, Geld loon, Geld materiaal) {
+	public AangenomenListItem(String omschrijving, Geld loon, double loonBtwPercentage,
+			Geld materiaal, double materiaalBtwPercentage) {
 		this.omschrijving = omschrijving;
 		this.loon = loon;
+		this.loonBtwPercentage = loonBtwPercentage;
 		this.materiaal = materiaal;
-		this.totaal = this.loon.add(this.materiaal);
+		this.materiaalBtwPercentage = materiaalBtwPercentage;
 	}
 
 	public String getOmschrijving() {
@@ -30,13 +33,18 @@ public final class AangenomenListItem implements ListItem {
 	}
 
 	@Override
+	public double getLoonBtwPercentage() {
+		return this.loonBtwPercentage;
+	}
+
+	@Override
 	public Geld getMateriaal() {
 		return new Geld(this.materiaal);
 	}
 
 	@Override
-	public Geld getTotaal() {
-		return new Geld(this.totaal);
+	public double getMateriaalBtwPercentage() {
+		return this.materiaalBtwPercentage;
 	}
 
 	@Override
@@ -50,20 +58,25 @@ public final class AangenomenListItem implements ListItem {
 			AangenomenListItem that = (AangenomenListItem) other;
 			return Objects.equals(this.omschrijving, that.omschrijving)
 					&& Objects.equals(this.loon, that.loon)
-					&& Objects.equals(this.materiaal, that.materiaal);
+					&& Objects.equals(this.loonBtwPercentage, that.loonBtwPercentage)
+					&& Objects.equals(this.materiaal, that.materiaal)
+					&& Objects.equals(this.materiaalBtwPercentage, that.materiaalBtwPercentage);
 		}
 		return false;
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(this.omschrijving, this.loon, this.materiaal);
+		return Objects.hash(this.omschrijving, this.loon, this.loonBtwPercentage,
+				this.materiaal, this.materiaalBtwPercentage);
 	}
 
 	@Override
 	public String toString() {
 		return "<AangenomenListItem[" + String.valueOf(this.omschrijving) + ", "
 				+ String.valueOf(this.loon) + ", "
-				+ String.valueOf(this.materiaal) + "]>";
+				+ String.valueOf(this.loonBtwPercentage) + ", "
+				+ String.valueOf(this.materiaal) + ", "
+				+ String.valueOf(this.materiaalBtwPercentage) + "]>";
 	}
 }

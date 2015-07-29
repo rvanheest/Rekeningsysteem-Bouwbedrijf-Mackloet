@@ -7,10 +7,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.rekeningsysteem.data.mutaties.MutatiesBon;
 import org.rekeningsysteem.data.util.Geld;
-import org.rekeningsysteem.test.data.EqualsHashCodeTest;
 import org.rekeningsysteem.test.data.util.ListItemTest;
 
-public class MutatiesBonTest extends EqualsHashCodeTest implements ListItemTest {
+public class MutatiesBonTest extends ListItemTest {
 
 	private MutatiesBon bon;
 	private final String omschrijving = "omschrijving";
@@ -18,20 +17,20 @@ public class MutatiesBonTest extends EqualsHashCodeTest implements ListItemTest 
 	private final Geld prijs = new Geld(10);
 
 	@Override
-	protected Object makeInstance() {
+	protected MutatiesBon makeInstance() {
 		return new MutatiesBon(this.omschrijving, this.bonnummer, this.prijs);
 	}
 
 	@Override
-	protected Object makeNotInstance() {
+	protected MutatiesBon makeNotInstance() {
 		return new MutatiesBon(this.omschrijving + ".", this.bonnummer, this.prijs);
 	}
 
-	@Override
 	@Before
+	@Override
 	public void setUp() {
 		super.setUp();
-		this.bon = new MutatiesBon(this.omschrijving, this.bonnummer, this.prijs);
+		this.bon = this.makeInstance();
 	}
 
 	@Test
@@ -45,21 +44,13 @@ public class MutatiesBonTest extends EqualsHashCodeTest implements ListItemTest 
 	}
 
 	@Test
-	@Override
 	public void testGetLoon() {
 		assertEquals(new Geld(0), this.bon.getLoon());
 	}
 
 	@Test
-	@Override
 	public void testGetMateriaal() {
 		assertEquals(this.prijs, this.bon.getMateriaal());
-	}
-
-	@Test
-	@Override
-	public void testGetTotaal() {
-		assertEquals(this.prijs, this.bon.getTotaal());
 	}
 
 	@Test
@@ -76,7 +67,7 @@ public class MutatiesBonTest extends EqualsHashCodeTest implements ListItemTest 
 
 	@Test
 	public void testEqualsFalseOtherPrijs() {
-		MutatiesBon mb = new MutatiesBon(this.omschrijving, this.bonnummer, new Geld(3));
+		MutatiesBon mb = new MutatiesBon(this.omschrijving, this.bonnummer, this.prijs.multiply(2));
 		assertFalse(this.bon.equals(mb));
 	}
 

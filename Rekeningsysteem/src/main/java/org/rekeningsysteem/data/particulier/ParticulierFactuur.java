@@ -4,8 +4,6 @@ import java.util.Currency;
 import java.util.Objects;
 
 import org.rekeningsysteem.data.util.AbstractFactuur;
-import org.rekeningsysteem.data.util.BtwPercentage;
-import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.data.util.ItemList;
 import org.rekeningsysteem.data.util.Totalen;
 import org.rekeningsysteem.data.util.header.OmschrFactuurHeader;
@@ -17,9 +15,8 @@ public class ParticulierFactuur extends AbstractFactuur<ParticulierArtikel> {
 	private final ItemList<AbstractLoon> loonList;
 
 	public ParticulierFactuur(OmschrFactuurHeader header, Currency currency,
-			ItemList<ParticulierArtikel> itemList, ItemList<AbstractLoon> loonList,
-			BtwPercentage btwPercentage) {
-		super(header, currency, itemList, btwPercentage);
+			ItemList<ParticulierArtikel> itemList, ItemList<AbstractLoon> loonList) {
+		super(header, currency, itemList);
 		this.loonList = loonList;
 	}
 
@@ -34,16 +31,7 @@ public class ParticulierFactuur extends AbstractFactuur<ParticulierArtikel> {
 
 	@Override
 	public Totalen getTotalen() {
-		Totalen sub = this.loonList.getTotalen();
-		Geld loonBtw = sub.getLoon()
-				.multiply(this.getBtwPercentage().getLoonPercentage())
-				.divide(100);
-		Geld materiaalBtw = sub.getMateriaal()
-				.multiply(this.getBtwPercentage().getMateriaalPercentage())
-				.divide(100);
-		Totalen loon = sub.withLoonBtw(loonBtw)
-				.withMateriaalBtw(materiaalBtw);
-		return super.getTotalen().plus(loon);
+		return super.getTotalen().plus(this.loonList.getTotalen());
 	}
 
 	@Override
@@ -70,7 +58,6 @@ public class ParticulierFactuur extends AbstractFactuur<ParticulierArtikel> {
 		return "<ParticulierFactuur[" + String.valueOf(this.getFactuurHeader()) + ", "
 				+ String.valueOf(this.getCurrency()) + ", "
 				+ String.valueOf(this.getItemList()) + ", "
-				+ String.valueOf(this.loonList) + ", "
-				+ String.valueOf(this.getBtwPercentage()) + "]>";
+				+ String.valueOf(this.loonList) + "]>";
 	}
 }

@@ -7,31 +7,34 @@ import org.junit.Before;
 import org.junit.Test;
 import org.rekeningsysteem.data.aangenomen.AangenomenListItem;
 import org.rekeningsysteem.data.util.Geld;
-import org.rekeningsysteem.test.data.EqualsHashCodeTest;
-import org.rekeningsysteem.test.data.util.ListItemTest;
+import org.rekeningsysteem.test.data.util.BtwListItemTest;
 
-public class AangenomenListItemTest extends EqualsHashCodeTest implements ListItemTest {
+public class AangenomenListItemTest extends BtwListItemTest {
 
 	private AangenomenListItem item;
 	private final String omschrijving = "omschrijving";
 	private final Geld loon = new Geld(20);
+	private final double loonBtwPercentage = 10;
 	private final Geld materiaal = new Geld(30);
+	private final double materiaalBtwPercentage = 50;
 
 	@Override
-	protected Object makeInstance() {
-		return new AangenomenListItem(this.omschrijving, this.loon, this.materiaal);
+	protected AangenomenListItem makeInstance() {
+		return new AangenomenListItem(this.omschrijving, this.loon, this.loonBtwPercentage,
+				this.materiaal, this.materiaalBtwPercentage);
 	}
 
 	@Override
-	protected Object makeNotInstance() {
-		return new AangenomenListItem(this.omschrijving + ".", this.loon, this.materiaal);
+	protected AangenomenListItem makeNotInstance() {
+		return new AangenomenListItem(this.omschrijving + ".", this.loon, this.loonBtwPercentage,
+				this.materiaal, this.materiaalBtwPercentage);
 	}
 
 	@Override
 	@Before
 	public void setUp() {
 		super.setUp();
-		this.item = new AangenomenListItem(this.omschrijving, this.loon, this.materiaal);
+		this.item = this.makeInstance();
 	}
 
 	@Test
@@ -40,47 +43,63 @@ public class AangenomenListItemTest extends EqualsHashCodeTest implements ListIt
 	}
 
 	@Test
-	@Override
 	public void testGetLoon() {
 		assertEquals(this.loon, this.item.getLoon());
 	}
 
 	@Test
-	@Override
+	public void testGetLoonBtwPercentage() {
+		assertEquals(this.loonBtwPercentage, this.item.getLoonBtwPercentage(), 0.0);
+	}
+
+	@Test
 	public void testGetMateriaal() {
 		assertEquals(this.materiaal, this.item.getMateriaal());
 	}
 
 	@Test
-	@Override
-	public void testGetTotaal() {
-		assertEquals(new Geld(50), this.item.getTotaal());
+	public void testGetMateriaalBtwPercentage() {
+		assertEquals(this.materiaalBtwPercentage, this.item.getMateriaalBtwPercentage(), 0.0);
 	}
 
 	@Test
 	public void testEqualsFalseOtherOmschrijving() {
 		AangenomenListItem ali2 = new AangenomenListItem(this.omschrijving + ".", this.loon,
-				this.materiaal);
+				this.loonBtwPercentage, this.materiaal, this.materiaalBtwPercentage);
 		assertFalse(this.item.equals(ali2));
 	}
 
 	@Test
 	public void testEqualsFalseOtherLoon() {
-		AangenomenListItem ali2 = new AangenomenListItem(this.omschrijving, new Geld(10),
-				this.materiaal);
+		AangenomenListItem ali2 = new AangenomenListItem(this.omschrijving, this.loon.multiply(2),
+				this.loonBtwPercentage, this.materiaal, this.materiaalBtwPercentage);
+		assertFalse(this.item.equals(ali2));
+	}
+
+	@Test
+	public void testEqualsFalseOtherLoonBtwPercentage() {
+		AangenomenListItem ali2 = new AangenomenListItem(this.omschrijving, this.loon,
+				this.loonBtwPercentage + 1.0, this.materiaal, this.materiaalBtwPercentage);
 		assertFalse(this.item.equals(ali2));
 	}
 
 	@Test
 	public void testEqualsFalseOtherMateriaal() {
 		AangenomenListItem ali2 = new AangenomenListItem(this.omschrijving, this.loon,
-				new Geld(10));
+				this.loonBtwPercentage, this.materiaal.multiply(2), this.materiaalBtwPercentage);
+		assertFalse(this.item.equals(ali2));
+	}
+
+	@Test
+	public void testEqualsFalseOtherMateriaalBtwPercentage() {
+		AangenomenListItem ali2 = new AangenomenListItem(this.omschrijving, this.loon,
+				this.loonBtwPercentage, this.materiaal, this.materiaalBtwPercentage + 1.0);
 		assertFalse(this.item.equals(ali2));
 	}
 
 	@Test
 	public void testToString() {
-		assertEquals("<AangenomenListItem[omschrijving, <Geld[20,00]>, <Geld[30,00]>]>",
-				this.item.toString());
+		assertEquals("<AangenomenListItem[omschrijving, <Geld[20,00]>, 10.0, <Geld[30,00]>, "
+				+ "50.0]>", this.item.toString());
 	}
 }

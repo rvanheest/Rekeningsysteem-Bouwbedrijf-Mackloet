@@ -8,15 +8,22 @@ import org.rekeningsysteem.data.util.visitor.ListItemVisitor;
 public final class InstantLoon extends AbstractLoon {
 
 	private final Geld loon;
+	private final double loonBtwPercentage;
 
-	public InstantLoon(String omschrijving, Geld loon) {
+	public InstantLoon(String omschrijving, Geld loon, double loonBtwPercentage) {
 		super(omschrijving);
 		this.loon = loon;
+		this.loonBtwPercentage = loonBtwPercentage;
 	}
 
 	@Override
 	public Geld getLoon() {
 		return new Geld(this.loon);
+	}
+
+	@Override
+	public double getLoonBtwPercentage() {
+		return this.loonBtwPercentage;
 	}
 	
 	@Override
@@ -28,19 +35,21 @@ public final class InstantLoon extends AbstractLoon {
 	public boolean equals(Object other) {
 		if (super.equals(other) && other instanceof InstantLoon) {
 			InstantLoon that = (InstantLoon) other;
-			return Objects.equals(this.loon, that.loon);
+			return Objects.equals(this.loon, that.loon)
+					&& Objects.equals(this.loonBtwPercentage, that.loonBtwPercentage);
 		}
 		return false;
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(super.hashCode(), this.loon);
+		return Objects.hash(super.hashCode(), this.loon, this.loonBtwPercentage);
 	}
 
 	@Override
 	public String toString() {
 		return "<InstantLoon[" + String.valueOf(this.getOmschrijving()) + ", "
-				+ String.valueOf(this.loon) + "]>";
+				+ String.valueOf(this.loon) + ", "
+				+ String.valueOf(this.loonBtwPercentage) + "]>";
 	}
 }

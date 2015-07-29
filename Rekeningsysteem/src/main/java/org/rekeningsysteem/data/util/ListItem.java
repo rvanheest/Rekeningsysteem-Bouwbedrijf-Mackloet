@@ -2,11 +2,13 @@ package org.rekeningsysteem.data.util;
 
 import org.rekeningsysteem.data.util.visitor.ListItemVisitable;
 
-public interface ListItem extends ListItemVisitable {
+public abstract class ListItem implements ListItemVisitable {
 
-	Geld getLoon();
+	public abstract Geld getLoon();
 
-	Geld getMateriaal();
+	public abstract Geld getMateriaal();
 
-	Geld getTotaal();
+	public Geld getTotaal() {
+		return this.getLoon().add(this.getMateriaal());
+	}
 }

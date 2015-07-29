@@ -10,14 +10,11 @@ public abstract class AbstractFactuur<E extends ListItem> extends AbstractRekeni
 
 	private final Currency currency;
 	private final ItemList<E> itemList;
-	private final BtwPercentage btwPercentage;
 
-	public AbstractFactuur(FactuurHeader header, Currency currency, ItemList<E> itemList,
-			BtwPercentage btwPercentage) {
+	public AbstractFactuur(FactuurHeader header, Currency currency, ItemList<E> itemList) {
 		super(header);
 		this.currency = currency;
 		this.itemList = itemList;
-		this.btwPercentage = btwPercentage;
 	}
 
 	public Currency getCurrency() {
@@ -28,21 +25,9 @@ public abstract class AbstractFactuur<E extends ListItem> extends AbstractRekeni
 		return this.itemList;
 	}
 
-	public BtwPercentage getBtwPercentage() {
-		return this.btwPercentage;
-	}
-
 	@Override
 	public Totalen getTotalen() {
-		Totalen sub = this.itemList.getTotalen();
-		Geld loonBtw = sub.getLoon()
-				.multiply(this.btwPercentage.getLoonPercentage())
-				.divide(100);
-		Geld materiaalBtw = sub.getMateriaal()
-				.multiply(this.btwPercentage.getMateriaalPercentage())
-				.divide(100);
-		return sub.withLoonBtw(loonBtw)
-				.withMateriaalBtw(materiaalBtw);
+		return this.itemList.getTotalen();
 	}
 
 	@Override
@@ -50,14 +35,13 @@ public abstract class AbstractFactuur<E extends ListItem> extends AbstractRekeni
 		if (super.equals(other) && other instanceof AbstractFactuur) {
 			AbstractFactuur<?> that = (AbstractFactuur<?>) other;
 			return Objects.equals(this.currency, that.currency)
-					&& Objects.equals(this.itemList, that.itemList)
-					&& Objects.equals(this.btwPercentage, that.btwPercentage);
+					&& Objects.equals(this.itemList, that.itemList);
 		}
 		return false;
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(super.hashCode(), this.currency, this.itemList, this.btwPercentage);
+		return Objects.hash(super.hashCode(), this.currency, this.itemList);
 	}
 }

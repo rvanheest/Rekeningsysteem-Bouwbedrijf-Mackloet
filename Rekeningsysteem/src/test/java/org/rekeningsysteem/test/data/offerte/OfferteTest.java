@@ -6,62 +6,81 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 
+import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
 import org.rekeningsysteem.data.offerte.Offerte;
+import org.rekeningsysteem.data.util.AbstractRekening;
+import org.rekeningsysteem.data.util.header.FactuurHeader;
+import org.rekeningsysteem.data.util.visitor.RekeningVisitor;
 import org.rekeningsysteem.test.data.util.AbstractRekeningTest;
 
 public final class OfferteTest extends AbstractRekeningTest {
 
+	private Offerte offerte;
 	private final String tekst = "Lorem ipsum dolor sit amet.";
+	@Mock private RekeningVisitor visitor;
 
 	@Override
 	protected Offerte makeInstance() {
-		return new Offerte(this.getTestFactuurHeader(), this.tekst, true);
+		return (Offerte) super.makeInstance();
+	}
+
+	@Override
+	protected Offerte makeInstance(FactuurHeader header) {
+		return new Offerte(header, this.tekst, true);
 	}
 
 	@Override
 	protected Offerte makeNotInstance() {
-		return new Offerte(this.getTestFactuurHeader(), this.tekst, false);
+		return (Offerte) super.makeNotInstance();
 	}
 
 	@Override
-	protected Offerte getInstance() {
-		return (Offerte) super.getInstance();
+	protected AbstractRekening makeNotInstance(FactuurHeader otherHeader) {
+		return new Offerte(otherHeader, this.tekst, true);
+	}
+
+	@Before
+	@Override
+	public void setUp() {
+		super.setUp();
+		this.offerte = this.makeInstance();
 	}
 
 	@Test
 	public void testGetTekst() {
-		assertEquals(this.tekst, this.getInstance().getTekst());
+		assertEquals(this.tekst, this.offerte.getTekst());
 	}
 
 	@Test
 	public void testIsOndertekenen() {
-		assertTrue(this.getInstance().isOndertekenen());
+		assertTrue(this.offerte.isOndertekenen());
 	}
 
 	@Test
 	public void testAccept() throws Exception {
-		this.getInstance().accept(this.getMockedVisitor());
+		this.offerte.accept(this.visitor);
 
-		verify(this.getMockedVisitor()).visit(eq(this.getInstance()));
+		verify(this.visitor).visit(eq(this.offerte));
 	}
 
 	@Test
 	public void testEqualsFalseOtherTekst() {
-		Offerte off = new Offerte(this.getTestFactuurHeader(), this.tekst + ".", true);
-		assertFalse(this.getInstance().equals(off));
+		Offerte off = new Offerte(this.offerte.getFactuurHeader(), this.tekst + ".", true);
+		assertFalse(this.offerte.equals(off));
 	}
 
 	@Test
 	public void testEqualsFalseOtherOndertekenen() {
-		Offerte off = new Offerte(this.getTestFactuurHeader(), this.tekst, false);
-		assertFalse(this.getInstance().equals(off));
+		Offerte off = new Offerte(this.offerte.getFactuurHeader(), this.tekst, false);
+		assertFalse(this.offerte.equals(off));
 	}
 
 	@Test
 	public void testToString() {
 		assertEquals("<Offerte[<FactuurHeader[<Debiteur[a, b, c, d, e, Optional.empty]>, "
 				+ "1992-07-30, Optional.empty]>, Lorem ipsum dolor sit amet., true]>",
-				this.getInstance().toString());
+				this.offerte.toString());
 	}
 }

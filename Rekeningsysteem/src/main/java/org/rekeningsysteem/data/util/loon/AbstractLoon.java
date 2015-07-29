@@ -2,10 +2,10 @@ package org.rekeningsysteem.data.util.loon;
 
 import java.util.Objects;
 
+import org.rekeningsysteem.data.util.BtwListItem;
 import org.rekeningsysteem.data.util.Geld;
-import org.rekeningsysteem.data.util.ListItem;
 
-public abstract class AbstractLoon implements ListItem {
+public abstract class AbstractLoon extends BtwListItem {
 
 	private final String omschrijving;
 
@@ -18,16 +18,13 @@ public abstract class AbstractLoon implements ListItem {
 	}
 
 	@Override
-	public abstract Geld getLoon();
-	
-	@Override
 	public Geld getMateriaal() {
 		return new Geld(0);
 	}
 
 	@Override
-	public Geld getTotaal() {
-		return this.getLoon();
+	public double getMateriaalBtwPercentage() {
+		return 0;
 	}
 
 	@Override
