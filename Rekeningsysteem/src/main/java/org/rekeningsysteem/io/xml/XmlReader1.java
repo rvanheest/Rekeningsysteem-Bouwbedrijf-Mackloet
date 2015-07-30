@@ -42,12 +42,18 @@ import org.xml.sax.SAXException;
 import rx.Observable;
 import rx.functions.Func1;
 
-public class OldXmlReader implements FactuurLoader {
+/**
+ * This is the XML reader from the 'old days', where we had 2 types of ParticulierFactuur,
+ * no AangenomenFactuur and another model.
+ * 
+ * This XML reader needs to be in here for backwards compatability.
+ */
+public class XmlReader1 implements FactuurLoader {
 
 	private Currency currency;
 	private DocumentBuilder builder;
 
-	public OldXmlReader() {
+	public XmlReader1() {
 		try {
 			this.builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 		}
@@ -58,7 +64,7 @@ public class OldXmlReader implements FactuurLoader {
 		}
 	}
 
-	public OldXmlReader(DocumentBuilder builder) {
+	public XmlReader1(DocumentBuilder builder) {
 		this.builder = builder;
 	}
 

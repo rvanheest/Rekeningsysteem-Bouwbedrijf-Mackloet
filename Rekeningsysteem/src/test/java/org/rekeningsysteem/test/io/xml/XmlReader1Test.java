@@ -29,17 +29,17 @@ import org.rekeningsysteem.data.util.header.FactuurHeader;
 import org.rekeningsysteem.data.util.header.OmschrFactuurHeader;
 import org.rekeningsysteem.data.util.loon.AbstractLoon;
 import org.rekeningsysteem.data.util.loon.ProductLoon;
-import org.rekeningsysteem.io.xml.OldXmlReader;
+import org.rekeningsysteem.io.xml.XmlReader1;
 
-public class OldXmlReaderTest {
+public class XmlReader1Test {
 
-	private OldXmlReader reader;
+	private XmlReader1 reader;
 	private DocumentBuilder builder;
 
 	@Before
 	public void setUp() throws ParserConfigurationException {
 		this.builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-		this.reader = new OldXmlReader(this.builder);
+		this.reader = new XmlReader1(this.builder);
 	}
 
 	@Test

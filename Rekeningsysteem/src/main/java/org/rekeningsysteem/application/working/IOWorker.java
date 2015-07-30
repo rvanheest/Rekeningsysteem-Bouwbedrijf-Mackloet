@@ -7,7 +7,7 @@ import org.rekeningsysteem.io.FactuurExporter;
 import org.rekeningsysteem.io.FactuurLoader;
 import org.rekeningsysteem.io.FactuurSaver;
 import org.rekeningsysteem.io.pdf.PdfExporter;
-import org.rekeningsysteem.io.xml.OldXmlReader;
+import org.rekeningsysteem.io.xml.XmlReader1;
 import org.rekeningsysteem.io.xml.XmlMaker;
 import org.rekeningsysteem.io.xml.XmlReader;
 
@@ -21,7 +21,7 @@ public class IOWorker {
 	private final FactuurLoader oldLoader;
 
 	public IOWorker() {
-		this(new XmlMaker(), new PdfExporter(), new XmlReader(), new OldXmlReader());
+		this(new XmlMaker(), new PdfExporter(), new XmlReader(), new XmlReader1());
 	}
 
 	public IOWorker(FactuurSaver saver, FactuurExporter exporter, FactuurLoader loader,
