@@ -11,7 +11,7 @@ public class MutatiesFactuurAdapter extends XmlAdapter<MutatiesFactuurAdaptee, M
 	@Override
 	public MutatiesFactuur unmarshal(MutatiesFactuurAdaptee adaptee) {
 		return new MutatiesFactuur(adaptee.getFactuurHeader(), adaptee.getCurrency(),
-				adaptee.getList(), adaptee.getBtwPercentage());
+				adaptee.getList());
 	}
 
 	@Override
@@ -20,7 +20,6 @@ public class MutatiesFactuurAdapter extends XmlAdapter<MutatiesFactuurAdaptee, M
 		adaptee.setFactuurHeader(factuur.getFactuurHeader());
 		adaptee.setCurrency(factuur.getCurrency());
 		adaptee.setList(new ItemList<>(factuur.getItemList()));
-		adaptee.setBtwPercentage(factuur.getBtwPercentage());
 
 		return adaptee;
 	}

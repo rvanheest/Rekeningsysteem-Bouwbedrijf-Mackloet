@@ -9,11 +9,12 @@ import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.io.xml.adapter.util.GeldAdapter;
 
 @XmlRootElement(name = "instant-loon")
-@XmlType(propOrder = { "omschrijving", "loon" })
+@XmlType(propOrder = { "omschrijving", "loon", "loonBtwPercentage" })
 public class InstantLoonAdaptee extends AbstractLoonAdaptee {
 
 	private String omschrijving;
 	private Geld loon;
+	private double loonBtwPercentage;
 
 	@XmlElement
 	public String getOmschrijving() {
@@ -31,5 +32,14 @@ public class InstantLoonAdaptee extends AbstractLoonAdaptee {
 
 	public void setLoon(Geld loon) {
 		this.loon = loon;
+	}
+
+	@XmlElement
+	public double getLoonBtwPercentage() {
+		return this.loonBtwPercentage;
+	}
+
+	public void setLoonBtwPercentage(double loonBtwPercentage) {
+		this.loonBtwPercentage = loonBtwPercentage;
 	}
 }

@@ -74,36 +74,41 @@ public class XmlReader implements FactuurLoader {
 			doc.getDocumentElement().normalize();
 			Node factuur = doc.getElementsByTagName("bestand").item(0);
 			String type = ((Element) factuur).getAttribute("type");
+			String version = ((Element) factuur).getAttribute("version");
 
-			switch (type) {
-				case "AangenomenFactuur": {
-					Unmarshaller unmarshaller = this.map.get(AangenomenFactuurRoot.class);
-					Observable<? extends AbstractRekening> result = this.readXML(unmarshaller, doc).map(Root::getRekening);
-					return result;
-				}
-				case "MutatiesFactuur": {
-					Unmarshaller unmarshaller = this.map.get(MutatiesFactuurRoot.class);
-					Observable<? extends AbstractRekening> result = this.readXML(unmarshaller, doc).map(Root::getRekening);
-					return result;
-				}
-				case "Offerte": {
-					Unmarshaller unmarshaller = this.map.get(OfferteRoot.class);
-					Observable<? extends AbstractRekening> result = this.readXML(unmarshaller, doc).map(Root::getRekening);
-					return result;
-				}
-				case "ParticulierFactuur": {
-					Unmarshaller unmarshaller = this.map.get(ParticulierFactuurRoot.class);
-					Observable<? extends AbstractRekening> result = this.readXML(unmarshaller, doc).map(Root::getRekening);
-					return result;
-				}
-				case "ReparatiesFactuur": {
-					Unmarshaller unmarshaller = this.map.get(ReparatiesFactuurRoot.class);
-					Observable<? extends AbstractRekening> result = this.readXML(unmarshaller, doc).map(Root::getRekening);
-					return result;
-				}
-				default:
-					return Observable.error(new IllegalArgumentException("This typ (" + type
-							+ ") can't be used"));
+			if ("3".equals(version)) {
+    			switch (type) {
+    				case "AangenomenFactuur": {
+    					Unmarshaller unmarshaller = this.map.get(AangenomenFactuurRoot.class);
+    					Observable<? extends AbstractRekening> result = this.readXML(unmarshaller, doc).map(Root::getRekening);
+    					return result;
+    				}
+    				case "MutatiesFactuur": {
+    					Unmarshaller unmarshaller = this.map.get(MutatiesFactuurRoot.class);
+    					Observable<? extends AbstractRekening> result = this.readXML(unmarshaller, doc).map(Root::getRekening);
+    					return result;
+    				}
+    				case "Offerte": {
+    					Unmarshaller unmarshaller = this.map.get(OfferteRoot.class);
+    					Observable<? extends AbstractRekening> result = this.readXML(unmarshaller, doc).map(Root::getRekening);
+    					return result;
+    				}
+    				case "ParticulierFactuur": {
+    					Unmarshaller unmarshaller = this.map.get(ParticulierFactuurRoot.class);
+    					Observable<? extends AbstractRekening> result = this.readXML(unmarshaller, doc).map(Root::getRekening);
+    					return result;
+    				}
+    				case "ReparatiesFactuur": {
+    					Unmarshaller unmarshaller = this.map.get(ReparatiesFactuurRoot.class);
+    					Observable<? extends AbstractRekening> result = this.readXML(unmarshaller, doc).map(Root::getRekening);
+    					return result;
+    				}
+    				default:
+    					return Observable.error(new IllegalArgumentException("This type (" + type + ") can't be used"));
+    			}
+			}
+			else {
+				return Observable.error(new IllegalArgumentException("The version (" + version + ") is not supported by this parser"));
 			}
 		}
 		catch (SAXException | IOException e) {

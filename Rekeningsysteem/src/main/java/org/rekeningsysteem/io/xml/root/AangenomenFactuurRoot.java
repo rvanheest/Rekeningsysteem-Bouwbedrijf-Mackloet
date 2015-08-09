@@ -19,6 +19,12 @@ public class AangenomenFactuurRoot implements Root<AangenomenFactuur> {
 	}
 
 	@Override
+	@XmlAttribute
+	public String getVersion() {
+		return "3";
+	}
+
+	@Override
 	@XmlJavaTypeAdapter(AangenomenFactuurAdapter.class)
 	public AangenomenFactuur getRekening() {
 		return this.factuur;

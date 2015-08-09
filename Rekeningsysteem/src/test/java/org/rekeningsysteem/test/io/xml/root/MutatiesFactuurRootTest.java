@@ -9,7 +9,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.rekeningsysteem.data.mutaties.MutatiesBon;
 import org.rekeningsysteem.data.mutaties.MutatiesFactuur;
-import org.rekeningsysteem.data.util.BtwPercentage;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.data.util.ItemList;
 import org.rekeningsysteem.data.util.header.Debiteur;
@@ -24,7 +23,7 @@ public class MutatiesFactuurRootTest {
 	public void setUp() {
 		this.root = new MutatiesFactuurRoot();
 	}
-	
+
 	@Test
 	public void testGetType() {
 		assertEquals("MutatiesFactuur", this.root.getType());
@@ -36,8 +35,7 @@ public class MutatiesFactuurRootTest {
 		itemList.add(new MutatiesBon("omschr", "nr", new Geld(1)));
 
 		MutatiesFactuur expected = new MutatiesFactuur(new FactuurHeader(new Debiteur("a", "b",
-				"c", "d", "e", "f"), LocalDate.now(), "g"), Currency.getInstance("EUR"), itemList,
-				new BtwPercentage(6, 21));
+				"c", "d", "e", "f"), LocalDate.now(), "g"), Currency.getInstance("EUR"), itemList);
 		this.root.setRekening(expected);
 
 		assertEquals(expected, this.root.getRekening());

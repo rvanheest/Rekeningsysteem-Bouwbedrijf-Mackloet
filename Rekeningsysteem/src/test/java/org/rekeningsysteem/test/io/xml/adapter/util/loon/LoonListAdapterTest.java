@@ -22,7 +22,7 @@ public class LoonListAdapterTest {
 	@Test
 	public void testMarshalUnMarshal() {
 		ItemList<AbstractLoon> expected = new ItemList<>();
-		expected.add(new InstantLoon("omschr", new Geld(1.0)));
+		expected.add(new InstantLoon("omschr", new Geld(1.0), 6));
 		assertEquals(expected, this.adapter.unmarshal(this.adapter.marshal(expected)));
 	}
 }

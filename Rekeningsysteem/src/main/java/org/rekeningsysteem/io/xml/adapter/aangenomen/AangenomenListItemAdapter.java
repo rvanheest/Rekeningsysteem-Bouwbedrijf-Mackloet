@@ -11,7 +11,8 @@ public class AangenomenListItemAdapter extends
 	@Override
 	public AangenomenListItem unmarshal(AangenomenListItemAdaptee adaptee) {
 		return new AangenomenListItem(adaptee.getOmschrijving(), adaptee.getLoon(),
-				adaptee.getMateriaal());
+				adaptee.getLoonBtwPercentage(), adaptee.getMateriaal(),
+				adaptee.getMateriaalBtwPercentage());
 	}
 
 	@Override
@@ -19,7 +20,9 @@ public class AangenomenListItemAdapter extends
 		AangenomenListItemAdaptee adaptee = new AangenomenListItemAdaptee();
 		adaptee.setOmschrijving(item.getOmschrijving());
 		adaptee.setLoon(item.getLoon());
+		adaptee.setLoonBtwPercentage(item.getLoonBtwPercentage());
 		adaptee.setMateriaal(item.getMateriaal());
+		adaptee.setMateriaalBtwPercentage(item.getMateriaalBtwPercentage());
 		return adaptee;
 	}
 }

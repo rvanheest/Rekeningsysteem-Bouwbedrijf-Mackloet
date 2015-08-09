@@ -44,7 +44,7 @@ public class XmlReader1Test {
 
 	@Test
 	public void testLoadParticulierFactuur1() {
-		File file = new File("src\\test\\resources\\OldXml\\ParticulierFactuur1.xml");
+		File file = new File("src\\test\\resources\\xml\\xml1\\ParticulierFactuur1.xml");
 
 		OmschrFactuurHeader factuurHeader = new OmschrFactuurHeader(new Debiteur(
 				"testnaam", "teststraat", "testnummer", "testpostcode", "testplaats"),
@@ -70,7 +70,7 @@ public class XmlReader1Test {
 
 	@Test
 	public void testLoadParticulierFactuur2() {
-		File file = new File("src\\test\\resources\\OldXml\\ParticulierFactuur2.xml");
+		File file = new File("src\\test\\resources\\xml\\xml1\\ParticulierFactuur2.xml");
 
 		OmschrFactuurHeader factuurHeader = new OmschrFactuurHeader(new Debiteur(
 				"testnaam", "teststraat", "testnummer", "testpostcode", "testplaats"),
@@ -94,7 +94,7 @@ public class XmlReader1Test {
 
 	@Test
 	public void testLoadParticulierFactuur() {
-		File file = new File("src\\test\\resources\\OldXml\\PartFactuur.xml");
+		File file = new File("src\\test\\resources\\xml\\xml1\\PartFactuur.xml");
 
 		OmschrFactuurHeader factuurHeader = new OmschrFactuurHeader(new Debiteur(
 				"testnaam", "teststraat", "testnummer", "testpostcode", "testplaats"),
@@ -117,7 +117,7 @@ public class XmlReader1Test {
 
 	@Test
 	public void testLoadMutatiesFactuur() {
-		File file = new File("src\\test\\resources\\OldXml\\MutatiesFactuur.xml");
+		File file = new File("src\\test\\resources\\xml\\xml1\\MutatiesFactuur.xml");
 
 		FactuurHeader factuurHeader = new FactuurHeader(new Debiteur("testnaam",
 				"teststraat", "testnummer", "testpostcode", "testplaats", "testbtwnr"),
@@ -134,7 +134,7 @@ public class XmlReader1Test {
 
 	@Test
 	public void testLoadReparatiesFactuur() {
-		File file = new File("src\\test\\resources\\OldXml\\ReparatiesFactuur.xml");
+		File file = new File("src\\test\\resources\\xml\\xml1\\ReparatiesFactuur.xml");
 
 		FactuurHeader factuurHeader = new FactuurHeader(new Debiteur("testnaam",
 				"teststraat", "testnummer", "testpostcode", "testplaats", "testbtwnr"),
@@ -151,7 +151,7 @@ public class XmlReader1Test {
 
 	@Test
 	public void testLoadOfferte() {
-		File file = new File("src\\test\\resources\\OldXml\\Offerte.xml");
+		File file = new File("src\\test\\resources\\xml\\xml1\\Offerte.xml");
 
 		FactuurHeader factuurHeader = new FactuurHeader(new Debiteur(
 				"testnaam", "teststraat", "testnummer", "testpostcode", "testplaats"),

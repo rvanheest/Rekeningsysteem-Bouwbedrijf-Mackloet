@@ -106,6 +106,9 @@ public class XmlReader1 implements FactuurLoader {
 	}
 
 	private Observable<String> getNodeValue(Node node, String s) {
+		if (node == null) {
+			return Observable.error(new IllegalArgumentException("node is null"));
+		}
 		return this.getNodeValue(((Element) node).getElementsByTagName(s));
 	}
 
@@ -118,7 +121,7 @@ public class XmlReader1 implements FactuurLoader {
 		n = n.getChildNodes().item(0);
 
 		if (n == null) {
-			return Observable.empty();
+			return Observable.just("");
 		}
 		return Observable.just(n.getNodeValue());
 	}
@@ -173,13 +176,9 @@ public class XmlReader1 implements FactuurLoader {
 		Observable<String> plaats = this.getNodeValue(node, "plaats");
 		Observable<String> btwnr = this.getNodeValue(node, "btwnr");
 
-		Observable<Boolean> empty = btwnr.isEmpty();
-
-		return empty.filter(b -> b)
-				.flatMap(b -> b ? Observable.zip(naam, straat, nummer, postcode, plaats,
-						Debiteur::new)
-						: Observable.zip(naam, straat, nummer, postcode, plaats, btwnr,
-								Debiteur::new));
+		return btwnr.isEmpty().flatMap(b -> b
+				? Observable.zip(naam, straat, nummer, postcode, plaats, Debiteur::new)
+				: Observable.zip(naam, straat, nummer, postcode, plaats, btwnr, Debiteur::new));
 	}
 
 	private Observable<OmschrFactuurHeader> makeFactuurHeader(Node node) {

@@ -19,6 +19,12 @@ public class OfferteRoot implements Root<Offerte> {
 	}
 
 	@Override
+	@XmlAttribute
+	public String getVersion() {
+		return "3";
+	}
+
+	@Override
 	@XmlJavaTypeAdapter(OfferteAdapter.class)
 	public Offerte getRekening() {
 		return this.offerte;

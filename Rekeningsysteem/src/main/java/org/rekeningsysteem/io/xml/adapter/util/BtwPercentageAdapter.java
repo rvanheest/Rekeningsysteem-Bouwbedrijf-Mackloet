@@ -5,6 +5,7 @@ import javax.xml.bind.annotation.adapters.XmlAdapter;
 import org.rekeningsysteem.data.util.BtwPercentage;
 import org.rekeningsysteem.io.xml.adaptee.util.BtwPercentageAdaptee;
 
+@Deprecated
 public class BtwPercentageAdapter extends XmlAdapter<BtwPercentageAdaptee, BtwPercentage> {
 
 	@Override

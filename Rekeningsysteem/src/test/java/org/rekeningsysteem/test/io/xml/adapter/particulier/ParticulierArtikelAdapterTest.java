@@ -21,14 +21,14 @@ public class ParticulierArtikelAdapterTest {
 
 	@Test
 	public void testMarshalUnmarshalAnderArtikel() {
-		AnderArtikel expected = new AnderArtikel("omschr", new Geld(1));
+		AnderArtikel expected = new AnderArtikel("omschr", new Geld(1), 6);
 		assertEquals(expected, this.adapter.unmarshal(this.adapter.marshal(expected)));
 	}
 
 	@Test
 	public void testMarshalUnmarshalGebruiktEsselinkArtikel() {
 		GebruiktEsselinkArtikel expected = new GebruiktEsselinkArtikel(new EsselinkArtikel("nr",
-				"omschr", 1, "eenheid", new Geld(2)), 12.3);
+				"omschr", 1, "eenheid", new Geld(2)), 12.3, 6);
 		assertEquals(expected, this.adapter.unmarshal(this.adapter.marshal(expected)));
 	}
 }

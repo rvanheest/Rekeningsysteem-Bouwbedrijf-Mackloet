@@ -23,11 +23,13 @@ public class LoonAdapter extends XmlAdapter<AbstractLoonAdaptee, AbstractLoon> {
 	}
 
 	private InstantLoon unmarshall(InstantLoonAdaptee adaptee) {
-		return new InstantLoon(adaptee.getOmschrijving(), adaptee.getLoon());
+		return new InstantLoon(adaptee.getOmschrijving(), adaptee.getLoon(),
+				adaptee.getLoonBtwPercentage());
 	}
 
 	private ProductLoon unmarshall(ProductLoonAdaptee adaptee) {
-		return new ProductLoon(adaptee.getOmschrijving(), adaptee.getUren(), adaptee.getUurloon());
+		return new ProductLoon(adaptee.getOmschrijving(), adaptee.getUren(), adaptee.getUurloon(),
+				adaptee.getLoonBtwPercentage());
 	}
 
 	@Override
@@ -45,6 +47,8 @@ public class LoonAdapter extends XmlAdapter<AbstractLoonAdaptee, AbstractLoon> {
 		InstantLoonAdaptee adaptee = new InstantLoonAdaptee();
 		adaptee.setOmschrijving(loon.getOmschrijving());
 		adaptee.setLoon(loon.getLoon());
+		adaptee.setLoonBtwPercentage(loon.getLoonBtwPercentage());
+
 		return adaptee;
 	}
 
@@ -53,6 +57,7 @@ public class LoonAdapter extends XmlAdapter<AbstractLoonAdaptee, AbstractLoon> {
 		adaptee.setOmschrijving(loon.getOmschrijving());
 		adaptee.setUren(loon.getUren());
 		adaptee.setUurloon(loon.getUurloon());
+		adaptee.setLoonBtwPercentage(loon.getLoonBtwPercentage());
 		return adaptee;
 	}
 }

@@ -12,7 +12,6 @@ import org.rekeningsysteem.data.particulier.EsselinkArtikel;
 import org.rekeningsysteem.data.particulier.GebruiktEsselinkArtikel;
 import org.rekeningsysteem.data.particulier.ParticulierArtikel;
 import org.rekeningsysteem.data.particulier.ParticulierFactuur;
-import org.rekeningsysteem.data.util.BtwPercentage;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.data.util.ItemList;
 import org.rekeningsysteem.data.util.header.Debiteur;
@@ -34,15 +33,15 @@ public class ParticulierFactuurAdapterTest {
 	public void testUnmarshalMarshal() {
 		ItemList<ParticulierArtikel> itemList = new ItemList<>();
 		itemList.add(new GebruiktEsselinkArtikel(new EsselinkArtikel("nr", "omschr", 1, "eenheid",
-				new Geld(2)), 12.3));
-		itemList.add(new AnderArtikel("omschr", new Geld(1)));
+				new Geld(2)), 12.3, 21));
+		itemList.add(new AnderArtikel("omschr", new Geld(1), 21));
 
 		ItemList<AbstractLoon> loonList = new ItemList<>();
-		loonList.add(new ProductLoon("productLoon", 12, new Geld(1)));
+		loonList.add(new ProductLoon("productLoon", 12, new Geld(1), 6));
 
 		ParticulierFactuur expected = new ParticulierFactuur(new OmschrFactuurHeader(
-				new Debiteur("a", "b", "c", "d", "e", "f"), LocalDate.now(), "g", "h"), Currency.getInstance("EUR"),
-				itemList, loonList, new BtwPercentage(6, 21));
+				new Debiteur("a", "b", "c", "d", "e", "f"), LocalDate.now(), "g", "h"),
+				Currency.getInstance("EUR"), itemList, loonList);
 
 		assertEquals(expected, this.adapter.unmarshal(this.adapter.marshal(expected)));
 	}

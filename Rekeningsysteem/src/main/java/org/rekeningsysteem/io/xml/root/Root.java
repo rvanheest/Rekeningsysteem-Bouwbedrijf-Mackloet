@@ -9,6 +9,9 @@ public interface Root<T extends AbstractRekening> {
 	@XmlAttribute
 	String getType();
 
+	@XmlAttribute
+	String getVersion();
+
 	T getRekening();
 
 	void setRekening(T rekening);

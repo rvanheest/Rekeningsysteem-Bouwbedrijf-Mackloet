@@ -22,7 +22,7 @@ public class ParticulierItemListAdapterTest {
 	@Test
 	public void testMarshalUnmarshal() {
 		ItemList<ParticulierArtikel> expected = new ItemList<>();
-		expected.add(new AnderArtikel("omschr", new Geld(1.0)));
+		expected.add(new AnderArtikel("omschr", new Geld(1.0), 21));
 		assertEquals(expected, this.adapter.unmarshal(this.adapter.marshal(expected)));
 	}
 }

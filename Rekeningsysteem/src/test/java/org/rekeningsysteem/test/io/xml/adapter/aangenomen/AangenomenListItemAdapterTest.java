@@ -19,7 +19,8 @@ public class AangenomenListItemAdapterTest {
 
 	@Test
 	public void testMarshalUnmarshal() {
-		AangenomenListItem expected = new AangenomenListItem("omschr", new Geld(12.3), new Geld(49));
+		AangenomenListItem expected = new AangenomenListItem("omschr", new Geld(12.3), 6,
+				new Geld(49), 21);
 		assertEquals(expected, this.adapter.unmarshal(this.adapter.marshal(expected)));
 	}
 }

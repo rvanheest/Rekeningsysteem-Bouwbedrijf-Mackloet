@@ -3,6 +3,7 @@ package org.rekeningsysteem.io.xml.adaptee.util;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
+@Deprecated
 @XmlType(propOrder = { "loonPercentage", "materiaalPercentage" })
 public class BtwPercentageAdaptee {
 

@@ -6,7 +6,6 @@ import java.util.Currency;
 
 import org.rekeningsysteem.data.reparaties.ReparatiesBon;
 import org.rekeningsysteem.data.reparaties.ReparatiesFactuur;
-import org.rekeningsysteem.data.util.BtwPercentage;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.data.util.ItemList;
 import org.rekeningsysteem.data.util.header.Debiteur;
@@ -48,11 +47,10 @@ public class ReparatiesFactuurIntegrationTest extends AbstractRekeningIntegratio
 		String factuurnummer = "232011";
 		FactuurHeader header = new FactuurHeader(debiteur, datum, factuurnummer);
 
-		BtwPercentage btwPercentage = new BtwPercentage(0, 0);
 		ItemList<ReparatiesBon> itemList = new ItemList<>();
 		this.addBonnen(itemList);
 
-		return new ReparatiesFactuur(header, Currency.getInstance("EUR"), itemList, btwPercentage);
+		return new ReparatiesFactuur(header, Currency.getInstance("EUR"), itemList);
 	}
 
 	@Override

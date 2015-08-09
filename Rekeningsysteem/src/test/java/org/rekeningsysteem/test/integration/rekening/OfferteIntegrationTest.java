@@ -20,13 +20,13 @@ public class OfferteIntegrationTest extends AbstractRekeningIntegrationTest {
 				+ "Nunc fringilla quam venenatis lacus condimentum, vitae mattis risus "
 				+ "ullamcorper. Maecenas pulvinar gravida libero, ac scelerisque justo "
 				+ "dignissim in.\n\n"
-				
+
 				+ "Maecenas pretium mi id magna convallis, vel auctor erat pulvinar. Cras et "
 				+ "tellus nec lacus pellentesque rutrum eget sodales nisi. In vitae sagittis "
 				+ "urna. Sed vestibulum suscipit vulputate. Vivamus commodo augue at dolor "
 				+ "volutpat blandit. Nunc in justo bibendum, cursus purus quis, scelerisque est. "
 				+ "Aenean ut accumsan arcu.\n\n"
-				
+
 				+ "Cras volutpat auctor mollis. Sed aliquam elit et accumsan dictum. Pellentesque "
 				+ "sollicitudin, turpis sollicitudin tincidunt porttitor, velit quam mollis sem, "
 				+ "non volutpat nunc arcu quis magna. Fusce vitae mattis nisl. Nulla sit amet "

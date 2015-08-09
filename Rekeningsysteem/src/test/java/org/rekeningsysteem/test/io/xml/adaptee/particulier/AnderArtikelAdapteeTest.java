@@ -30,4 +30,10 @@ public class AnderArtikelAdapteeTest extends ParticulierArtikelAdapteeTest {
 		this.getInstance().setPrijs(prijs);
 		assertEquals(prijs, this.getInstance().getPrijs());
 	}
+
+	@Test
+	public void testSetGetMateriaalBtwPercentage() {
+		this.getInstance().setMateriaalBtwPercentage(0.8);
+		assertEquals(0.8, this.getInstance().getMateriaalBtwPercentage(), 0.0);
+	}
 }

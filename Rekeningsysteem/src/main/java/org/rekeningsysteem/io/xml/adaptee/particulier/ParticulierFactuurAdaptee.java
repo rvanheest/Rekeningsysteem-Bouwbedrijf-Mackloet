@@ -6,24 +6,21 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.rekeningsysteem.data.particulier.ParticulierArtikel;
-import org.rekeningsysteem.data.util.BtwPercentage;
 import org.rekeningsysteem.data.util.ItemList;
 import org.rekeningsysteem.data.util.header.OmschrFactuurHeader;
 import org.rekeningsysteem.data.util.loon.AbstractLoon;
 import org.rekeningsysteem.io.xml.adapter.particulier.ParticulierItemListAdapter;
-import org.rekeningsysteem.io.xml.adapter.util.BtwPercentageAdapter;
 import org.rekeningsysteem.io.xml.adapter.util.CurrencyAdapter;
 import org.rekeningsysteem.io.xml.adapter.util.header.OmschrFactuurHeaderAdapter;
 import org.rekeningsysteem.io.xml.adapter.util.loon.LoonListAdapter;
 
-@XmlType(propOrder = { "factuurHeader", "currency", "itemList", "loonList", "btwPercentage" })
+@XmlType(propOrder = { "factuurHeader", "currency", "itemList", "loonList" })
 public class ParticulierFactuurAdaptee {
 
 	private OmschrFactuurHeader factuurHeader;
 	private Currency currency;
 	private ItemList<ParticulierArtikel> itemList = new ItemList<>();
 	private ItemList<AbstractLoon> loonList = new ItemList<>();
-	private BtwPercentage btwPercentage;
 
 	@XmlJavaTypeAdapter(OmschrFactuurHeaderAdapter.class)
 	public OmschrFactuurHeader getFactuurHeader() {
@@ -59,14 +56,5 @@ public class ParticulierFactuurAdaptee {
 
 	public void setLoonList(ItemList<AbstractLoon> loonList) {
 		this.loonList = loonList;
-	}
-
-	@XmlJavaTypeAdapter(BtwPercentageAdapter.class)
-	public BtwPercentage getBtwPercentage() {
-		return this.btwPercentage;
-	}
-
-	public void setBtwPercentage(BtwPercentage btwPercentage) {
-		this.btwPercentage = btwPercentage;
 	}
 }
