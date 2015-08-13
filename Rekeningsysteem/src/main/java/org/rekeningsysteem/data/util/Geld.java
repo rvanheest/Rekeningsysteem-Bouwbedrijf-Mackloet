@@ -64,6 +64,10 @@ public final class Geld {
 		return format.format(this.bedrag);
 	}
 
+	public boolean isZero() {
+		return Double.compare(this.bedrag, 0.0) == 0;
+	}
+
 	public Geld add(Geld geld) {
 		return new Geld(this.bedrag + geld.bedrag);
 	}
