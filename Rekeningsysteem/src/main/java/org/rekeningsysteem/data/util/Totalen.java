@@ -59,13 +59,12 @@ public final class Totalen {
 	}
 
 	public Totalen plus(Totalen t2) {
-		Totalen result = this.addLoon(t2.loon)
-				.addMateriaal(t2.materiaal);
-		return t2.btwPerPercentage.entrySet()
-				.stream() // this can't be a .parallelStream(), since we're doing recursion here!
-				.reduce(result,
-						(totalen, entry) -> totalen.addBtw(entry.getKey(), entry.getValue()),
-						Totalen::plus);
+		Geld loon = this.loon.add(t2.loon);
+		Geld materiaal = this.materiaal.add(t2.materiaal);
+		Map<Double, Geld> btw = new HashMap<>(this.btwPerPercentage);
+		t2.btwPerPercentage.forEach((percentage, bedrag) -> btw.merge(percentage, bedrag, Geld::add));
+		
+		return new Totalen(loon, materiaal, btw);
 	}
 
 	@Override
