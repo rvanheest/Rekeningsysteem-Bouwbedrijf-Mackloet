@@ -6,7 +6,7 @@ import org.rekeningsysteem.data.util.BtwListItem;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.data.util.visitor.ListItemVisitor;
 
-public final class AangenomenListItem extends BtwListItem {
+public final class AangenomenListItem implements BtwListItem {
 
 	private final String omschrijving;
 	private final Geld loon;

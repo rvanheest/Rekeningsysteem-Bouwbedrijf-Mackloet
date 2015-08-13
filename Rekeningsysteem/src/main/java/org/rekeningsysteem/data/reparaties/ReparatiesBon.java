@@ -6,7 +6,7 @@ import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.data.util.ListItem;
 import org.rekeningsysteem.data.util.visitor.ListItemVisitor;
 
-public class ReparatiesBon extends ListItem {
+public class ReparatiesBon implements ListItem {
 
 	private final String omschrijving;
 	private final String bonnummer;
@@ -32,17 +32,16 @@ public class ReparatiesBon extends ListItem {
 
 	@Override
 	public Geld getLoon() {
-		return new Geld(this.loon);
+		return this.loon;
 	}
 
 	@Override
 	public Geld getMateriaal() {
-		return new Geld(this.materiaal);
+		return this.materiaal;
 	}
 
-	@Override
 	public Geld getTotaal() {
-		return new Geld(this.totaal);
+		return this.totaal;
 	}
 
 	@Override

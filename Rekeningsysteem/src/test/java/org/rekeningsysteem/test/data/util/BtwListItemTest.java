@@ -38,16 +38,4 @@ public abstract class BtwListItemTest extends ListItemTest {
 		Geld expected = new Geld(materiaal.getBedrag() * percentage / 100);
 		assertEquals(expected, this.item.getMateriaalBtw());
 	}
-
-	@Test
-	@Override
-	public void testGetTotaal() {
-		double loon = this.item.getLoon().getBedrag();
-		double loonBtw = this.item.getLoonBtw().getBedrag();
-		double materiaal = this.item.getMateriaal().getBedrag();
-		double materiaalBtw = this.item.getMateriaalBtw().getBedrag();
-
-		Geld expected = new Geld(loon + loonBtw + materiaal + materiaalBtw);
-		assertEquals(expected, this.item.getTotaal());
-	}
 }

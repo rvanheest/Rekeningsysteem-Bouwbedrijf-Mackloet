@@ -26,7 +26,6 @@ public class ItemListTest extends EqualsHashCodeTest {
 	protected ItemList<ListItem> makeInstance() {
 		when(this.item.getLoon()).thenReturn(new Geld(1));
 		when(this.item.getMateriaal()).thenReturn(new Geld(2));
-		when(this.item.getTotaal()).thenReturn(new Geld(3));
 
 		when(this.btwItem.getLoon()).thenReturn(new Geld(4));
 		when(this.btwItem.getLoonBtwPercentage()).thenReturn(50.0);
@@ -34,7 +33,6 @@ public class ItemListTest extends EqualsHashCodeTest {
 		when(this.btwItem.getMateriaal()).thenReturn(new Geld(5));
 		when(this.btwItem.getMateriaalBtwPercentage()).thenReturn(100.0);
 		when(this.btwItem.getMateriaalBtw()).thenReturn(new Geld(5));
-		when(this.btwItem.getTotaal()).thenReturn(new Geld(16));
 
 		ItemList<ListItem> l = new ItemList<>();
 		l.add(this.item);
@@ -46,7 +44,6 @@ public class ItemListTest extends EqualsHashCodeTest {
 	protected ItemList<ListItem> makeNotInstance() {
 		when(this.item.getLoon()).thenReturn(new Geld(1.00));
 		when(this.item.getMateriaal()).thenReturn(new Geld(2.00));
-		when(this.item.getTotaal()).thenReturn(new Geld(3.00));
 
 		ItemList<ListItem> l = new ItemList<>();
 		l.add(this.item);
