@@ -13,64 +13,76 @@ import org.rekeningsysteem.data.util.loon.InstantLoon;
 import org.rekeningsysteem.data.util.loon.ProductLoon;
 import org.rekeningsysteem.data.util.visitor.ListItemVisitor;
 
-public class PdfListItemVisitor implements ListItemVisitor<List<String>> {
+public class PdfListItemVisitor implements ListItemVisitor<List<List<String>>> {
 
 	@Override
-	public List<String> visit(AangenomenListItem item) {
-		return Arrays.asList(item.getOmschrijving(), 
-				item.getLoon().formattedString(),
-				item.getMateriaal().formattedString(),
-				item.getTotaal().formattedString());
+	public List<List<String>> visit(AangenomenListItem item) {
+		return Arrays.asList(
+				Arrays.asList(
+						item.getOmschrijving() + " (arbeid)",
+						item.getLoon().formattedString(),
+						String.valueOf(item.getLoonBtwPercentage())),
+				Arrays.asList(
+						item.getOmschrijving() + " (materiaal)",
+						item.getMateriaal().formattedString(),
+						String.valueOf(item.getMateriaalBtwPercentage())));
 	}
 
 	@Override
-	public List<String> visit(MutatiesBon item) {
-		return Arrays.asList(item.getOmschrijving(),
-				item.getBonnummer(),
-				item.getTotaal().formattedString());
+	public List<List<String>> visit(MutatiesBon item) {
+		return Arrays.asList(
+				Arrays.asList(
+						item.getOmschrijving(),
+						item.getBonnummer(),
+						item.getTotaal().formattedString()));
 	}
 
 	@Override
-	public List<String> visit(GebruiktEsselinkArtikel item) {
-		EsselinkArtikel subItem = item.getArtikel();
-		return Arrays.asList(subItem.getArtikelNummer(),
-				subItem.getOmschrijving(),
-				"" + item.getAantal(),
-				subItem.getEenheid(),
-				item.getTotaal().formattedString());
+	public List<List<String>> visit(GebruiktEsselinkArtikel item) {
+		EsselinkArtikel artikel = item.getArtikel();
+		return Arrays.asList(
+				Arrays.asList(
+						item.getAantal() + " " + artikel.getEenheid() + " "
+								+ artikel.getOmschrijving(),
+						item.getMateriaal().formattedString(),
+						String.valueOf(item.getMateriaalBtwPercentage())));
 	}
 
 	@Override
-	public List<String> visit(AnderArtikel item) {
-		return Arrays.asList("",
-				item.getOmschrijving(),
-				"",
-				"",
-				item.getTotaal().formattedString());
+	public List<List<String>> visit(AnderArtikel item) {
+		return Arrays.asList(
+				Arrays.asList(
+						item.getOmschrijving(),
+						item.getMateriaal().formattedString(),
+						String.valueOf(item.getMateriaalBtwPercentage())));
 	}
 
 	@Override
-	public List<String> visit(ReparatiesBon item) {
-		return Arrays.asList(item.getOmschrijving(),
-				item.getBonnummer(),
-				item.getLoon().formattedString(),
-				item.getMateriaal().formattedString(),
-				item.getTotaal().formattedString());
+	public List<List<String>> visit(ReparatiesBon item) {
+		return Arrays.asList(
+				Arrays.asList(
+						item.getOmschrijving(),
+						item.getBonnummer(),
+						item.getLoon().formattedString(),
+						item.getMateriaal().formattedString(),
+						item.getTotaal().formattedString()));
 	}
 
 	@Override
-	public List<String> visit(InstantLoon item) {
-		return Arrays.asList(item.getOmschrijving(),
-				"",
-				"",
-				item.getLoon().formattedString());
+	public List<List<String>> visit(InstantLoon item) {
+		return Arrays.asList(
+				Arrays.asList(
+						item.getOmschrijving(),
+						item.getLoon().formattedString(),
+						String.valueOf(item.getLoonBtwPercentage())));
 	}
 
 	@Override
-	public List<String> visit(ProductLoon item) {
-		return Arrays.asList(item.getOmschrijving(),
-				"" + item.getUren(),
-				"uren",
-				item.getLoon().formattedString());
+	public List<List<String>> visit(ProductLoon item) {
+		return Arrays.asList(
+				Arrays.asList(
+						item.getUren() + " uren à " + item.getUurloon().formattedString(),
+						item.getLoon().formattedString(),
+						String.valueOf(item.getLoonBtwPercentage())));
 	}
 }

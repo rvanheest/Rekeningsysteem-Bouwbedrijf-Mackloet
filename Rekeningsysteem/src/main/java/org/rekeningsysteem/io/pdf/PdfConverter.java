@@ -73,18 +73,17 @@ public class PdfConverter extends JLRConverter {
 		super.replace(key, this.prepare(value));
 	}
 
-	@SuppressWarnings("unchecked")
 	public Object prepare(Object value) {
 		if (value instanceof String) {
-			return this.prepare((String) value);
+			return this.prepareString((String) value);
 		}
 		else if (value instanceof List) {
-			return this.prepare((List<Object>) value);
+			return this.prepareList((List<?>) value);
 		}
 		return value;
 	}
 
-	private String prepare(String value) {
+	private String prepareString(String value) {
 		String specials = "\\{}_^#&$%~";
 		return value.chars().parallel()
 				.mapToObj(c -> (char) c)
@@ -99,7 +98,7 @@ public class PdfConverter extends JLRConverter {
 				.collect(Collectors.joining());
 	}
 
-	private List<Object> prepare(List<Object> list) {
+	private List<Object> prepareList(List<?> list) {
 		return list.stream().map(this::prepare).collect(Collectors.toList());
 	}
 }
