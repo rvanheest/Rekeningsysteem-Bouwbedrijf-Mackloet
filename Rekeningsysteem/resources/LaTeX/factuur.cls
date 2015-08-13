@@ -20,41 +20,73 @@
 \newcommand*{\format}[1]{\npdecimalsign{,}\npthousandsep{.}\npthousandthpartsep{}\numprint{#1}}
 
 \newenvironment{aangenomenTable}[1][]{
-	\newcommand*{\aangenomenRow}[4]{
-		##1 & ##2 & ##3 & ##4 \\
+	\newcommand*{\aangenomenRow}[3]{
+		##1 & ##2 & ##3\% \\
 	}
 
 	\newcommand*{\subtotalRow}[1]{
-		\hline\hline\hline
-		{\bf Subtotaal} & & & ##1 \\
+		\hline\hline
+		{\bf Subtotaal} & ##1 & \\
 	}
 
-	\newcommand*{\btwRow}[4]{
-%		\ifthenelse{\equal{##1}{##3}
-%		}{
-%			{\bf BTW ##1\%} & & & \FPeval{\result}{round((##2+##4):2)} \format{\result} \\
-%		}{
-			{\bf BTW materiaal ##1\%} & & & ##2 \\
-			{\bf BTW arbeid ##3\%} & & & ##4 \\
-%		}
+	\newcommand*{\btwRow}[2]{
+		{\bf BTW ##1\%} & ##2 & \\
 	}
 
 	\newcommand*{\totalRow}[1]{
-		{\bf Totaal in #1} & & & ##1 \\
+		\hline\hline
+		{\bf Totaal} & ##1 & \\
 	}
 
 	\renewcommand{\tabcolsep}{3ex}
 	\setlength\LTleft{0pt}
 	\setlength\LTright{0pt}
-	\begin{longtable}[c]{@{\extracolsep{\tabcolsep}} p{8.1cm} r r r}
-		\hline\hline
-		{\bf OMSCHRIJVING} & {\bf ARBEID} & {\bf MATERIAAL} & {\bf TOTAAL} \\*
+	\begin{longtable}[c]{@{\extracolsep{\tabcolsep}} p{8.1cm} r r}
+		\hline\hline\hline
+		{\bf OMSCHRIJVING} & {\bf BEDRAG (#1)} & {\bf BTW (\%)} \\*
 		\hline\hline
 		\endhead
 }{
 	\hline\hline\hline
 	\end{longtable}
 }
+
+\newenvironment{particulierTable}[1][]{
+	\newcommand*{\particulierRow}[3]{
+		##1 & ##2 & ##3\% \\
+	}
+
+	\newcommand*{\loonRow}[3]{
+		##1 & ##2 & ##3\% \\
+	}
+
+	\newcommand*{\subtotalRow}[1]{
+		\hline\hline\hline
+		{\bf Subtotaal} & ##1 & \\
+	}
+
+	\newcommand*{\btwRow}[2]{
+		{\bf BTW ##1\%} & ##2 & \\
+	}
+
+	\newcommand*{\totalRow}[1]{
+		\hline\hline
+		{\bf Totaal} & ##1 & \\
+	}
+
+	\renewcommand{\tabcolsep}{3ex}
+	\setlength\LTleft{0pt}
+	\setlength\LTright{0pt}
+	\begin{longtable}[c]{@{\extracolsep{\tabcolsep}} p{6cm} r r}
+		\hline\hline\hline
+		{\bf OMSCHRIJVING} & {\bf BEDRAG (#1)} & {\bf BTW (\%)} \\*
+		\hline\hline
+		\endhead
+}{
+	\hline\hline\hline
+	\end{longtable}
+}
+
 \newenvironment{offerteTekst}{
 	\newcommand*{\ondertekenen}[1]{
 		\ifthenelse{\equal{##1}{true}
@@ -78,62 +110,21 @@
 	}
 
 	\newcommand*{\totalRow}[1]{
-		\hline\hline\hline
-		{\bf Totaal in euro} & & ##1 \\
+		\hline\hline
+		{\bf Totaal} & & ##1 \\
 	}
 
 	\renewcommand{\tabcolsep}{3ex}
 	\setlength\LTleft{0pt}
 	\setlength\LTright{0pt}
 	\begin{longtable}[c]{@{\extracolsep{\tabcolsep}} p{3cm} p{1.5cm} r}
-		\hline\hline
-		{\bf OMSCHRIJVING} & {\bf NUMMER} & {\bf PRIJS} \\*
+		\hline\hline\hline
+		{\bf OMSCHRIJVING} & {\bf NUMMER} & {\bf BEDRAG (#1)} \\*
 		\hline\hline
 		\endhead
 }{
 	\hline\hline\hline
 	& \multicolumn{2}{r}{BTW verlegd} \\
-	\end{longtable}
-}
-
-\newenvironment{particulierTable}[1][]{
-	\newcommand*{\particulierRow}[5]{
-		##1 & ##2 & ##3 & ##4 & ##5 \\
-	}
-
-	\newcommand*{\loonRow}[4]{
-		& ##1 & ##2 & ##3 & ##4 \\
-	}
-
-	\newcommand*{\subtotalRow}[1]{
-		\hline\hline\hline
-		& {\bf Subtotaal} & & & ##1 \\
-	}
-
-	\newcommand*{\btwRow}[4]{
-%		\ifthenelse{\equal{##1}{##3}
-%		}{
-%			& {\bf BTW ##1\%} & & & \FPeval{\result}{round((##2+##4):2)} \format{\result} \\
-%		}{
-			& {\bf BTW materiaal ##1\%} & & & ##2 \\
-			& {\bf BTW arbeid ##3\%} & & & ##4 \\
-%		}
-	}
-
-	\newcommand*{\totalRow}[1]{
-		& {\bf Totaal in #1} & & & ##1 \\
-	}
-
-	\renewcommand{\tabcolsep}{3ex}
-	\setlength\LTleft{0pt}
-	\setlength\LTright{0pt}
-	\begin{longtable}[c]{@{\extracolsep{\tabcolsep}} p{1.5cm} p{6cm} p{1cm} p{1cm} r}
-		\hline\hline
-		{\bf ARTIKELNR.} & {\bf OMSCHRIJVING} & {\bf AANTAL} & {\bf EENHEID} & {\bf TOTAAL} \\*
-		\hline\hline
-		\endhead
-}{
-	\hline\hline\hline
 	\end{longtable}
 }
 
@@ -151,8 +142,8 @@
 	\setlength\LTleft{0pt}
 	\setlength\LTright{0pt}
 	\begin{longtable}[c]{@{\extracolsep{\tabcolsep}} p{3cm} p{1.5cm} r r r}
-		\hline\hline
-		{\bf OMSCHRIJVING} & {\bf NUMMER} & {\bf LOON} & {\bf MATERIAAL} & {\bf TOTAAL} \\*
+		\hline\hline\hline
+		{\bf OMSCHRIJVING} & {\bf NUMMER} & {\bf LOON (#1)} & {\bf MATERIAAL (#1)} & {\bf TOTAAL (#1)} \\*
 		\hline\hline
 		\endhead
 }{
