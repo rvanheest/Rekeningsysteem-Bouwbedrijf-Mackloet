@@ -411,7 +411,6 @@ public class XmlReaderIntegrationTest {
 	@Test
 	public void testReadAangenomenFactuur3XmlWithLoader2() {
 		this.loader2.load(new File("src\\test\\resources\\xml\\xml3\\aangenomenFactuurXMLTest.xml"))
-				.doOnNext(System.out::println)
         		.map(AbstractRekening::getClass)
         		.subscribe(this.testObserver);
         
@@ -544,7 +543,6 @@ public class XmlReaderIntegrationTest {
 	@Test
 	public void testReadReparatiesFactuur3XmlWithLoader2() {
 		this.loader2.load(new File("src\\test\\resources\\xml\\xml3\\reparatiesFactuurXMLTest.xml"))
-				.doOnNext(System.out::println)
         		.map(AbstractRekening::getClass)
         		.subscribe(this.testObserver);
         
