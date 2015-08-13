@@ -11,7 +11,6 @@ import org.rekeningsysteem.data.particulier.EsselinkArtikel;
 import org.rekeningsysteem.data.particulier.GebruiktEsselinkArtikel;
 import org.rekeningsysteem.data.particulier.ParticulierArtikel;
 import org.rekeningsysteem.data.particulier.ParticulierFactuur;
-import org.rekeningsysteem.data.util.BtwPercentage;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.data.util.ItemList;
 import org.rekeningsysteem.data.util.header.Debiteur;
@@ -25,9 +24,9 @@ public class ParticulierPdfIntegrationTest {
 
 	private PdfExporter exporter;
 
-	protected ItemList<ParticulierArtikel> addArtikels() {
+	protected ItemList<ParticulierArtikel> addArtikels1() {
 		ItemList<ParticulierArtikel> list = new ItemList<>();
-		
+
 		EsselinkArtikel sub1 = new EsselinkArtikel("2018021117", "Product 1", 1, "Zak",
 				new Geld(5.16));
 		EsselinkArtikel sub2 = new EsselinkArtikel("2003131360", "Product 2", 1, "zak",
@@ -43,26 +42,67 @@ public class ParticulierPdfIntegrationTest {
 		EsselinkArtikel sub7 = new EsselinkArtikel("2009200105", "Product 7", 1, "Stuks",
 				new Geld(7.44));
 
-		list.add(new GebruiktEsselinkArtikel(sub1, 8));
-		list.add(new GebruiktEsselinkArtikel(sub2, 1));
-		list.add(new GebruiktEsselinkArtikel(sub3, 1));
-		list.add(new GebruiktEsselinkArtikel(sub4, 1));
-		list.add(new GebruiktEsselinkArtikel(sub5, 1));
-		list.add(new GebruiktEsselinkArtikel(sub6, 1));
-		list.add(new GebruiktEsselinkArtikel(sub7, 1));
-		list.add(new AnderArtikel("Stucloper + trapfolie", new Geld(15.00)));
-		list.add(new AnderArtikel("Kitwerk", new Geld(149.50)));
-		
+		list.add(new GebruiktEsselinkArtikel(sub1, 8, 19));
+		list.add(new GebruiktEsselinkArtikel(sub2, 1, 19));
+		list.add(new GebruiktEsselinkArtikel(sub3, 1, 19));
+		list.add(new GebruiktEsselinkArtikel(sub4, 1, 19));
+		list.add(new GebruiktEsselinkArtikel(sub5, 1, 19));
+		list.add(new GebruiktEsselinkArtikel(sub6, 1, 19));
+		list.add(new GebruiktEsselinkArtikel(sub7, 1, 19));
+		list.add(new AnderArtikel("Stucloper + trapfolie", new Geld(15.00), 19));
+		list.add(new AnderArtikel("Kitwerk", new Geld(149.50), 19));
+
 		return list;
 	}
 
-	protected ItemList<AbstractLoon> addLoon() {
+	protected ItemList<AbstractLoon> addLoon1() {
 		ItemList<AbstractLoon> list = new ItemList<>();
-		
-		list.add(new ProductLoon("Uurloon à 38.50", 25, new Geld(38.50)));
-		list.add(new ProductLoon("test123", 12, new Geld(12.50)));
-		list.add(new InstantLoon("foobar", new Geld(40.00)));
-		
+
+		list.add(new ProductLoon("Uurloon à 38.50", 25, new Geld(38.50), 19));
+		list.add(new ProductLoon("test123", 12, new Geld(12.50), 19));
+		list.add(new InstantLoon("foobar", new Geld(40.00), 19));
+
+		return list;
+	}
+
+	protected ItemList<ParticulierArtikel> addArtikels2() {
+		ItemList<ParticulierArtikel> list = new ItemList<>();
+
+		EsselinkArtikel sub1 = new EsselinkArtikel("2018021117", "Product 1", 1, "Zak",
+				new Geld(5.16));
+		EsselinkArtikel sub2 = new EsselinkArtikel("2003131360", "Product 2", 1, "zak",
+				new Geld(129.53));
+		EsselinkArtikel sub3 = new EsselinkArtikel("2003131060", "Product 3", 1, "set",
+				new Geld(35.96));
+		EsselinkArtikel sub4 = new EsselinkArtikel("2003131306", "Product 4", 1, "zak",
+				new Geld(9.47));
+		EsselinkArtikel sub5 = new EsselinkArtikel("4010272112", "Product 5", 1, "Stuks",
+				new Geld(17.18));
+		EsselinkArtikel sub6 = new EsselinkArtikel("2009200131", "Product 6", 1, "Stuks",
+				new Geld(6.84));
+		EsselinkArtikel sub7 = new EsselinkArtikel("2009200105", "Product 7", 1, "Stuks",
+				new Geld(7.44));
+
+		list.add(new GebruiktEsselinkArtikel(sub1, 8, 21));
+		list.add(new GebruiktEsselinkArtikel(sub2, 1, 21));
+		list.add(new GebruiktEsselinkArtikel(sub3, 1, 21));
+		list.add(new GebruiktEsselinkArtikel(sub4, 1, 21));
+		list.add(new GebruiktEsselinkArtikel(sub5, 1, 21));
+		list.add(new GebruiktEsselinkArtikel(sub6, 1, 21));
+		list.add(new GebruiktEsselinkArtikel(sub7, 1, 21));
+		list.add(new AnderArtikel("Stucloper + trapfolie", new Geld(15.00), 21));
+		list.add(new AnderArtikel("Kitwerk", new Geld(149.50), 21));
+
+		return list;
+	}
+
+	protected ItemList<AbstractLoon> addLoon2() {
+		ItemList<AbstractLoon> list = new ItemList<>();
+
+		list.add(new ProductLoon("Uurloon à 38.50", 25, new Geld(38.50), 6));
+		list.add(new ProductLoon("test123", 12, new Geld(12.50), 6));
+		list.add(new InstantLoon("foobar", new Geld(40.00), 6));
+
 		return list;
 	}
 
@@ -82,12 +122,11 @@ public class ParticulierPdfIntegrationTest {
 		OmschrFactuurHeader header = new OmschrFactuurHeader(debiteur, datum, factuurnummer,
 				omschrijving);
 
-		BtwPercentage btwPercentage = new BtwPercentage(6, 21);
-		ItemList<ParticulierArtikel> itemList = this.addArtikels();
-		ItemList<AbstractLoon> loonList = this.addLoon();
+		ItemList<ParticulierArtikel> itemList = this.addArtikels2();
+		ItemList<AbstractLoon> loonList = this.addLoon2();
 
-		ParticulierFactuur factuur = new ParticulierFactuur(header,
-				Currency.getInstance("EUR"), itemList, loonList, btwPercentage);
+		ParticulierFactuur factuur = new ParticulierFactuur(header, Currency.getInstance("EUR"),
+				itemList, loonList);
 		this.exporter.export(factuur, new File("src\\test\\resources\\pdf\\"
 				+ "ParticulierFactuurTest123TwoBtw.pdf"));
 	}
@@ -103,12 +142,11 @@ public class ParticulierPdfIntegrationTest {
 		OmschrFactuurHeader header = new OmschrFactuurHeader(debiteur, datum, factuurnummer,
 				omschrijving);
 
-		BtwPercentage btwPercentage = new BtwPercentage(19, 19);
-		ItemList<ParticulierArtikel> itemList = this.addArtikels();
-		ItemList<AbstractLoon> loonList = this.addLoon();
+		ItemList<ParticulierArtikel> itemList = this.addArtikels1();
+		ItemList<AbstractLoon> loonList = this.addLoon1();
 
-		ParticulierFactuur factuur = new ParticulierFactuur(header,
-				Currency.getInstance("EUR"), itemList, loonList, btwPercentage);
+		ParticulierFactuur factuur = new ParticulierFactuur(header, Currency.getInstance("EUR"),
+				itemList, loonList);
 		this.exporter.export(factuur, new File("src\\test\\resources\\pdf\\"
 				+ "ParticulierFactuurTest123OneBtw.pdf"));
 	}

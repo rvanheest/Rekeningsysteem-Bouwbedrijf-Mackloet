@@ -8,7 +8,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.rekeningsysteem.data.reparaties.ReparatiesBon;
 import org.rekeningsysteem.data.reparaties.ReparatiesFactuur;
-import org.rekeningsysteem.data.util.BtwPercentage;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.data.util.ItemList;
 import org.rekeningsysteem.data.util.header.Debiteur;
@@ -82,11 +81,11 @@ public class ReparatiesPdfIntegrationTest {
 		String factuurnummer = "232011";
 		FactuurHeader header = new FactuurHeader(debiteur, datum, factuurnummer);
 
-		BtwPercentage btwPercentage = new BtwPercentage(0, 0);
 		ItemList<ReparatiesBon> itemList = new ItemList<>();
 		this.addBonnen(itemList);
 
-		ReparatiesFactuur factuur = new ReparatiesFactuur(header, Currency.getInstance("EUR"), itemList, btwPercentage);
+		ReparatiesFactuur factuur = new ReparatiesFactuur(header, Currency.getInstance("EUR"),
+				itemList);
 		this.exporter.export(factuur, new File("src\\test\\resources\\pdf\\"
 				+ "ReparatiesFactuurTest123.pdf"));
 	}

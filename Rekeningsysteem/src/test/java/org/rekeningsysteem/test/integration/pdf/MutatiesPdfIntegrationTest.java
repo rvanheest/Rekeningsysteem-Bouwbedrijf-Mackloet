@@ -8,7 +8,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.rekeningsysteem.data.mutaties.MutatiesBon;
 import org.rekeningsysteem.data.mutaties.MutatiesFactuur;
-import org.rekeningsysteem.data.util.BtwPercentage;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.data.util.ItemList;
 import org.rekeningsysteem.data.util.header.Debiteur;
@@ -32,13 +31,12 @@ public class MutatiesPdfIntegrationTest {
 		String factuurnummer = "272011";
 		FactuurHeader header = new FactuurHeader(debiteur, datum, factuurnummer);
 
-		BtwPercentage btwPercentage = new BtwPercentage(0, 0);
 		ItemList<MutatiesBon> itemList = new ItemList<>();
 		itemList.add(new MutatiesBon("Bonnummer", "111390", new Geld(4971.96)));
 		itemList.add(new MutatiesBon("Bonnummer", "111477", new Geld(4820.96)));
 		itemList.add(new MutatiesBon("Bonnummer", "112308", new Geld(5510.74)));
 
-		MutatiesFactuur factuur = new MutatiesFactuur(header, Currency.getInstance("EUR"), itemList, btwPercentage);
+		MutatiesFactuur factuur = new MutatiesFactuur(header, Currency.getInstance("EUR"), itemList);
 		this.exporter.export(factuur, new File("src\\test\\resources\\pdf\\"
 				+ "MutatiesFactuurTest123.pdf"));
 	}
