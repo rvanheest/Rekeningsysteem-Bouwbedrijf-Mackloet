@@ -21,7 +21,17 @@ public class ItemList<E extends ListItem> extends ArrayList<E> implements Bedrag
 	}
 
 	protected static Totalen makeTotalen(Totalen t, ListItem li) {
-		return t.withLoon(t.getLoon().add(li.getLoon()))
-				.withMateriaal(t.getMateriaal().add(li.getMateriaal()));
+		if (li instanceof BtwListItem) {
+			return makeBtwTotalen(t, (BtwListItem) li);
+		}
+		return t.addLoon(li.getLoon())
+				.addMateriaal(li.getMateriaal());
+	}
+
+	protected static Totalen makeBtwTotalen(Totalen t, BtwListItem li) {
+		return t.addLoon(li.getLoon())
+				.addBtw(li.getLoonBtwPercentage(), li.getLoonBtw())
+				.addMateriaal(li.getMateriaal())
+				.addBtw(li.getMateriaalBtwPercentage(), li.getMateriaalBtw());
 	}
 }
