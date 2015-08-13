@@ -62,7 +62,7 @@ public final class Totalen {
 		Totalen result = this.addLoon(t2.loon)
 				.addMateriaal(t2.materiaal);
 		return t2.btwPerPercentage.entrySet()
-				.parallelStream()
+				.stream() // this can't be a .parallelStream(), since we're doing recursion here!
 				.reduce(result,
 						(totalen, entry) -> totalen.addBtw(entry.getKey(), entry.getValue()),
 						Totalen::plus);
