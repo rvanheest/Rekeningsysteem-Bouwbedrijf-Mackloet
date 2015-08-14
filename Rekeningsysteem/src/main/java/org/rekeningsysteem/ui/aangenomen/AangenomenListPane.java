@@ -63,11 +63,11 @@ public class AangenomenListPane extends AbstractListPane<AangenomenModel> {
 
 	public static class AangenomenModel {
 
-		private String omschrijving;
-		private double loon;
-		private double loonBtwPercentage;
-		private double materiaal;
-		private double materiaalBtwPercentage;
+		private final String omschrijving;
+		private final double loon;
+		private final double loonBtwPercentage;
+		private final double materiaal;
+		private final double materiaalBtwPercentage;
 
 		public AangenomenModel(String omschrijving, double loon, double loonBtwPercentage,
 				double materiaal, double materiaalBtwPercentage) {
@@ -82,40 +82,20 @@ public class AangenomenListPane extends AbstractListPane<AangenomenModel> {
 			return this.omschrijving;
 		}
 
-		public void setOmschrijving(String omschrijving) {
-			this.omschrijving = omschrijving;
-		}
-
 		public double getLoon() {
 			return this.loon;
-		}
-
-		public void setLoon(double loon) {
-			this.loon = loon;
 		}
 
 		public double getLoonBtwPercentage() {
 			return this.loonBtwPercentage;
 		}
 
-		public void setLoonBtwPercentage(double loonBtwPercentage) {
-			this.loonBtwPercentage = loonBtwPercentage;
-		}
-
 		public double getMateriaal() {
 			return this.materiaal;
 		}
 
-		public void setMateriaal(double materiaal) {
-			this.materiaal = materiaal;
-		}
-
 		public double getMateriaalBtwPercentage() {
 			return this.materiaalBtwPercentage;
-		}
-
-		public void setMateriaalBtwPercentage(double materiaalBtwPercentage) {
-			this.materiaalBtwPercentage = materiaalBtwPercentage;
 		}
 	}
 }

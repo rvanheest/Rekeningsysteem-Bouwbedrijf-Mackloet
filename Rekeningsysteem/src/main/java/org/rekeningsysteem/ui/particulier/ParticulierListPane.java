@@ -31,7 +31,7 @@ public class ParticulierListPane extends AbstractListPane<ParticulierModel> {
 
 		artNrCol.setMinWidth(100);
 		omschrCol.setMinWidth(200);
-		prijsPerCol.setMinWidth(50);
+		prijsPerCol.setMinWidth(60);
 		eenheidCol.setMinWidth(100);
 		verkoopprijsCol.setMinWidth(90);
 		aantalCol.setMinWidth(50);
