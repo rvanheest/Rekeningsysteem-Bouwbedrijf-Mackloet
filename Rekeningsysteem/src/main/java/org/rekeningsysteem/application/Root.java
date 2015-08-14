@@ -42,7 +42,7 @@ public class Root extends BorderPane {
 		this.setTop(this.upperBar);
 		this.setCenter(new MainPane(stage, database));
 
-		this.resizeButton = new WindowResizeButton(stage, 1061, 728);
+		this.resizeButton = new WindowResizeButton(stage, Main.screenWidth, Main.screenHeight);
 		this.resizeButton.setManaged(false);
 
 		this.upperBar.getCloseButtonEvents()

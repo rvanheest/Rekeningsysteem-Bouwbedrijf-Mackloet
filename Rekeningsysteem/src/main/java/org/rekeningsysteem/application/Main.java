@@ -30,6 +30,8 @@ import rx.Observable;
 public class Main extends Application {
 
 	private static Main main;
+	public static final double screenWidth = 1125;
+	public static final double screenHeight = 772;
 
 	private final StackPane popup = new StackPane();
 
@@ -65,7 +67,7 @@ public class Main extends Application {
 
 			StackPane layerPane = new StackPane(new Root(stage, database), this.popup);
 
-			Scene scene = new Scene(layerPane, 1125, 772);
+			Scene scene = new Scene(layerPane, screenWidth, screenHeight);
 			scene.getStylesheets().add(getResource("/layout.css"));
 
 			stage.addEventHandler(WindowEvent.WINDOW_HIDDEN, event -> {

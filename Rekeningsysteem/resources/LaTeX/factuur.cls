@@ -77,7 +77,7 @@
 	\renewcommand{\tabcolsep}{3ex}
 	\setlength\LTleft{0pt}
 	\setlength\LTright{0pt}
-	\begin{longtable}[c]{@{\extracolsep{\tabcolsep}} p{6cm} r r}
+	\begin{longtable}[c]{@{\extracolsep{\tabcolsep}} p{8.1cm} r r}
 		\hline\hline\hline
 		{\bf OMSCHRIJVING} & {\bf BEDRAG (#1)} & {\bf BTW (\%)} \\*
 		\hline\hline
@@ -135,7 +135,7 @@
 
 	\newcommand*{\totalRow}[1]{
 		\hline\hline\hline
-		{\bf Totaal in #1} & & & & ##1 \\
+		{\bf Totaal} & & & & ##1 \\
 	}
 
 	\renewcommand{\tabcolsep}{3ex}
