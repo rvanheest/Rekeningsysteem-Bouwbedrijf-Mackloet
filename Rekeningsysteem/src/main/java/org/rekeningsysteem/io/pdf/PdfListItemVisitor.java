@@ -62,10 +62,14 @@ public class PdfListItemVisitor implements ListItemVisitor<List<List<String>>> {
 		Geld materiaal = item.getMateriaal();
 
 		if (!materiaal.isZero()) {
+			Double aantal = item.getAantal();
+			String aantalAsString = aantal == Math.floor(aantal) && !Double.isInfinite(aantal)
+					? String.valueOf(aantal.intValue())
+					: String.valueOf(aantal);
+
 			return Arrays.asList(
 					Arrays.asList(
-							item.getAantal() + " " + artikel.getEenheid() + " "
-									+ artikel.getOmschrijving(),
+							aantalAsString + "x " + artikel.getOmschrijving(),
 							materiaal.formattedString(),
 							String.valueOf(item.getMateriaalBtwPercentage())));
 		}
