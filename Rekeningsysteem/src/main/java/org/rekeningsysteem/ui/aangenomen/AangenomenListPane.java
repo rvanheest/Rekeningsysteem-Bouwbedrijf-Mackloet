@@ -3,8 +3,11 @@ package org.rekeningsysteem.ui.aangenomen;
 import java.util.Arrays;
 import java.util.List;
 
+import javafx.geometry.Pos;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.util.Callback;
 
 import org.rekeningsysteem.ui.aangenomen.AangenomenListPane.AangenomenModel;
 import org.rekeningsysteem.ui.list.AbstractListPane;
@@ -25,10 +28,10 @@ public class AangenomenListPane extends AbstractListPane<AangenomenModel> {
 		TableColumn<AangenomenModel, Double> materiaalBtwCol = new TableColumn<>("BTW materiaal");
 
 		omschrCol.setMinWidth(300);
-		loonCol.setMinWidth(100);
+		loonCol.setMinWidth(75);
 		loonBtwCol.setMinWidth(50);
-		materiaalCol.setMinWidth(100);
-		materiaalBtwCol.setMinWidth(50);
+		materiaalCol.setMinWidth(75);
+		materiaalBtwCol.setMinWidth(100);
 
 		omschrCol.setCellValueFactory(new PropertyValueFactory<>("omschrijving"));
 		loonCol.setCellValueFactory(new PropertyValueFactory<>("loon"));
@@ -36,10 +39,26 @@ public class AangenomenListPane extends AbstractListPane<AangenomenModel> {
 		materiaalCol.setCellValueFactory(new PropertyValueFactory<>("materiaal"));
 		materiaalBtwCol.setCellValueFactory(new PropertyValueFactory<>("materiaalBtwPercentage"));
 
-		loonCol.setCellFactory(param -> new MoneyCell<>());
-		materiaalCol.setCellFactory(param -> new MoneyCell<>());
+		Callback<TableColumn<AangenomenModel, Double>, TableCell<AangenomenModel, Double>> loonBtwCellFactory = loonBtwCol
+				.getCellFactory();
+		Callback<TableColumn<AangenomenModel, Double>, TableCell<AangenomenModel, Double>> materiaalBtwCellFactory = materiaalBtwCol
+				.getCellFactory();
 
-		return Arrays.asList(omschrCol, loonCol, loonBtwCol, materiaalCol, materiaalBtwCol, this.getDeleteCol());
+		loonCol.setCellFactory(c -> new MoneyCell<>());
+		loonBtwCol.setCellFactory(column -> {
+			TableCell<AangenomenModel, Double> cell = loonBtwCellFactory.call(column);
+			cell.setAlignment(Pos.TOP_RIGHT);
+			return cell;
+		});
+		materiaalCol.setCellFactory(c -> new MoneyCell<>());
+		materiaalBtwCol.setCellFactory(column -> {
+			TableCell<AangenomenModel, Double> cell = materiaalBtwCellFactory.call(column);
+			cell.setAlignment(Pos.TOP_RIGHT);
+			return cell;
+		});
+
+		return Arrays.asList(omschrCol, loonCol, loonBtwCol, materiaalCol, materiaalBtwCol,
+				this.getDeleteCol());
 	}
 
 	public static class AangenomenModel {

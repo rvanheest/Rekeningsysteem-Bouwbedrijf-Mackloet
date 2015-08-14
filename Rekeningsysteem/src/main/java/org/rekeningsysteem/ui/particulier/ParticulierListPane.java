@@ -3,8 +3,11 @@ package org.rekeningsysteem.ui.particulier;
 import java.util.Arrays;
 import java.util.List;
 
+import javafx.geometry.Pos;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.util.Callback;
 
 import org.rekeningsysteem.ui.list.AbstractListPane;
 import org.rekeningsysteem.ui.list.MoneyCell;
@@ -24,8 +27,8 @@ public class ParticulierListPane extends AbstractListPane<ParticulierModel> {
 		TableColumn<ParticulierModel, String> eenheidCol = new TableColumn<>("Eenheid");
 		TableColumn<ParticulierModel, Double> verkoopprijsCol = new TableColumn<>("Verkoopprijs");
 		TableColumn<ParticulierModel, Double> aantalCol = new TableColumn<>("Aantal");
-		TableColumn<ParticulierModel, Double> btwCol = new TableColumn<>("Btw percentage");
-		
+		TableColumn<ParticulierModel, Double> btwCol = new TableColumn<>("BTW");
+
 		artNrCol.setMinWidth(100);
 		omschrCol.setMinWidth(200);
 		prijsPerCol.setMinWidth(50);
@@ -33,7 +36,7 @@ public class ParticulierListPane extends AbstractListPane<ParticulierModel> {
 		verkoopprijsCol.setMinWidth(90);
 		aantalCol.setMinWidth(50);
 		btwCol.setMinWidth(50);
-		
+
 		artNrCol.setCellValueFactory(new PropertyValueFactory<>("artikelNummer"));
 		omschrCol.setCellValueFactory(new PropertyValueFactory<>("omschrijving"));
 		prijsPerCol.setCellValueFactory(new PropertyValueFactory<>("prijsPer"));
@@ -41,9 +44,17 @@ public class ParticulierListPane extends AbstractListPane<ParticulierModel> {
 		verkoopprijsCol.setCellValueFactory(new PropertyValueFactory<>("verkoopPrijs"));
 		aantalCol.setCellValueFactory(new PropertyValueFactory<>("aantal"));
 		btwCol.setCellValueFactory(new PropertyValueFactory<>("btwPercentage"));
-		
-		verkoopprijsCol.setCellFactory(param -> new MoneyCell<>());
-		
+
+		Callback<TableColumn<ParticulierModel, Double>, TableCell<ParticulierModel, Double>> btwCellFactory = btwCol
+				.getCellFactory();
+
+		verkoopprijsCol.setCellFactory(c -> new MoneyCell<>());
+		btwCol.setCellFactory(column -> {
+			TableCell<ParticulierModel, Double> cell = btwCellFactory.call(column);
+			cell.setAlignment(Pos.TOP_RIGHT);
+			return cell;
+		});
+
 		return Arrays.asList(artNrCol, omschrCol, prijsPerCol, eenheidCol, verkoopprijsCol,
 				aantalCol, btwCol, this.getDeleteCol());
 	}
