@@ -6,7 +6,6 @@ import org.rekeningsysteem.data.particulier.ParticulierArtikel;
 import org.rekeningsysteem.data.util.BtwPercentage;
 import org.rekeningsysteem.data.util.ItemList;
 import org.rekeningsysteem.ui.WorkingPaneController;
-import org.rekeningsysteem.ui.btw.BtwController;
 import org.rekeningsysteem.ui.list.BtwListPane;
 
 import rx.Observable;

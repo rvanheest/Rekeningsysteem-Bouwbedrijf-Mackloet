@@ -30,7 +30,7 @@ public class RekeningSplitPane extends BorderPane {
 	}
 
 	private TreeView<String> makeTree() {
-		TreeItem<String> treeRoot = new TreeItem<String>();
+		TreeItem<String> treeRoot = new TreeItem<>();
 
 		TreeView<String> tree = new TreeView<>(treeRoot);
 		tree.setId("panel-tree");
