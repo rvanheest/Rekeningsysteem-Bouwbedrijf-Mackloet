@@ -54,15 +54,7 @@ public class RekeningTab extends Tab {
 		this.setContent(this.controller.getUI());
 
 		this.getModel().subscribe(this.latest);
-
-		this.getModel() // TODO rewrite this expression
-				.buffer(2, 1) // fired at first on the 2nd onNext!
-				.map(list -> list.get(0).equals(list.get(1))) // will of course return false
-				.doOnNext(b -> {
-					assert b == false : "b should always be false here!";
-				})
-				.map(b -> !b)
-				.subscribe(this.modified::onNext);
+		this.getModel().skip(1).subscribe(ar -> this.modified.onNext(true));
 
 		this.modified.filter(b -> b == true)
 				.map(b -> this.getText())
