@@ -129,8 +129,6 @@ public class RekeningTab extends Tab {
 	}
 
 	public void export(File file) {
-		this.latest.first()
-				.doOnNext(System.out::println)
-				.subscribe(factuur -> ioWorker.export(factuur, file));
+		this.latest.first().subscribe(factuur -> ioWorker.export(factuur, file));
 	}
 }
