@@ -11,19 +11,19 @@ import org.rekeningsysteem.ui.list.ItemPane;
 import org.rekeningsysteem.ui.particulier.tabpane.ItemTabPane;
 
 import rx.Observable;
- 
+
 public class ParticulierArtikelPane extends ItemPane {
 
 	private final AnderArtikelController anderController;
 	private final GebruiktEsselinkArtikelController gebruiktController;
-	
+
 	private Observable<ParticulierArtikelType> type;
 
 	public ParticulierArtikelPane(Currency currency) {
 		super("Nieuw particulier artikel");
 		this.anderController = new AnderArtikelController(currency);
 		this.gebruiktController = new GebruiktEsselinkArtikelController(currency);
-		
+
 		this.getChildren().add(1, this.getContent());
 	}
 
@@ -39,12 +39,12 @@ public class ParticulierArtikelPane extends ItemPane {
 				return null;
 			}
 		});
-		
+
 		content.setId("particulier-tabs");
 		content.setTabClosingPolicy(TabClosingPolicy.UNAVAILABLE);
 		content.add(ParticulierArtikelType.ESSELINK, this.gebruiktController.getUI());
 		content.add(ParticulierArtikelType.ANDER, this.anderController.getUI());
-		
+
 		this.type = content.getType().cast(ParticulierArtikelType.class);
 
 		return content;
@@ -57,13 +57,19 @@ public class ParticulierArtikelPane extends ItemPane {
 	public Observable<AnderArtikel> getAnderArtikel() {
 		return this.anderController.getModel();
 	}
-	
+
 	public void setAnderArtikel(AnderArtikel ander) {
 		this.anderController.getUI().setOmschrijving(ander.getOmschrijving());
 		this.anderController.getUI().setPrijs(ander.getMateriaal().getBedrag());
+		this.anderController.getUI().setBtwPercentage(ander.getMateriaalBtwPercentage());
 	}
 
 	public Observable<GebruiktEsselinkArtikel> getGebruiktEsselinkArtikel() {
 		return this.gebruiktController.getModel();
+	}
+
+	public void setBtwPercentage(Double btwPercentage) {
+		this.anderController.getUI().setBtwPercentage(btwPercentage);
+		this.gebruiktController.getUI().setBtwPercentage(btwPercentage);
 	}
 }

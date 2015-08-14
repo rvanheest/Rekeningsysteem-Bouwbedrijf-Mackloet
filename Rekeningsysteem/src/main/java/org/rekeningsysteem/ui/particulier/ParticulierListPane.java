@@ -24,6 +24,7 @@ public class ParticulierListPane extends AbstractListPane<ParticulierModel> {
 		TableColumn<ParticulierModel, String> eenheidCol = new TableColumn<>("Eenheid");
 		TableColumn<ParticulierModel, Double> verkoopprijsCol = new TableColumn<>("Verkoopprijs");
 		TableColumn<ParticulierModel, Double> aantalCol = new TableColumn<>("Aantal");
+		TableColumn<ParticulierModel, Double> btwCol = new TableColumn<>("Btw percentage");
 		
 		artNrCol.setMinWidth(100);
 		omschrCol.setMinWidth(200);
@@ -31,6 +32,7 @@ public class ParticulierListPane extends AbstractListPane<ParticulierModel> {
 		eenheidCol.setMinWidth(100);
 		verkoopprijsCol.setMinWidth(90);
 		aantalCol.setMinWidth(50);
+		btwCol.setMinWidth(50);
 		
 		artNrCol.setCellValueFactory(new PropertyValueFactory<>("artikelNummer"));
 		omschrCol.setCellValueFactory(new PropertyValueFactory<>("omschrijving"));
@@ -38,11 +40,12 @@ public class ParticulierListPane extends AbstractListPane<ParticulierModel> {
 		eenheidCol.setCellValueFactory(new PropertyValueFactory<>("eenheid"));
 		verkoopprijsCol.setCellValueFactory(new PropertyValueFactory<>("verkoopPrijs"));
 		aantalCol.setCellValueFactory(new PropertyValueFactory<>("aantal"));
+		btwCol.setCellValueFactory(new PropertyValueFactory<>("btwPercentage"));
 		
 		verkoopprijsCol.setCellFactory(param -> new MoneyCell<>());
 		
 		return Arrays.asList(artNrCol, omschrCol, prijsPerCol, eenheidCol, verkoopprijsCol,
-				aantalCol, this.getDeleteCol());
+				aantalCol, btwCol, this.getDeleteCol());
 	}
 
 	public static class ParticulierModel {
@@ -53,15 +56,17 @@ public class ParticulierListPane extends AbstractListPane<ParticulierModel> {
 		private final String eenheid;
 		private final double verkoopPrijs;
 		private final String aantal;
+		private final double btwPercentage;
 
 		public ParticulierModel(String artikelNummer, String omschrijving, String prijsPer,
-				String eenheid, double verkoopPrijs, String aantal) {
+				String eenheid, double verkoopPrijs, String aantal, double btwPercentage) {
 			this.artikelNummer = artikelNummer;
 			this.omschrijving = omschrijving;
 			this.prijsPer = prijsPer;
 			this.eenheid = eenheid;
 			this.verkoopPrijs = verkoopPrijs;
 			this.aantal = aantal;
+			this.btwPercentage = btwPercentage;
 		}
 
 		public String getArtikelNummer() {
@@ -86,6 +91,10 @@ public class ParticulierListPane extends AbstractListPane<ParticulierModel> {
 
 		public String getAantal() {
 			return this.aantal;
+		}
+
+		public double getBtwPercentage() {
+			return this.btwPercentage;
 		}
 	}
 }

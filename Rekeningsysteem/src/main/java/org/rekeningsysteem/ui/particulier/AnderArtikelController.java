@@ -25,7 +25,7 @@ public class AnderArtikelController {
 	public AnderArtikelController(AnderArtikelPane ui) {
 		this.ui = ui;
 		this.model = Observable.combineLatest(ui.getOmschrijving(), ui.getPrijs().map(Geld::new),
-				AnderArtikel::new);
+				ui.getBtwPercentage(), AnderArtikel::new);
 	}
 
 	public AnderArtikelPane getUI() {

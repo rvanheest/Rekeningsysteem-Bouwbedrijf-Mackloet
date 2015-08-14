@@ -6,7 +6,6 @@ import java.util.Optional;
 
 import org.rekeningsysteem.application.working.RekeningSplitPane;
 import org.rekeningsysteem.data.mutaties.MutatiesFactuur;
-import org.rekeningsysteem.data.util.BtwPercentage;
 import org.rekeningsysteem.data.util.header.Debiteur;
 import org.rekeningsysteem.data.util.header.FactuurHeader;
 import org.rekeningsysteem.io.database.Database;
@@ -46,8 +45,7 @@ public class MutatiesController extends AbstractRekeningController<MutatiesFactu
 	public MutatiesController(FactuurHeaderController header, MutatiesListPaneController body) {
 		super(new RekeningSplitPane(header.getUI(), body.getUI()),
 				Observable.combineLatest(header.getModel(), body.getListModel(),
-						(head, list) -> new MutatiesFactuur(head, body.getCurrency(), list,
-								new BtwPercentage(0.0, 0.0))));
+						(head, list) -> new MutatiesFactuur(head, body.getCurrency(), list)));
 		this.header = header;
 		this.list = body;
 	}

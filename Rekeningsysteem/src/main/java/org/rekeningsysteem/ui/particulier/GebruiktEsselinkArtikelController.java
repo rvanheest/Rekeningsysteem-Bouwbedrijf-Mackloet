@@ -33,7 +33,7 @@ public class GebruiktEsselinkArtikelController {
 		this.searchBoxController = new SearchBoxController<>(new EsselinkSearchBox(currency));
 		this.ui = uiFactory.apply(this.searchBoxController.getUI());
 		this.model = Observable.combineLatest(this.ui.getArtikel(), this.ui.getAantal(),
-				GebruiktEsselinkArtikel::new);
+				this.ui.getBtwPercentage(), GebruiktEsselinkArtikel::new);
 
 		this.initSearchBox();
 	}

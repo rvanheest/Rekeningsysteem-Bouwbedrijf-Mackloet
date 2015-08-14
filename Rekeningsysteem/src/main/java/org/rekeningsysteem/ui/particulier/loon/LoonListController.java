@@ -4,6 +4,7 @@ import java.util.Currency;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.rekeningsysteem.data.util.BtwPercentage;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.data.util.ItemList;
 import org.rekeningsysteem.data.util.loon.AbstractLoon;
@@ -14,17 +15,18 @@ import org.rekeningsysteem.ui.particulier.loon.LoonListPane.LoonModel;
 
 public class LoonListController extends AbstractListController<AbstractLoon, LoonModel> {
 
-	public LoonListController(Currency currency) {
-		this(currency, new LoonListPane());
+	public LoonListController(Currency currency, BtwPercentage defaultBtw) {
+		this(currency, defaultBtw, new LoonListPane());
 	}
 
-	public LoonListController(Currency currency, List<AbstractLoon> input) {
-		this(currency);
+	public LoonListController(Currency currency, BtwPercentage defaultBtw,
+			List<AbstractLoon> input) {
+		this(currency, defaultBtw);
 		this.getUI().setData(this.modelToUI(input));
 	}
 
-	public LoonListController(Currency currency, LoonListPane ui) {
-		super(currency, ui, LoonController::new);
+	public LoonListController(Currency currency, BtwPercentage defaultBtw, LoonListPane ui) {
+		super(currency, defaultBtw, ui, LoonController::new);
 	}
 
 	@Override
@@ -32,13 +34,14 @@ public class LoonListController extends AbstractListController<AbstractLoon, Loo
 		return list.stream().map(item -> {
 			if (item instanceof InstantLoon) {
 				InstantLoon loon = (InstantLoon) item;
-				return new LoonModel(loon.getOmschrijving(), "", null, loon.getLoon().getBedrag());
+				return new LoonModel(loon.getOmschrijving(), "", null,
+						loon.getLoon().getBedrag(), loon.getLoonBtwPercentage());
 			}
 			else {
 				assert item instanceof ProductLoon;
 				ProductLoon loon = (ProductLoon) item;
 				return new LoonModel(loon.getOmschrijving(), String.valueOf(loon.getUren()),
-						loon.getUurloon(), loon.getLoon().getBedrag());
+						loon.getUurloon(), loon.getLoon().getBedrag(), loon.getLoonBtwPercentage());
 			}
 		}).collect(Collectors.toList());
 	}
@@ -50,12 +53,14 @@ public class LoonListController extends AbstractListController<AbstractLoon, Loo
 			String uren = item.getUren();
 			Geld uurloon = item.getUurloon();
 			Geld loon = new Geld(item.getLoon());
+			double percentage = item.getBtwPercentage();
 			
 			if (uurloon == null) {
-				return new InstantLoon(omschrijving, loon);
+				return new InstantLoon(omschrijving, loon, percentage);
 			}
 			else {
-				return new ProductLoon(omschrijving, Double.parseDouble(uren), uurloon);
+				return new ProductLoon(omschrijving, Double.parseDouble(uren),
+						uurloon, percentage);
 			}
 		}).collect(Collectors.toCollection(ItemList::new));
 	}

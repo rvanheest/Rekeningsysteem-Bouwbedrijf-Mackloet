@@ -15,24 +15,20 @@ public class ParticulierListPaneController extends WorkingPaneController {
 
 	private final Currency currency;
 	private final Observable<ItemList<ParticulierArtikel>> listModel;
-	private final Observable<BtwPercentage> btwModel;
 
-	public ParticulierListPaneController(Currency currency, BtwPercentage btw) {
-		this(new ParticulierListController(currency), new BtwController(btw), currency);
+	public ParticulierListPaneController(Currency currency, BtwPercentage defaultBtw) {
+		this(new ParticulierListController(currency, defaultBtw), currency);
 	}
 
-	public ParticulierListPaneController(Currency currency, ItemList<ParticulierArtikel> inputList,
-			BtwPercentage inputBtw) {
-		this(new ParticulierListController(currency, inputList), new BtwController(inputBtw),
-				currency);
+	public ParticulierListPaneController(Currency currency, BtwPercentage defaultBtw,
+			ItemList<ParticulierArtikel> inputList) {
+		this(new ParticulierListController(currency, defaultBtw, inputList), currency);
 	}
 
-	public ParticulierListPaneController(ParticulierListController list, BtwController btw,
-			Currency currency) {
-		super(new BtwListPane(list.getUI(), btw.getUI()));
+	public ParticulierListPaneController(ParticulierListController list, Currency currency) {
+		super(new BtwListPane(list.getUI()));
 		this.currency = currency;
 		this.listModel = list.getModel();
-		this.btwModel = btw.getModel();
 	}
 
 	public Currency getCurrency() {
@@ -41,9 +37,5 @@ public class ParticulierListPaneController extends WorkingPaneController {
 
 	public Observable<ItemList<ParticulierArtikel>> getListModel() {
 		return this.listModel;
-	}
-
-	public Observable<BtwPercentage> getBtwModel() {
-		return this.btwModel;
 	}
 }

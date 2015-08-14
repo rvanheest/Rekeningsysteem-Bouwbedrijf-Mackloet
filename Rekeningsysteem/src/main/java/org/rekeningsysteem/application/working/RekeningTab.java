@@ -15,6 +15,7 @@ import org.rekeningsysteem.data.util.AbstractRekening;
 import org.rekeningsysteem.data.util.header.FactuurHeader;
 import org.rekeningsysteem.io.database.Database;
 import org.rekeningsysteem.logic.database.DebiteurDBInteraction;
+import org.rekeningsysteem.properties.PropertiesWorker;
 import org.rekeningsysteem.ui.AbstractRekeningController;
 import org.rekeningsysteem.ui.aangenomen.AangenomenController;
 import org.rekeningsysteem.ui.mutaties.MutatiesController;
@@ -93,10 +94,11 @@ public class RekeningTab extends Tab {
 		}
 		else if (file.getName().endsWith(".xml")) {
 			Observable<? extends AbstractRekening> factuur = ioWorker.load(file);
+			PropertiesWorker properties = PropertiesWorker.getInstance();
 
 			Observable<AangenomenController> aangenomen = factuur
 					.ofType(AangenomenFactuur.class)
-					.map(fact -> new AangenomenController(fact, database));
+					.map(fact -> new AangenomenController(fact, properties, database));
 			Observable<MutatiesController> mutaties = factuur
 					.ofType(MutatiesFactuur.class)
 					.map(fact -> new MutatiesController(fact, database));
@@ -105,7 +107,7 @@ public class RekeningTab extends Tab {
 					.map(fact -> new OfferteController(fact, database));
 			Observable<ParticulierController> particulier = factuur
 					.ofType(ParticulierFactuur.class)
-					.map(fact -> new ParticulierController(fact, database));
+					.map(fact -> new ParticulierController(fact, properties, database));
 			Observable<ReparatiesController> reparaties = factuur
 					.ofType(ReparatiesFactuur.class)
 					.map(fact -> new ReparatiesController(fact, database));

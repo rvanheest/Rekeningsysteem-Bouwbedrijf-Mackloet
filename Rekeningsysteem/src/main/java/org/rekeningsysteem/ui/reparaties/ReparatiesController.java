@@ -6,7 +6,6 @@ import java.util.Optional;
 
 import org.rekeningsysteem.application.working.RekeningSplitPane;
 import org.rekeningsysteem.data.reparaties.ReparatiesFactuur;
-import org.rekeningsysteem.data.util.BtwPercentage;
 import org.rekeningsysteem.data.util.header.Debiteur;
 import org.rekeningsysteem.data.util.header.FactuurHeader;
 import org.rekeningsysteem.io.database.Database;
@@ -46,8 +45,7 @@ public class ReparatiesController extends AbstractRekeningController<ReparatiesF
 	public ReparatiesController(FactuurHeaderController header, ReparatiesListPaneController body) {
 		super(new RekeningSplitPane(header.getUI(), body.getUI()),
 				Observable.combineLatest(header.getModel(), body.getListModel(),
-						(head, list) -> new ReparatiesFactuur(head, body.getCurrency(), list,
-								new BtwPercentage(0.0, 0.0))));
+						(head, list) -> new ReparatiesFactuur(head, body.getCurrency(), list)));
 		this.header = header;
 		this.list = body;
 	}

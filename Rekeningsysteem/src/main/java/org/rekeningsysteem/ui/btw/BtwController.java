@@ -4,6 +4,7 @@ import org.rekeningsysteem.data.util.BtwPercentage;
 
 import rx.Observable;
 
+@Deprecated
 public class BtwController {
 
 	private final BtwPane ui;

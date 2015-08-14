@@ -6,11 +6,13 @@ import java.util.List;
 import java.util.Optional;
 
 import org.rekeningsysteem.application.Main;
+import org.rekeningsysteem.data.util.BtwPercentage;
 import org.rekeningsysteem.data.util.ItemList;
 import org.rekeningsysteem.data.util.ListItem;
 
 import rx.Observable;
 import rx.functions.Func1;
+import rx.functions.Func2;
 
 public abstract class AbstractListController<M extends ListItem, U> {
 
@@ -19,12 +21,21 @@ public abstract class AbstractListController<M extends ListItem, U> {
 
 	public AbstractListController(Currency currency, AbstractListPane<U> ui,
 			Func1<Currency, ? extends AbstractListItemController<? extends M>> func) {
+		this(ui, ui.getAddButtonEvent().map(e -> func.call(currency)));
+	}
+
+	public AbstractListController(Currency currency, BtwPercentage defaultBtw,
+			AbstractListPane<U> ui,
+			Func2<Currency, BtwPercentage, ? extends AbstractListItemController<? extends M>> func) {
+		this(ui, ui.getAddButtonEvent().map(e -> func.call(currency, defaultBtw)));
+	}
+
+	private AbstractListController(AbstractListPane<U> ui,
+			Observable<? extends AbstractListItemController<? extends M>> listItemController) {
 		this.ui = ui;
 		this.model = this.ui.getData().map(this::uiToModel);
 
-		this.getUI().getAddButtonEvent()
-				.map(event -> currency)
-				.map(func)
+		listItemController
 				.doOnNext(controller -> Main.getMain().showModalMessage(controller.getUI()))
 				.flatMap(controller -> controller.getModel())
 				.doOnNext(optItem -> Main.getMain().hideModalMessage())
@@ -32,7 +43,7 @@ public abstract class AbstractListController<M extends ListItem, U> {
 				.flatMap(optItem -> this.getModel().first()
 						.doOnNext(list -> optItem.map(list::add)))
 				.map(this::modelToUI)
-				.subscribe(this.getUI()::setData);
+				.subscribe(this.ui::setData);
 
 		this.ui.getUpButtonEvent()
 				.flatMap(index -> this.model.first()

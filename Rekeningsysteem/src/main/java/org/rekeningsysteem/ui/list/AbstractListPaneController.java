@@ -10,18 +10,16 @@ import org.rekeningsysteem.ui.btw.BtwController;
 
 import rx.Observable;
 
+// TODO what is this one doing? Seems to not been used anywhere...
 public abstract class AbstractListPaneController<M extends ListItem> extends WorkingPaneController {
 
 	private final Currency currency;
 	private final Observable<ItemList<M>> listModel;
-	private final Observable<BtwPercentage> btwModel;
 
-	public AbstractListPaneController(AbstractListController<M, ?> list, BtwController btw,
-			Currency currency) {
-		super(new BtwListPane(list.getUI(), btw.getUI()));
+	public AbstractListPaneController(AbstractListController<M, ?> list, Currency currency) {
+		super(new BtwListPane(list.getUI()));
 		this.currency = currency;
 		this.listModel = list.getModel();
-		this.btwModel = btw.getModel();
 	}
 
 	public Currency getCurrency() {
@@ -30,9 +28,5 @@ public abstract class AbstractListPaneController<M extends ListItem> extends Wor
 
 	public Observable<ItemList<M>> getListModel() {
 		return this.listModel;
-	}
-
-	public Observable<BtwPercentage> getBtwModel() {
-		return this.btwModel;
 	}
 }

@@ -13,6 +13,7 @@ import org.rekeningsysteem.ui.textfields.PercentageField;
 
 import rx.Observable;
 
+@Deprecated
 public class BtwPane extends Page {
 
 	private final GridPane grid = new GridPane();

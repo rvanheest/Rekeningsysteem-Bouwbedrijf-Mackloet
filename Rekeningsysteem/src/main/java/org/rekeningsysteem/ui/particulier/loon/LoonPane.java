@@ -61,6 +61,7 @@ public class LoonPane extends ItemPane {
 	public void setInstantLoon(InstantLoon loon) {
 		this.instantController.getUI().setOmschrijving(loon.getOmschrijving());
 		this.instantController.getUI().setLoon(loon.getLoon().getBedrag());
+		this.instantController.getUI().setBtwPercentage(loon.getLoonBtwPercentage());
 	}
 
 	public Observable<ProductLoon> getProductLoon() {
@@ -70,5 +71,11 @@ public class LoonPane extends ItemPane {
 	public void setProductLoon(ProductLoon loon) {
 		this.productController.getUI().setUren(loon.getUren());
 		this.productController.getUI().setUurloon(loon.getUurloon().getBedrag());
+		this.productController.getUI().setBtwPercentage(loon.getLoonBtwPercentage());
+	}
+
+	public void setBtwPercentage(Double btwPercentage) {
+		this.instantController.getUI().setBtwPercentage(btwPercentage);
+		this.productController.getUI().setBtwPercentage(btwPercentage);
 	}
 }

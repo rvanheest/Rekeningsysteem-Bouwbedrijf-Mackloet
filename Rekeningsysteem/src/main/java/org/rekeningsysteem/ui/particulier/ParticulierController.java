@@ -26,35 +26,30 @@ public class ParticulierController extends AbstractRekeningController<Particulie
 	}
 
 	public ParticulierController(PropertiesWorker properties, Database database) {
-		this(properties.getProperty(PropertyModelEnum.VALUTAISO4217)
-				.map(Currency::getInstance)
-				.orElse(Currency.getInstance("EUR")),
-				properties.getProperty(PropertyModelEnum.LOONBTWPERCENTAGE)
-						.map(Double::parseDouble)
-						.<BtwPercentage> flatMap(l -> properties
-								.getProperty(PropertyModelEnum.MATERIAALBTWPERCENTAGE)
-								.map(Double::parseDouble)
-								.map(m -> new BtwPercentage(l, m)))
-						.orElse(new BtwPercentage(6, 21)), database);
+		this(getDefaultCurrency(properties), getDefaultBtwPercentage(properties), database);
 	}
 
-	public ParticulierController(Currency currency, BtwPercentage btw, Database database) {
-		this(new OmschrFactuurHeaderController(database), new ParticulierListPaneController(currency, btw),
-				new LoonListPaneController(currency));
+	public ParticulierController(Currency currency, BtwPercentage defaultBtw, Database database) {
+		this(new OmschrFactuurHeaderController(database),
+				new ParticulierListPaneController(currency, defaultBtw),
+				new LoonListPaneController(currency, defaultBtw));
 	}
 
-	public ParticulierController(ParticulierFactuur input, Database database) {
+	public ParticulierController(ParticulierFactuur input, PropertiesWorker properties, Database database) {
 		this(new OmschrFactuurHeaderController(input.getFactuurHeader(), database),
-				new ParticulierListPaneController(input.getCurrency(), input.getItemList(), input.getBtwPercentage()),
-				new LoonListPaneController(input.getCurrency(), input.getLoonList()));
+				new ParticulierListPaneController(input.getCurrency(),
+						getDefaultBtwPercentage(properties), input.getItemList()),
+				new LoonListPaneController(input.getCurrency(),
+						getDefaultBtwPercentage(properties), input.getLoonList()));
 	}
 
 	public ParticulierController(OmschrFactuurHeaderController header,
 			ParticulierListPaneController body, LoonListPaneController loon) {
 		super(new RekeningSplitPane(header.getUI(), body.getUI(), loon.getUI()),
 				Observable.combineLatest(header.getModel(), body.getListModel(),
-						loon.getModel(), body.getBtwModel(),
-						(head, list, loonList, btw) -> new ParticulierFactuur(head, body.getCurrency(), list, loonList, btw)));
+						loon.getModel(),
+						(head, list, loonList) -> new ParticulierFactuur(head, body.getCurrency(),
+								list, loonList)));
 		this.header = header;
 		this.list = body;
 		this.loon = loon;

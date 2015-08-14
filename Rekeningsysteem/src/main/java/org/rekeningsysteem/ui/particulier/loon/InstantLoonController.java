@@ -24,7 +24,8 @@ public class InstantLoonController {
 
 	public InstantLoonController(InstantLoonPane ui) {
 		this.ui = ui;
-		this.model = Observable.combineLatest(ui.getOmschrijving(), ui.getLoon().map(Geld::new), InstantLoon::new);
+		this.model = Observable.combineLatest(ui.getOmschrijving(), ui.getLoon().map(Geld::new),
+				ui.getLoonBtwPercentage(), InstantLoon::new);
 	}
 
 	public InstantLoonPane getUI() {
