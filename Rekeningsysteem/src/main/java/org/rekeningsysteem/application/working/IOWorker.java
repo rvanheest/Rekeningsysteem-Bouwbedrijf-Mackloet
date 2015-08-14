@@ -36,7 +36,6 @@ public class IOWorker {
 	}
 
 	public void save(AbstractRekening rekening, File file) {
-		System.out.println("save " + rekening + " in " + file);
 		this.saver.save(rekening, file);
 	}
 

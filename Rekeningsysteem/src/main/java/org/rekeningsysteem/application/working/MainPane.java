@@ -118,6 +118,7 @@ public class MainPane extends BorderPane {
 
 		this.initSaveObservable()
 				.flatMap(tab -> tab.getModel()
+							.first()
 							.map(rekening -> rekening instanceof Offerte)
 							.doOnNext(isOfferte -> {
 								if (!tab.getSaveFile().isPresent()) {

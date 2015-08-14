@@ -12,7 +12,7 @@ import org.rekeningsysteem.data.offerte.Offerte;
 import org.rekeningsysteem.data.particulier.ParticulierFactuur;
 import org.rekeningsysteem.data.reparaties.ReparatiesFactuur;
 import org.rekeningsysteem.data.util.AbstractRekening;
-import org.rekeningsysteem.data.util.header.FactuurHeader;
+import org.rekeningsysteem.data.util.header.Debiteur;
 import org.rekeningsysteem.io.database.Database;
 import org.rekeningsysteem.logic.database.DebiteurDBInteraction;
 import org.rekeningsysteem.properties.PropertiesWorker;
@@ -25,6 +25,7 @@ import org.rekeningsysteem.ui.reparaties.ReparatiesController;
 
 import de.nixosoft.jlr.JLROpener;
 import rx.Observable;
+import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
 public class RekeningTab extends Tab {
@@ -32,6 +33,7 @@ public class RekeningTab extends Tab {
 	private static final IOWorker ioWorker = new IOWorker();
 
 	private final PublishSubject<Boolean> modified = PublishSubject.create();
+	private final BehaviorSubject<AbstractRekening> latest = BehaviorSubject.create();
 	private final AbstractRekeningController<? extends AbstractRekening> controller;
 	private Optional<File> saveFile;
 	private final DebiteurDBInteraction debiteurDB;
@@ -41,7 +43,9 @@ public class RekeningTab extends Tab {
 		this(name, controller, null, database);
 	}
 
-	public RekeningTab(String name, AbstractRekeningController<? extends AbstractRekening> controller, File file, Database database) {
+	public RekeningTab(String name,
+			AbstractRekeningController<? extends AbstractRekening> controller,
+			File file, Database database) {
 		super(name);
 		this.controller = controller;
 		this.saveFile = Optional.ofNullable(file);
@@ -49,7 +53,9 @@ public class RekeningTab extends Tab {
 
 		this.setContent(this.controller.getUI());
 
-		this.controller.getModel()
+		this.getModel().subscribe(this.latest);
+
+		this.getModel() // TODO rewrite this expression
 				.buffer(2, 1) // fired at first on the 2nd onNext!
 				.map(list -> list.get(0).equals(list.get(1))) // will of course return false
 				.doOnNext(b -> {
@@ -120,14 +126,15 @@ public class RekeningTab extends Tab {
 	}
 
 	public void save() {
-		this.getModel().first()
+		this.latest.first()
 				.doOnNext(factuur -> this.saveFile.ifPresent(file -> ioWorker.save(factuur, file)))
-				.publish(rekening -> this.controller.getSaveSelected()
-						.filter(select -> select)
-						.flatMap(select -> rekening
-								.map(AbstractRekening::getFactuurHeader)
-								.map(FactuurHeader::getDebiteur))
-						.flatMap(this.debiteurDB::addDebiteur))
+				.flatMap(rekening -> this.controller.getSaveSelected().flatMap(select -> {
+					if (select) {
+						Debiteur debiteur = rekening.getFactuurHeader().getDebiteur();
+						return this.debiteurDB.addDebiteur(debiteur);
+					}
+					return Observable.just(-1);
+				}))
 				.map(i -> this.getText())
 				.filter(s -> s.endsWith("*"))
 				.map(s -> s.substring(0, s.length() - 1))
@@ -136,7 +143,8 @@ public class RekeningTab extends Tab {
 	}
 
 	public void export(File file) {
-		this.getModel().first()
+		this.latest.first()
+				.doOnNext(System.out::println)
 				.subscribe(factuur -> ioWorker.export(factuur, file));
 	}
 }
