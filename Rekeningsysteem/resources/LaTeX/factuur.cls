@@ -135,7 +135,7 @@
 
 	\newcommand*{\totalRow}[1]{
 		\hline\hline\hline
-		{\bf Totaal in #1} & & & & ##1 \\
+		{\bf Totaal} & & & & ##1 \\
 	}
 
 	\renewcommand{\tabcolsep}{3ex}
