@@ -72,21 +72,28 @@ public class GebruiktEsselinkArtikelPane extends GridPane {
 		this.aantal = Observables.fromProperty(this.aantalTF.valueProperty())
 				.filter(Objects::nonNull)
 				.map(BigDecimal::doubleValue);
-		this.aantalTF.setPrefColumnCount(20);
+		this.aantalTF.setPrefColumnCount(10);
 
 		this.btwPercentage = Observables.fromProperty(this.btwPercentageTF.valueProperty())
 				.map(n -> Objects.isNull(n) ? BigDecimal.ZERO : n)
 				.map(BigDecimal::doubleValue);
+
+		GridPane inner = new GridPane();
+		inner.setPadding(new Insets(0));
+		inner.setHgap(10);
+		inner.setVgap(5);
+		inner.setAlignment(Pos.CENTER);
+		inner.add(new Label("Aantal"), 0, 0);
+		inner.add(this.aantalTF, 1, 0);
+		inner.add(new Label("BTW"), 0, 1);
+		inner.add(this.btwPercentageTF, 1, 1);
 
 		this.add(vbox, 0, 0);
 		this.add(searchField, 1, 0);
 		this.add(spacer, 0, 1);
 		this.add(artNrOmschr, 0, 2, 2, 1);
 		this.add(extraInfo, 0, 3, 2, 1);
-		this.add(new Label("Aantal"), 0, 4);
-		this.add(this.aantalTF, 1, 4);
-		this.add(new Label("Btw percentage"), 0, 5);
-		this.add(this.btwPercentageTF, 1, 5);
+		this.add(inner, 0, 4, 2, 1);
 	}
 
 	public Observable<EsselinkArtikel> getArtikel() {

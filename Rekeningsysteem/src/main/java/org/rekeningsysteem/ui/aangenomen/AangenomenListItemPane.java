@@ -68,8 +68,8 @@ public class AangenomenListItemPane extends ItemPane {
 		Label omschrL = new Label("Omschrijving");
 		Label loonL = new Label("Arbeid");
 		Label materiaalL = new Label("Materiaal");
-		Label loonBtwL = new Label("Arbeid btw");
-		Label materiaalBtwL = new Label("Materiaal btw");
+		Label loonBtwL = new Label("BTW arbeid");
+		Label materiaalBtwL = new Label("BTW materiaal");
 
 		content.add(omschrL, 0, 0);
 		content.add(loonL, 0, 1);
