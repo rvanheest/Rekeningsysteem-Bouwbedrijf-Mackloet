@@ -46,7 +46,7 @@ public class DefaultOfferteTextPaneController {
 						Alert alert = new Alert(AlertType.NONE, alertText, close);
 						alert.setHeaderText("Fout bij opslaan");
 						alert.show();
-						this.logger.error(e.getMessage() + "\n" + "De tekst was: \"" + s + "\"\n", e);
+						this.logger.error(e.getMessage() + "\nDe tekst was: \"" + s + "\"\n", e);
 					}
 				});
 		cancel.subscribe(e -> {

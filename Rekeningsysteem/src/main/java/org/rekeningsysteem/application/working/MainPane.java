@@ -111,6 +111,7 @@ public class MainPane extends BorderPane {
 				.mergeWith(this.initParticulierObservable())
 				.mergeWith(this.initOfferteObservable())
 				.mergeWith(this.initOpenObservable(stage))
+				.retry()
 				.subscribe(tab -> {
 					this.tabpane.addTab(tab);
 					this.tabpane.selectTab(tab);

@@ -91,28 +91,22 @@ public class RekeningTab extends Tab {
 			}
 		}
 		else if (file.getName().endsWith(".xml")) {
-			Observable<? extends AbstractRekening> factuur = ioWorker.load(file);
 			PropertiesWorker properties = PropertiesWorker.getInstance();
 
-			Observable<AangenomenController> aangenomen = factuur
-					.ofType(AangenomenFactuur.class)
-					.map(fact -> new AangenomenController(fact, properties, database));
-			Observable<MutatiesController> mutaties = factuur
-					.ofType(MutatiesFactuur.class)
-					.map(fact -> new MutatiesController(fact, database));
-			Observable<OfferteController> offerte = factuur
-					.ofType(Offerte.class)
-					.map(fact -> new OfferteController(fact, database));
-			Observable<ParticulierController> particulier = factuur
-					.ofType(ParticulierFactuur.class)
-					.map(fact -> new ParticulierController(fact, properties, database));
-			Observable<ReparatiesController> reparaties = factuur
-					.ofType(ReparatiesFactuur.class)
-					.map(fact -> new ReparatiesController(fact, database));
+			return ioWorker.load(file).publish(f -> {
+				Observable<AangenomenController> aangenomen = f.ofType(AangenomenFactuur.class)
+						.map(fact -> new AangenomenController(fact, properties, database));
+				Observable<MutatiesController> mutaties = f.ofType(MutatiesFactuur.class)
+						.map(fact -> new MutatiesController(fact, database));
+				Observable<OfferteController> offerte = f.ofType(Offerte.class)
+						.map(fact -> new OfferteController(fact, database));
+				Observable<ParticulierController> particulier = f.ofType(ParticulierFactuur.class)
+						.map(fact -> new ParticulierController(fact, properties, database));
+				Observable<ReparatiesController> reparaties = f.ofType(ReparatiesFactuur.class)
+						.map(fact -> new ReparatiesController(fact, database));
 
-			return Observable.merge(aangenomen, mutaties, offerte, particulier, reparaties)
-					.map(c -> new RekeningTab(file.getName(), c, file, database))
-					.single();
+				return Observable.merge(aangenomen, mutaties, offerte, particulier, reparaties);
+			}).map(c -> new RekeningTab(file.getName(), c, file, database)).single();
 		}
 		return Observable.empty();
 	}
