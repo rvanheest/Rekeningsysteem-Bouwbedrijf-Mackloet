@@ -3,7 +3,6 @@ package org.rekeningsysteem.data.aangenomen;
 import java.util.Currency;
 
 import org.rekeningsysteem.data.util.AbstractFactuur;
-import org.rekeningsysteem.data.util.BtwPercentage;
 import org.rekeningsysteem.data.util.ItemList;
 import org.rekeningsysteem.data.util.header.OmschrFactuurHeader;
 import org.rekeningsysteem.data.util.visitor.RekeningVisitor;
@@ -11,8 +10,8 @@ import org.rekeningsysteem.data.util.visitor.RekeningVisitor;
 public class AangenomenFactuur extends AbstractFactuur<AangenomenListItem> {
 
 	public AangenomenFactuur(OmschrFactuurHeader header, Currency currency,
-			ItemList<AangenomenListItem> itemList, BtwPercentage btwPercentage) {
-		super(header, currency, itemList, btwPercentage);
+			ItemList<AangenomenListItem> itemList) {
+		super(header, currency, itemList);
 	}
 
 	@Override
@@ -29,7 +28,6 @@ public class AangenomenFactuur extends AbstractFactuur<AangenomenListItem> {
 	public String toString() {
 		return "<AangenomenFactuur[" + String.valueOf(this.getFactuurHeader()) + ", "
 				+ String.valueOf(this.getCurrency()) + ", "
-				+ String.valueOf(this.getItemList()) + ", "
-				+ String.valueOf(this.getBtwPercentage()) + "]>";
+				+ String.valueOf(this.getItemList()) + "]>";
 	}
 }

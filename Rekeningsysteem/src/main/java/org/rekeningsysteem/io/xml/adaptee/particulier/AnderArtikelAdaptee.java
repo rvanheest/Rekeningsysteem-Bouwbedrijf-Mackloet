@@ -9,11 +9,12 @@ import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.io.xml.adapter.util.GeldAdapter;
 
 @XmlRootElement(name = "ander-artikel")
-@XmlType(propOrder = { "omschrijving", "prijs" })
+@XmlType(propOrder = { "omschrijving", "prijs", "materiaalBtwPercentage" })
 public class AnderArtikelAdaptee extends ParticulierArtikelAdaptee {
 
 	private String omschrijving;
 	private Geld prijs;
+	private double materiaalBtwPercentage;
 
 	@XmlElement
 	public String getOmschrijving() {
@@ -31,5 +32,14 @@ public class AnderArtikelAdaptee extends ParticulierArtikelAdaptee {
 
 	public void setPrijs(Geld prijs) {
 		this.prijs = prijs;
+	}
+
+	@XmlElement
+	public double getMateriaalBtwPercentage() {
+		return this.materiaalBtwPercentage;
+	}
+
+	public void setMateriaalBtwPercentage(double materiaalBtwPercentage) {
+		this.materiaalBtwPercentage = materiaalBtwPercentage;
 	}
 }

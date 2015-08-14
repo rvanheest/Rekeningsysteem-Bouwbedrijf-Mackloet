@@ -6,7 +6,6 @@ import java.util.Optional;
 
 import org.rekeningsysteem.application.working.RekeningSplitPane;
 import org.rekeningsysteem.data.mutaties.MutatiesFactuur;
-import org.rekeningsysteem.data.util.BtwPercentage;
 import org.rekeningsysteem.data.util.header.Debiteur;
 import org.rekeningsysteem.data.util.header.FactuurHeader;
 import org.rekeningsysteem.io.database.Database;
@@ -29,27 +28,24 @@ public class MutatiesController extends AbstractRekeningController<MutatiesFactu
 	public MutatiesController(PropertiesWorker properties, Database database) {
 		this(properties.getProperty(PropertyModelEnum.VALUTAISO4217)
 				.map(Currency::getInstance)
-				.orElse(Currency.getInstance("EUR")),
-				new BtwPercentage(0.0, 0.0), database);
+				.orElse(Currency.getInstance("EUR")), database);
 	}
 
-	public MutatiesController(Currency currency, BtwPercentage btw, Database database) {
+	public MutatiesController(Currency currency, Database database) {
 		this(new FactuurHeaderController(new FactuurHeader(new Debiteur("Woongoed GO",
 				"Landbouwweg", "1", "3241MV", "Middelharnis", "NL.0025.45.094.B.01"),
-				LocalDate.now()), database), new MutatiesListPaneController(currency, btw));
+				LocalDate.now()), database), new MutatiesListPaneController(currency));
 	}
 
 	public MutatiesController(MutatiesFactuur input, Database database) {
 		this(new FactuurHeaderController(input.getFactuurHeader(), database),
-				new MutatiesListPaneController(input.getCurrency(), input.getItemList(),
-						input.getBtwPercentage()));
+				new MutatiesListPaneController(input.getCurrency(), input.getItemList()));
 	}
 
 	public MutatiesController(FactuurHeaderController header, MutatiesListPaneController body) {
 		super(new RekeningSplitPane(header.getUI(), body.getUI()),
 				Observable.combineLatest(header.getModel(), body.getListModel(),
-						body.getBtwModel(), (head, list, btw) ->
-						new MutatiesFactuur(head, body.getCurrency(), list, btw)));
+						(head, list) -> new MutatiesFactuur(head, body.getCurrency(), list)));
 		this.header = header;
 		this.list = body;
 	}

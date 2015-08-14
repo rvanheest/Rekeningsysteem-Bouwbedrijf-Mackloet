@@ -7,19 +7,15 @@ import org.junit.Before;
 import org.junit.Test;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.data.util.loon.AbstractLoon;
-import org.rekeningsysteem.test.data.EqualsHashCodeTest;
+import org.rekeningsysteem.test.data.util.BtwListItemTest;
 
-public abstract class AbstractLoonTest extends EqualsHashCodeTest {
+public abstract class AbstractLoonTest extends BtwListItemTest {
 
 	private AbstractLoon loon;
 	private String omschrijving = "omschrijving";
 
 	@Override
 	protected abstract AbstractLoon makeInstance();
-
-	protected AbstractLoon getInstance() {
-		return this.loon;
-	}
 
 	protected String getTestOmschrijving() {
 		return this.omschrijving;
@@ -30,6 +26,11 @@ public abstract class AbstractLoonTest extends EqualsHashCodeTest {
 	public void setUp() {
 		super.setUp();
 		this.loon = this.makeInstance();
+	}
+
+	@Test
+	public void testGetOmschrijving() {
+		assertEquals(this.omschrijving, this.loon.getOmschrijving());
 	}
 
 	@Test
@@ -44,10 +45,7 @@ public abstract class AbstractLoonTest extends EqualsHashCodeTest {
 	}
 
 	@Test
-	public abstract void testGetTotaal();
-
-	@Test
-	public void testGetTotaalEqualsToLoon() {
-		assertEquals(this.loon.getLoon(), this.loon.getTotaal());
+	public void testGetMateriaalBtwPercentage() {
+		assertEquals(0.0, this.loon.getMateriaalBtwPercentage(), 0.0);
 	}
 }

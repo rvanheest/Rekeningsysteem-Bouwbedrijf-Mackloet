@@ -30,9 +30,21 @@ public class AangenomenListItemAdapteeTest {
 	}
 
 	@Test
+	public void testSetGetLoonBtwPercentage() {
+		this.adaptee.setLoonBtwPercentage(0.2);
+		assertEquals(0.2, this.adaptee.getLoonBtwPercentage(), 0.0);
+	}
+
+	@Test
 	public void testSetGetMateriaal() {
 		Geld materiaal = new Geld(90);
 		this.adaptee.setMateriaal(materiaal);
 		assertEquals(materiaal, this.adaptee.getMateriaal());
+	}
+
+	@Test
+	public void testSetGetMateriaalBtwPercentage() {
+		this.adaptee.setMateriaalBtwPercentage(0.3);
+		assertEquals(0.3, this.adaptee.getMateriaalBtwPercentage(), 0.0);
 	}
 }

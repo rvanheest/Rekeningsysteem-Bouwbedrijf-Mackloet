@@ -22,20 +22,14 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.rekeningsysteem.data.aangenomen.AangenomenFactuur;
-import org.rekeningsysteem.data.aangenomen.AangenomenListItem;
-import org.rekeningsysteem.data.mutaties.MutatiesBon;
 import org.rekeningsysteem.data.mutaties.MutatiesFactuur;
 import org.rekeningsysteem.data.offerte.Offerte;
-import org.rekeningsysteem.data.particulier.ParticulierArtikel;
 import org.rekeningsysteem.data.particulier.ParticulierFactuur;
-import org.rekeningsysteem.data.reparaties.ReparatiesBon;
 import org.rekeningsysteem.data.reparaties.ReparatiesFactuur;
-import org.rekeningsysteem.data.util.BtwPercentage;
 import org.rekeningsysteem.data.util.ItemList;
 import org.rekeningsysteem.data.util.header.Debiteur;
 import org.rekeningsysteem.data.util.header.FactuurHeader;
 import org.rekeningsysteem.data.util.header.OmschrFactuurHeader;
-import org.rekeningsysteem.data.util.loon.AbstractLoon;
 import org.rekeningsysteem.io.xml.XmlMakerVisitor;
 import org.rekeningsysteem.io.xml.root.AangenomenFactuurRoot;
 import org.rekeningsysteem.io.xml.root.MutatiesFactuurRoot;
@@ -56,7 +50,6 @@ public class XmlMakerVisitorTest {
 			new Debiteur("", "", "", "", "", ""), LocalDate.now(), "");
 	private final OmschrFactuurHeader testOmschrHeader = new OmschrFactuurHeader(
 			new Debiteur("", "", "", "", "", ""), LocalDate.now(), "");
-	private final BtwPercentage btwPercentage = new BtwPercentage(0.0, 0.0);
 
 	@Before
 	public void setUp() {
@@ -80,8 +73,8 @@ public class XmlMakerVisitorTest {
 
 	@Test
 	public void testVisitAangenomenFactuur() throws Exception {
-		AangenomenFactuur factuur = new AangenomenFactuur(this.testOmschrHeader, Currency.getInstance(Locale.US),
-				new ItemList<AangenomenListItem>(), this.btwPercentage);
+		AangenomenFactuur factuur = new AangenomenFactuur(this.testOmschrHeader,
+				Currency.getInstance(Locale.US), new ItemList<>());
 		this.visitor.visit(factuur);
 
 		verify(this.mockedMarshaller).setProperty(anyString(), anyObject());
@@ -90,8 +83,8 @@ public class XmlMakerVisitorTest {
 
 	@Test
 	public void testVisitMutatiesFactuur() throws Exception {
-		MutatiesFactuur factuur = new MutatiesFactuur(this.testHeader, Currency.getInstance(Locale.US),
-				new ItemList<MutatiesBon>(), this.btwPercentage);
+		MutatiesFactuur factuur = new MutatiesFactuur(this.testHeader,
+				Currency.getInstance(Locale.US), new ItemList<>());
 		this.visitor.visit(factuur);
 
 		verify(this.mockedMarshaller).setProperty(anyString(), anyObject());
@@ -109,9 +102,8 @@ public class XmlMakerVisitorTest {
 
 	@Test
 	public void testVisitParticulierFactuur() throws Exception {
-		ParticulierFactuur factuur = new ParticulierFactuur(this.testOmschrHeader, Currency.getInstance(Locale.US),
-				new ItemList<ParticulierArtikel>(), new ItemList<AbstractLoon>(),
-				this.btwPercentage);
+		ParticulierFactuur factuur = new ParticulierFactuur(this.testOmschrHeader,
+				Currency.getInstance(Locale.US), new ItemList<>(), new ItemList<>());
 		this.visitor.visit(factuur);
 
 		verify(this.mockedMarshaller).setProperty(anyString(), anyObject());
@@ -120,8 +112,8 @@ public class XmlMakerVisitorTest {
 
 	@Test
 	public void testVisitReparatiesFactuur() throws Exception {
-		ReparatiesFactuur factuur = new ReparatiesFactuur(this.testHeader, Currency.getInstance(Locale.US),
-				new ItemList<ReparatiesBon>(), this.btwPercentage);
+		ReparatiesFactuur factuur = new ReparatiesFactuur(this.testHeader,
+				Currency.getInstance(Locale.US), new ItemList<>());
 		this.visitor.visit(factuur);
 
 		verify(this.mockedMarshaller).setProperty(anyString(), anyObject());

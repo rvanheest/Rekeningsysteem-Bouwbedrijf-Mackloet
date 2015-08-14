@@ -9,11 +9,12 @@ import org.rekeningsysteem.data.particulier.EsselinkArtikel;
 import org.rekeningsysteem.io.xml.adapter.particulier.EsselinkArtikelAdapter;
 
 @XmlRootElement(name = "gebruikt-esselink-artikel")
-@XmlType(propOrder = { "artikel", "aantal" })
+@XmlType(propOrder = { "artikel", "aantal", "materiaalBtwPercentage" })
 public class GebruiktEsselinkArtikelAdaptee extends ParticulierArtikelAdaptee {
 
 	private EsselinkArtikel artikel;
 	private double aantal;
+	private double materiaalBtwPercentage;
 
 	@XmlJavaTypeAdapter(EsselinkArtikelAdapter.class)
 	public EsselinkArtikel getArtikel() {
@@ -32,4 +33,13 @@ public class GebruiktEsselinkArtikelAdaptee extends ParticulierArtikelAdaptee {
 	public void setAantal(double aantal) {
 		this.aantal = aantal;
 	}
+
+	@XmlElement
+	public double getMateriaalBtwPercentage() {
+		return this.materiaalBtwPercentage;
+	}
+
+    public void setMateriaalBtwPercentage(double materiaalBtwPercentage) {
+    	this.materiaalBtwPercentage = materiaalBtwPercentage;
+    }
 }

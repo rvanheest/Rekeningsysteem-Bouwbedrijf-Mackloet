@@ -34,4 +34,10 @@ public class ProductLoonAdapteeTest {
 		this.adaptee.setUurloon(uurloon);
 		assertEquals(uurloon, this.adaptee.getUurloon());
 	}
+
+	@Test
+	public void testSetGetLoonBtwPercentage() {
+		this.adaptee.setLoonBtwPercentage(0.4);
+		assertEquals(0.4, this.adaptee.getLoonBtwPercentage(), 0.0);
+	}
 }

@@ -33,10 +33,9 @@ public final class MutatiesBon implements ListItem {
 
 	@Override
 	public Geld getMateriaal() {
-		return new Geld(this.prijs);
+		return this.prijs;
 	}
 
-	@Override
 	public Geld getTotaal() {
 		return this.getMateriaal();
 	}

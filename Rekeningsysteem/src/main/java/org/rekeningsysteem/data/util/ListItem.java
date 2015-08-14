@@ -7,6 +7,4 @@ public interface ListItem extends ListItemVisitable {
 	Geld getLoon();
 
 	Geld getMateriaal();
-
-	Geld getTotaal();
 }

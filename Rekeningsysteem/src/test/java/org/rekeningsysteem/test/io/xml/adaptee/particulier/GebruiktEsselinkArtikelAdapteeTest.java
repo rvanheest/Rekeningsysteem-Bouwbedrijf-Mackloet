@@ -32,4 +32,10 @@ public class GebruiktEsselinkArtikelAdapteeTest extends ParticulierArtikelAdapte
 		this.getInstance().setAantal(12.43);
 		assertEquals(12.43, this.getInstance().getAantal(), 0.0);
 	}
+
+	@Test
+	public void testSetGetMateriaalBtwPercentage() {
+		this.getInstance().setMateriaalBtwPercentage(0.7);
+		assertEquals(0.7, this.getInstance().getMateriaalBtwPercentage(), 0.0);
+	}
 }

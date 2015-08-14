@@ -7,12 +7,15 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.io.xml.adapter.util.GeldAdapter;
 
-@XmlType(propOrder = { "omschrijving", "loon", "materiaal" })
+@XmlType(propOrder = { "omschrijving", "loon", "loonBtwPercentage", "materiaal",
+		"materiaalBtwPercentage" })
 public class AangenomenListItemAdaptee {
 
 	private String omschrijving;
 	private Geld loon;
+	private double loonBtwPercentage;
 	private Geld materiaal;
+	private double materiaalBtwPercentage;
 
 	@XmlElement
 	public String getOmschrijving() {
@@ -32,6 +35,15 @@ public class AangenomenListItemAdaptee {
 		this.loon = loon;
 	}
 
+	@XmlElement
+	public double getLoonBtwPercentage() {
+		return this.loonBtwPercentage;
+	}
+
+	public void setLoonBtwPercentage(double loonBtwPercentage) {
+		this.loonBtwPercentage = loonBtwPercentage;
+	}
+
 	@XmlJavaTypeAdapter(GeldAdapter.class)
 	public Geld getMateriaal() {
 		return this.materiaal;
@@ -39,5 +51,14 @@ public class AangenomenListItemAdaptee {
 
 	public void setMateriaal(Geld materiaal) {
 		this.materiaal = materiaal;
+	}
+
+	@XmlElement
+	public double getMateriaalBtwPercentage() {
+		return this.materiaalBtwPercentage;
+	}
+
+	public void setMateriaalBtwPercentage(double materiaalBtwPercentage) {
+		this.materiaalBtwPercentage = materiaalBtwPercentage;
 	}
 }

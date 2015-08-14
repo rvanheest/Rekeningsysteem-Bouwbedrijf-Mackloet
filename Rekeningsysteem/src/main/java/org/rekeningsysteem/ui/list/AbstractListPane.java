@@ -30,18 +30,18 @@ public abstract class AbstractListPane<T> extends Page {
 
 	public AbstractListPane(String title) {
 		super(title);
-		
+
 		this.up.setId("up-button");
 		this.down.setId("down-button");
 		this.add.setId("add-button");
-		
+
 		this.table.setPlaceholder(new Label("Geen items in deze lijst"));
 		this.table.getColumns().addAll(this.initTableColumns());
 		this.table.setEditable(false);
 		this.table.setItems(this.data);
 		this.table.setSortPolicy(param -> false);
 		this.table.setTableMenuButtonVisible(false);
-		
+
 		HBox hb = new HBox(this.table, this.initNavigationPane());
 		hb.setSpacing(20);
 
@@ -57,7 +57,7 @@ public abstract class AbstractListPane<T> extends Page {
 
 	protected TableColumn<T, Boolean> getDeleteCol() {
 		TableColumn<T, Boolean> deleteCol = new TableColumn<>();
-		
+
 		deleteCol.setCellValueFactory(par -> new SimpleBooleanProperty(par.getValue() != null));
 		deleteCol.setCellFactory(param -> {
 			Button button = new Button();
@@ -68,7 +68,7 @@ public abstract class AbstractListPane<T> extends Page {
 					.subscribe();
 			return buttonCell;
 		});
-		
+
 		return deleteCol;
 	}
 

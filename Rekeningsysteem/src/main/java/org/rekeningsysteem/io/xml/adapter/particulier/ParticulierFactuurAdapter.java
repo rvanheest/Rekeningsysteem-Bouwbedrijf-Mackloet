@@ -12,8 +12,7 @@ public class ParticulierFactuurAdapter extends
 	@Override
 	public ParticulierFactuur unmarshal(ParticulierFactuurAdaptee adaptee) {
 		return new ParticulierFactuur(adaptee.getFactuurHeader(),
-				adaptee.getCurrency(), adaptee.getItemList(), adaptee.getLoonList(),
-				adaptee.getBtwPercentage());
+				adaptee.getCurrency(), adaptee.getItemList(), adaptee.getLoonList());
 	}
 
 	@Override
@@ -23,7 +22,6 @@ public class ParticulierFactuurAdapter extends
 		adaptee.setCurrency(factuur.getCurrency());
 		adaptee.setItemList(new ItemList<>(factuur.getItemList()));
 		adaptee.setLoonList(new ItemList<>(factuur.getLoonList()));
-		adaptee.setBtwPercentage(factuur.getBtwPercentage());
 
 		return adaptee;
 	}

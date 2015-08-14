@@ -16,6 +16,6 @@ public class MoneyCell<T> extends TableCell<T, Double> {
 			double value = item.doubleValue();
 			this.setTextFill(value == 0 ? Color.BLACK : value < 0 ? Color.RED : Color.GREEN);
 		}
-		this.setAlignment(Pos.BASELINE_RIGHT);
+		this.setAlignment(Pos.TOP_RIGHT);
 	}
 }

@@ -16,6 +16,7 @@ import javafx.scene.layout.VBox;
 import org.rekeningsysteem.data.particulier.EsselinkArtikel;
 import org.rekeningsysteem.rxjavafx.Observables;
 import org.rekeningsysteem.ui.textfields.NumberField;
+import org.rekeningsysteem.ui.textfields.PercentageField;
 import org.rekeningsysteem.ui.textfields.searchbox.AbstractSearchBox;
 
 import rx.Observable;
@@ -23,8 +24,10 @@ import rx.Observable;
 public class GebruiktEsselinkArtikelPane extends GridPane {
 
 	private final NumberField aantalTF = new NumberField();
+	private final PercentageField btwPercentageTF = new PercentageField();
 
 	private Observable<Double> aantal;
+	private final Observable<Double> btwPercentage;
 
 	private final AbstractSearchBox<EsselinkArtikel> searchBox;
 	private final ToggleGroup searchType = new ToggleGroup();
@@ -71,6 +74,10 @@ public class GebruiktEsselinkArtikelPane extends GridPane {
 				.map(BigDecimal::doubleValue);
 		this.aantalTF.setPrefColumnCount(20);
 
+		this.btwPercentage = Observables.fromProperty(this.btwPercentageTF.valueProperty())
+				.map(n -> Objects.isNull(n) ? BigDecimal.ZERO : n)
+				.map(BigDecimal::doubleValue);
+
 		this.add(vbox, 0, 0);
 		this.add(searchField, 1, 0);
 		this.add(spacer, 0, 1);
@@ -78,6 +85,8 @@ public class GebruiktEsselinkArtikelPane extends GridPane {
 		this.add(extraInfo, 0, 3, 2, 1);
 		this.add(new Label("Aantal"), 0, 4);
 		this.add(this.aantalTF, 1, 4);
+		this.add(new Label("Btw percentage"), 0, 5);
+		this.add(this.btwPercentageTF, 1, 5);
 	}
 
 	public Observable<EsselinkArtikel> getArtikel() {
@@ -90,6 +99,14 @@ public class GebruiktEsselinkArtikelPane extends GridPane {
 
 	public void setAantal(Double aantal) {
 		this.aantalTF.setValue(BigDecimal.valueOf(aantal));
+	}
+
+	public Observable<Double> getBtwPercentage() {
+		return this.btwPercentage;
+	}
+
+	public void setBtwPercentage(Double btwPercentage) {
+		this.btwPercentageTF.setValue(BigDecimal.valueOf(btwPercentage));
 	}
 
 	public Observable<EsselinkArtikelToggle> getSelectedToggle() {

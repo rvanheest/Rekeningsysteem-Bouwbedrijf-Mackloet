@@ -8,7 +8,6 @@ import java.util.Currency;
 import org.junit.Before;
 import org.junit.Test;
 import org.rekeningsysteem.data.aangenomen.AangenomenListItem;
-import org.rekeningsysteem.data.util.BtwPercentage;
 import org.rekeningsysteem.data.util.ItemList;
 import org.rekeningsysteem.data.util.header.Debiteur;
 import org.rekeningsysteem.data.util.header.OmschrFactuurHeader;
@@ -32,7 +31,7 @@ public class AangenomenFactuurAdapteeTest {
 	}
 
 	@Test
-	public void testSetGetValuta() {
+	public void testSetGetCurrency() {
 		this.adaptee.setCurrency(Currency.getInstance("EUR"));
 		assertEquals(Currency.getInstance("EUR"), this.adaptee.getCurrency());
 	}
@@ -42,12 +41,5 @@ public class AangenomenFactuurAdapteeTest {
 		ItemList<AangenomenListItem> list = new ItemList<>();
 		this.adaptee.setList(list);
 		assertEquals(list, this.adaptee.getList());
-	}
-
-	@Test
-	public void testSetGetBtwPercentage() {
-		BtwPercentage btw = new BtwPercentage(6, 21);
-		this.adaptee.setBtwPercentage(btw);
-		assertEquals(btw, this.adaptee.getBtwPercentage());
 	}
 }

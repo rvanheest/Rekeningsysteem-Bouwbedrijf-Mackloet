@@ -10,12 +10,14 @@ public final class GebruiktEsselinkArtikel implements ParticulierArtikel {
 	private final EsselinkArtikel artikel;
 	private final double aantal;
 	private final Geld materiaal;
+	private final double btwPercentage;
 
-	public GebruiktEsselinkArtikel(EsselinkArtikel artikel, double aantal) {
+	public GebruiktEsselinkArtikel(EsselinkArtikel artikel, double aantal, double btwPercentage) {
 		this.artikel = artikel;
 		this.aantal = aantal;
 		this.materiaal = this.artikel.getVerkoopPrijs().multiply(this.aantal)
 				.divide(this.artikel.getPrijsPer());
+		this.btwPercentage = btwPercentage;
 	}
 
 	public EsselinkArtikel getArtikel() {
@@ -27,18 +29,13 @@ public final class GebruiktEsselinkArtikel implements ParticulierArtikel {
 	}
 
 	@Override
-	public Geld getLoon() {
-		return new Geld(0);
-	}
-
-	@Override
 	public Geld getMateriaal() {
 		return new Geld(this.materiaal);
 	}
 
 	@Override
-	public Geld getTotaal() {
-		return this.getMateriaal();
+	public double getMateriaalBtwPercentage() {
+		return this.btwPercentage;
 	}
 
 	@Override
@@ -51,19 +48,21 @@ public final class GebruiktEsselinkArtikel implements ParticulierArtikel {
 		if (other instanceof GebruiktEsselinkArtikel) {
 			GebruiktEsselinkArtikel that = (GebruiktEsselinkArtikel) other;
 			return Objects.equals(this.artikel, that.artikel)
-					&& Objects.equals(this.aantal, that.aantal);
+					&& Objects.equals(this.aantal, that.aantal)
+					&& Objects.equals(this.btwPercentage, that.btwPercentage);
 		}
 		return false;
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(this.artikel, this.aantal);
+		return Objects.hash(this.artikel, this.aantal, this.btwPercentage);
 	}
 
 	@Override
 	public String toString() {
 		return "<GebruiktEsselinkArtikel[" + String.valueOf(this.artikel) + ", "
-				+ String.valueOf(this.aantal) + "]>";
+				+ String.valueOf(this.aantal) + ", "
+				+ String.valueOf(this.btwPercentage) + "]>";
 	}
 }

@@ -1,7 +1,5 @@
 package org.rekeningsysteem.test.io.xml;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.anyString;
@@ -23,27 +21,21 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.soap.Node;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.rekeningsysteem.data.aangenomen.AangenomenFactuur;
-import org.rekeningsysteem.data.aangenomen.AangenomenListItem;
-import org.rekeningsysteem.data.mutaties.MutatiesBon;
 import org.rekeningsysteem.data.mutaties.MutatiesFactuur;
 import org.rekeningsysteem.data.offerte.Offerte;
-import org.rekeningsysteem.data.particulier.ParticulierArtikel;
 import org.rekeningsysteem.data.particulier.ParticulierFactuur;
-import org.rekeningsysteem.data.reparaties.ReparatiesBon;
 import org.rekeningsysteem.data.reparaties.ReparatiesFactuur;
-import org.rekeningsysteem.data.util.BtwPercentage;
+import org.rekeningsysteem.data.util.AbstractRekening;
 import org.rekeningsysteem.data.util.ItemList;
 import org.rekeningsysteem.data.util.header.Debiteur;
 import org.rekeningsysteem.data.util.header.FactuurHeader;
 import org.rekeningsysteem.data.util.header.OmschrFactuurHeader;
-import org.rekeningsysteem.data.util.loon.AbstractLoon;
 import org.rekeningsysteem.io.xml.XmlReader;
 import org.rekeningsysteem.io.xml.root.AangenomenFactuurRoot;
 import org.rekeningsysteem.io.xml.root.MutatiesFactuurRoot;
@@ -56,10 +48,13 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import rx.observers.TestSubscriber;
+
 @RunWith(MockitoJUnitRunner.class)
 public class XmlReaderTest {
 
 	private XmlReader reader;
+	private TestSubscriber<? super AbstractRekening> testObserver;
 	private final Map<Class<? extends Root<?>>, Unmarshaller> map = new HashMap<>();
 	@Mock private Unmarshaller unmarshaller;
 	@Mock private DocumentBuilder builder;
@@ -67,6 +62,7 @@ public class XmlReaderTest {
 	@Before
 	public void setUp() {
 		this.reader = new XmlReader(this.map, this.builder);
+		this.testObserver = new TestSubscriber<>();
 
 		this.map.put(AangenomenFactuurRoot.class, this.unmarshaller);
 		this.map.put(MutatiesFactuurRoot.class, this.unmarshaller);
@@ -84,20 +80,26 @@ public class XmlReaderTest {
 		NodeList nodeList = mock(NodeList.class);
 		Element factuur = mock(Element.class);
 		String type = "AangenomenFactuur";
+		String version = "3";
 		Root<AangenomenFactuur> root = mock(Root.class);
 		AangenomenFactuur rekening = new AangenomenFactuur(new OmschrFactuurHeader(
-				new Debiteur("", "", "", "", "", ""), LocalDate.now(), "", ""), Currency.getInstance(Locale.US),
-				new ItemList<AangenomenListItem>(), new BtwPercentage(0.0, 0.0));
+				new Debiteur("", "", "", "", "", ""), LocalDate.now(), "", ""),
+				Currency.getInstance(Locale.US), new ItemList<>());
 
 		when(this.builder.parse((File) anyObject())).thenReturn(doc);
 		when(doc.getDocumentElement()).thenReturn(docElem);
 		when(doc.getElementsByTagName(anyString())).thenReturn(nodeList);
 		when(nodeList.item(anyInt())).thenReturn(factuur);
-		when(factuur.getAttribute(anyString())).thenReturn(type);
+		when(factuur.getAttribute(eq("type"))).thenReturn(type);
+		when(factuur.getAttribute(eq("version"))).thenReturn(version);
 		when(this.unmarshaller.unmarshal((Node) anyObject())).thenReturn(root);
 		when(root.getRekening()).thenReturn(rekening);
 
-		this.reader.load(file).forEach(rek -> assertEquals(rekening, rek));
+		this.reader.load(file).subscribe(this.testObserver);
+
+		this.testObserver.assertValue(rekening);
+		this.testObserver.assertNoErrors();
+		this.testObserver.assertCompleted();
 		verify(this.unmarshaller).unmarshal(eq(doc));
 	}
 
@@ -110,20 +112,26 @@ public class XmlReaderTest {
 		NodeList nodeList = mock(NodeList.class);
 		Element factuur = mock(Element.class);
 		String type = "MutatiesFactuur";
+		String version = "3";
 		Root<MutatiesFactuur> root = mock(Root.class);
 		MutatiesFactuur rekening = new MutatiesFactuur(new FactuurHeader(
-				new Debiteur("", "", "", "", "", ""), LocalDate.now(), ""), Currency.getInstance(Locale.US),
-				new ItemList<MutatiesBon>(), new BtwPercentage(0.0, 0.0));
+				new Debiteur("", "", "", "", "", ""), LocalDate.now(), ""),
+				Currency.getInstance(Locale.US), new ItemList<>());
 
 		when(this.builder.parse((File) anyObject())).thenReturn(doc);
 		when(doc.getDocumentElement()).thenReturn(docElem);
 		when(doc.getElementsByTagName(anyString())).thenReturn(nodeList);
 		when(nodeList.item(anyInt())).thenReturn(factuur);
-		when(factuur.getAttribute(anyString())).thenReturn(type);
+		when(factuur.getAttribute(eq("type"))).thenReturn(type);
+		when(factuur.getAttribute(eq("version"))).thenReturn(version);
 		when(this.unmarshaller.unmarshal((Node) anyObject())).thenReturn(root);
 		when(root.getRekening()).thenReturn(rekening);
 
-		this.reader.load(file).forEach(rek -> assertEquals(rekening, rek));
+		this.reader.load(file).subscribe(this.testObserver);
+
+		this.testObserver.assertValue(rekening);
+		this.testObserver.assertNoErrors();
+		this.testObserver.assertCompleted();
 		verify(this.unmarshaller).unmarshal(eq(doc));
 	}
 
@@ -136,19 +144,25 @@ public class XmlReaderTest {
 		NodeList nodeList = mock(NodeList.class);
 		Element factuur = mock(Element.class);
 		String type = "Offerte";
+		String version = "3";
 		Root<Offerte> root = mock(Root.class);
-		Offerte rekening = new Offerte(new FactuurHeader(
-				new Debiteur("", "", "", "", "", ""), LocalDate.now(), ""), "", true);
+		Offerte rekening = new Offerte(new FactuurHeader(new Debiteur("", "", "", "", "", ""),
+				LocalDate.now(), ""), "", true);
 
 		when(this.builder.parse((File) anyObject())).thenReturn(doc);
 		when(doc.getDocumentElement()).thenReturn(docElem);
 		when(doc.getElementsByTagName(anyString())).thenReturn(nodeList);
 		when(nodeList.item(anyInt())).thenReturn(factuur);
-		when(factuur.getAttribute(anyString())).thenReturn(type);
+		when(factuur.getAttribute(eq("type"))).thenReturn(type);
+		when(factuur.getAttribute(eq("version"))).thenReturn(version);
 		when(this.unmarshaller.unmarshal((Node) anyObject())).thenReturn(root);
 		when(root.getRekening()).thenReturn(rekening);
 
-		this.reader.load(file).forEach(rek -> assertEquals(rekening, rek));
+		this.reader.load(file).subscribe(this.testObserver);
+
+		this.testObserver.assertValue(rekening);
+		this.testObserver.assertNoErrors();
+		this.testObserver.assertCompleted();
 		verify(this.unmarshaller).unmarshal(eq(doc));
 	}
 
@@ -161,21 +175,26 @@ public class XmlReaderTest {
 		NodeList nodeList = mock(NodeList.class);
 		Element factuur = mock(Element.class);
 		String type = "ParticulierFactuur";
+		String version = "3";
 		Root<ParticulierFactuur> root = mock(Root.class);
 		ParticulierFactuur rekening = new ParticulierFactuur(new OmschrFactuurHeader(
-				new Debiteur("", "", "", "", "", ""), LocalDate.now(), "", ""), Currency.getInstance(Locale.US),
-				new ItemList<ParticulierArtikel>(),	new ItemList<AbstractLoon>(),
-				new BtwPercentage(0.0, 0.0));
+				new Debiteur("", "", "", "", "", ""), LocalDate.now(), "", ""),
+				Currency.getInstance(Locale.US), new ItemList<>(), new ItemList<>());
 
 		when(this.builder.parse((File) anyObject())).thenReturn(doc);
 		when(doc.getDocumentElement()).thenReturn(docElem);
 		when(doc.getElementsByTagName(anyString())).thenReturn(nodeList);
 		when(nodeList.item(anyInt())).thenReturn(factuur);
-		when(factuur.getAttribute(anyString())).thenReturn(type);
+		when(factuur.getAttribute(eq("type"))).thenReturn(type);
+		when(factuur.getAttribute(eq("version"))).thenReturn(version);
 		when(this.unmarshaller.unmarshal((Node) anyObject())).thenReturn(root);
 		when(root.getRekening()).thenReturn(rekening);
 
-		this.reader.load(file).forEach(rek -> assertEquals(rekening, rek));
+		this.reader.load(file).subscribe(this.testObserver);
+
+		this.testObserver.assertValue(rekening);
+		this.testObserver.assertNoErrors();
+		this.testObserver.assertCompleted();
 		verify(this.unmarshaller).unmarshal(eq(doc));
 	}
 
@@ -188,20 +207,26 @@ public class XmlReaderTest {
 		NodeList nodeList = mock(NodeList.class);
 		Element factuur = mock(Element.class);
 		String type = "ReparatiesFactuur";
+		String version = "3";
 		Root<ReparatiesFactuur> root = mock(Root.class);
 		ReparatiesFactuur rekening = new ReparatiesFactuur(new FactuurHeader(
-				new Debiteur("", "", "", "", "", ""), LocalDate.now(), ""), Currency.getInstance(Locale.US),
-				new ItemList<ReparatiesBon>(), new BtwPercentage(0.0, 0.0));
+				new Debiteur("", "", "", "", "", ""), LocalDate.now(), ""),
+				Currency.getInstance(Locale.US), new ItemList<>());
 
 		when(this.builder.parse((File) anyObject())).thenReturn(doc);
 		when(doc.getDocumentElement()).thenReturn(docElem);
 		when(doc.getElementsByTagName(anyString())).thenReturn(nodeList);
 		when(nodeList.item(anyInt())).thenReturn(factuur);
-		when(factuur.getAttribute(anyString())).thenReturn(type);
+		when(factuur.getAttribute(eq("type"))).thenReturn(type);
+		when(factuur.getAttribute(eq("version"))).thenReturn(version);
 		when(this.unmarshaller.unmarshal((Node) anyObject())).thenReturn(root);
 		when(root.getRekening()).thenReturn(rekening);
 
-		this.reader.load(file).forEach(rek -> assertEquals(rekening, rek));
+		this.reader.load(file).subscribe(this.testObserver);
+
+		this.testObserver.assertValue(rekening);
+		this.testObserver.assertNoErrors();
+		this.testObserver.assertCompleted();
 		verify(this.unmarshaller).unmarshal(eq(doc));
 	}
 
@@ -220,8 +245,11 @@ public class XmlReaderTest {
 		when(nodeList.item(anyInt())).thenReturn(factuur);
 		when(factuur.getAttribute(anyString())).thenReturn(type);
 
-		this.reader.load(file).forEach(rek -> Assert.fail("item received: " + rek),
-				error -> assertTrue(error instanceof IllegalArgumentException));
+		this.reader.load(file).subscribe(this.testObserver);
+
+		this.testObserver.assertNoValues();
+		this.testObserver.assertError(IllegalArgumentException.class);
+		this.testObserver.assertNotCompleted();
 	}
 
 	@Test
@@ -230,8 +258,11 @@ public class XmlReaderTest {
 
 		when(this.builder.parse((File) anyObject())).thenThrow(new SAXException());
 
-		this.reader.load(file).forEach(rek -> Assert.fail("item received: " + rek),
-				error -> assertTrue(error instanceof SAXException));
+		this.reader.load(file).subscribe(this.testObserver);
+
+		this.testObserver.assertNoValues();
+		this.testObserver.assertError(SAXException.class);
+		this.testObserver.assertNotCompleted();
 	}
 
 	@Test
@@ -240,8 +271,11 @@ public class XmlReaderTest {
 
 		when(this.builder.parse((File) anyObject())).thenThrow(new IOException());
 
-		this.reader.load(file).forEach(rek -> Assert.fail("item received: " + rek),
-				error -> assertTrue(error instanceof IOException));
+		this.reader.load(file).subscribe(this.testObserver);
+
+		this.testObserver.assertNoValues();
+		this.testObserver.assertError(IOException.class);
+		this.testObserver.assertNotCompleted();
 	}
 
 	@Test
@@ -252,15 +286,20 @@ public class XmlReaderTest {
 		NodeList nodeList = mock(NodeList.class);
 		Element factuur = mock(Element.class);
 		String type = "ReparatiesFactuur";
+		String version = "3";
 
 		when(this.builder.parse((File) anyObject())).thenReturn(doc);
 		when(doc.getDocumentElement()).thenReturn(docElem);
 		when(doc.getElementsByTagName(anyString())).thenReturn(nodeList);
 		when(nodeList.item(anyInt())).thenReturn(factuur);
-		when(factuur.getAttribute(anyString())).thenReturn(type);
+		when(factuur.getAttribute(eq("type"))).thenReturn(type);
+		when(factuur.getAttribute(eq("version"))).thenReturn(version);
 		when(this.unmarshaller.unmarshal((Node) anyObject())).thenThrow(new JAXBException("foo"));
 
-		this.reader.load(file).forEach(rek -> Assert.fail("item received: " + rek),
-				error -> assertTrue(error instanceof JAXBException));
+		this.reader.load(file).subscribe(this.testObserver);
+
+		this.testObserver.assertNoValues();
+		this.testObserver.assertError(JAXBException.class);
+		this.testObserver.assertNotCompleted();
 	}
 }

@@ -1,12 +1,12 @@
 package org.rekeningsysteem.ui.list;
 
 import java.util.Currency;
+import java.util.function.Function;
 
-import org.rekeningsysteem.data.util.BtwPercentage;
 import org.rekeningsysteem.data.util.ItemList;
 import org.rekeningsysteem.data.util.ListItem;
+import org.rekeningsysteem.ui.WorkingPane;
 import org.rekeningsysteem.ui.WorkingPaneController;
-import org.rekeningsysteem.ui.btw.BtwController;
 
 import rx.Observable;
 
@@ -14,14 +14,16 @@ public abstract class AbstractListPaneController<M extends ListItem> extends Wor
 
 	private final Currency currency;
 	private final Observable<ItemList<M>> listModel;
-	private final Observable<BtwPercentage> btwModel;
 
-	public AbstractListPaneController(AbstractListController<M, ?> list, BtwController btw,
-			Currency currency) {
-		super(new ListPane(list.getUI(), btw.getUI()));
+	public AbstractListPaneController(AbstractListController<M, ?> list, Currency currency) {
+		this(list, BtwListPane::new, currency);
+	}
+
+	public <U> AbstractListPaneController(AbstractListController<M, U> subController,
+			Function<AbstractListPane<U>, WorkingPane> uiFactory, Currency currency) {
+		super(uiFactory.apply(subController.getUI()));
 		this.currency = currency;
-		this.listModel = list.getModel();
-		this.btwModel = btw.getModel();
+		this.listModel = subController.getModel();
 	}
 
 	public Currency getCurrency() {
@@ -30,9 +32,5 @@ public abstract class AbstractListPaneController<M extends ListItem> extends Wor
 
 	public Observable<ItemList<M>> getListModel() {
 		return this.listModel;
-	}
-
-	public Observable<BtwPercentage> getBtwModel() {
-		return this.btwModel;
 	}
 }

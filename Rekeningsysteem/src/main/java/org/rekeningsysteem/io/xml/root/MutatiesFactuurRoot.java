@@ -19,6 +19,12 @@ public class MutatiesFactuurRoot implements Root<MutatiesFactuur> {
 	}
 
 	@Override
+	@XmlAttribute
+	public String getVersion() {
+		return "3";
+	}
+
+	@Override
 	@XmlJavaTypeAdapter(MutatiesFactuurAdapter.class)
 	public MutatiesFactuur getRekening() {
 		return this.factuur;

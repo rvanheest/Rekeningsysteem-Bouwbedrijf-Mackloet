@@ -3,7 +3,6 @@ package org.rekeningsysteem.test.data.util;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
@@ -19,7 +18,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.rekeningsysteem.data.util.AbstractRekening;
 import org.rekeningsysteem.data.util.header.Debiteur;
 import org.rekeningsysteem.data.util.header.FactuurHeader;
-import org.rekeningsysteem.data.util.visitor.RekeningVisitor;
 import org.rekeningsysteem.logic.factuurnummer.FactuurnummerManager;
 import org.rekeningsysteem.test.data.EqualsHashCodeTest;
 
@@ -27,30 +25,29 @@ import org.rekeningsysteem.test.data.EqualsHashCodeTest;
 public abstract class AbstractRekeningTest extends EqualsHashCodeTest {
 
 	private AbstractRekening rekening;
-	private FactuurHeader header;
-	@Mock private RekeningVisitor visitor;
+	private final FactuurHeader header = new FactuurHeader(new Debiteur("a", "b", "c", "d", "e"),
+			LocalDate.of(1992, 7, 30));
+	@Mock private FactuurnummerManager factuurnummerManager;
 
 	@Override
-	protected abstract AbstractRekening makeInstance();
-
-	protected AbstractRekening getInstance() {
-		return this.rekening;
+	protected AbstractRekening makeInstance() {
+		return this.makeInstance(this.header);
 	}
 
-	protected FactuurHeader getTestFactuurHeader() {
-		return this.header;
-	}
-
-	protected RekeningVisitor getMockedVisitor() {
-		return this.visitor;
-	}
+	protected abstract AbstractRekening makeInstance(FactuurHeader header);
 
 	@Override
+	protected AbstractRekening makeNotInstance() {
+		return this.makeNotInstance(new FactuurHeader(new Debiteur("", "", "", "", ""),
+				LocalDate.of(1992, 7, 30)));
+	}
+
+	protected abstract AbstractRekening makeNotInstance(FactuurHeader otherHeader);
+
 	@Before
+	@Override
 	public void setUp() {
 		super.setUp();
-		this.header = new FactuurHeader(new Debiteur("a", "b", "c", "d", "e"),
-				LocalDate.of(1992, 7, 30));
 		this.rekening = this.makeInstance();
 	}
 
@@ -62,31 +59,31 @@ public abstract class AbstractRekeningTest extends EqualsHashCodeTest {
 	@Test
 	public void testInitFactuurnummer() {
 		assertFalse(this.header.getFactuurnummer().isPresent());
-		
-		FactuurnummerManager manager = mock(FactuurnummerManager.class);
-		when(manager.getFactuurnummer()).thenReturn("12014");
-		
-		this.rekening.initFactuurnummer(manager);
-		
+
+		when(this.factuurnummerManager.getFactuurnummer()).thenReturn("12014");
+
+		this.rekening.initFactuurnummer(this.factuurnummerManager);
+
 		assertEquals(Optional.of("12014"), this.header.getFactuurnummer());
-		verify(manager).getFactuurnummer();
+		verify(this.factuurnummerManager).getFactuurnummer();
 	}
-	
+
 	@Test
 	public void testSameFactuurnummer() {
 		this.header.setFactuurnummer("12013");
 		assertTrue(this.header.getFactuurnummer().isPresent());
-		
-		FactuurnummerManager manager = mock(FactuurnummerManager.class);
-		this.rekening.initFactuurnummer(manager);
-		
+
+		this.rekening.initFactuurnummer(this.factuurnummerManager);
+
 		assertEquals(Optional.of("12013"), this.header.getFactuurnummer());
-		verifyZeroInteractions(manager);
+		verifyZeroInteractions(this.factuurnummerManager);
 	}
 
 	@Test
 	public void testEqualsFalseOtherFactuurHeader() {
-		this.header = new FactuurHeader(new Debiteur("", "", "", "", ""), LocalDate.now(), "test");
-		assertFalse(this.rekening.equals(this.makeInstance()));
+		FactuurHeader header2 = new FactuurHeader(new Debiteur("", "", "", "", ""),
+				LocalDate.now(), "test");
+		AbstractRekening rekening2 = this.makeNotInstance(header2);
+		assertFalse(this.rekening.equals(rekening2));
 	}
 }

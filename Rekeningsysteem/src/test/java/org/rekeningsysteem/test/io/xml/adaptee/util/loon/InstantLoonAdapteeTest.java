@@ -28,4 +28,10 @@ public class InstantLoonAdapteeTest {
 		this.adaptee.setLoon(loon);
 		assertEquals(loon, this.adaptee.getLoon());
 	}
+
+	@Test
+	public void testSetGetLoonBtwPercentage() {
+		this.adaptee.setLoonBtwPercentage(0.6);
+		assertEquals(0.6, this.adaptee.getLoonBtwPercentage(), 0.0);
+	}
 }

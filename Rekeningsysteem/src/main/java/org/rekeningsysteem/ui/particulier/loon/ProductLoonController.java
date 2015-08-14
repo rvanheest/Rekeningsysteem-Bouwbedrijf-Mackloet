@@ -34,7 +34,9 @@ public class ProductLoonController {
 	public ProductLoonController(ProductLoonPane ui) {
 		this.ui = ui;
 		this.model = Observable.combineLatest(ui.getUren(), ui.getUurloon().map(Geld::new),
-				(u, uurloon) -> new ProductLoon("Uurloon à " + uurloon.getBedrag(), u, uurloon));
+				ui.getLoonBtwPercentage(),
+				(uren, uurloon, percentage) -> new ProductLoon("Uurloon à " + uurloon.getBedrag(),
+						uren, uurloon, percentage));
 	}
 
 	public ProductLoonPane getUI() {

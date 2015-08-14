@@ -65,7 +65,7 @@ public class Main extends Application {
 
 			StackPane layerPane = new StackPane(new Root(stage, database), this.popup);
 
-			Scene scene = new Scene(layerPane, 1061, 728);
+			Scene scene = new Scene(layerPane, 1125, 772);
 			scene.getStylesheets().add(getResource("/layout.css"));
 
 			stage.addEventHandler(WindowEvent.WINDOW_HIDDEN, event -> {

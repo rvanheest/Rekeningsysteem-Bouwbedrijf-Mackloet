@@ -32,17 +32,16 @@ public class ReparatiesBon implements ListItem {
 
 	@Override
 	public Geld getLoon() {
-		return new Geld(this.loon);
+		return this.loon;
 	}
 
 	@Override
 	public Geld getMateriaal() {
-		return new Geld(this.materiaal);
+		return this.materiaal;
 	}
 
-	@Override
 	public Geld getTotaal() {
-		return new Geld(this.totaal);
+		return this.totaal;
 	}
 
 	@Override

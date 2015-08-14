@@ -1,6 +1,8 @@
 package org.rekeningsysteem.test.data.util;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 import org.rekeningsysteem.data.util.Geld;
@@ -22,6 +24,16 @@ public final class GeldTest extends EqualsHashCodeTest {
 	@Test(expected = GeldParseException.class)
 	public void testStringConstructorWithInvalidCharacters() throws GeldParseException {
 		new Geld("abc");
+	}
+
+	@Test
+	public void testIsZero() {
+		assertTrue(new Geld(0.0).isZero());
+	}
+
+	@Test
+	public void testIsNotZero() {
+		assertFalse(new Geld(1.0).isZero());
 	}
 
 	@Test

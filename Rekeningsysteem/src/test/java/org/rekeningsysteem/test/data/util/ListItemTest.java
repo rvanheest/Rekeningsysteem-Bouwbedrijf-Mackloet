@@ -1,15 +1,7 @@
 package org.rekeningsysteem.test.data.util;
 
-import org.junit.Test;
+import org.rekeningsysteem.test.data.EqualsHashCodeTest;
 
-public interface ListItemTest {
-
-	@Test
-	void testGetLoon();
-
-	@Test
-	void testGetMateriaal();
-
-	@Test
-	void testGetTotaal();
+public abstract class ListItemTest extends EqualsHashCodeTest {
+	// nothing to test here
 }

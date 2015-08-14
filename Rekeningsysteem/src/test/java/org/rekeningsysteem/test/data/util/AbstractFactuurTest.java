@@ -2,85 +2,97 @@ package org.rekeningsysteem.test.data.util;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.Currency;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.rekeningsysteem.data.util.AbstractFactuur;
-import org.rekeningsysteem.data.util.BtwPercentage;
-import org.rekeningsysteem.data.util.Geld;
+import org.rekeningsysteem.data.util.AbstractRekening;
 import org.rekeningsysteem.data.util.ItemList;
 import org.rekeningsysteem.data.util.ListItem;
 import org.rekeningsysteem.data.util.Totalen;
+import org.rekeningsysteem.data.util.header.FactuurHeader;
 
 @RunWith(MockitoJUnitRunner.class)
 public abstract class AbstractFactuurTest<E extends ListItem> extends AbstractRekeningTest {
 
+	private AbstractFactuur<E> factuur;
 	private final Currency valuta = Currency.getInstance("EUR");
-	private final BtwPercentage btwPercentage = new BtwPercentage(50, 100);
-	@Mock private E item;
-
-	@Override
-	protected abstract AbstractFactuur<E> makeInstance();
+	@Mock private ItemList<E> itemList;
 
 	@Override
 	@SuppressWarnings("unchecked")
-	protected AbstractFactuur<E> getInstance() {
-		return (AbstractFactuur<E>) super.getInstance();
+	protected AbstractFactuur<E> makeInstance() {
+		return (AbstractFactuur<E>) super.makeInstance();
 	}
 
-	protected Currency getTestCurrency() {
-		return this.valuta;
+	@Override
+	protected AbstractFactuur<E> makeInstance(FactuurHeader header) {
+		return this.makeInstance(header, this.valuta, this.itemList);
 	}
 
-	protected BtwPercentage getTestBtwPercentage() {
-		return this.btwPercentage;
+	protected abstract AbstractFactuur<E> makeInstance(FactuurHeader header, Currency currency,
+			ItemList<E> itemList);
+
+	@Override
+	@SuppressWarnings("unchecked")
+	protected AbstractFactuur<E> makeNotInstance() {
+		return (AbstractFactuur<E>) super.makeNotInstance();
+	}
+	
+	@Override
+	protected AbstractRekening makeNotInstance(FactuurHeader otherHeader) {
+		return this.makeNotInstance(otherHeader, this.valuta, this.itemList);
+	}
+
+	protected abstract AbstractFactuur<E> makeNotInstance(FactuurHeader otherHeader,
+			Currency currency, ItemList<E> itemList);
+
+	@Before
+	@Override
+	public void setUp() {
+		super.setUp();
+		this.factuur = this.makeInstance();
 	}
 
 	@Test
-	public void testGetValuta() {
-		assertEquals(this.getTestCurrency(), this.getInstance().getCurrency());
+	public void testGetCurrency() {
+		assertEquals(this.valuta, this.factuur.getCurrency());
 	}
 
 	@Test
 	public void testGetItemList() {
-		assertEquals(new ItemList<E>(), this.getInstance().getItemList());
-	}
-
-	@Test
-	public void testGetBtwPercentage() {
-		assertEquals(this.btwPercentage, this.getInstance().getBtwPercentage());
+		assertEquals(this.itemList, this.factuur.getItemList());
 	}
 
 	@Test
 	public void testGetTotalen() {
-		when(this.item.getLoon()).thenReturn(new Geld(1.00));
-		when(this.item.getMateriaal()).thenReturn(new Geld(2.00));
+		Totalen expected = new Totalen();
+		when(this.itemList.getTotalen()).thenReturn(expected);
 		
-		ItemList<E> list = this.getInstance().getItemList();
-		list.add(this.item);
-		list.add(this.item);
-		list.add(this.item);
-		
-		assertEquals(new Totalen().withLoon(new Geld(3.00))
-				.withLoonBtw(new Geld(1.50))
-				.withMateriaal(new Geld(6.00))
-				.withMateriaalBtw(new Geld(6.00)),
-				this.getInstance().getTotalen());
+		assertEquals(expected, this.factuur.getTotalen());
+		verify(this.itemList).getTotalen();
+	}
+
+	@Test
+	public void testEqualsFalseOtherCurrency() {
+		Currency otherCurrency = Currency.getInstance("USD");
+		AbstractFactuur<E> rekening2 = this.makeInstance(this.factuur.getFactuurHeader(),
+				otherCurrency, this.itemList);
+		assertFalse(this.factuur.equals(rekening2));
 	}
 
 	@Test
 	public void testEqualsFalseOtherItemList() {
-		when(this.item.getLoon()).thenReturn(new Geld(1.00));
-		when(this.item.getMateriaal()).thenReturn(new Geld(2.00));
-		
-		AbstractFactuur<E> factuur2 = this.makeInstance();
-		factuur2.getItemList().add(this.item);
-		
-		assertFalse(this.getInstance().equals(factuur2));
+		ItemList<E> otherList = new ItemList<>();
+		AbstractFactuur<E> rekening2 = this.makeInstance(this.factuur.getFactuurHeader(),
+				this.valuta, otherList);
+		assertFalse(this.factuur.equals(rekening2));
 	}
 }

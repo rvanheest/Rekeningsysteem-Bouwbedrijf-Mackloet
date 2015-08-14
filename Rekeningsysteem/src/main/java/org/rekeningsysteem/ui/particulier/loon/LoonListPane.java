@@ -22,18 +22,21 @@ public class LoonListPane extends AbstractListPane<LoonModel> {
 		TableColumn<LoonModel, String> omschrCol = new TableColumn<>("Omschrijving");
 		TableColumn<LoonModel, Double> urenCol = new TableColumn<>("Uren");
 		TableColumn<LoonModel, Double> loonCol = new TableColumn<>("Loon");
+		TableColumn<LoonModel, Double> btwCol = new TableColumn<>("BTW");
 		
 		omschrCol.setMinWidth(200);
 		urenCol.setMinWidth(50);
 		loonCol.setMinWidth(90);
+		btwCol.setMinWidth(50);
 		
 		omschrCol.setCellValueFactory(new PropertyValueFactory<>("omschrijving"));
 		urenCol.setCellValueFactory(new PropertyValueFactory<>("uren"));
 		loonCol.setCellValueFactory(new PropertyValueFactory<>("loon"));
+		btwCol.setCellValueFactory(new PropertyValueFactory<>("btwPercentage"));
 		
 		loonCol.setCellFactory(param -> new MoneyCell<>());
 		
-		return Arrays.asList(omschrCol, urenCol, loonCol, this.getDeleteCol());
+		return Arrays.asList(omschrCol, urenCol, loonCol, btwCol, this.getDeleteCol());
 	}
 
 	public static class LoonModel {
@@ -42,12 +45,15 @@ public class LoonListPane extends AbstractListPane<LoonModel> {
 		private final String uren;
 		private final Geld uurloon;
 		private final double loon;
+		private final double btwPercentage;
 
-		public LoonModel(String omschrijving, String uren, Geld uurloon, double loon) {
+		public LoonModel(String omschrijving, String uren, Geld uurloon, double loon,
+				double btwPercentage) {
 			this.omschrijving = omschrijving;
 			this.uren = uren;
 			this.uurloon = uurloon;
 			this.loon = loon;
+			this.btwPercentage = btwPercentage;
 		}
 
 		public String getOmschrijving() {
@@ -64,6 +70,10 @@ public class LoonListPane extends AbstractListPane<LoonModel> {
 
 		public double getLoon() {
 			return this.loon;
+		}
+
+		public double getBtwPercentage() {
+			return this.btwPercentage;
 		}
 	}
 }

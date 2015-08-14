@@ -12,6 +12,7 @@ import javafx.scene.layout.GridPane;
 
 import org.rekeningsysteem.rxjavafx.Observables;
 import org.rekeningsysteem.ui.textfields.MoneyField;
+import org.rekeningsysteem.ui.textfields.PercentageField;
 
 import rx.Observable;
 
@@ -19,9 +20,11 @@ public class AnderArtikelPane extends GridPane {
 
 	private final TextField omschrTF = new TextField();
 	private final MoneyField prijsTF;
+	private final PercentageField btwPercentageTF = new PercentageField();
 
 	private final Observable<String> omschrijving;
 	private final Observable<Double> prijs;
+	private final Observable<Double> btwPercentage;
 
 	public AnderArtikelPane(Currency currency) {
 		this.prijsTF = new MoneyField(currency);
@@ -29,6 +32,9 @@ public class AnderArtikelPane extends GridPane {
 		this.omschrijving = Observables.fromProperty(this.omschrTF.textProperty());
 		this.prijs = Observables.fromProperty(this.prijsTF.valueProperty())
 				.filter(Objects::nonNull)
+				.map(BigDecimal::doubleValue);
+		this.btwPercentage = Observables.fromProperty(this.btwPercentageTF.valueProperty())
+				.map(n -> Objects.isNull(n) ? BigDecimal.ZERO : n)
 				.map(BigDecimal::doubleValue);
 
 		this.omschrTF.setPrefColumnCount(20);
@@ -44,12 +50,15 @@ public class AnderArtikelPane extends GridPane {
 
 		Label omschrL = new Label("Omschrijving");
 		Label prijsL = new Label("Prijs");
+		Label btwL = new Label("Btw percentage");
 
 		this.add(omschrL, 0, 0);
 		this.add(prijsL, 0, 1);
+		this.add(btwL, 0, 2);
 
 		this.add(this.omschrTF, 1, 0);
 		this.add(this.prijsTF, 1, 1);
+		this.add(this.btwPercentageTF, 1, 2);
 	}
 
 	public Observable<String> getOmschrijving() {
@@ -66,5 +75,13 @@ public class AnderArtikelPane extends GridPane {
 
 	public void setPrijs(Double prijs) {
 		this.prijsTF.setValue(BigDecimal.valueOf(prijs));
+	}
+
+	public Observable<Double> getBtwPercentage() {
+		return this.btwPercentage;
+	}
+
+	public void setBtwPercentage(Double btwPercentage) {
+		this.btwPercentageTF.setValue(BigDecimal.valueOf(btwPercentage));
 	}
 }

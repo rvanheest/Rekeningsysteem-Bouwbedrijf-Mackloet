@@ -111,6 +111,7 @@ public class MainPane extends BorderPane {
 				.mergeWith(this.initParticulierObservable())
 				.mergeWith(this.initOfferteObservable())
 				.mergeWith(this.initOpenObservable(stage))
+				.retry()
 				.subscribe(tab -> {
 					this.tabpane.addTab(tab);
 					this.tabpane.selectTab(tab);
@@ -118,6 +119,7 @@ public class MainPane extends BorderPane {
 
 		this.initSaveObservable()
 				.flatMap(tab -> tab.getModel()
+							.first()
 							.map(rekening -> rekening instanceof Offerte)
 							.doOnNext(isOfferte -> {
 								if (!tab.getSaveFile().isPresent()) {

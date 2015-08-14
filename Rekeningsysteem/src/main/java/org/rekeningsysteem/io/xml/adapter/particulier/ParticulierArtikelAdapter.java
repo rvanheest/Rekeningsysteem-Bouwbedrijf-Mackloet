@@ -24,11 +24,13 @@ public class ParticulierArtikelAdapter extends
 	}
 
 	private AnderArtikel unmarshal(AnderArtikelAdaptee adaptee) {
-		return new AnderArtikel(adaptee.getOmschrijving(), adaptee.getPrijs());
+		return new AnderArtikel(adaptee.getOmschrijving(), adaptee.getPrijs(),
+				adaptee.getMateriaalBtwPercentage());
 	}
 
 	private GebruiktEsselinkArtikel unmarshal(GebruiktEsselinkArtikelAdaptee adaptee) {
-		return new GebruiktEsselinkArtikel(adaptee.getArtikel(), adaptee.getAantal());
+		return new GebruiktEsselinkArtikel(adaptee.getArtikel(), adaptee.getAantal(),
+				adaptee.getMateriaalBtwPercentage());
 	}
 
 	@Override
@@ -46,6 +48,7 @@ public class ParticulierArtikelAdapter extends
 		AnderArtikelAdaptee adaptee = new AnderArtikelAdaptee();
 		adaptee.setOmschrijving(artikel.getOmschrijving());
 		adaptee.setPrijs(artikel.getMateriaal());
+		adaptee.setMateriaalBtwPercentage(artikel.getMateriaalBtwPercentage());
 		return adaptee;
 	}
 
@@ -53,6 +56,7 @@ public class ParticulierArtikelAdapter extends
 		GebruiktEsselinkArtikelAdaptee adaptee = new GebruiktEsselinkArtikelAdaptee();
 		adaptee.setArtikel(artikel.getArtikel());
 		adaptee.setAantal(artikel.getAantal());
+		adaptee.setMateriaalBtwPercentage(artikel.getMateriaalBtwPercentage());
 		return adaptee;
 	}
 }

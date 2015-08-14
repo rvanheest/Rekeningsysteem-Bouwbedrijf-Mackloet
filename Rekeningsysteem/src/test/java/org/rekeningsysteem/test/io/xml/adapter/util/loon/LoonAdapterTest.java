@@ -20,13 +20,13 @@ public class LoonAdapterTest {
 
 	@Test
 	public void testInstantLoonMarshalUnmarshal() {
-		InstantLoon expected = new InstantLoon("omschr", new Geld(1.0));
+		InstantLoon expected = new InstantLoon("omschr", new Geld(1.0), 6);
 		assertEquals(expected, this.adapter.unmarshal(this.adapter.marshal(expected)));
 	}
 
 	@Test
 	public void testProductLoonMarshalUnmarshal() {
-		ProductLoon expected = new ProductLoon("omschr", 3.0, new Geld(1.0));
+		ProductLoon expected = new ProductLoon("omschr", 3.0, new Geld(1.0), 6);
 		assertEquals(expected, this.adapter.unmarshal(this.adapter.marshal(expected)));
 	}
 }

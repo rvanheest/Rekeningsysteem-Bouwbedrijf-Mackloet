@@ -24,34 +24,25 @@ public class AangenomenController extends AbstractRekeningController<AangenomenF
 	}
 
 	public AangenomenController(PropertiesWorker properties, Database database) {
-		this(properties.getProperty(PropertyModelEnum.VALUTAISO4217)
-				.map(Currency::getInstance)
-				.orElse(Currency.getInstance("EUR")),
-				properties.getProperty(PropertyModelEnum.LOONBTWPERCENTAGE)
-						.map(Double::parseDouble)
-						.<BtwPercentage> flatMap(l -> properties
-								.getProperty(PropertyModelEnum.MATERIAALBTWPERCENTAGE)
-								.map(Double::parseDouble)
-								.map(m -> new BtwPercentage(l, m)))
-						.orElse(new BtwPercentage(6, 21)), database);
+		this(getDefaultCurrency(properties), getDefaultBtwPercentage(properties), database);
 	}
 
-	public AangenomenController(Currency currency, BtwPercentage btw, Database database) {
-		this(new OmschrFactuurHeaderController(database), new AangenomenListPaneController(currency, btw));
+	public AangenomenController(Currency currency, BtwPercentage defaultBtw, Database database) {
+		this(new OmschrFactuurHeaderController(database),
+				new AangenomenListPaneController(currency, defaultBtw));
 	}
 
-	public AangenomenController(AangenomenFactuur input, Database database) {
+	public AangenomenController(AangenomenFactuur input, PropertiesWorker properties, Database database) {
 		this(new OmschrFactuurHeaderController(input.getFactuurHeader(), database),
-				new AangenomenListPaneController(input.getCurrency(), input.getItemList(),
-						input.getBtwPercentage()));
+				new AangenomenListPaneController(input.getCurrency(),
+						getDefaultBtwPercentage(properties), input.getItemList()));
 	}
 
 	public AangenomenController(OmschrFactuurHeaderController header,
 			AangenomenListPaneController body) {
 		super(new RekeningSplitPane(header.getUI(), body.getUI()),
 		Observable.combineLatest(header.getModel(), body.getListModel(),
-				body.getBtwModel(),
-				(head, list, btw) -> new AangenomenFactuur(head, body.getCurrency(), list, btw)));
+				(head, list) -> new AangenomenFactuur(head, body.getCurrency(), list)));
 		this.header = header;
 		this.list = body;
 	}

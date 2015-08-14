@@ -1,6 +1,5 @@
 package org.rekeningsysteem.test.integration.rekening;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
 import java.io.File;
@@ -13,6 +12,8 @@ import org.rekeningsysteem.io.FactuurLoader;
 import org.rekeningsysteem.io.FactuurSaver;
 import org.rekeningsysteem.io.xml.XmlMaker;
 import org.rekeningsysteem.io.xml.XmlReader;
+
+import rx.observers.TestSubscriber;
 
 public abstract class AbstractRekeningIntegrationTest {
 
@@ -52,6 +53,11 @@ public abstract class AbstractRekeningIntegrationTest {
 
 		maker.save(this.rekening, this.file);
 
-		reader.load(this.file).forEach(rek -> assertEquals(this.rekening, rek));
+		TestSubscriber<AbstractRekening> testObserver = new TestSubscriber<>();
+		reader.load(this.file).subscribe(testObserver);
+		
+		testObserver.assertValue(this.rekening);
+		testObserver.assertNoErrors();
+		testObserver.assertCompleted();
 	}
 }

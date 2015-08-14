@@ -19,6 +19,12 @@ public class ParticulierFactuurRoot implements Root<ParticulierFactuur> {
 	}
 
 	@Override
+	@XmlAttribute
+	public String getVersion() {
+		return "3";
+	}
+
+	@Override
 	@XmlJavaTypeAdapter(ParticulierFactuurAdapter.class)
 	public ParticulierFactuur getRekening() {
 		return this.factuur;
