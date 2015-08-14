@@ -10,11 +10,11 @@ import org.rekeningsysteem.ui.list.AbstractListPaneController;
 public class LoonListPaneController extends AbstractListPaneController<AbstractLoon> {
 	
 	public LoonListPaneController(Currency currency, BtwPercentage defaultBtw) {
-		super(new LoonListController(currency, defaultBtw), currency);
+		super(new LoonListController(currency, defaultBtw), LoonWorkingPane::new, currency);
 	}
 
 	public LoonListPaneController(Currency currency, BtwPercentage defaultBtw,
 			List<AbstractLoon> input) {
-		super(new LoonListController(currency, defaultBtw, input), currency);
+		super(new LoonListController(currency, defaultBtw, input), LoonWorkingPane::new, currency);
 	}
 }
