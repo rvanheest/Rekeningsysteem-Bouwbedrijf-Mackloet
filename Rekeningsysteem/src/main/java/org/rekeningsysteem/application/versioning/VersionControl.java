@@ -53,9 +53,9 @@ public class VersionControl {
 	}
 
 	public static String getMavenVersion() {
-		return "v0.4";
+		// return "v0.4";
 		// TODO switch lines
-		// return VersionControl.class.getPackage().getImplementationVersion();
+		return VersionControl.class.getPackage().getImplementationVersion();
 	}
 
 	public Observable<Boolean> versionTableExists() {
