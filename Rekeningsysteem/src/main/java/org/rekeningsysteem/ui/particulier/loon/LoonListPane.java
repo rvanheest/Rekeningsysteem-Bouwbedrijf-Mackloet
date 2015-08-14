@@ -22,7 +22,7 @@ public class LoonListPane extends AbstractListPane<LoonModel> {
 		TableColumn<LoonModel, String> omschrCol = new TableColumn<>("Omschrijving");
 		TableColumn<LoonModel, Double> urenCol = new TableColumn<>("Uren");
 		TableColumn<LoonModel, Double> loonCol = new TableColumn<>("Loon");
-		TableColumn<LoonModel, Double> btwCol = new TableColumn<>("Btw percentage");
+		TableColumn<LoonModel, Double> btwCol = new TableColumn<>("BTW");
 		
 		omschrCol.setMinWidth(200);
 		urenCol.setMinWidth(50);
