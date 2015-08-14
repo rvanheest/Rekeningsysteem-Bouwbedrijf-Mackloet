@@ -47,7 +47,7 @@ public class ParticulierController extends AbstractRekeningController<Particulie
 			ParticulierListPaneController body, LoonListPaneController loon) {
 		super(new RekeningSplitPane(header.getUI(), body.getUI(), loon.getUI()),
 				Observable.combineLatest(header.getModel(), body.getListModel(),
-						loon.getModel(),
+						loon.getListModel(),
 						(head, list, loonList) -> new ParticulierFactuur(head, body.getCurrency(),
 								list, loonList)));
 		this.header = header;

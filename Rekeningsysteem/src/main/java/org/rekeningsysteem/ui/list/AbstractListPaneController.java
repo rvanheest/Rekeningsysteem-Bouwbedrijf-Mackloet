@@ -8,7 +8,6 @@ import org.rekeningsysteem.ui.WorkingPaneController;
 
 import rx.Observable;
 
-// TODO what is this one doing? Seems to not been used anywhere...
 public abstract class AbstractListPaneController<M extends ListItem> extends WorkingPaneController {
 
 	private final Currency currency;
