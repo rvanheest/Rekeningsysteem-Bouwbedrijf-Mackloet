@@ -54,11 +54,11 @@ public class AnderArtikelPane extends GridPane {
 
 		this.add(omschrL, 0, 0);
 		this.add(prijsL, 0, 1);
-		this.add(btwL, 0, 4);
+		this.add(btwL, 0, 2);
 
 		this.add(this.omschrTF, 1, 0);
 		this.add(this.prijsTF, 1, 1);
-		this.add(this.btwPercentageTF, 1, 4);
+		this.add(this.btwPercentageTF, 1, 2);
 	}
 
 	public Observable<String> getOmschrijving() {
