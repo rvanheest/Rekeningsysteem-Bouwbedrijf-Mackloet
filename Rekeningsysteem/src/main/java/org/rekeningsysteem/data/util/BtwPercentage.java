@@ -2,7 +2,6 @@ package org.rekeningsysteem.data.util;
 
 import java.util.Objects;
 
-@Deprecated
 public final class BtwPercentage {
 
 	private final double loonPercentage;
