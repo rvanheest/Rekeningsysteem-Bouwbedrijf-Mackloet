@@ -22,9 +22,12 @@ public final class Totalen {
 	}
 
 	public Totalen addBtw(double percentage, Geld btw) {
-		Map<Double, Geld> newMap = new HashMap<>(this.btwPerPercentage);
-		newMap.merge(percentage, btw, Geld::add);
-		return new Totalen(this.loon, this.materiaal, newMap);
+		if (!btw.isZero()) {
+			Map<Double, Geld> newMap = new HashMap<>(this.btwPerPercentage);
+			newMap.merge(percentage, btw, Geld::add);
+			return new Totalen(this.loon, this.materiaal, newMap);
+		}
+		return this;
 	}
 
 	public Map<Double, Geld> getBtw() {
@@ -54,7 +57,7 @@ public final class Totalen {
 	public Geld getTotaal() {
 		return this.getSubtotaal().add(this.btwPerPercentage.entrySet()
 				.stream()
-				.map(entry -> entry.getValue().multiply(entry.getKey()).divide(100))
+				.map(Map.Entry::getValue)
 				.reduce(new Geld(0), Geld::add));
 	}
 
@@ -62,8 +65,9 @@ public final class Totalen {
 		Geld loon = this.loon.add(t2.loon);
 		Geld materiaal = this.materiaal.add(t2.materiaal);
 		Map<Double, Geld> btw = new HashMap<>(this.btwPerPercentage);
-		t2.btwPerPercentage.forEach((percentage, bedrag) -> btw.merge(percentage, bedrag, Geld::add));
-		
+		t2.btwPerPercentage
+				.forEach((percentage, bedrag) -> btw.merge(percentage, bedrag, Geld::add));
+
 		return new Totalen(loon, materiaal, btw);
 	}
 

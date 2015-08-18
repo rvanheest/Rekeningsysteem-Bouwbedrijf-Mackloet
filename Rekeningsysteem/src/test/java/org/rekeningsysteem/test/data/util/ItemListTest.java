@@ -3,6 +3,9 @@ package org.rekeningsysteem.test.data.util;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,8 +34,8 @@ public class ItemListTest extends EqualsHashCodeTest {
 		when(this.btwItem.getLoonBtwPercentage()).thenReturn(50.0);
 		when(this.btwItem.getLoonBtw()).thenReturn(new Geld(2));
 		when(this.btwItem.getMateriaal()).thenReturn(new Geld(5));
-		when(this.btwItem.getMateriaalBtwPercentage()).thenReturn(100.0);
-		when(this.btwItem.getMateriaalBtw()).thenReturn(new Geld(5));
+		when(this.btwItem.getMateriaalBtwPercentage()).thenReturn(25.0);
+		when(this.btwItem.getMateriaalBtw()).thenReturn(new Geld(1.25));
 
 		ItemList<ListItem> l = new ItemList<>();
 		l.add(this.item);
@@ -72,11 +75,42 @@ public class ItemListTest extends EqualsHashCodeTest {
 
 		Totalen result = this.list.getTotalen();
 
+		Map<Double, Geld> expectedBtw = new HashMap<>();
+		expectedBtw.put(50.0, new Geld(8));
+		expectedBtw.put(25.0, new Geld(5));
+
 		assertEquals(new Geld(20), result.getLoon());
 		assertEquals(new Geld(28), result.getMateriaal());
 		assertEquals(new Geld(8), result.getBtw().get(50.0));
-		assertEquals(new Geld(20), result.getBtw().get(100.0));
+		assertEquals(new Geld(5), result.getBtw().get(25.0));
+		assertEquals(expectedBtw, result.getBtw());
 		assertEquals(new Geld(48), result.getSubtotaal());
-		assertEquals(new Geld(72), result.getTotaal());
+		assertEquals(new Geld(61), result.getTotaal());
+	}
+
+	@Test
+	public void testGetTotalenNonEmptyListWithZeros() {
+		this.list.clear();
+		
+		when(this.btwItem.getLoon()).thenReturn(new Geld(0));
+		when(this.btwItem.getLoonBtwPercentage()).thenReturn(21.0);
+		when(this.btwItem.getLoonBtw()).thenReturn(new Geld(0));
+		when(this.btwItem.getMateriaal()).thenReturn(new Geld(2));
+		when(this.btwItem.getMateriaalBtwPercentage()).thenReturn(50.0);
+		when(this.btwItem.getMateriaalBtw()).thenReturn(new Geld(1));
+		
+		this.list.add(this.btwItem);
+
+		Totalen result = this.list.getTotalen();
+
+		Map<Double, Geld> expectedBtw = new HashMap<>();
+		expectedBtw.put(50.0, new Geld(1));
+
+		assertEquals(new Geld(0), result.getLoon());
+		assertEquals(new Geld(2), result.getMateriaal());
+		assertEquals(new Geld(1), result.getBtw().get(50.0));
+		assertEquals(expectedBtw, result.getBtw());
+		assertEquals(new Geld(2), result.getSubtotaal());
+		assertEquals(new Geld(3), result.getTotaal());
 	}
 }
