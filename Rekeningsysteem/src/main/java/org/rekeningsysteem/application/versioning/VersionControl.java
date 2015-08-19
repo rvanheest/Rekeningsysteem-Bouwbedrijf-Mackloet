@@ -53,7 +53,6 @@ public class VersionControl {
 	}
 
 	public static String getMavenVersion() {
-//		System.out.println(VersionControl.class.getPackage().getImplementationVersion());
 		return "v0.4-alpha";
 		// TODO switch lines
 //		return VersionControl.class.getPackage().getImplementationVersion();
