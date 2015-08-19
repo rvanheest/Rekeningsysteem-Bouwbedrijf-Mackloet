@@ -18,13 +18,13 @@ public class ItemTabPane extends TabPane {
 				.map(Tab::getText)
 				.map(func);
 	}
-	
+
 	public void add(ItemType tabName, Node content) {
 		Tab tab = new Tab(tabName.getTabName());
 		tab.setContent(content);
 		this.getTabs().add(tab);
 	}
-	
+
 	public Observable<? extends ItemType> getType() {
 		return this.type;
 	}

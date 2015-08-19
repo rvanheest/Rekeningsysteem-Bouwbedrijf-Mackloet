@@ -9,10 +9,12 @@ import org.rekeningsysteem.application.Main;
 import org.rekeningsysteem.data.util.BtwPercentage;
 import org.rekeningsysteem.data.util.ItemList;
 import org.rekeningsysteem.data.util.ListItem;
+import org.rekeningsysteem.io.database.Database;
 
 import rx.Observable;
 import rx.functions.Func1;
 import rx.functions.Func2;
+import rx.functions.Func3;
 
 public abstract class AbstractListController<M extends ListItem, U> {
 
@@ -20,14 +22,20 @@ public abstract class AbstractListController<M extends ListItem, U> {
 	private final Observable<ItemList<M>> model;
 
 	public AbstractListController(Currency currency, AbstractListPane<U> ui,
-			Func1<Currency, ? extends AbstractListItemController<? extends M>> func) {
+			Func1<Currency, AbstractListItemController<M>> func) {
 		this(ui, ui.getAddButtonEvent().map(e -> func.call(currency)));
 	}
 
 	public AbstractListController(Currency currency, BtwPercentage defaultBtw,
 			AbstractListPane<U> ui,
-			Func2<Currency, BtwPercentage, ? extends AbstractListItemController<? extends M>> func) {
+			Func2<Currency, BtwPercentage, AbstractListItemController<M>> func) {
 		this(ui, ui.getAddButtonEvent().map(e -> func.call(currency, defaultBtw)));
+	}
+
+	public AbstractListController(Currency currency, Database db,
+			BtwPercentage defaultBtw, AbstractListPane<U> ui,
+			Func3<Currency, Database, BtwPercentage, AbstractListItemController<M>> func) {
+		this(ui, ui.getAddButtonEvent().map(e -> func.call(currency, db, defaultBtw)));
 	}
 
 	private AbstractListController(AbstractListPane<U> ui,
