@@ -30,7 +30,7 @@ public class VersionControl {
 		}
 		return this.getTableCount().map(count -> count == 0
 				? "" // Database is newly created
-				: "v0.3"); // version v0.3 or less applies, which doesn't have a version table
+				: "v0.3-alpha"); // version v0.3-alpha or less applies, which doesn't have a version table
 	}
 
 	private Observable<Integer> updateDatabase(String dbVersion) {
@@ -43,7 +43,7 @@ public class VersionControl {
 			// Database is newly created
 			return this.initDatabase(mavenVersion);
 		}
-		else if ("v0.3".equals(dbVersion)) {
+		else if ("v0.3-alpha".equals(dbVersion)) {
 			QueryEnumeration query = getV04Queries()
 					.append(insertVersion.call(mavenVersion));
 			return this.database.update(query).subscribeOn(Schedulers.io());
@@ -53,13 +53,14 @@ public class VersionControl {
 	}
 
 	public static String getMavenVersion() {
-		// return "v0.4";
+//		System.out.println(VersionControl.class.getPackage().getImplementationVersion());
+		return "v0.4-alpha";
 		// TODO switch lines
-		return VersionControl.class.getPackage().getImplementationVersion();
+//		return VersionControl.class.getPackage().getImplementationVersion();
 	}
 
 	public Observable<Boolean> versionTableExists() {
-		return this.database.query(V04Queries.VERSION_TABLE_EXISTS,
+		return this.database.query(V04AlphaQueries.VERSION_TABLE_EXISTS,
 				result -> result.getString("name"))
 				.subscribeOn(Schedulers.io())
 				.isEmpty()
@@ -67,19 +68,19 @@ public class VersionControl {
 	}
 
 	public Observable<String> getVersion() {
-		return this.database.query(V04Queries.GET_DB_VERSION,
+		return this.database.query(V04AlphaQueries.GET_DB_VERSION,
 				result -> result.getString("version"))
 				.subscribeOn(Schedulers.io());
 	}
 
 	public Observable<Integer> getTableCount() {
-		return this.database.query(V04Queries.TABLE_COUNT,
+		return this.database.query(V04AlphaQueries.TABLE_COUNT,
 				result -> result.getInt("count"))
 				.subscribeOn(Schedulers.io());
 	}
 
 	public Observable<Integer> initDatabase(String version) {
-		QueryEnumeration query = V03Queries.CREATE_ARTIKELLIJST
+		QueryEnumeration query = V03AlphaQueries.CREATE_ARTIKELLIJST
 				.append(getV04Queries())
 				.append(insertVersion.call(version));
 
@@ -87,24 +88,24 @@ public class VersionControl {
 	}
 
 	public static QueryEnumeration getV03Queries() {
-		return V03Queries.CREATE_ARTIKELLIJST
-				.append(V03Queries.CREATE_DEBITEUR)
-				.append(V03Queries.CREATE_ART_NR_INDEX)
-				.append(V03Queries.CREATE_NAME_SEARCH);
+		return V03AlphaQueries.CREATE_ARTIKELLIJST
+				.append(V03AlphaQueries.CREATE_DEBITEUR)
+				.append(V03AlphaQueries.CREATE_ART_NR_INDEX)
+				.append(V03AlphaQueries.CREATE_NAME_SEARCH);
 	}
 
 	public static QueryEnumeration getV04Queries() {
-		return V04Queries.DROP_ART_NR_INDEX
-				.append(V04Queries.DROP_NAME_SEARCH_INDEX)
-				.append(V04Queries.DROP_DEBITEUR_TABLE)
-				.append(V04Queries.CREATE_ARTIKELNUMMER_INDEX)
-				.append(V04Queries.CREATE_OMSCHRIJVING_INDEX)
-				.append(V04Queries.CREATE_DEBITEUR)
-				.append(V04Queries.CREATE_BTW_DEBITEUR)
-				.append(V04Queries.CREATE_TOTAAL_DEBITEUR_VIEW)
-				.append(V04Queries.CREATE_TOTAAL_DEBITEUR_INSERT_TRIGGER)
-				.append(V04Queries.CREATE_TOTAAL_DEBITEUR_DELETE_TRIGGER)
-				.append(V04Queries.CREATE_TOTAAL_DEBITEUR_UPDATE_TRIGGER)
-				.append(V04Queries.CREATE_METADATA);
+		return V04AlphaQueries.DROP_ART_NR_INDEX
+				.append(V04AlphaQueries.DROP_NAME_SEARCH_INDEX)
+				.append(V04AlphaQueries.DROP_DEBITEUR_TABLE)
+				.append(V04AlphaQueries.CREATE_ARTIKELNUMMER_INDEX)
+				.append(V04AlphaQueries.CREATE_OMSCHRIJVING_INDEX)
+				.append(V04AlphaQueries.CREATE_DEBITEUR)
+				.append(V04AlphaQueries.CREATE_BTW_DEBITEUR)
+				.append(V04AlphaQueries.CREATE_TOTAAL_DEBITEUR_VIEW)
+				.append(V04AlphaQueries.CREATE_TOTAAL_DEBITEUR_INSERT_TRIGGER)
+				.append(V04AlphaQueries.CREATE_TOTAAL_DEBITEUR_DELETE_TRIGGER)
+				.append(V04AlphaQueries.CREATE_TOTAAL_DEBITEUR_UPDATE_TRIGGER)
+				.append(V04AlphaQueries.CREATE_METADATA);
 	}
 }
