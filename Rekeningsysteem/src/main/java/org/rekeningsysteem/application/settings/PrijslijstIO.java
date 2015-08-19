@@ -6,7 +6,6 @@ import static rx.observables.StringObservable.split;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.sql.SQLException;
 import java.util.Objects;
 
 import javafx.event.ActionEvent;
@@ -32,14 +31,18 @@ import rx.schedulers.Schedulers;
 
 public class PrijslijstIO extends Tab {
 
+	private final Database database;
+
 	private final Label progressLabel = new Label("nog niet gestart");
 	private final Label warningLabel = new Label("Let op, de huidige data wordt verwijderd "
 			+ "wanneer nieuwe data wordt geimporteerd!");
 	private final Button startButton = new Button("Start");
 
-	public PrijslijstIO(Stage stage, ButtonBase closeButton) {
+	public PrijslijstIO(Stage stage, Database database, ButtonBase closeButton) {
 		super("Esselink artikel data");
-		
+
+		this.database = database;
+
 		this.progressLabel.getStyleClass().add("no-item-found");
 		this.warningLabel.setTextFill(Color.RED);
 		this.warningLabel.setWrapText(true);
@@ -53,14 +56,7 @@ public class PrijslijstIO extends Tab {
 				.observeOn(Schedulers.io())
 				.flatMap(file -> this.clearData()
 						.flatMap(i -> this.readFile(file))
-						.flatMap(query -> {
-							try {
-								return Database.getInstance().update(query);
-							}
-							catch (SQLException e) {
-								return Observable.error(e);
-							}
-						})
+						.flatMap(database::update)
 						.scan(0, (cum, x) -> cum + 1)
 						.observeOn(JavaFxScheduler.getInstance())
 						.doOnCompleted(() -> {
@@ -100,12 +96,7 @@ public class PrijslijstIO extends Tab {
 	}
 
 	private Observable<Integer> clearData() {
-		try {
-			return Database.getInstance().update(() -> "DELETE FROM Artikellijst");
-		}
-		catch (SQLException e) {
-			return Observable.error(e);
-		}
+		return this.database.update(() -> "DELETE FROM Artikellijst");
 	}
 
 	private Observable<QueryEnumeration> readFile(File csv) {

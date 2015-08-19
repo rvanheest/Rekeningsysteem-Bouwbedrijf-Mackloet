@@ -14,10 +14,10 @@ public class SettingsPane extends TabPane {
 		this.setId("settings-tabs");
 		this.setTabClosingPolicy(TabClosingPolicy.UNAVAILABLE);
 
-		PrijslijstIO prijslijstTab = new PrijslijstIO(stage, closeButton);
+		PrijslijstIO prijslijstTab = new PrijslijstIO(stage, database, closeButton);
 		DebiteurSettingsTabController debiteurTab = new DebiteurSettingsTabController(database);
 		DefaultOfferteTextTabController offerteTab = new DefaultOfferteTextTabController();
-		
+
 		this.getTabs().addAll(prijslijstTab, debiteurTab.getUI(), offerteTab.getUI());
 	}
 }
