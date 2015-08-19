@@ -18,7 +18,7 @@ public final class InstantLoon extends AbstractLoon {
 
 	@Override
 	public Geld getLoon() {
-		return new Geld(this.loon);
+		return this.loon;
 	}
 
 	@Override

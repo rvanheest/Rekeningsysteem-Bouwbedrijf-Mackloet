@@ -33,10 +33,6 @@ public final class Geld {
 		}
 	}
 
-	public Geld(Geld geld) {
-		this(geld.getBedrag());
-	}
-
 	public double getBedrag() {
 		return this.bedrag;
 	}
@@ -81,6 +77,7 @@ public final class Geld {
 	}
 
 	public Geld divide(double getal) {
+		assert Double.compare(getal, 0.0) != 0;
 		return new Geld(this.bedrag / getal);
 	}
 

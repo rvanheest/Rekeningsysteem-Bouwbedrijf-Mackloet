@@ -39,7 +39,7 @@ public final class Totalen {
 	}
 
 	public Geld getLoon() {
-		return new Geld(this.loon);
+		return this.loon;
 	}
 
 	public Totalen addMateriaal(Geld materiaal) {
@@ -47,7 +47,7 @@ public final class Totalen {
 	}
 
 	public Geld getMateriaal() {
-		return new Geld(this.materiaal);
+		return this.materiaal;
 	}
 
 	public Geld getSubtotaal() {

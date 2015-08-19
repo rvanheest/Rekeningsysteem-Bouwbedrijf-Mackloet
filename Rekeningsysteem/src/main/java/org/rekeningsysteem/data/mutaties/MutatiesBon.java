@@ -27,7 +27,7 @@ public final class MutatiesBon implements ListItem {
 	}
 
 	@Override
-	public Geld getLoon() {
+	public final Geld getLoon() {
 		return new Geld(0);
 	}
 

@@ -34,12 +34,6 @@ public abstract class AbstractLoonTest extends BtwListItemTest {
 	}
 
 	@Test
-	public void testEqualsFalseOtherOmschrijving() {
-		this.omschrijving = "foo";
-		assertFalse(this.makeInstance().equals(this.loon));
-	}
-
-	@Test
 	public void testGetMateriaal() {
 		assertEquals(new Geld(0), this.loon.getMateriaal());
 	}
@@ -47,5 +41,18 @@ public abstract class AbstractLoonTest extends BtwListItemTest {
 	@Test
 	public void testGetMateriaalBtwPercentage() {
 		assertEquals(0.0, this.loon.getMateriaalBtwPercentage(), 0.0);
+	}
+
+	@Test
+	@Override
+	public void testGetMateriaalBtw() {
+		super.testGetMateriaalBtw();
+		assertEquals(new Geld(0), this.loon.getMateriaalBtw());
+	}
+
+	@Test
+	public void testEqualsFalseOtherOmschrijving() {
+		this.omschrijving = "foo";
+		assertFalse(this.makeInstance().equals(this.loon));
 	}
 }

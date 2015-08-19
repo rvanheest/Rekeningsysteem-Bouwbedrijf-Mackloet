@@ -75,8 +75,7 @@ public final class Debiteur {
 	@Override
 	public int hashCode() {
 		return Objects.hash(this.naam, this.straat, this.nummer, this.postcode,
-				this.plaats,
-				this.btwNummer);
+				this.plaats, this.btwNummer);
 	}
 
 	@Override
