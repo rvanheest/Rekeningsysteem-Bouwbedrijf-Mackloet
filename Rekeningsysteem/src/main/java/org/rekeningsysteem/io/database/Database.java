@@ -24,12 +24,6 @@ public class Database implements AutoCloseable {
 		return __instance;
 	}
 
-	public static void closeInstance() throws SQLException {
-		if (__instance != null) {
-			__instance.close();
-		}
-	}
-
 	private final Connection connection;
 
 	private Database() throws SQLException {

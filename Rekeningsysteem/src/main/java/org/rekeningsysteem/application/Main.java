@@ -72,7 +72,7 @@ public class Main extends Application {
 
 			stage.addEventHandler(WindowEvent.WINDOW_HIDDEN, event -> {
 				try {
-					Database.closeInstance();
+					database.close();
 				}
 				catch (SQLException e) {
 					ApplicationLogger.getInstance().error("Could not close database.", e);
