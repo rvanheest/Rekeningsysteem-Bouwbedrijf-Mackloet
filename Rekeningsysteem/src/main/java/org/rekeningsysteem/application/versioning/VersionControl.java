@@ -60,8 +60,6 @@ public class VersionControl {
 
 	public static String getMavenVersion() {
 		return "v0.4-alpha";
-		// TODO switch lines
-//		return VersionControl.class.getPackage().getImplementationVersion();
 	}
 
 	public Observable<Boolean> versionTableExists() {
