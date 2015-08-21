@@ -60,8 +60,8 @@ public class MutatiesFactuurTest extends AbstractFactuurTest<MutatiesBon> {
 
 	@Test
 	public void testToString() {
-		String expected = "<MutatiesFactuur[<FactuurHeader[<Debiteur[a, b, c, d, e, "
-				+ "Optional.empty]>, 1992-07-30, Optional.empty]>, EUR, itemList]>";
+		String expected = "<MutatiesFactuur[<FactuurHeader[<Debiteur[Optional.empty, a, b, c, d, "
+				+ "e, Optional.empty]>, 1992-07-30, Optional.empty]>, EUR, itemList]>";
 		assertEquals(expected, this.factuur.toString());
 	}
 }

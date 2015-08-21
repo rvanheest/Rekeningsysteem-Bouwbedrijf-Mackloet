@@ -31,4 +31,11 @@ public abstract class ParticulierArtikelTest extends BtwListItemTest {
 	public void testGetLoonBtwPercentage() {
 		assertEquals(0.0, this.item.getLoonBtwPercentage(), 0.0);
 	}
+
+	@Test
+	@Override
+	public void testGetLoonBtw() {
+		super.testGetLoonBtw();
+		assertEquals(new Geld(0), this.item.getLoonBtw());
+	}
 }

@@ -3,15 +3,20 @@ package org.rekeningsysteem.data.particulier;
 import org.rekeningsysteem.data.util.BtwListItem;
 import org.rekeningsysteem.data.util.Geld;
 
-public interface ParticulierArtikel extends BtwListItem {
+public abstract class ParticulierArtikel implements BtwListItem {
 
 	@Override
-	default Geld getLoon() {
+	public final Geld getLoon() {
 		return new Geld(0);
 	}
 
 	@Override
-	default double getLoonBtwPercentage() {
+	public final double getLoonBtwPercentage() {
 		return 0;
+	}
+
+	@Override
+	public final Geld getLoonBtw() {
+		return new Geld(0);
 	}
 }

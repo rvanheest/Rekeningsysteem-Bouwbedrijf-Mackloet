@@ -31,12 +31,12 @@ public class DebiteurTable extends VBox {
 
 	private final Button add = new Button();
 	private final Button modify = new Button();
-	
+
 	private final Func1<DebiteurTableModel, Observable<Integer>> dbDelete;
 
 	public DebiteurTable(Func1<DebiteurTableModel, Observable<Integer>> dbDelete) {
 		this.dbDelete = dbDelete;
-		
+
 		this.setId("debiteur-table");
 		this.add.setId("add-button");
 		this.modify.setId("edit-button");
@@ -48,12 +48,12 @@ public class DebiteurTable extends VBox {
 		this.table.setItems(this.data);
 		this.table.setSortPolicy(param -> false);
 		this.table.setTableMenuButtonVisible(false);
-		
+
 		HBox hb = new HBox(this.table, this.initNavigationPane());
 		hb.setSpacing(20);
-		
+
 		this.getChildren().add(hb);
-		
+
 		Observables.fromProperty(this.heightProperty())
 				.map(Number::doubleValue)
 				.subscribe(this.table::setPrefHeight);
@@ -73,20 +73,21 @@ public class DebiteurTable extends VBox {
 		postcodeCol.setMinWidth(60);
 		plaatsCol.setMinWidth(200);
 		btwNummerCol.setMinWidth(120);
-		
+
 		naamCol.setCellValueFactory(new PropertyValueFactory<>("naam"));
 		straatCol.setCellValueFactory(new PropertyValueFactory<>("straat"));
 		nummerCol.setCellValueFactory(new PropertyValueFactory<>("nummer"));
 		postcodeCol.setCellValueFactory(new PropertyValueFactory<>("postcode"));
 		plaatsCol.setCellValueFactory(new PropertyValueFactory<>("plaats"));
 		btwNummerCol.setCellValueFactory(new PropertyValueFactory<>("btwNummer"));
-		
-		return Arrays.asList(naamCol, straatCol, nummerCol, postcodeCol, plaatsCol, btwNummerCol, getDeleteCol());
+
+		return Arrays.asList(naamCol, straatCol, nummerCol, postcodeCol, plaatsCol,
+				btwNummerCol, this.getDeleteCol());
 	}
 
 	protected TableColumn<DebiteurTableModel, Boolean> getDeleteCol() {
 		TableColumn<DebiteurTableModel, Boolean> deleteCol = new TableColumn<>();
-		
+
 		deleteCol.setCellValueFactory(par -> new SimpleBooleanProperty(par.getValue() != null));
 		deleteCol.setCellFactory(param -> {
 			Button button = new Button();
@@ -102,7 +103,7 @@ public class DebiteurTable extends VBox {
 		deleteCol.setMinWidth(50);
 		deleteCol.setMaxWidth(50);
 		deleteCol.setPrefWidth(50);
-		
+
 		return deleteCol;
 	}
 
@@ -120,7 +121,7 @@ public class DebiteurTable extends VBox {
 		Observable<Integer> selectedRow = Observables.fromProperty(this.table.getSelectionModel()
 				.selectedIndexProperty())
 				.map(Number::intValue);
-		
+
 		selectedRow.filter(i -> this.data.isEmpty())
 				.subscribe(i -> this.modify.setDisable(true));
 		selectedRow.filter(i -> !this.data.isEmpty())
@@ -148,6 +149,7 @@ public class DebiteurTable extends VBox {
 
 	public static class DebiteurTableModel {
 
+		private final Integer id;
 		private final String naam;
 		private final String straat;
 		private final String nummer;
@@ -155,14 +157,19 @@ public class DebiteurTable extends VBox {
 		private final String plaats;
 		private final String btwNummer;
 
-		public DebiteurTableModel(String naam, String straat, String nummer, String postcode,
-				String plaats, String btwNummer) {
+		public DebiteurTableModel(Integer id, String naam, String straat, String nummer,
+				String postcode, String plaats, String btwNummer) {
+			this.id = id;
 			this.naam = naam;
 			this.straat = straat;
 			this.nummer = nummer;
 			this.postcode = postcode;
 			this.plaats = plaats;
 			this.btwNummer = btwNummer;
+		}
+
+		public Integer getId() {
+			return this.id;
 		}
 
 		public String getNaam() {

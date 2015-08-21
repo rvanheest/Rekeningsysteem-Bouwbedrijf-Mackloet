@@ -288,14 +288,14 @@
 #searchBox .button:hover, #esselinkSearchBox .button:hover {
     -fx-background-image: url("images/search-clear-over.png");
 }
-.search-menu-item {
+.search-menu-item-border {
     -fx-border-color: transparent transparent transparent #bbbbbb;
     -fx-border-insets: 0 0 0 69;
     -fx-padding: 4 5 4 -64;
 }
-.search-menu-item:selected,
-.search-menu-item:hover,
-.search-menu-item:focused {
+.search-menu-item-border:selected,
+.search-menu-item-border:hover,
+.search-menu-item-border:focused {
     -fx-border-color: transparent transparent transparent derive(-fx-focus-color,30%);
 }
 .search-menu-item-popup-region {

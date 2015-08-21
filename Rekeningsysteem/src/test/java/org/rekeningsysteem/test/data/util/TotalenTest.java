@@ -43,7 +43,7 @@ public class TotalenTest extends EqualsHashCodeTest {
 		assertEquals(new Geld(1), this.totalen.getMateriaal());
 		assertEquals(new Geld(16), this.totalen.getBtw().get(50.0));
 		assertEquals(new Geld(4), this.totalen.getSubtotaal());
-		assertEquals(new Geld(12), this.totalen.getTotaal());
+		assertEquals(new Geld(20), this.totalen.getTotaal());
 	}
 
 	@Test
@@ -59,7 +59,7 @@ public class TotalenTest extends EqualsHashCodeTest {
 		assertEquals(new Geld(3), this.totalen.getMateriaal());
 		assertEquals(new Geld(16), this.totalen.getBtw().get(50.0));
 		assertEquals(new Geld(4), this.totalen.getSubtotaal());
-		assertEquals(new Geld(12), this.totalen.getTotaal());
+		assertEquals(new Geld(20), this.totalen.getTotaal());
 	}
 
 	@Test
@@ -83,7 +83,7 @@ public class TotalenTest extends EqualsHashCodeTest {
 		assertEquals(new Geld(1), this.totalen.getMateriaal());
 		assertEquals(expected, this.totalen.getBtw());
 		assertEquals(new Geld(2), this.totalen.getSubtotaal());
-		assertEquals(new Geld(65), this.totalen.getTotaal());
+		assertEquals(new Geld(268), this.totalen.getTotaal());
 	}
 
 	@Test
@@ -100,7 +100,7 @@ public class TotalenTest extends EqualsHashCodeTest {
 
 	@Test
 	public void testGetTotalen() {
-		assertEquals(new Geld(10), this.totalen.getTotaal());
+		assertEquals(new Geld(18), this.totalen.getTotaal());
 	}
 
 	@Test

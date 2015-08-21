@@ -20,7 +20,7 @@ public class ParticulierController extends AbstractRekeningController<Particulie
 	private final OmschrFactuurHeaderController header;
 	private final ParticulierListPaneController list;
 	private final LoonListPaneController loon;
-	
+
 	public ParticulierController(Database database) {
 		this(PropertiesWorker.getInstance(), database);
 	}
@@ -31,13 +31,14 @@ public class ParticulierController extends AbstractRekeningController<Particulie
 
 	public ParticulierController(Currency currency, BtwPercentage defaultBtw, Database database) {
 		this(new OmschrFactuurHeaderController(database),
-				new ParticulierListPaneController(currency, defaultBtw),
+				new ParticulierListPaneController(currency, database, defaultBtw),
 				new LoonListPaneController(currency, defaultBtw));
 	}
 
-	public ParticulierController(ParticulierFactuur input, PropertiesWorker properties, Database database) {
+	public ParticulierController(ParticulierFactuur input, PropertiesWorker properties,
+			Database database) {
 		this(new OmschrFactuurHeaderController(input.getFactuurHeader(), database),
-				new ParticulierListPaneController(input.getCurrency(),
+				new ParticulierListPaneController(input.getCurrency(), database,
 						getDefaultBtwPercentage(properties), input.getItemList()),
 				new LoonListPaneController(input.getCurrency(),
 						getDefaultBtwPercentage(properties), input.getLoonList()));

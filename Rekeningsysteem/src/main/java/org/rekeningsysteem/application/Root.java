@@ -58,8 +58,8 @@ public class Root extends BorderPane {
 						.setProperty(PropertyModelEnum.FULL_SCREEN, Boolean.toString(b)));
 		maxToggle.filter(b -> b).subscribe(b -> {
 			Platform.runLater(() -> {
-				double x = stage.getX();
-				double y = stage.getY();
+				double x = Math.max(0, stage.getX());
+				double y = Math.max(0, stage.getY());
 				double width = stage.getWidth();
 				double height = stage.getHeight();
 				this.windowBounds.onNext(new Rectangle2D(x, y, width, height));

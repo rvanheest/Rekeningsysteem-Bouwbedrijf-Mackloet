@@ -5,7 +5,7 @@ import java.util.Objects;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.data.util.visitor.ListItemVisitor;
 
-public final class GebruiktEsselinkArtikel implements ParticulierArtikel {
+public final class GebruiktEsselinkArtikel extends ParticulierArtikel {
 
 	private final EsselinkArtikel artikel;
 	private final double aantal;
@@ -30,7 +30,7 @@ public final class GebruiktEsselinkArtikel implements ParticulierArtikel {
 
 	@Override
 	public Geld getMateriaal() {
-		return new Geld(this.materiaal);
+		return this.materiaal;
 	}
 
 	@Override

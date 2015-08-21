@@ -38,7 +38,7 @@ public final class EsselinkArtikel {
 	}
 
 	public Geld getVerkoopPrijs() {
-		return new Geld(this.verkoopPrijs);
+		return this.verkoopPrijs;
 	}
 
 	@Override

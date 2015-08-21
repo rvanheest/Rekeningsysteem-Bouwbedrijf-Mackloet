@@ -29,7 +29,7 @@ public final class AangenomenListItem implements BtwListItem {
 
 	@Override
 	public Geld getLoon() {
-		return new Geld(this.loon);
+		return this.loon;
 	}
 
 	@Override
@@ -39,7 +39,7 @@ public final class AangenomenListItem implements BtwListItem {
 
 	@Override
 	public Geld getMateriaal() {
-		return new Geld(this.materiaal);
+		return this.materiaal;
 	}
 
 	@Override

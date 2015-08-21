@@ -17,14 +17,20 @@ public abstract class AbstractLoon implements BtwListItem {
 		return this.omschrijving;
 	}
 
+	// AbstractLoon and all its subclasses have no materiaal price, so it is fixed to zero
 	@Override
-	public Geld getMateriaal() {
+	public final Geld getMateriaal() {
 		return new Geld(0);
 	}
 
 	@Override
-	public double getMateriaalBtwPercentage() {
+	public final double getMateriaalBtwPercentage() {
 		return 0;
+	}
+
+	@Override
+	public final Geld getMateriaalBtw() {
+		return new Geld(0);
 	}
 
 	@Override

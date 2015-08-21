@@ -30,8 +30,8 @@ import rx.Observable;
 public class Main extends Application {
 
 	private static Main main;
-	public static final double screenWidth = 1125;
-	public static final double screenHeight = 772;
+	public static final double screenWidth = 1061;
+	public static final double screenHeight = 728;
 
 	private final StackPane popup = new StackPane();
 
@@ -72,7 +72,7 @@ public class Main extends Application {
 
 			stage.addEventHandler(WindowEvent.WINDOW_HIDDEN, event -> {
 				try {
-					Database.closeInstance();
+					database.close();
 				}
 				catch (SQLException e) {
 					ApplicationLogger.getInstance().error("Could not close database.", e);

@@ -103,8 +103,8 @@ public class AangenomenFactuurTest extends AbstractFactuurTest<AangenomenListIte
 
 	@Test
 	public void testToString() {
-		String expected = "<AangenomenFactuur[<FactuurHeader[<Debiteur[a, b, c, d, e, "
-				+ "Optional.empty]>, 1992-07-30, Optional.empty, f]>, EUR, itemList]>";
+		String expected = "<AangenomenFactuur[<FactuurHeader[<Debiteur[Optional.empty, a, b, c, "
+				+ "d, e, Optional.empty]>, 1992-07-30, Optional.empty, f]>, EUR, itemList]>";
 		assertEquals(expected, this.factuur.toString());
 	}
 }

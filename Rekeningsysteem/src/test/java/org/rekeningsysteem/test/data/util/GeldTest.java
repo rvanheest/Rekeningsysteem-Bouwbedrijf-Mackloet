@@ -63,4 +63,10 @@ public final class GeldTest extends EqualsHashCodeTest {
 		Geld g2 = g.divide(2.47);
 		assertEquals(new Geld(14.76), g2);
 	}
+
+	@Test(expected = AssertionError.class)
+	public void testDivideByZero() {
+		Geld g = new Geld(12);
+		g.divide(0.0);
+	}
 }
