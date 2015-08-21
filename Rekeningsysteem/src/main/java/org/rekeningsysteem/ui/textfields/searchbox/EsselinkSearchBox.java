@@ -68,7 +68,7 @@ public class EsselinkSearchBox extends AbstractSearchBox<EsselinkArtikel> {
 	@Override
 	protected MenuItem createMenuItem(HBox hBox) {
 		MenuItem menu = super.createMenuItem(hBox);
-		menu.getStyleClass().add("search-menu-item");
+		menu.getStyleClass().add("search-menu-item-border");
 		return menu;
 	}
 }

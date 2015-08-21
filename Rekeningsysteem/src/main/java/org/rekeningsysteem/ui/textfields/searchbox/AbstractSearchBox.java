@@ -98,6 +98,7 @@ public abstract class AbstractSearchBox<T> extends Region {
 						d.getX(), d.getY()));
 
 		MenuItem menu = this.createMenuItem(hBox);
+		menu.getStyleClass().add("search-menu-item");
 		this.contextMenu.getItems().add(menu);
 		Observables.fromNodeEvents(menu, ActionEvent.ACTION)
 				.map(event -> t)
