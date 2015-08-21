@@ -20,9 +20,11 @@ import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
 
-import org.rekeningsysteem.io.database.Database;
-import org.rekeningsysteem.io.database.QueryEnumeration;
+import org.rekeningsysteem.data.particulier.EsselinkArtikel;
+import org.rekeningsysteem.data.util.Geld;
+import org.rekeningsysteem.exception.GeldParseException;
 import org.rekeningsysteem.logging.ApplicationLogger;
+import org.rekeningsysteem.logic.database.ArtikellijstDBInteraction;
 import org.rekeningsysteem.rxjavafx.JavaFxScheduler;
 import org.rekeningsysteem.rxjavafx.Observables;
 
@@ -31,17 +33,17 @@ import rx.schedulers.Schedulers;
 
 public class PrijslijstIO extends Tab {
 
-	private final Database database;
+	private final ArtikellijstDBInteraction db;
 
 	private final Label progressLabel = new Label("nog niet gestart");
 	private final Label warningLabel = new Label("Let op, de huidige data wordt verwijderd "
 			+ "wanneer nieuwe data wordt geimporteerd!");
 	private final Button startButton = new Button("Start");
 
-	public PrijslijstIO(Stage stage, Database database, ButtonBase closeButton) {
+	public PrijslijstIO(Stage stage, ArtikellijstDBInteraction db, ButtonBase closeButton) {
 		super("Esselink artikel data");
 
-		this.database = database;
+		this.db = db;
 
 		this.progressLabel.getStyleClass().add("no-item-found");
 		this.warningLabel.setTextFill(Color.RED);
@@ -54,17 +56,17 @@ public class PrijslijstIO extends Tab {
 					closeButton.setDisable(true);
 				})
 				.observeOn(Schedulers.io())
-				.flatMap(file -> this.clearData()
-						.flatMap(i -> this.readFile(file))
-						.flatMap(database::update)
-						.scan(0, (cum, x) -> cum + 1)
-						.observeOn(JavaFxScheduler.getInstance())
-						.doOnCompleted(() -> {
-							closeButton.setDisable(false);
-							this.startButton.setDisable(false);
-							this.progressLabel.setText("Artikelen importeren is voltooid");
-						}))
+				.flatMap(f -> this.db.clearData(), (file, i) -> file)
+				.flatMap(this::readFile)
+				.flatMap(db::insert)
+				.scan(0, (cum, x) -> cum + 1)
+				.observeOn(JavaFxScheduler.getInstance())
 				.map(i -> "Voortgang: " + i + " items toegevoegd")
+				.doOnCompleted(() -> {
+					closeButton.setDisable(false);
+					this.startButton.setDisable(false);
+					this.progressLabel.setText("Artikelen importeren is voltooid");
+				})
 				.subscribe(this.progressLabel::setText, e -> {
 					this.progressLabel.setText("Er is een fout opgetreden. Zie de log "
 							+ "voor info.");
@@ -95,11 +97,7 @@ public class PrijslijstIO extends Tab {
 				.filter(Objects::nonNull);
 	}
 
-	private Observable<Integer> clearData() {
-		return this.database.update(() -> "DELETE FROM Artikellijst");
-	}
-
-	private Observable<QueryEnumeration> readFile(File csv) {
+	private Observable<EsselinkArtikel> readFile(File csv) {
 		// TODO replace this implementation with the Apache Commons CSV parser
 		// http://commons.apache.org/proper/commons-csv/
 		try {
@@ -112,9 +110,16 @@ public class PrijslijstIO extends Tab {
 							: s)
 					.buffer(5)
 					.skip(1)
-					.map(list -> () -> "INSERT INTO Artikellijst VALUES ('" + list.get(0) + "', '"
-							+ list.get(1).replace("\'", "\'\'") + "', '" + list.get(2) + "', '"
-							+ list.get(3) + "', '" + list.get(4).replace(',', '.') + "');");
+					.flatMap(list -> {
+						try {
+							return Observable.just(new EsselinkArtikel(list.get(0), list.get(1),
+									Integer.parseInt(list.get(2)), list.get(3),
+									new Geld(list.get(4))));
+						}
+						catch (GeldParseException e) {
+							return Observable.error(e);
+						}
+					});
 		}
 		catch (FileNotFoundException e) {
 			return Observable.error(e);

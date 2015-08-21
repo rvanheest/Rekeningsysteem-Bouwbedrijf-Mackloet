@@ -13,19 +13,41 @@ import rx.functions.Func1;
 
 public class ArtikellijstDBInteraction extends DBInteraction<EsselinkArtikel> {
 
+	private static final QueryEnumeration allQuery = () -> "SELECT * FROM Artikellijst;";
 	private static final Func1<String, QueryEnumeration> artNrQuery = s -> () ->
 			"SELECT * FROM Artikellijst WHERE artikelnummer LIKE '" + s + "%';";
 	private static final Func1<String, QueryEnumeration> omschrQuery = s -> () ->
 			"SELECT * FROM Artikellijst WHERE omschrijving LIKE '%" + s + "%';";
 
+	private static final QueryEnumeration clearTable = () -> "DELETE FROM Artikellijst;";
+	private static final Func1<EsselinkArtikel, QueryEnumeration> insert = ea -> () ->
+			"INSERT INTO Artikellijst VALUES ('" + ea.getArtikelNummer() + "', '"
+					+ ea.getOmschrijving().replace("\'", "\'\'") + "', '"
+					+ ea.getPrijsPer() + "', '"
+					+ ea.getEenheid() + "', '"
+					+ ea.getVerkoopPrijs().getBedrag() + "');";
+
 	public ArtikellijstDBInteraction(Database database) {
 		super(database);
+	}
+
+	public Observable<Integer> clearData() {
+		return this.update(clearTable);
+	}
+
+	// TODO add insertAll
+	public Observable<Integer> insert(EsselinkArtikel ea) {
+		return this.update(insert.call(ea));
+	}
+
+	public Observable<EsselinkArtikel> getAll() {
+		return this.getFromDatabase(allQuery);
 	}
 
 	public Observable<EsselinkArtikel> getWithArtikelnummer(String text) {
 		return this.getFromDatabase(artNrQuery, text);
 	}
-	
+
 	public Observable<EsselinkArtikel> getWithOmschrijving(String text) {
 		return this.getFromDatabase(omschrQuery, text);
 	}

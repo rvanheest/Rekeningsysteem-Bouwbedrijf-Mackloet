@@ -6,7 +6,6 @@ import java.util.function.Function;
 
 import org.rekeningsysteem.data.particulier.EsselinkArtikel;
 import org.rekeningsysteem.data.particulier.GebruiktEsselinkArtikel;
-import org.rekeningsysteem.io.database.Database;
 import org.rekeningsysteem.logic.database.ArtikellijstDBInteraction;
 import org.rekeningsysteem.rxjavafx.JavaFxScheduler;
 import org.rekeningsysteem.ui.textfields.searchbox.AbstractSearchBox;
@@ -18,19 +17,19 @@ import rx.schedulers.Schedulers;
 
 public class GebruiktEsselinkArtikelController {
 
-	private final Database database;
+	private final ArtikellijstDBInteraction db;
 
 	private final GebruiktEsselinkArtikelPane ui;
 	private final Observable<GebruiktEsselinkArtikel> model;
 	private final SearchBoxController<EsselinkArtikel> searchBoxController;
 
-	public GebruiktEsselinkArtikelController(Currency currency, Database database) {
-		this(currency, database, factory -> new GebruiktEsselinkArtikelPane(currency, factory));
+	public GebruiktEsselinkArtikelController(Currency currency, ArtikellijstDBInteraction db) {
+		this(currency, db, factory -> new GebruiktEsselinkArtikelPane(currency, factory));
 	}
 
-	public GebruiktEsselinkArtikelController(Currency currency, Database database,
+	public GebruiktEsselinkArtikelController(Currency currency, ArtikellijstDBInteraction db,
 			Function<AbstractSearchBox<EsselinkArtikel>, GebruiktEsselinkArtikelPane> uiFactory) {
-		this.database = database;
+		this.db = db;
 		this.searchBoxController = new SearchBoxController<>(new EsselinkSearchBox(currency));
 		this.ui = uiFactory.apply(this.searchBoxController.getUI());
 		this.model = Observable.combineLatest(this.ui.getArtikel(), this.ui.getAantal(),
@@ -48,8 +47,6 @@ public class GebruiktEsselinkArtikelController {
 	}
 
 	private void initSearchBox() {
-		ArtikellijstDBInteraction interaction = new ArtikellijstDBInteraction(this.database);
-
 		AbstractSearchBox<EsselinkArtikel> searchField = this.searchBoxController.getUI();
 
 		this.ui.getSelectedToggle()
@@ -59,9 +56,9 @@ public class GebruiktEsselinkArtikelController {
 					Observable<Function<String, Observable<EsselinkArtikel>>> toggleFunction =
 							toggle.map(t -> {
 								if (t == EsselinkArtikelToggle.ARTIKELNUMMER)
-									return interaction::getWithArtikelnummer;
+									return this.db::getWithArtikelnummer;
 								assert t == EsselinkArtikelToggle.OMSCHRIJVING;
-								return interaction::getWithOmschrijving;
+								return this.db::getWithOmschrijving;
 							});
 
 					return searchField.textProperty()

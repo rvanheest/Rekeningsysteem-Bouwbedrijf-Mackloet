@@ -7,6 +7,7 @@ import org.rekeningsysteem.data.particulier.AnderArtikel;
 import org.rekeningsysteem.data.particulier.ParticulierArtikel;
 import org.rekeningsysteem.data.util.BtwPercentage;
 import org.rekeningsysteem.io.database.Database;
+import org.rekeningsysteem.logic.database.ArtikellijstDBInteraction;
 import org.rekeningsysteem.ui.list.AbstractListItemController;
 
 public class ParticulierArtikelController extends AbstractListItemController<ParticulierArtikel> {
@@ -17,7 +18,8 @@ public class ParticulierArtikelController extends AbstractListItemController<Par
 	public ParticulierArtikelController(Currency currency, Database db, BtwPercentage defaultBtw) {
 		this(defaultBtw, new ParticulierArtikelPane(currency),
 				new AnderArtikelController(currency),
-				new GebruiktEsselinkArtikelController(currency, db));
+				new GebruiktEsselinkArtikelController(currency,
+						new ArtikellijstDBInteraction(db)));
 	}
 
 	public ParticulierArtikelController(Currency currency, Database db, BtwPercentage defaultBtw,
