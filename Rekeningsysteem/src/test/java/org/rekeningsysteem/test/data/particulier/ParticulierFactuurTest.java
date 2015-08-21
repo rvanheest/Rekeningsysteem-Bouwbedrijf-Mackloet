@@ -125,8 +125,9 @@ public class ParticulierFactuurTest extends AbstractFactuurTest<ParticulierArtik
 
 	@Test
 	public void testToString() {
-		String expected = "<ParticulierFactuur[<FactuurHeader[<Debiteur[a, b, c, d, e, "
-				+ "Optional.empty]>, 1992-07-30, Optional.empty, g]>, EUR, itemList, loonList]>";
+		String expected = "<ParticulierFactuur[<FactuurHeader[<Debiteur[Optional.empty, a, b, c, "
+				+ "d, e, Optional.empty]>, 1992-07-30, Optional.empty, g]>, EUR, itemList, "
+				+ "loonList]>";
 		assertEquals(expected, this.factuur.toString());
 	}
 }

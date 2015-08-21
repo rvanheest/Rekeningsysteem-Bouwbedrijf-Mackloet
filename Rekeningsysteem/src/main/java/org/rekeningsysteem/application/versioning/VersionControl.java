@@ -54,17 +54,12 @@ public class VersionControl {
 					.append(insertVersion.call(mavenVersion));
 			return this.database.update(query).subscribeOn(Schedulers.io());
 		}
-		else if ("v0.4".equals(dbVersion) || "v0.4-alpha".equals(dbVersion)) {
-			// Database is in version v0.4-alpha
-			QueryEnumeration query = updateVersion.call(dbVersion, mavenVersion);
-			return this.database.update(query).subscribeOn(Schedulers.io());
-		}
 		return Observable.error(new IllegalArgumentException("the version of the database "
 				+ "is not valid"));
 	}
 
 	public static String getMavenVersion() {
-		return "v0.4b-alpha";
+		return "v0.4-alpha";
 		// TODO switch lines
 //		return VersionControl.class.getPackage().getImplementationVersion();
 	}
@@ -115,7 +110,10 @@ public class VersionControl {
 				.append(V04AlphaQueries.CREATE_TOTAAL_DEBITEUR_VIEW)
 				.append(V04AlphaQueries.CREATE_TOTAAL_DEBITEUR_INSERT_TRIGGER)
 				.append(V04AlphaQueries.CREATE_TOTAAL_DEBITEUR_DELETE_TRIGGER)
-				.append(V04AlphaQueries.CREATE_TOTAAL_DEBITEUR_UPDATE_TRIGGER)
+				.append(V04AlphaQueries.CREATE_TOTAAL_DEBITEUR_UPDATE_COMPLEX_TO_COMPLEX_TRIGGER)
+				.append(V04AlphaQueries.CREATE_TOTAAL_DEBITEUR_UPDATE_COMPLEX_TO_SIMPLE_TRIGGER)
+				.append(V04AlphaQueries.CREATE_TOTAAL_DEBITEUR_UPDATE_SIMPLE_TO_COMPLEX_TRIGGER)
+				.append(V04AlphaQueries.CREATE_TOTAAL_DEBITEUR_UPDATE_SIMPLE_TO_SIMPLE_TRIGGER)
 				.append(V04AlphaQueries.CREATE_METADATA);
 	}
 }

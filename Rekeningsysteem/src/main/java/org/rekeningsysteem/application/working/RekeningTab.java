@@ -117,6 +117,7 @@ public class RekeningTab extends Tab {
 				.flatMap(rekening -> this.controller.getSaveSelected().flatMap(select -> {
 					if (select) {
 						Debiteur debiteur = rekening.getFactuurHeader().getDebiteur();
+						// TODO on which scheduler should the following line be? ioScheduler?
 						return this.debiteurDB.addDebiteur(debiteur);
 					}
 					return Observable.just(-1);

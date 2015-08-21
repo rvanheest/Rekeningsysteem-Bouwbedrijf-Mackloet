@@ -35,31 +35,31 @@ public class DebiteurTableController {
 				.filter(Optional::isPresent)
 				.map(Optional::get)
 				.observeOn(Schedulers.io())
-				.flatMap(db::addDebiteur, (debiteur, i) -> debiteur)
-				.observeOn(JavaFxScheduler.getInstance())
-				.flatMap(debiteur -> this.model.first().doOnNext(list -> list.add(debiteur)))
+				.flatMap(db::addAndGetDebiteur)
+				.flatMap(deb -> this.model.first().doOnNext(list -> list.add(deb)))
 				.map(this::modelToUI)
+				.observeOn(JavaFxScheduler.getInstance())
 				.subscribe(this.ui::setData);
-		
+
 		this.ui.getModifyButtonEvent()
 				.map(event -> this.ui.getSelectedIndex())
-				.<List<DebiteurTableModel>> flatMap(index -> {
-					return this.model.first()
-							.map(list -> list.get(index))
-							.<Debiteur> flatMap(old -> {
-								DebiteurItemPaneController controller = new DebiteurItemPaneController(old);
-								Main.getMain().showModalMessage(controller.getUI());
-								return controller.getModel()
-										.doOnNext(optItem -> Main.getMain().hideModalMessage())
-										.filter(Optional::isPresent)
-										.map(Optional::get)
-										.observeOn(Schedulers.io())
-										.flatMap(newDebiteur -> db.updateDebiteur(old, newDebiteur), (newDebiteur, i) -> newDebiteur);
-							})
-							.observeOn(JavaFxScheduler.getInstance())
-							.flatMap(newDebiteur -> this.model.first().doOnNext(list -> list.set(index, newDebiteur)))
-							.map(this::modelToUI);
-				})
+				.<List<Debiteur>> flatMap(index -> this.model.first()
+						.map(list -> list.get(index))
+						.<Debiteur> flatMap(old -> {
+							DebiteurItemPaneController controller =
+									new DebiteurItemPaneController(old);
+							Main.getMain().showModalMessage(controller.getUI());
+							return controller.getModel()
+									.doOnNext(optItem -> Main.getMain().hideModalMessage())
+									.filter(Optional::isPresent)
+									.map(Optional::get)
+									.observeOn(Schedulers.io())
+									.flatMap(newDebiteur -> db.updateDebiteur(old, newDebiteur),
+											(newDebiteur, i) -> newDebiteur);
+						})
+						.flatMap(deb -> this.model.first().doOnNext(list -> list.set(index, deb))))
+				.map(this::modelToUI)
+				.observeOn(JavaFxScheduler.getInstance())
 				.subscribe(this.ui::setData);
 	}
 
@@ -76,9 +76,9 @@ public class DebiteurTableController {
 	}
 
 	private static DebiteurTableModel modelToUI(Debiteur debiteur) {
-		return new DebiteurTableModel(debiteur.getNaam(), debiteur.getStraat(),
-				debiteur.getNummer(), debiteur.getPostcode(), debiteur.getPlaats(),
-				debiteur.getBtwNummer().orElse(""));
+		return new DebiteurTableModel(debiteur.getDebiteurID().orElse(null), debiteur.getNaam(),
+				debiteur.getStraat(), debiteur.getNummer(), debiteur.getPostcode(),
+				debiteur.getPlaats(), debiteur.getBtwNummer().orElse(""));
 	}
 
 	private List<Debiteur> uiToModel(List<? extends DebiteurTableModel> list) {
@@ -86,9 +86,11 @@ public class DebiteurTableController {
 	}
 
 	private static Debiteur uiToModel(DebiteurTableModel model) {
+		Integer id = model.getId();
+		Optional<Integer> debiteurID = Optional.ofNullable(id);
 		String btw = model.getBtwNummer();
 		Optional<String> btwNummer = "".equals(btw) ? Optional.empty() : Optional.ofNullable(btw);
-		return new Debiteur(model.getNaam(), model.getStraat(), model.getNummer(),
+		return new Debiteur(debiteurID, model.getNaam(), model.getStraat(), model.getNummer(),
 				model.getPostcode(), model.getPlaats(), btwNummer);
 	}
 }

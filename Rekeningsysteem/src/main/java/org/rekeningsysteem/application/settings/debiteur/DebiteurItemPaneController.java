@@ -10,11 +10,15 @@ import rx.Observable;
 public class DebiteurItemPaneController extends AbstractListItemController<Debiteur> {
 
 	public DebiteurItemPaneController() {
-		this(new DebiteurItemPane());
+		this(Optional.empty(), new DebiteurItemPane());
+	}
+
+	public DebiteurItemPaneController(Optional<Integer> debiteurID) {
+		this(debiteurID, new DebiteurItemPane());
 	}
 
 	public DebiteurItemPaneController(Debiteur input) {
-		this();
+		this(input.getDebiteurID());
 		this.getUI().setNaam(input.getNaam());
 		this.getUI().setStraat(input.getStraat());
 		this.getUI().setNummer(input.getNummer());
@@ -24,9 +28,11 @@ public class DebiteurItemPaneController extends AbstractListItemController<Debit
 		this.getUI().setAsUpdate();
 	}
 
-	public DebiteurItemPaneController(DebiteurItemPane ui) {
+	public DebiteurItemPaneController(Optional<Integer> debiteurID, DebiteurItemPane ui) {
 		super(ui, Observable.combineLatest(ui.getNaam(), ui.getStraat(), ui.getNummer(),
-				ui.getPostcode(), ui.getPlaats(), ui.getBtwnummer(), Debiteur::new)
+				ui.getPostcode(), ui.getPlaats(), ui.getBtwnummer(),
+				(naam, straat, nummer, postcode, plaats, btw) -> new Debiteur(debiteurID,
+						naam, straat, nummer, postcode, plaats, btw))
 				.sample(ui.getAddButtonEvent())
 				.map(Optional::of)
 				.mergeWith(ui.getCancelButtonEvent().map(event -> Optional.empty()))

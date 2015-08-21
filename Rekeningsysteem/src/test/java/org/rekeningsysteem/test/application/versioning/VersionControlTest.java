@@ -50,13 +50,19 @@ public class VersionControlTest {
 
 		this.versionTableExists();
 		this.tableCount(5);
-		
+
 		CountDownLatch latch = new CountDownLatch(1);
 		TestSubscriber<Integer> updateObserver = new TestSubscriber<>();
 		this.vc.checkDBVersioning()
 				.subscribe(updateObserver::onNext,
-				e -> { updateObserver.onError(e); latch.countDown(); },
-				() -> { updateObserver.onCompleted(); latch.countDown(); });
+						e -> {
+							updateObserver.onError(e);
+							latch.countDown();
+						},
+						() -> {
+							updateObserver.onCompleted();
+							latch.countDown();
+						});
 
 		latch.await();
 		updateObserver.assertNoValues();
@@ -68,21 +74,9 @@ public class VersionControlTest {
 	public void testSetupFromV03AlphaDatabase() throws InterruptedException {
 		QueryEnumeration setupQueries = VersionControl.getV03AlphaQueries();
 		this.database.update(setupQueries).subscribe();
-		
+
 		this.versionTableNotExists();
 		this.tableCount(3);
-		this.uptodateWithNewestVersion(false);
-	}
-
-	@Test
-	public void testSetupFromV04Database() throws InterruptedException {
-		QueryEnumeration setupQueries = VersionControl.getV03AlphaQueries()
-				.append(VersionControl.getV04AlphaQueries())
-				.append(() -> "INSERT INTO Metadata VALUES ('v0.4');");
-		this.database.update(setupQueries).subscribe();
-
-		this.versionTableExists();
-		this.tableCount(5);
 		this.uptodateWithNewestVersion(false);
 	}
 
@@ -95,16 +89,18 @@ public class VersionControlTest {
 
 		this.versionTableExists();
 		this.tableCount(5);
-		this.uptodateWithNewestVersion(false);
+		this.uptodateWithNewestVersion(true);
 	}
 
+	// continue with tests for newer versions here!
+
 	@Test
-	public void testSetupFromV04bAlphaDatabase() throws InterruptedException {
+	public void testSetupFromNewestVersionDatabase() throws InterruptedException {
 		CountDownLatch latch = new CountDownLatch(1);
 		this.vc.checkDBVersioning()
-			.doOnError(e -> latch.countDown())
-			.doOnCompleted(latch::countDown)
-			.subscribe();
+				.doOnError(e -> latch.countDown())
+				.doOnCompleted(latch::countDown)
+				.subscribe();
 
 		latch.await();
 		this.uptodateWithNewestVersion(true);
@@ -115,8 +111,14 @@ public class VersionControlTest {
 		TestSubscriber<Boolean> observer = new TestSubscriber<>();
 
 		this.vc.versionTableExists().subscribe(observer::onNext,
-				e -> { observer.onError(e); latch.countDown(); },
-				() -> { observer.onCompleted(); latch.countDown(); });
+				e -> {
+					observer.onError(e);
+					latch.countDown();
+				},
+				() -> {
+					observer.onCompleted();
+					latch.countDown();
+				});
 
 		latch.await();
 		observer.assertValue(false);
@@ -129,8 +131,14 @@ public class VersionControlTest {
 		TestSubscriber<Boolean> observer = new TestSubscriber<>();
 
 		this.vc.versionTableExists().subscribe(observer::onNext,
-				e -> { observer.onError(e); latch.countDown(); },
-				() -> { observer.onCompleted(); latch.countDown(); });
+				e -> {
+					observer.onError(e);
+					latch.countDown();
+				},
+				() -> {
+					observer.onCompleted();
+					latch.countDown();
+				});
 
 		latch.await();
 		observer.assertValue(true);
@@ -143,8 +151,14 @@ public class VersionControlTest {
 		TestSubscriber<Integer> observer = new TestSubscriber<>();
 
 		this.vc.getTableCount().subscribe(observer::onNext,
-				e -> { observer.onError(e); latch.countDown(); },
-				() -> { observer.onCompleted(); latch.countDown(); });
+				e -> {
+					observer.onError(e);
+					latch.countDown();
+				},
+				() -> {
+					observer.onCompleted();
+					latch.countDown();
+				});
 
 		latch.await();
 		observer.assertValue(expected);
@@ -157,8 +171,14 @@ public class VersionControlTest {
 		TestSubscriber<Integer> updateObserver = new TestSubscriber<>();
 		this.vc.checkDBVersioning()
 				.subscribe(updateObserver::onNext,
-				e -> { updateObserver.onError(e); latch.countDown(); },
-				() -> { updateObserver.onCompleted(); latch.countDown(); });
+						e -> {
+							updateObserver.onError(e);
+							latch.countDown();
+						},
+						() -> {
+							updateObserver.onCompleted();
+							latch.countDown();
+						});
 
 		latch.await();
 		if (alreadyUptodate)
@@ -172,11 +192,17 @@ public class VersionControlTest {
 		TestSubscriber<String> versionObserver = new TestSubscriber<>();
 		this.vc.getVersion()
 				.subscribe(versionObserver::onNext,
-				e -> { versionObserver.onError(e); latch2.countDown(); },
-				() -> { versionObserver.onCompleted(); latch2.countDown(); });
+						e -> {
+							versionObserver.onError(e);
+							latch2.countDown();
+						},
+						() -> {
+							versionObserver.onCompleted();
+							latch2.countDown();
+						});
 
 		latch2.await();
-		versionObserver.assertValue("v0.4b-alpha");
+		versionObserver.assertValue("v0.4-alpha");
 		versionObserver.assertNoErrors();
 		versionObserver.assertCompleted();
 
@@ -185,11 +211,17 @@ public class VersionControlTest {
 		this.database.query(() -> "SELECT COUNT(name) AS 'count' FROM sqlite_master;",
 				result -> result.getInt("count"))
 				.subscribe(tablesObserver::onNext,
-				e -> { tablesObserver.onError(e); latch3.countDown(); },
-				() -> { tablesObserver.onCompleted(); latch3.countDown(); });
+						e -> {
+							tablesObserver.onError(e);
+							latch3.countDown();
+						},
+						() -> {
+							tablesObserver.onCompleted();
+							latch3.countDown();
+						});
 
 		latch3.await();
-		tablesObserver.assertValue(13);
+		tablesObserver.assertValue(15);
 		tablesObserver.assertNoErrors();
 		tablesObserver.assertCompleted();
 	}
