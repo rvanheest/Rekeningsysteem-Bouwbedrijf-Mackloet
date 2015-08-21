@@ -6,6 +6,7 @@ import javafx.geometry.Point2D;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.CustomMenuItem;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
@@ -25,7 +26,8 @@ public abstract class AbstractSearchBox<T> extends Region {
 	private final Button clearButton = new Button();
 	final ContextMenu contextMenu = new ContextMenu();
 
-	private final Observable<String> textProperty = Observables.fromProperty(this.textBox.textProperty());
+	private final Observable<String> textProperty = Observables.fromProperty(this.textBox
+			.textProperty());
 	final PublishSubject<T> selectedItem = PublishSubject.create();
 
 	// info popup
@@ -83,7 +85,8 @@ public abstract class AbstractSearchBox<T> extends Region {
 		Observables.fromProperty(popRegion.opacityProperty())
 				.map(Number::doubleValue)
 				.filter(d -> d == 1)
-				.subscribeOn(JavaFxScheduler.getInstance()) // used here as a workaround for RT-14396
+				.subscribeOn(JavaFxScheduler.getInstance()) // used here as a workaround for
+															// RT-14396
 				.doOnNext(d -> this.setTextfields(t))
 				.map(d -> hBox.localToScene(0, 0))
 				.map(hBoxPos -> new Point2D(
@@ -91,10 +94,10 @@ public abstract class AbstractSearchBox<T> extends Region {
 								+ this.contextMenu.getX() - this.infoBox.getPrefWidth() - 10,
 						hBoxPos.getY() + this.contextMenu.getScene().getY()
 								+ this.contextMenu.getY() - 10))
-				.forEach(d -> this.infoPopup.show(this.getScene().getWindow(), d.getX(), d.getY()));
+				.forEach(d -> this.infoPopup.show(this.getScene().getWindow(),
+						d.getX(), d.getY()));
 
-		CustomMenuItem menu = new CustomMenuItem(hBox);
-		menu.getStyleClass().add("search-menu-item");
+		MenuItem menu = this.createMenuItem(hBox);
 		this.contextMenu.getItems().add(menu);
 		Observables.fromNodeEvents(menu, ActionEvent.ACTION)
 				.map(event -> t)
@@ -104,6 +107,11 @@ public abstract class AbstractSearchBox<T> extends Region {
 	abstract void setTextfields(T t);
 
 	abstract HBox getHBox(T t);
+
+	protected MenuItem createMenuItem(HBox hBox) {
+		// can be overriden for extra styling, as is done in EsselinkSearchBox
+		return new CustomMenuItem(hBox);
+	}
 
 	public Observable<String> textProperty() {
 		return this.textProperty;
