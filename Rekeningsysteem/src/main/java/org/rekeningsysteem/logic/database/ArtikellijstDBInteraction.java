@@ -20,12 +20,16 @@ public class ArtikellijstDBInteraction extends DBInteraction<EsselinkArtikel> {
 			"SELECT * FROM Artikellijst WHERE omschrijving LIKE '%" + s + "%';";
 
 	private static final QueryEnumeration clearTable = () -> "DELETE FROM Artikellijst;";
+
+	private static final Func1<EsselinkArtikel, String> artikelToString = ea ->
+			"('" + ea.getArtikelNummer() + "', '" + ea.getOmschrijving().replace("\'", "\'\'")
+					+ "', '" + ea.getPrijsPer() + "', '" + ea.getEenheid()
+					+ "', '" + ea.getVerkoopPrijs().getBedrag() + "')";
 	private static final Func1<EsselinkArtikel, QueryEnumeration> insert = ea -> () ->
-			"INSERT INTO Artikellijst VALUES ('" + ea.getArtikelNummer() + "', '"
-					+ ea.getOmschrijving().replace("\'", "\'\'") + "', '"
-					+ ea.getPrijsPer() + "', '"
-					+ ea.getEenheid() + "', '"
-					+ ea.getVerkoopPrijs().getBedrag() + "');";
+			"INSERT INTO Artikellijst VALUES " + artikelToString.call(ea) + ";";
+	private static final Func1<Observable<EsselinkArtikel>, Observable<QueryEnumeration>> insertAll =
+			eas -> eas.map(artikelToString).reduce((s1, s2) -> s1 + ", " + s2)
+					.map(s -> () -> "INSERT INTO Artikellijst VALUES " + s + ";");
 
 	public ArtikellijstDBInteraction(Database database) {
 		super(database);
@@ -35,9 +39,14 @@ public class ArtikellijstDBInteraction extends DBInteraction<EsselinkArtikel> {
 		return this.update(clearTable);
 	}
 
-	// TODO add insertAll
 	public Observable<Integer> insert(EsselinkArtikel ea) {
 		return this.update(insert.call(ea));
+	}
+
+	public Observable<Integer> insertAll(Observable<EsselinkArtikel> eas) {
+		return insertAll.call(eas)
+				.flatMap(this::update)
+				.onErrorResumeNext(e -> Observable.just(0));
 	}
 
 	public Observable<EsselinkArtikel> getAll() {

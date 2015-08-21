@@ -15,6 +15,7 @@ import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.io.database.Database;
 import org.rekeningsysteem.logic.database.ArtikellijstDBInteraction;
 
+import rx.Observable;
 import rx.observers.TestSubscriber;
 
 public class ArtikellijstDBInteractionTest {
@@ -64,6 +65,30 @@ public class ArtikellijstDBInteractionTest {
 				.flatMap((Integer i) -> this.art.insert(ea4), Math::addExact)
 				.flatMap((Integer i) -> this.art.insert(ea5), Math::addExact)
 				.subscribe(testInsertObserver);
+
+		testInsertObserver.assertValue(5);
+		testInsertObserver.assertNoErrors();
+		testInsertObserver.assertCompleted();
+
+		this.assertEsselinkArtikels(ea1, ea2, ea3, ea4, ea5);
+	}
+
+	@Test
+	public void testInsertAllEmpty() {
+		TestSubscriber<Integer> testInsertObserver = new TestSubscriber<>();
+		this.art.insertAll(Observable.empty()).subscribe(testInsertObserver);
+
+		testInsertObserver.assertValue(0);
+		testInsertObserver.assertNoErrors();
+		testInsertObserver.assertCompleted();
+
+		this.assertEsselinkArtikels();
+	}
+
+	@Test
+	public void testInsertAll() {
+		TestSubscriber<Integer> testInsertObserver = new TestSubscriber<>();
+		this.art.insertAll(Observable.just(ea1, ea2, ea3, ea4, ea5)).subscribe(testInsertObserver);
 
 		testInsertObserver.assertValue(5);
 		testInsertObserver.assertNoErrors();

@@ -56,17 +56,19 @@ public class PrijslijstIO extends Tab {
 					closeButton.setDisable(true);
 				})
 				.observeOn(Schedulers.io())
-				.flatMap(f -> this.db.clearData(), (file, i) -> file)
-				.flatMap(this::readFile)
-				.flatMap(db::insert)
-				.scan(0, (cum, x) -> cum + 1)
-				.observeOn(JavaFxScheduler.getInstance())
+				.flatMap(file -> this.db.clearData()
+						.flatMap(i -> this.readFile(file))
+						.window(100)
+						.flatMap(db::insertAll)
+						.scan(0, Math::addExact)
+						.observeOn(JavaFxScheduler.getInstance())
+						.doOnCompleted(() -> {
+							closeButton.setDisable(false);
+							this.startButton.setDisable(false);
+							this.progressLabel.setText(this.progressLabel.getText()
+									+ "\nArtikelen importeren is voltooid");
+						}))
 				.map(i -> "Voortgang: " + i + " items toegevoegd")
-				.doOnCompleted(() -> {
-					closeButton.setDisable(false);
-					this.startButton.setDisable(false);
-					this.progressLabel.setText("Artikelen importeren is voltooid");
-				})
 				.subscribe(this.progressLabel::setText, e -> {
 					this.progressLabel.setText("Er is een fout opgetreden. Zie de log "
 							+ "voor info.");
