@@ -153,7 +153,7 @@ public class PdfExporterVisitor implements RekeningVisitor {
 					.parallelStream()
 					.sorted(Map.Entry.comparingByKey())
 					.map(entry -> Arrays.asList(String.valueOf(entry.getKey()),
-							String.valueOf(entry.getValue().getBedrag())))
+							entry.getValue().formattedString()))
 					.collect(Collectors.toList()));
 			converter.replace("TotaalBedrag", totalen.getTotaal().formattedString());
 		};
