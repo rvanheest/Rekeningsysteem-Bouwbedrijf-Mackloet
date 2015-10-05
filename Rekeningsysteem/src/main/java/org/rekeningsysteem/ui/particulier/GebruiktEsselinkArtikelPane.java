@@ -21,6 +21,7 @@ import org.rekeningsysteem.ui.textfields.searchbox.AbstractSearchBox;
 
 import rx.Observable;
 
+@Deprecated
 public class GebruiktEsselinkArtikelPane extends GridPane {
 
 	private final NumberField aantalTF = new NumberField();

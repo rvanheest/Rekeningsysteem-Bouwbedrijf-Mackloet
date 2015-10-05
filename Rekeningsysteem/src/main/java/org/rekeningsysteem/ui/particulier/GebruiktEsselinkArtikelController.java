@@ -15,6 +15,7 @@ import org.rekeningsysteem.ui.textfields.searchbox.SearchBoxController;
 import rx.Observable;
 import rx.schedulers.Schedulers;
 
+@Deprecated
 public class GebruiktEsselinkArtikelController {
 
 	private final ArtikellijstDBInteraction db;

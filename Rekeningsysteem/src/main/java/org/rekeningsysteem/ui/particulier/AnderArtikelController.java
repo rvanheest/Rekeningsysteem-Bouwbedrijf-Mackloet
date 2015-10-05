@@ -7,6 +7,7 @@ import org.rekeningsysteem.data.util.Geld;
 
 import rx.Observable;
 
+@Deprecated
 public class AnderArtikelController {
 
 	private final AnderArtikelPane ui;
