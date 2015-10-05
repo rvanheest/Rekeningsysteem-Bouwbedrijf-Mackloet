@@ -15,6 +15,7 @@ import org.rekeningsysteem.data.aangenomen.AangenomenFactuur;
 import org.rekeningsysteem.data.mutaties.MutatiesFactuur;
 import org.rekeningsysteem.data.offerte.Offerte;
 import org.rekeningsysteem.data.particulier.ParticulierFactuur;
+import org.rekeningsysteem.data.particulier2.ParticulierFactuur2;
 import org.rekeningsysteem.data.reparaties.ReparatiesFactuur;
 import org.rekeningsysteem.data.util.Totalen;
 import org.rekeningsysteem.data.util.header.Debiteur;
@@ -121,6 +122,11 @@ public class PdfExporterVisitor implements RekeningVisitor {
 		if (templateTex.isPresent()) {
 			this.general(templateTex.get(), this.convert(factuur));
 		}
+	}
+
+	@Override
+	public void visit(ParticulierFactuur2 factuur) throws Exception {
+		// TODO Auto-generated method stub
 	}
 
 	private Consumer<PdfConverter> convertFactuurHeader(FactuurHeader header) {

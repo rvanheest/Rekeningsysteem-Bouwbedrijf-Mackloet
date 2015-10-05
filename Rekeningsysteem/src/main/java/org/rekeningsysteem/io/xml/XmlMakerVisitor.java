@@ -12,6 +12,7 @@ import org.rekeningsysteem.data.aangenomen.AangenomenFactuur;
 import org.rekeningsysteem.data.mutaties.MutatiesFactuur;
 import org.rekeningsysteem.data.offerte.Offerte;
 import org.rekeningsysteem.data.particulier.ParticulierFactuur;
+import org.rekeningsysteem.data.particulier2.ParticulierFactuur2;
 import org.rekeningsysteem.data.reparaties.ReparatiesFactuur;
 import org.rekeningsysteem.data.util.AbstractRekening;
 import org.rekeningsysteem.data.util.visitor.RekeningVisitor;
@@ -90,6 +91,11 @@ public class XmlMakerVisitor implements RekeningVisitor {
 	public void visit(ReparatiesFactuur factuur) throws Exception {
 		Marshaller marshaller = this.map.get(ReparatiesFactuurRoot.class);
 		this.save(marshaller, new ReparatiesFactuurRoot(), factuur);
+	}
+
+	@Override
+	public void visit(ParticulierFactuur2 factuur) throws Exception {
+		// TODO Auto-generated method stub
 	}
 
 	private <T extends AbstractRekening> void save(Marshaller marshaller, Root<T> root, T rekening)

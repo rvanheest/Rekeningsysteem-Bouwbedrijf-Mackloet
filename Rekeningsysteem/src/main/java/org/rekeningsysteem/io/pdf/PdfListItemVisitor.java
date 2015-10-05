@@ -10,6 +10,10 @@ import org.rekeningsysteem.data.mutaties.MutatiesBon;
 import org.rekeningsysteem.data.particulier.AnderArtikel;
 import org.rekeningsysteem.data.particulier.EsselinkArtikel;
 import org.rekeningsysteem.data.particulier.GebruiktEsselinkArtikel;
+import org.rekeningsysteem.data.particulier2.EsselinkParticulierArtikel;
+import org.rekeningsysteem.data.particulier2.ParticulierArtikel2Impl;
+import org.rekeningsysteem.data.particulier2.loon.InstantLoon2;
+import org.rekeningsysteem.data.particulier2.loon.ProductLoon2;
 import org.rekeningsysteem.data.reparaties.ReparatiesBon;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.data.util.loon.InstantLoon;
@@ -132,5 +136,29 @@ public class PdfListItemVisitor implements ListItemVisitor<List<List<String>>> {
 							String.valueOf(item.getLoonBtwPercentage())));
 		}
 		return Collections.emptyList();
+	}
+
+	@Override
+	public List<List<String>> visit(ParticulierArtikel2Impl item) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<List<String>> visit(EsselinkParticulierArtikel item) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<List<String>> visit(InstantLoon2 item) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<List<String>> visit(ProductLoon2 item) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
