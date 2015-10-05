@@ -3,15 +3,21 @@ package org.rekeningsysteem.data.particulier2;
 import java.util.Objects;
 
 import org.rekeningsysteem.data.particulier.EsselinkArtikel;
-import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.data.util.visitor.ListItemVisitor;
 
 public class EsselinkParticulierArtikel extends ParticulierArtikel2Impl {
 
 	private final EsselinkArtikel artikel;
 
-	public EsselinkParticulierArtikel(String omschrijving, Geld prijs, double btwPercentage, EsselinkArtikel artikel) {
-		super(omschrijving, prijs, btwPercentage);
+	public EsselinkParticulierArtikel(EsselinkArtikel artikel, double aantal, double btwPercentage) {
+		this(artikel.getOmschrijving(), artikel, aantal, btwPercentage);
+	}
+
+	public EsselinkParticulierArtikel(String omschrijving, EsselinkArtikel artikel,
+			double aantal, double btwPercentage) {
+		super(omschrijving,
+				artikel.getVerkoopPrijs().multiply(aantal).divide(artikel.getPrijsPer()),
+				btwPercentage);
 		this.artikel = artikel;
 	}
 
