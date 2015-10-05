@@ -15,6 +15,7 @@ public interface RekeningVisitor {
 
 	void visit(Offerte offerte) throws Exception;
 
+	@Deprecated
 	void visit(ParticulierFactuur factuur) throws Exception;
 
 	void visit(ReparatiesFactuur factuur) throws Exception;

@@ -82,6 +82,7 @@ public class XmlMakerVisitor implements RekeningVisitor {
 	}
 
 	@Override
+	@Deprecated
 	public void visit(ParticulierFactuur factuur) throws Exception {
 		Marshaller marshaller = this.map.get(ParticulierFactuurRoot.class);
 		this.save(marshaller, new ParticulierFactuurRoot(), factuur);

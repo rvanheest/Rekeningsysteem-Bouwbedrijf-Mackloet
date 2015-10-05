@@ -61,6 +61,7 @@ public class PdfListItemVisitor implements ListItemVisitor<List<List<String>>> {
 	}
 
 	@Override
+	@Deprecated
 	public List<List<String>> visit(GebruiktEsselinkArtikel item) {
 		EsselinkArtikel artikel = item.getArtikel();
 		Geld materiaal = item.getMateriaal();
@@ -81,6 +82,7 @@ public class PdfListItemVisitor implements ListItemVisitor<List<List<String>>> {
 	}
 
 	@Override
+	@Deprecated
 	public List<List<String>> visit(AnderArtikel item) {
 		Geld materiaal = item.getMateriaal();
 
@@ -111,6 +113,7 @@ public class PdfListItemVisitor implements ListItemVisitor<List<List<String>>> {
 	}
 
 	@Override
+	@Deprecated
 	public List<List<String>> visit(InstantLoon item) {
 		Geld loon = item.getLoon();
 
@@ -125,6 +128,7 @@ public class PdfListItemVisitor implements ListItemVisitor<List<List<String>>> {
 	}
 
 	@Override
+	@Deprecated
 	public List<List<String>> visit(ProductLoon item) {
 		Geld loon = item.getLoon();
 

@@ -18,14 +18,18 @@ public interface ListItemVisitor<T> {
 	
 	T visit(MutatiesBon item);
 	
+	@Deprecated
 	T visit(GebruiktEsselinkArtikel item);
 	
+	@Deprecated
 	T visit(AnderArtikel item);
 	
 	T visit(ReparatiesBon item);
 	
+	@Deprecated
 	T visit(InstantLoon item);
 	
+	@Deprecated
 	T visit(ProductLoon item);
 
 	// TODO dit herschikken once done
