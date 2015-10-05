@@ -16,6 +16,7 @@ import org.rekeningsysteem.ui.textfields.searchbox.SearchBoxController;
 import rx.Observable;
 import rx.schedulers.Schedulers;
 
+// TODO GebruiktEsselinkArtikelController
 public class EsselinkParticulierArtikelController {
 
 	private final ArtikellijstDBInteraction db;

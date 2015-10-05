@@ -10,6 +10,7 @@ import org.rekeningsysteem.io.database.Database;
 import org.rekeningsysteem.logic.database.ArtikellijstDBInteraction;
 import org.rekeningsysteem.ui.list.AbstractListItemController;
 
+// TODO ParticulierArtikelController
 public class ParticulierArtikel2Controller extends AbstractListItemController<ParticulierArtikel2> {
 
 	private final ParticulierArtikelImplController anderController;

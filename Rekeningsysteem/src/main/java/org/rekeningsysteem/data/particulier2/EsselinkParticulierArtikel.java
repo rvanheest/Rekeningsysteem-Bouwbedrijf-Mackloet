@@ -5,6 +5,7 @@ import java.util.Objects;
 import org.rekeningsysteem.data.particulier.EsselinkArtikel;
 import org.rekeningsysteem.data.util.visitor.ListItemVisitor;
 
+// TODO GebruiktEsselinkArtikel
 public class EsselinkParticulierArtikel extends ParticulierArtikel2Impl {
 
 	private final EsselinkArtikel artikel;

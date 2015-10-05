@@ -5,6 +5,7 @@ import java.util.Objects;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.data.util.visitor.ListItemVisitor;
 
+// TODO InstantLoon
 public final class InstantLoon2 extends AbstractLoon2 {
 
 	private final Geld loon;

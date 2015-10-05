@@ -7,6 +7,7 @@ import org.rekeningsysteem.data.util.Geld;
 
 import rx.Observable;
 
+// TODO AnderArtikelController
 public class ParticulierArtikelImplController {
 
 	private final ParticulierArtikelImplPane ui;

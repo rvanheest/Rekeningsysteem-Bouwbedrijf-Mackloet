@@ -16,6 +16,7 @@ import org.rekeningsysteem.ui.textfields.PercentageField;
 
 import rx.Observable;
 
+// TODO AnderArtikelPane
 public class ParticulierArtikelImplPane extends GridPane {
 
 	private final TextField omschrTF = new TextField();

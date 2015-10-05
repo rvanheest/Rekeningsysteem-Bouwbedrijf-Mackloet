@@ -14,6 +14,7 @@ import org.rekeningsysteem.ui.header.OmschrFactuurHeaderController;
 
 import rx.Observable;
 
+// TODO ParticulierController
 public class Particulier2Controller extends AbstractRekeningController<ParticulierFactuur2> {
 
 	private final OmschrFactuurHeaderController header;

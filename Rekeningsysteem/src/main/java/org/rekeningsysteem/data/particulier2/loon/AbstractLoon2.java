@@ -5,6 +5,7 @@ import java.util.Objects;
 import org.rekeningsysteem.data.util.BtwListItem;
 import org.rekeningsysteem.data.util.Geld;
 
+// TODO AbstractLoon
 public abstract class AbstractLoon2 implements BtwListItem {
 
 	private final String omschrijving;

@@ -5,6 +5,7 @@ import java.util.Objects;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.data.util.visitor.ListItemVisitor;
 
+// TODO AnderArtikel
 public class ParticulierArtikel2Impl implements ParticulierArtikel2 {
 
 	private final String omschrijving;

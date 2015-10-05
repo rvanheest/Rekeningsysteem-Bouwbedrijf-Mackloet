@@ -12,6 +12,7 @@ import org.rekeningsysteem.ui.particulier.tabpane.ItemTabPane;
 
 import rx.Observable;
 
+// ParticulierArtikelPane
 public class ParticulierArtikel2Pane extends ItemPane {
 
 	private final ItemTabPane content;

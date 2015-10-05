@@ -7,6 +7,7 @@ import org.rekeningsysteem.data.util.ItemList;
 import org.rekeningsysteem.data.util.header.OmschrFactuurHeader;
 import org.rekeningsysteem.data.util.visitor.RekeningVisitor;
 
+// TODO ParticulierFactuur
 public class ParticulierFactuur2 extends AbstractFactuur<ParticulierArtikel2> {
 
 	public ParticulierFactuur2(OmschrFactuurHeader header, Currency currency,

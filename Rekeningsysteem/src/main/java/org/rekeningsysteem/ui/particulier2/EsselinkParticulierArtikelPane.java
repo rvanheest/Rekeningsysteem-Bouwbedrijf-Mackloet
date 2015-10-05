@@ -20,6 +20,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 
+// TODO GebruiktEsselinkArtikelPane
 public class EsselinkParticulierArtikelPane extends GridPane {
 
 	private final NumberField aantalTF = new NumberField();

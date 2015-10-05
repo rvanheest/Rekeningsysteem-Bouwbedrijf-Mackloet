@@ -5,6 +5,7 @@ import java.util.Objects;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.data.util.visitor.ListItemVisitor;
 
+// TODO ProductLoon
 public final class ProductLoon2 extends AbstractLoon2 {
 
 	private final double uren;

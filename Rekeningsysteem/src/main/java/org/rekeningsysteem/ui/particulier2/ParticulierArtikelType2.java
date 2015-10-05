@@ -2,6 +2,7 @@ package org.rekeningsysteem.ui.particulier2;
 
 import org.rekeningsysteem.ui.particulier.tabpane.ItemType;
 
+// TODO ParticulierArtikelType
 public enum ParticulierArtikelType2 implements ItemType {
 
 	ESSELINK("Esselink artikel"),
