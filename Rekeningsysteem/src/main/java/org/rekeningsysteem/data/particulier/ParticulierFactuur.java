@@ -10,6 +10,7 @@ import org.rekeningsysteem.data.util.header.OmschrFactuurHeader;
 import org.rekeningsysteem.data.util.loon.AbstractLoon;
 import org.rekeningsysteem.data.util.visitor.RekeningVisitor;
 
+@Deprecated
 public class ParticulierFactuur extends AbstractFactuur<ParticulierArtikel> {
 
 	private final ItemList<AbstractLoon> loonList;

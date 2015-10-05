@@ -5,6 +5,7 @@ import java.util.Objects;
 import org.rekeningsysteem.data.util.BtwListItem;
 import org.rekeningsysteem.data.util.Geld;
 
+@Deprecated
 public abstract class AbstractLoon implements BtwListItem {
 
 	private final String omschrijving;

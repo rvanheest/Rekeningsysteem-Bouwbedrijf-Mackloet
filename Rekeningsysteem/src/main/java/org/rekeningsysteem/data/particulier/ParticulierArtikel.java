@@ -3,6 +3,7 @@ package org.rekeningsysteem.data.particulier;
 import org.rekeningsysteem.data.util.BtwListItem;
 import org.rekeningsysteem.data.util.Geld;
 
+@Deprecated
 public abstract class ParticulierArtikel implements BtwListItem {
 
 	@Override

@@ -5,6 +5,7 @@ import java.util.Objects;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.data.util.visitor.ListItemVisitor;
 
+@Deprecated
 public final class InstantLoon extends AbstractLoon {
 
 	private final Geld loon;
