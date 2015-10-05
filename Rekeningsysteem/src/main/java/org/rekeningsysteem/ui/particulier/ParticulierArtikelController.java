@@ -10,6 +10,7 @@ import org.rekeningsysteem.io.database.Database;
 import org.rekeningsysteem.logic.database.ArtikellijstDBInteraction;
 import org.rekeningsysteem.ui.list.AbstractListItemController;
 
+@Deprecated
 public class ParticulierArtikelController extends AbstractListItemController<ParticulierArtikel> {
 
 	private final AnderArtikelController anderController;

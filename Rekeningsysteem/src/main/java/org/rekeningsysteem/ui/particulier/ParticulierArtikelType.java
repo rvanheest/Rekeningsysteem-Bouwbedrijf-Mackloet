@@ -2,6 +2,7 @@ package org.rekeningsysteem.ui.particulier;
 
 import org.rekeningsysteem.ui.particulier.tabpane.ItemType;
 
+@Deprecated
 public enum ParticulierArtikelType implements ItemType {
 	
 	ESSELINK("Esselink artikel"),

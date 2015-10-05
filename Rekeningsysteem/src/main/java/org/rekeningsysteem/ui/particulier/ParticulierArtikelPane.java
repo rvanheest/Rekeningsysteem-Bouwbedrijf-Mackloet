@@ -12,6 +12,7 @@ import org.rekeningsysteem.ui.particulier.tabpane.ItemTabPane;
 
 import rx.Observable;
 
+@Deprecated
 public class ParticulierArtikelPane extends ItemPane {
 
 	private final ItemTabPane content;
