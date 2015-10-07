@@ -8,6 +8,7 @@ import org.rekeningsysteem.data.util.ItemList;
 import org.rekeningsysteem.io.database.Database;
 import org.rekeningsysteem.ui.list.AbstractListPaneController;
 
+@Deprecated
 public class ParticulierListPaneController extends AbstractListPaneController<ParticulierArtikel> {
 
 	public ParticulierListPaneController(Currency currency, Database db,

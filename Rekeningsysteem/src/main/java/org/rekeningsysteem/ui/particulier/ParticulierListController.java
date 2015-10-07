@@ -15,6 +15,7 @@ import org.rekeningsysteem.io.database.Database;
 import org.rekeningsysteem.ui.list.AbstractListController;
 import org.rekeningsysteem.ui.particulier.ParticulierListPane.ParticulierModel;
 
+@Deprecated
 public class ParticulierListController
 		extends AbstractListController<ParticulierArtikel, ParticulierModel> {
 

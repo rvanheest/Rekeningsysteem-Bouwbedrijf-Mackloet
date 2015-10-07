@@ -13,6 +13,7 @@ import org.rekeningsysteem.ui.list.AbstractListPane;
 import org.rekeningsysteem.ui.list.MoneyCell;
 import org.rekeningsysteem.ui.particulier.ParticulierListPane.ParticulierModel;
 
+@Deprecated
 public class ParticulierListPane extends AbstractListPane<ParticulierModel> {
 
 	public ParticulierListPane() {
