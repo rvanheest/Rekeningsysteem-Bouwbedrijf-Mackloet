@@ -15,6 +15,7 @@ import org.rekeningsysteem.ui.particulier.loon.LoonListPaneController;
 
 import rx.Observable;
 
+@Deprecated
 public class ParticulierController extends AbstractRekeningController<ParticulierFactuur> {
 
 	private final OmschrFactuurHeaderController header;
