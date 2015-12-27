@@ -16,6 +16,7 @@ import org.rekeningsysteem.ui.textfields.PercentageField;
 
 import rx.Observable;
 
+@Deprecated
 public class ProductLoonPane extends GridPane {
 
 	private final NumberField urenTF = new NumberField();

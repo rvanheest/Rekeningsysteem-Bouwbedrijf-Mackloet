@@ -9,6 +9,7 @@ import org.rekeningsysteem.data.util.loon.InstantLoon;
 import org.rekeningsysteem.data.util.loon.ProductLoon;
 import org.rekeningsysteem.ui.list.AbstractListItemController;
 
+@Deprecated
 public class LoonController extends AbstractListItemController<AbstractLoon> {
 
 	public LoonController(Currency currency, BtwPercentage defaultBtw) {

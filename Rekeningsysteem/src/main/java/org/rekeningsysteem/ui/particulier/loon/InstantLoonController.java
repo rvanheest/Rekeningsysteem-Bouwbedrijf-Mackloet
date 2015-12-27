@@ -7,6 +7,7 @@ import org.rekeningsysteem.data.util.loon.InstantLoon;
 
 import rx.Observable;
 
+@Deprecated
 public class InstantLoonController {
 
 	private final InstantLoonPane ui;

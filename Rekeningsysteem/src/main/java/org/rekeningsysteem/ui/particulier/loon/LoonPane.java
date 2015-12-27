@@ -12,6 +12,7 @@ import org.rekeningsysteem.ui.particulier.tabpane.ItemTabPane;
 
 import rx.Observable;
 
+@Deprecated
 public class LoonPane extends ItemPane {
 
 	private final InstantLoonController instantController;

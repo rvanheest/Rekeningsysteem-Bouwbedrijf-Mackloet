@@ -7,6 +7,7 @@ import org.rekeningsysteem.data.util.BtwPercentage;
 import org.rekeningsysteem.data.util.loon.AbstractLoon;
 import org.rekeningsysteem.ui.list.AbstractListPaneController;
 
+@Deprecated
 public class LoonListPaneController extends AbstractListPaneController<AbstractLoon> {
 	
 	public LoonListPaneController(Currency currency, BtwPercentage defaultBtw) {

@@ -9,6 +9,7 @@ import org.rekeningsysteem.properties.PropertyModelEnum;
 
 import rx.Observable;
 
+@Deprecated
 public class ProductLoonController {
 
 	private final ProductLoonPane ui;

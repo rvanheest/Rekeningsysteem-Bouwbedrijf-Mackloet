@@ -2,6 +2,7 @@ package org.rekeningsysteem.ui.particulier.loon;
 
 import org.rekeningsysteem.ui.particulier.tabpane.ItemType;
 
+@Deprecated
 public enum LoonType implements ItemType {
 
 	INSTANT("Loon"),

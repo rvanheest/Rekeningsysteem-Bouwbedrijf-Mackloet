@@ -11,6 +11,7 @@ import org.rekeningsysteem.ui.list.AbstractListPane;
 import org.rekeningsysteem.ui.list.MoneyCell;
 import org.rekeningsysteem.ui.particulier.loon.LoonListPane.LoonModel;
 
+@Deprecated
 public class LoonListPane extends AbstractListPane<LoonModel> {
 
 	public LoonListPane() {
@@ -39,6 +40,7 @@ public class LoonListPane extends AbstractListPane<LoonModel> {
 		return Arrays.asList(omschrCol, urenCol, loonCol, btwCol, this.getDeleteCol());
 	}
 
+	@Deprecated
 	public static class LoonModel {
 
 		private final String omschrijving;

@@ -13,6 +13,7 @@ import org.rekeningsysteem.data.util.loon.ProductLoon;
 import org.rekeningsysteem.ui.list.AbstractListController;
 import org.rekeningsysteem.ui.particulier.loon.LoonListPane.LoonModel;
 
+@Deprecated
 public class LoonListController extends AbstractListController<AbstractLoon, LoonModel> {
 
 	public LoonListController(Currency currency, BtwPercentage defaultBtw) {

@@ -4,6 +4,7 @@ import org.rekeningsysteem.rxjavafx.Observables;
 import org.rekeningsysteem.ui.Page;
 import org.rekeningsysteem.ui.WorkingPane;
 
+@Deprecated
 public class LoonWorkingPane extends WorkingPane {
 
 	public LoonWorkingPane(Page page) {
