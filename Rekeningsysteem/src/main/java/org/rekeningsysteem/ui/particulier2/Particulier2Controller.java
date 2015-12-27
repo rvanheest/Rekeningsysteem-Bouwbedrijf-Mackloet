@@ -18,6 +18,7 @@ import rx.Observable;
 public class Particulier2Controller extends AbstractRekeningController<ParticulierFactuur2> {
 
 	private final OmschrFactuurHeaderController header;
+	private final ParticulierListPaneController2 list;
 
 	public Particulier2Controller(Database database) {
 		this(PropertiesWorker.getInstance(), database);
@@ -28,20 +29,35 @@ public class Particulier2Controller extends AbstractRekeningController<Particuli
 	}
 
 	public Particulier2Controller(Currency currency, BtwPercentage defaultBtw, Database database) {
-		this(new OmschrFactuurHeaderController(database));
+		this(new OmschrFactuurHeaderController(database),
+				new ParticulierListPaneController2(currency, database, defaultBtw)
+				/* loon list pane controller */);
 	}
 
-	public Particulier2Controller(OmschrFactuurHeaderController header /* add others */) {
-		super(new RekeningSplitPane(header.getUI()),
-				header.getModel().map(head -> new ParticulierFactuur2(head, null, null)));
-		// TODO others
-		
+//	public ParticulierController(ParticulierFactuur2 input, PropertiesWorker properties,
+//			Database database) {
+//		// TODO implement later
+//	}
+
+	public Particulier2Controller(OmschrFactuurHeaderController header,
+			ParticulierListPaneController2 body /* loon pane controller */) {
+		super(new RekeningSplitPane(header.getUI(), body.getUI()/*, loon.getUI()*/),
+				Observable.combineLatest(header.getModel(), body.getListModel(),
+						(head, list) -> new ParticulierFactuur2(head, body.getCurrency(),
+								list)));
 		this.header = header;
+		this.list = body;
 	}
 
 	public OmschrFactuurHeaderController getHeaderController() {
 		return this.header;
 	}
+
+	public ParticulierListPaneController2 getListController() {
+		return this.list;
+	}
+
+	// TODO LoonListPaneController getLoonController
 
 	@Override
 	public void initFactuurnummer() {
