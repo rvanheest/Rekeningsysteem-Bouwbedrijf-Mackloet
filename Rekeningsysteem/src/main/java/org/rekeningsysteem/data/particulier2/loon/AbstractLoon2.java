@@ -2,11 +2,11 @@ package org.rekeningsysteem.data.particulier2.loon;
 
 import java.util.Objects;
 
-import org.rekeningsysteem.data.util.BtwListItem;
+import org.rekeningsysteem.data.particulier2.ParticulierArtikel2;
 import org.rekeningsysteem.data.util.Geld;
 
 // TODO AbstractLoon
-public abstract class AbstractLoon2 implements BtwListItem {
+public abstract class AbstractLoon2 implements ParticulierArtikel2 {
 
 	private final String omschrijving;
 
