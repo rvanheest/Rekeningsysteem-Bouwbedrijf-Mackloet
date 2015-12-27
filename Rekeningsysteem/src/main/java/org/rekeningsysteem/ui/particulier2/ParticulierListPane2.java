@@ -9,7 +9,10 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.Callback;
 
-import org.rekeningsysteem.data.particulier.EsselinkArtikel;
+import org.rekeningsysteem.data.particulier2.EsselinkParticulierArtikel;
+import org.rekeningsysteem.data.particulier2.ParticulierArtikel2Impl;
+import org.rekeningsysteem.data.particulier2.loon.InstantLoon2;
+import org.rekeningsysteem.data.particulier2.loon.ProductLoon2;
 import org.rekeningsysteem.ui.list.AbstractListPane;
 import org.rekeningsysteem.ui.list.MoneyCell;
 import org.rekeningsysteem.ui.particulier2.ParticulierListPane2.ParticulierModel2;
@@ -66,41 +69,96 @@ public class ParticulierListPane2 extends AbstractListPane<ParticulierModel2> {
 	// TODO ParticulierModel
 	public static class ParticulierModel2 {
 
+		private final EsselinkParticulierArtikel esselink;
+		private final ParticulierArtikel2Impl ander;
+		private final InstantLoon2 instant;
+		private final ProductLoon2 product;
+
 		private final String omschrijving;
-//		private final double loon;
-//		private final double loonBtwPercentage;
+		private final double loon;
+		private final double loonBtwPercentage;
 		private final double materiaal;
 		private final double materiaalBtwPercentage;
-		private final double aantal;
-		private final EsselinkArtikel artikel;
 
-		public ParticulierModel2(String omschrijving, /*double loon, double loonBtwPercentage,*/
-				double materiaal, double materiaalBtwPercentage) {
-			this(omschrijving, materiaal, materiaalBtwPercentage, 0.0, null);
+		public ParticulierModel2(EsselinkParticulierArtikel epa) {
+			this.esselink = epa;
+			this.ander = null;
+			this.instant = null;
+			this.product = null;
+
+			this.omschrijving = epa.getOmschrijving();
+			this.loon = epa.getLoon().getBedrag();
+			this.loonBtwPercentage = epa.getLoonBtwPercentage();
+			this.materiaal = epa.getMateriaal().getBedrag();
+			this.materiaalBtwPercentage = epa.getMateriaalBtwPercentage();
 		}
 
-		public ParticulierModel2(String omschrijving, /*double loon, double loonBtwPercentage,*/
-				double materiaal, double materiaalBtwPercentage, double aantal, EsselinkArtikel artikel) {
-			this.omschrijving = omschrijving;
-//			this.loon = loon;
-//			this.loonBtwPercentage = loonBtwPercentage;
-			this.materiaal = materiaal;
-			this.materiaalBtwPercentage = materiaalBtwPercentage;
-			this.aantal = aantal;
-			this.artikel = artikel;
+		public ParticulierModel2(ParticulierArtikel2Impl pa2i) {
+			this.esselink = null;
+			this.ander = pa2i;
+			this.instant = null;
+			this.product = null;
+
+			this.omschrijving = pa2i.getOmschrijving();
+			this.loon = pa2i.getLoon().getBedrag();
+			this.loonBtwPercentage = pa2i.getLoonBtwPercentage();
+			this.materiaal = pa2i.getMateriaal().getBedrag();
+			this.materiaalBtwPercentage = pa2i.getMateriaalBtwPercentage();
+		}
+
+		public ParticulierModel2(InstantLoon2 il2) {
+			this.esselink = null;
+			this.ander = null;
+			this.instant = il2;
+			this.product = null;
+
+			this.omschrijving = il2.getOmschrijving();
+			this.loon = il2.getLoon().getBedrag();
+			this.loonBtwPercentage = il2.getLoonBtwPercentage();
+			this.materiaal = il2.getMateriaal().getBedrag();
+			this.materiaalBtwPercentage = il2.getMateriaalBtwPercentage();
+		}
+
+		public ParticulierModel2(ProductLoon2 pl2) {
+			this.esselink = null;
+			this.ander = null;
+			this.instant = null;
+			this.product = pl2;
+
+			this.omschrijving = pl2.getOmschrijving();
+			this.loon = pl2.getLoon().getBedrag();
+			this.loonBtwPercentage = pl2.getLoonBtwPercentage();
+			this.materiaal = pl2.getMateriaal().getBedrag();
+			this.materiaalBtwPercentage = pl2.getMateriaalBtwPercentage();
+		}
+
+		public EsselinkParticulierArtikel getEsselink() {
+			return this.esselink;
+		}
+
+		public ParticulierArtikel2Impl getAnder() {
+			return this.ander;
+		}
+
+		public InstantLoon2 getInstant() {
+			return this.instant;
+		}
+
+		public ProductLoon2 getProduct() {
+			return this.product;
 		}
 
 		public String getOmschrijving() {
 			return this.omschrijving;
 		}
 
-//		public double getLoon() {
-//			return this.loon;
-//		}
-//
-//		public double getLoonBtwPercentage() {
-//			return this.loonBtwPercentage;
-//		}
+		public double getLoon() {
+			return this.loon;
+		}
+
+		public double getLoonBtwPercentage() {
+			return this.loonBtwPercentage;
+		}
 
 		public double getMateriaal() {
 			return this.materiaal;
@@ -108,14 +166,6 @@ public class ParticulierListPane2 extends AbstractListPane<ParticulierModel2> {
 
 		public double getMateriaalBtwPercentage() {
 			return this.materiaalBtwPercentage;
-		}
-
-		public double getAantal() {
-			return this.aantal;
-		}
-
-		public EsselinkArtikel getArtikel() {
-			return this.artikel;
 		}
 	}
 }

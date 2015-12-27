@@ -6,7 +6,9 @@ import org.rekeningsysteem.ui.particulier.tabpane.ItemType;
 public enum ParticulierArtikelType2 implements ItemType {
 
 	ESSELINK("Esselink artikel"),
-	ANDER("Eigen artikel");
+	ANDER("Eigen artikel"),
+	INSTANT("Loon"),
+	PRODUCT("Loon per uur");
 
 	private final String tabname;
 

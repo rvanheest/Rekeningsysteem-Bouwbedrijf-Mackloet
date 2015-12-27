@@ -4,12 +4,12 @@ import java.util.Currency;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.rekeningsysteem.data.particulier.EsselinkArtikel;
 import org.rekeningsysteem.data.particulier2.EsselinkParticulierArtikel;
 import org.rekeningsysteem.data.particulier2.ParticulierArtikel2;
 import org.rekeningsysteem.data.particulier2.ParticulierArtikel2Impl;
+import org.rekeningsysteem.data.particulier2.loon.InstantLoon2;
+import org.rekeningsysteem.data.particulier2.loon.ProductLoon2;
 import org.rekeningsysteem.data.util.BtwPercentage;
-import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.data.util.ItemList;
 import org.rekeningsysteem.io.database.Database;
 import org.rekeningsysteem.ui.list.AbstractListController;
@@ -38,33 +38,44 @@ public class ParticulierListController2 extends AbstractListController<Particuli
 		return list.stream().map(item -> {
 			if (item instanceof EsselinkParticulierArtikel) {
 				EsselinkParticulierArtikel artikel = (EsselinkParticulierArtikel) item;
-				EsselinkArtikel art = artikel.getArtikel();
-				return new ParticulierModel2(art.getOmschrijving(),
-						artikel.getMateriaal().getBedrag(), artikel.getMateriaalBtwPercentage(),
-						artikel.getAantal(), art);
+				return new ParticulierModel2(artikel);
 			}
-			assert item instanceof ParticulierArtikel2Impl;
-			ParticulierArtikel2Impl artikel = (ParticulierArtikel2Impl) item;
-			return new ParticulierModel2(artikel.getOmschrijving(),
-					artikel.getMateriaal().getBedrag(), artikel.getMateriaalBtwPercentage());
+			else if (item instanceof ParticulierArtikel2Impl) {
+    			ParticulierArtikel2Impl artikel = (ParticulierArtikel2Impl) item;
+    			return new ParticulierModel2(artikel);
+			}
+			else if (item instanceof InstantLoon2) {
+				InstantLoon2 loon = (InstantLoon2) item;
+				return new ParticulierModel2(loon);
+			}
+			else {
+				assert item instanceof ProductLoon2;
+				ProductLoon2 loon = (ProductLoon2) item;
+				return new ParticulierModel2(loon);
+			}
 		}).collect(Collectors.toList());
 	}
 
 	@Override
 	protected ItemList<ParticulierArtikel2> uiToModel(List<? extends ParticulierModel2> list) {
 		return list.stream().map(item -> {
-			String omschrijving = item.getOmschrijving();
-			Geld materiaal = new Geld(item.getMateriaal());
-			double btwPercentage = item.getMateriaalBtwPercentage();
-			double aantal = item.getAantal();
-			EsselinkArtikel artikel = item.getArtikel();
-			
-			if (artikel == null) {
-				// it must be a AnderArtikel
-				return new ParticulierArtikel2Impl(omschrijving, materiaal, btwPercentage);
+			EsselinkParticulierArtikel esselink = item.getEsselink();
+			ParticulierArtikel2Impl ander = item.getAnder();
+			InstantLoon2 instant = item.getInstant();
+			ProductLoon2 product = item.getProduct();
+
+			if (esselink != null) {
+				return esselink;
+			}
+			else if (ander != null) {
+				return ander;
+			}
+			else if (instant != null) {
+				return instant;
 			}
 			else {
-				return new EsselinkParticulierArtikel(artikel, aantal, btwPercentage);
+				assert product != null;
+				return product;
 			}
 		}).collect(Collectors.toCollection(ItemList::new));
 	}

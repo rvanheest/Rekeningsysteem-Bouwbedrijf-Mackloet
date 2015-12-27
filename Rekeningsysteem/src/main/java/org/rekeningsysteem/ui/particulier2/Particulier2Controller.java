@@ -30,8 +30,7 @@ public class Particulier2Controller extends AbstractRekeningController<Particuli
 
 	public Particulier2Controller(Currency currency, BtwPercentage defaultBtw, Database database) {
 		this(new OmschrFactuurHeaderController(database),
-				new ParticulierListPaneController2(currency, database, defaultBtw)
-				/* loon list pane controller */);
+				new ParticulierListPaneController2(currency, database, defaultBtw));
 	}
 
 //	public ParticulierController(ParticulierFactuur2 input, PropertiesWorker properties,
@@ -40,8 +39,8 @@ public class Particulier2Controller extends AbstractRekeningController<Particuli
 //	}
 
 	public Particulier2Controller(OmschrFactuurHeaderController header,
-			ParticulierListPaneController2 body /* loon pane controller */) {
-		super(new RekeningSplitPane(header.getUI(), body.getUI()/*, loon.getUI()*/),
+			ParticulierListPaneController2 body) {
+		super(new RekeningSplitPane(header.getUI(), body.getUI()),
 				Observable.combineLatest(header.getModel(), body.getListModel(),
 						(head, list) -> new ParticulierFactuur2(head, body.getCurrency(),
 								list)));
@@ -56,8 +55,6 @@ public class Particulier2Controller extends AbstractRekeningController<Particuli
 	public ParticulierListPaneController2 getListController() {
 		return this.list;
 	}
-
-	// TODO LoonListPaneController getLoonController
 
 	@Override
 	public void initFactuurnummer() {
