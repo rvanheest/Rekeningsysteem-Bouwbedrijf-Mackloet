@@ -30,7 +30,7 @@ import org.rekeningsysteem.rxjavafx.Observables;
 import org.rekeningsysteem.ui.aangenomen.AangenomenController;
 import org.rekeningsysteem.ui.mutaties.MutatiesController;
 import org.rekeningsysteem.ui.offerte.OfferteController;
-import org.rekeningsysteem.ui.particulier.ParticulierController;
+import org.rekeningsysteem.ui.particulier2.Particulier2Controller;
 import org.rekeningsysteem.ui.reparaties.ReparatiesController;
 
 import rx.Observable;
@@ -50,6 +50,7 @@ public class MainPane extends BorderPane {
 	private final Button mutaties = new Button();
 	private final Button reparaties = new Button();
 	private final Button particulier = new Button();
+	private final Button particulier2 = new Button();
 	private final Button offerte = new Button();
 	private final Button open = new Button();
 	private final Button save = new Button();
@@ -70,7 +71,7 @@ public class MainPane extends BorderPane {
 		HBox.setHgrow(spacer, Priority.ALWAYS);
 
 		this.toolbar = new RekeningToolbar(this.aangenomen, this.mutaties,
-				this.reparaties, this.particulier, this.offerte, this.open,
+				this.reparaties, this.particulier, this.particulier2, this.offerte, this.open,
 				this.save, this.pdf, spacer, this.settings);
 		this.tabpane = new RekeningTabpane();
 		this.settingsPaneFactory = () -> new SettingsPane(stage, this.settings, this.database);
@@ -91,6 +92,8 @@ public class MainPane extends BorderPane {
 				.getResource("/images/reparaties.png"))));
 		this.particulier.setGraphic(new ImageView(new Image(Main
 				.getResource("/images/particulier.png"))));
+		this.particulier2.setGraphic(new ImageView(new Image(Main
+				.getResource("/images/particulier.png"))));
 		this.offerte.setGraphic(new ImageView(new Image(Main
 				.getResource("/images/offerte.png"))));
 		this.open.setGraphic(new ImageView(new Image(Main
@@ -108,7 +111,7 @@ public class MainPane extends BorderPane {
 		this.initAangenomenObservable()
 				.mergeWith(this.initMutatiesObservable())
 				.mergeWith(this.initReparatiesObservable())
-				.mergeWith(this.initParticulierObservable())
+				.mergeWith(this.initParticulier2Observable())
 				.mergeWith(this.initOfferteObservable())
 				.mergeWith(this.initOpenObservable(stage))
 				.retry()
@@ -187,6 +190,7 @@ public class MainPane extends BorderPane {
 					this.mutaties.setDisable(selected);
 					this.reparaties.setDisable(selected);
 					this.particulier.setDisable(selected);
+					this.particulier2.setDisable(selected);
 					this.offerte.setDisable(selected);
 					this.open.setDisable(selected);
 				});
@@ -288,9 +292,10 @@ public class MainPane extends BorderPane {
 				.map(event -> new RekeningTab("Reparaties factuur", new ReparatiesController(this.database), this.database));
 	}
 
-	private Observable<RekeningTab> initParticulierObservable() {
-		return Observables.fromNodeEvents(this.particulier, ActionEvent.ACTION)
-				.map(event -> new RekeningTab("Particulier factuur", new ParticulierController(this.database), this.database));
+	// TODO initParticulierObservable()
+	private Observable<RekeningTab> initParticulier2Observable() {
+		return Observables.fromNodeEvents(this.particulier2, ActionEvent.ACTION)
+				.map(event -> new RekeningTab("Particulier2 factuur", new Particulier2Controller(this.database), this.database));
 	}
 
 	private Observable<RekeningTab> initOfferteObservable() {
