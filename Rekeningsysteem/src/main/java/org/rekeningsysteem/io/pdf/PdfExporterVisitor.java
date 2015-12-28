@@ -118,16 +118,19 @@ public class PdfExporterVisitor implements RekeningVisitor {
 	}
 
 	@Override
-	public void visit(ReparatiesFactuur factuur) throws Exception {
-		Optional<File> templateTex = this.properties.getProperty(PropertyModelEnum.PDF_REPARATIES_TEMPLATE).map(File::new);
+	public void visit(ParticulierFactuur2 factuur) throws Exception {
+		Optional<File> templateTex = this.properties.getProperty(PropertyModelEnum.PDF_PARTICULIER_2_TEMPLATE).map(File::new);
 		if (templateTex.isPresent()) {
 			this.general(templateTex.get(), this.convert(factuur));
 		}
 	}
 
 	@Override
-	public void visit(ParticulierFactuur2 factuur) throws Exception {
-		// TODO Auto-generated method stub
+	public void visit(ReparatiesFactuur factuur) throws Exception {
+		Optional<File> templateTex = this.properties.getProperty(PropertyModelEnum.PDF_REPARATIES_TEMPLATE).map(File::new);
+		if (templateTex.isPresent()) {
+			this.general(templateTex.get(), this.convert(factuur));
+		}
 	}
 
 	private Consumer<PdfConverter> convertFactuurHeader(FactuurHeader header) {
@@ -157,7 +160,7 @@ public class PdfExporterVisitor implements RekeningVisitor {
 		return converter -> {
 			converter.replace("SubTotaalBedrag", totalen.getSubtotaal().formattedString());
 			converter.replace("btwList", totalen.getBtw().entrySet()
-					.parallelStream()
+					.stream()
 					.sorted(Map.Entry.comparingByKey())
 					.map(entry -> Arrays.asList(String.valueOf(entry.getKey()),
 							entry.getValue().formattedString()))
@@ -170,7 +173,7 @@ public class PdfExporterVisitor implements RekeningVisitor {
 		return this.convertOmschrFactuurHeader(factuur.getFactuurHeader())
 				.andThen(converter -> converter.replace("Valuta", factuur.getCurrency().getSymbol()))
 				.andThen(converter -> converter.replace("aangenomenList", factuur.getItemList()
-						.parallelStream()
+						.stream()
 						.flatMap(item -> item.accept(this.itemVisitor).stream())
         				.collect(Collectors.toList())))
         		.andThen(this.convertTotalen(factuur.getTotalen()));
@@ -180,7 +183,7 @@ public class PdfExporterVisitor implements RekeningVisitor {
 		return this.convertFactuurHeader(factuur.getFactuurHeader())
 				.andThen(converter -> converter.replace("Valuta", factuur.getCurrency().getSymbol()))
 				.andThen(converter -> converter.replace("bonList", factuur.getItemList()
-						.parallelStream()
+						.stream()
         				.flatMap(item -> item.accept(this.itemVisitor).stream())
         				.collect(Collectors.toList())))
         		.andThen(converter -> converter.replace("TotaalBedrag", factuur.getTotalen().getTotaal().formattedString()));
@@ -196,12 +199,22 @@ public class PdfExporterVisitor implements RekeningVisitor {
 		return this.convertOmschrFactuurHeader(factuur.getFactuurHeader())
 				.andThen(converter -> converter.replace("Valuta", factuur.getCurrency().getSymbol()))
 				.andThen(converter -> converter.replace("artikelList", factuur.getItemList()
-						.parallelStream()
+						.stream()
 						.flatMap(artikel -> artikel.accept(this.itemVisitor).stream())
 						.collect(Collectors.toList())))
 				.andThen(converter -> converter.replace("loonList", factuur.getLoonList()
-						.parallelStream()
+						.stream()
 						.flatMap(loon -> loon.accept(this.itemVisitor).stream())
+						.collect(Collectors.toList())))
+				.andThen(this.convertTotalen(factuur.getTotalen()));
+	}
+
+	private Consumer<PdfConverter> convert(ParticulierFactuur2 factuur) {
+		return this.convertOmschrFactuurHeader(factuur.getFactuurHeader())
+				.andThen(converter -> converter.replace("Valuta", factuur.getCurrency().getSymbol()))
+				.andThen(converter -> converter.replace("artikelList", factuur.getItemList()
+						.stream()
+						.flatMap(artikel -> artikel.accept(this.itemVisitor).stream())
 						.collect(Collectors.toList())))
 				.andThen(this.convertTotalen(factuur.getTotalen()));
 	}
@@ -210,7 +223,7 @@ public class PdfExporterVisitor implements RekeningVisitor {
 		return this.convertFactuurHeader(factuur.getFactuurHeader())
 				.andThen(converter -> converter.replace("Valuta", factuur.getCurrency().getSymbol()))
 				.andThen(converter -> converter.replace("bonList", factuur.getItemList()
-						.parallelStream()
+						.stream()
         				.flatMap(item -> item.accept(this.itemVisitor).stream())
         				.collect(Collectors.toList())))
         		.andThen(converter -> converter.replace("TotaalBedrag", factuur.getTotalen().getTotaal().formattedString()));

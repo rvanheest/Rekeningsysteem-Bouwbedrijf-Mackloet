@@ -5,30 +5,28 @@ import java.time.LocalDate;
 import java.util.Currency;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
-import org.rekeningsysteem.data.particulier.AnderArtikel;
 import org.rekeningsysteem.data.particulier.EsselinkArtikel;
-import org.rekeningsysteem.data.particulier.GebruiktEsselinkArtikel;
-import org.rekeningsysteem.data.particulier.ParticulierArtikel;
-import org.rekeningsysteem.data.particulier.ParticulierFactuur;
+import org.rekeningsysteem.data.particulier2.EsselinkParticulierArtikel;
+import org.rekeningsysteem.data.particulier2.ParticulierArtikel2;
+import org.rekeningsysteem.data.particulier2.ParticulierArtikel2Impl;
+import org.rekeningsysteem.data.particulier2.ParticulierFactuur2;
+import org.rekeningsysteem.data.particulier2.loon.AbstractLoon2;
+import org.rekeningsysteem.data.particulier2.loon.InstantLoon2;
+import org.rekeningsysteem.data.particulier2.loon.ProductLoon2;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.data.util.ItemList;
 import org.rekeningsysteem.data.util.header.Debiteur;
 import org.rekeningsysteem.data.util.header.OmschrFactuurHeader;
-import org.rekeningsysteem.data.util.loon.AbstractLoon;
-import org.rekeningsysteem.data.util.loon.InstantLoon;
-import org.rekeningsysteem.data.util.loon.ProductLoon;
 import org.rekeningsysteem.io.pdf.PdfExporter;
 
-@Ignore
-@Deprecated
-public class ParticulierPdfIntegrationTest {
+// TODO ParticulierPdfIntegrationTest
+public class Particulier2PdfIntegrationTest {
 
 	private PdfExporter exporter;
 
-	protected ItemList<ParticulierArtikel> addArtikels1() {
-		ItemList<ParticulierArtikel> list = new ItemList<>();
+	protected ItemList<ParticulierArtikel2> addArtikels1() {
+		ItemList<ParticulierArtikel2> list = new ItemList<>();
 
 		EsselinkArtikel sub1 = new EsselinkArtikel("2018021117", "Product 1", 1, "Zak",
 				new Geld(5.16));
@@ -45,31 +43,31 @@ public class ParticulierPdfIntegrationTest {
 		EsselinkArtikel sub7 = new EsselinkArtikel("2009200105", "Product 7", 1, "Stuks",
 				new Geld(7.44));
 
-		list.add(new GebruiktEsselinkArtikel(sub1, 8, 19));
-		list.add(new GebruiktEsselinkArtikel(sub2, 1, 19));
-		list.add(new GebruiktEsselinkArtikel(sub3, 1, 19));
-		list.add(new GebruiktEsselinkArtikel(sub4, 1, 19));
-		list.add(new GebruiktEsselinkArtikel(sub5, 1, 19));
-		list.add(new GebruiktEsselinkArtikel(sub6, 1, 19));
-		list.add(new GebruiktEsselinkArtikel(sub7, 1, 19));
-		list.add(new AnderArtikel("Stucloper + trapfolie", new Geld(15.00), 19));
-		list.add(new AnderArtikel("Kitwerk", new Geld(149.50), 19));
+		list.add(new EsselinkParticulierArtikel(sub1, 8, 19));
+		list.add(new EsselinkParticulierArtikel(sub2, 1, 19));
+		list.add(new EsselinkParticulierArtikel(sub3, 1, 19));
+		list.add(new EsselinkParticulierArtikel(sub4, 1, 19));
+		list.add(new EsselinkParticulierArtikel(sub5, 1, 19));
+		list.add(new EsselinkParticulierArtikel(sub6, 1, 19));
+		list.add(new EsselinkParticulierArtikel(sub7, 1, 19));
+		list.add(new ParticulierArtikel2Impl("Stucloper + trapfolie", new Geld(15.00), 19));
+		list.add(new ParticulierArtikel2Impl("Kitwerk", new Geld(149.50), 19));
 
 		return list;
 	}
 
-	protected ItemList<AbstractLoon> addLoon1() {
-		ItemList<AbstractLoon> list = new ItemList<>();
+	protected ItemList<AbstractLoon2> addLoon1() {
+		ItemList<AbstractLoon2> list = new ItemList<>();
 
-		list.add(new ProductLoon("Uurloon à 38.50", 25, new Geld(38.50), 19));
-		list.add(new ProductLoon("test123", 12, new Geld(12.50), 19));
-		list.add(new InstantLoon("foobar", new Geld(40.00), 19));
+		list.add(new ProductLoon2("Uurloon à 38.50", 25, new Geld(38.50), 19));
+		list.add(new ProductLoon2("test123", 12, new Geld(12.50), 19));
+		list.add(new InstantLoon2("foobar", new Geld(40.00), 19));
 
 		return list;
 	}
 
-	protected ItemList<ParticulierArtikel> addArtikels2() {
-		ItemList<ParticulierArtikel> list = new ItemList<>();
+	protected ItemList<ParticulierArtikel2> addArtikels2() {
+		ItemList<ParticulierArtikel2> list = new ItemList<>();
 
 		EsselinkArtikel sub1 = new EsselinkArtikel("2018021117", "Product 1", 1, "Zak",
 				new Geld(5.16));
@@ -86,25 +84,25 @@ public class ParticulierPdfIntegrationTest {
 		EsselinkArtikel sub7 = new EsselinkArtikel("2009200105", "Product 7", 1, "Stuks",
 				new Geld(7.44));
 
-		list.add(new GebruiktEsselinkArtikel(sub1, 8, 21));
-		list.add(new GebruiktEsselinkArtikel(sub2, 1, 21));
-		list.add(new GebruiktEsselinkArtikel(sub3, 1, 21));
-		list.add(new GebruiktEsselinkArtikel(sub4, 1, 21));
-		list.add(new GebruiktEsselinkArtikel(sub5, 1, 21));
-		list.add(new GebruiktEsselinkArtikel(sub6, 1, 21));
-		list.add(new GebruiktEsselinkArtikel(sub7, 1, 21));
-		list.add(new AnderArtikel("Stucloper + trapfolie", new Geld(15.00), 21));
-		list.add(new AnderArtikel("Kitwerk", new Geld(149.50), 21));
+		list.add(new EsselinkParticulierArtikel(sub1, 8, 21));
+		list.add(new EsselinkParticulierArtikel(sub2, 1, 21));
+		list.add(new EsselinkParticulierArtikel(sub3, 1, 21));
+		list.add(new EsselinkParticulierArtikel(sub4, 1, 21));
+		list.add(new EsselinkParticulierArtikel(sub5, 1, 21));
+		list.add(new EsselinkParticulierArtikel(sub6, 1, 21));
+		list.add(new EsselinkParticulierArtikel(sub7, 1, 21));
+		list.add(new ParticulierArtikel2Impl("Stucloper + trapfolie", new Geld(15.00), 21));
+		list.add(new ParticulierArtikel2Impl("Kitwerk", new Geld(149.50), 21));
 
 		return list;
 	}
 
-	protected ItemList<AbstractLoon> addLoon2() {
-		ItemList<AbstractLoon> list = new ItemList<>();
+	protected ItemList<AbstractLoon2> addLoon2() {
+		ItemList<AbstractLoon2> list = new ItemList<>();
 
-		list.add(new ProductLoon("Uurloon à 38.50", 25, new Geld(38.50), 6));
-		list.add(new ProductLoon("test123", 12, new Geld(12.50), 6));
-		list.add(new InstantLoon("foobar", new Geld(40.00), 6));
+		list.add(new ProductLoon2("Uurloon à 38.50", 25, new Geld(38.50), 6));
+		list.add(new ProductLoon2("test123", 12, new Geld(12.50), 6));
+		list.add(new InstantLoon2("foobar", new Geld(40.00), 6));
 
 		return list;
 	}
@@ -125,11 +123,11 @@ public class ParticulierPdfIntegrationTest {
 		OmschrFactuurHeader header = new OmschrFactuurHeader(debiteur, datum, factuurnummer,
 				omschrijving);
 
-		ItemList<ParticulierArtikel> itemList = this.addArtikels2();
-		ItemList<AbstractLoon> loonList = this.addLoon2();
+		ItemList<ParticulierArtikel2> itemList = this.addArtikels2();
+		itemList.addAll(this.addLoon2());
 
-		ParticulierFactuur factuur = new ParticulierFactuur(header, Currency.getInstance("EUR"),
-				itemList, loonList);
+		ParticulierFactuur2 factuur = new ParticulierFactuur2(header, Currency.getInstance("EUR"),
+				itemList);
 		this.exporter.export(factuur, new File("src\\test\\resources\\pdf\\"
 				+ "ParticulierFactuurTest123TwoBtw.pdf"));
 	}
@@ -145,11 +143,11 @@ public class ParticulierPdfIntegrationTest {
 		OmschrFactuurHeader header = new OmschrFactuurHeader(debiteur, datum, factuurnummer,
 				omschrijving);
 
-		ItemList<ParticulierArtikel> itemList = this.addArtikels1();
-		ItemList<AbstractLoon> loonList = this.addLoon1();
+		ItemList<ParticulierArtikel2> itemList = this.addArtikels1();
+		itemList.addAll(this.addLoon1());
 
-		ParticulierFactuur factuur = new ParticulierFactuur(header, Currency.getInstance("EUR"),
-				itemList, loonList);
+		ParticulierFactuur2 factuur = new ParticulierFactuur2(header, Currency.getInstance("EUR"),
+				itemList);
 		this.exporter.export(factuur, new File("src\\test\\resources\\pdf\\"
 				+ "ParticulierFactuurTest123OneBtw.pdf"));
 	}

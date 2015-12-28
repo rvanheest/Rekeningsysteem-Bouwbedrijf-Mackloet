@@ -82,8 +82,42 @@ public class PdfListItemVisitor implements ListItemVisitor<List<List<String>>> {
 	}
 
 	@Override
+	public List<List<String>> visit(EsselinkParticulierArtikel item) {
+		EsselinkArtikel artikel = item.getArtikel();
+		Geld materiaal = item.getMateriaal();
+
+		if (!materiaal.isZero()) {
+			Double aantal = item.getAantal();
+			String aantalAsString = aantal == Math.floor(aantal) && !Double.isInfinite(aantal)
+					? String.valueOf(aantal.intValue())
+					: String.valueOf(aantal);
+
+			return Arrays.asList(
+					Arrays.asList(
+							aantalAsString + "x " + artikel.getOmschrijving(),
+							materiaal.formattedString(),
+							String.valueOf(item.getMateriaalBtwPercentage())));
+		}
+		return Collections.emptyList();
+	}
+
+	@Override
 	@Deprecated
 	public List<List<String>> visit(AnderArtikel item) {
+		Geld materiaal = item.getMateriaal();
+
+		if (!materiaal.isZero()) {
+			return Arrays.asList(
+					Arrays.asList(
+							item.getOmschrijving(),
+							materiaal.formattedString(),
+							String.valueOf(item.getMateriaalBtwPercentage())));
+		}
+		return Collections.emptyList();
+	}
+
+	@Override
+	public List<List<String>> visit(ParticulierArtikel2Impl item) {
 		Geld materiaal = item.getMateriaal();
 
 		if (!materiaal.isZero()) {
@@ -128,6 +162,20 @@ public class PdfListItemVisitor implements ListItemVisitor<List<List<String>>> {
 	}
 
 	@Override
+	public List<List<String>> visit(InstantLoon2 item) {
+		Geld loon = item.getLoon();
+
+		if (!loon.isZero()) {
+			return Arrays.asList(
+					Arrays.asList(
+							item.getOmschrijving(),
+							loon.formattedString(),
+							String.valueOf(item.getLoonBtwPercentage())));
+		}
+		return Collections.emptyList();
+	}
+
+	@Override
 	@Deprecated
 	public List<List<String>> visit(ProductLoon item) {
 		Geld loon = item.getLoon();
@@ -143,26 +191,16 @@ public class PdfListItemVisitor implements ListItemVisitor<List<List<String>>> {
 	}
 
 	@Override
-	public List<List<String>> visit(ParticulierArtikel2Impl item) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<List<String>> visit(EsselinkParticulierArtikel item) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<List<String>> visit(InstantLoon2 item) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public List<List<String>> visit(ProductLoon2 item) {
-		// TODO Auto-generated method stub
-		return null;
+		Geld loon = item.getLoon();
+
+		if (!loon.isZero()) {
+			return Arrays.asList(
+					Arrays.asList(
+							item.getUren() + " uren à " + item.getUurloon().formattedString(),
+							loon.formattedString(),
+							String.valueOf(item.getLoonBtwPercentage())));
+		}
+		return Collections.emptyList();
 	}
 }

@@ -27,6 +27,7 @@ public enum PropertyModelEnum implements PropertyKey {
 	PDF_MUTATIES_TEMPLATE("pdfmutatiestemplate"),
 	PDF_OFFERTE_TEMPLATE("pdfoffertetemplate"),
 	PDF_PARTICULIER_TEMPLATE("pdfparticuliertemplate"),
+	PDF_PARTICULIER_2_TEMPLATE("pdfparticulier2template"),
 	PDF_REPARATIES_TEMPLATE("pdfreparatiestemplate"),
 	
 	FULL_SCREEN("fullscreen");
