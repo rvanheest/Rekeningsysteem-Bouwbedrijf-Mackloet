@@ -62,7 +62,7 @@ public final class ProductLoon2 extends AbstractLoon2 {
 
 	@Override
 	public String toString() {
-		return "<ProductLoon2[" + String.valueOf(this.getOmschrijving()) + ", "
+		return "<ProductLoon[" + String.valueOf(this.getOmschrijving()) + ", "
 				+ String.valueOf(this.uren) + ", "
 				+ String.valueOf(this.uurloon) + ", "
 				+ String.valueOf(this.loonBtwPercentage) + "]>";

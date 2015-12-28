@@ -49,7 +49,7 @@ public final class InstantLoon2 extends AbstractLoon2 {
 
 	@Override
 	public String toString() {
-		return "<InstantLoon2[" + String.valueOf(this.getOmschrijving()) + ", "
+		return "<InstantLoon[" + String.valueOf(this.getOmschrijving()) + ", "
 				+ String.valueOf(this.loon) + ", "
 				+ String.valueOf(this.loonBtwPercentage) + "]>";
 	}
