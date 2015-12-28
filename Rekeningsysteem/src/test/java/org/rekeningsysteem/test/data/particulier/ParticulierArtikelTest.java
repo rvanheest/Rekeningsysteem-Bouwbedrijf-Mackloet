@@ -3,11 +3,14 @@ package org.rekeningsysteem.test.data.particulier;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.rekeningsysteem.data.particulier.ParticulierArtikel;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.test.data.util.BtwListItemTest;
 
+@Ignore
+@Deprecated
 public abstract class ParticulierArtikelTest extends BtwListItemTest {
 
 	private ParticulierArtikel item;

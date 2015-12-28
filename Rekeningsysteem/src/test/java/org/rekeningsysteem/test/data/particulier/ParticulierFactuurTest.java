@@ -14,6 +14,7 @@ import java.util.Currency;
 import java.util.Optional;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.rekeningsysteem.data.particulier.ParticulierArtikel;
@@ -29,6 +30,8 @@ import org.rekeningsysteem.data.util.visitor.RekeningVisitor;
 import org.rekeningsysteem.logic.factuurnummer.FactuurnummerManager;
 import org.rekeningsysteem.test.data.util.AbstractFactuurTest;
 
+@Ignore
+@Deprecated
 public class ParticulierFactuurTest extends AbstractFactuurTest<ParticulierArtikel> {
 
 	private ParticulierFactuur factuur;
