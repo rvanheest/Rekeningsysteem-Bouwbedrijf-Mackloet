@@ -48,7 +48,7 @@ import rx.functions.Func2;
 /**
  * This is the XML reader from the times where an AbstractFactuur had a BtwPercentage.
  * 
- * This XML reader needs to be in here for backwards compatability.
+ * This XML reader needs to be in here for backwards compatibility.
  */
 public class XmlReader2 implements FactuurLoader {
 
