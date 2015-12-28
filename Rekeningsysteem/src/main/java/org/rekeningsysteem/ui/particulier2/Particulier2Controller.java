@@ -33,10 +33,12 @@ public class Particulier2Controller extends AbstractRekeningController<Particuli
 				new ParticulierListPaneController2(currency, database, defaultBtw));
 	}
 
-//	public ParticulierController(ParticulierFactuur2 input, PropertiesWorker properties,
-//			Database database) {
-//		// TODO implement later
-//	}
+	public Particulier2Controller(ParticulierFactuur2 input, PropertiesWorker properties,
+			Database database) {
+		this(new OmschrFactuurHeaderController(input.getFactuurHeader(), database),
+				new ParticulierListPaneController2(input.getCurrency(), database,
+						getDefaultBtwPercentage(properties), input.getItemList()));
+	}
 
 	public Particulier2Controller(OmschrFactuurHeaderController header,
 			ParticulierListPaneController2 body) {

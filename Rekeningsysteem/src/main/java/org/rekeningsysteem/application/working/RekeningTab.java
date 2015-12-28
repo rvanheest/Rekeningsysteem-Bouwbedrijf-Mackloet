@@ -9,7 +9,7 @@ import javafx.scene.control.Tab;
 import org.rekeningsysteem.data.aangenomen.AangenomenFactuur;
 import org.rekeningsysteem.data.mutaties.MutatiesFactuur;
 import org.rekeningsysteem.data.offerte.Offerte;
-import org.rekeningsysteem.data.particulier.ParticulierFactuur;
+import org.rekeningsysteem.data.particulier2.ParticulierFactuur2;
 import org.rekeningsysteem.data.reparaties.ReparatiesFactuur;
 import org.rekeningsysteem.data.util.AbstractRekening;
 import org.rekeningsysteem.data.util.header.Debiteur;
@@ -20,7 +20,7 @@ import org.rekeningsysteem.ui.AbstractRekeningController;
 import org.rekeningsysteem.ui.aangenomen.AangenomenController;
 import org.rekeningsysteem.ui.mutaties.MutatiesController;
 import org.rekeningsysteem.ui.offerte.OfferteController;
-import org.rekeningsysteem.ui.particulier.ParticulierController;
+import org.rekeningsysteem.ui.particulier2.Particulier2Controller;
 import org.rekeningsysteem.ui.reparaties.ReparatiesController;
 
 import de.nixosoft.jlr.JLROpener;
@@ -100,8 +100,8 @@ public class RekeningTab extends Tab {
 						.map(fact -> new MutatiesController(fact, database));
 				Observable<OfferteController> offerte = f.ofType(Offerte.class)
 						.map(fact -> new OfferteController(fact, database));
-				Observable<ParticulierController> particulier = f.ofType(ParticulierFactuur.class)
-						.map(fact -> new ParticulierController(fact, properties, database));
+				Observable<Particulier2Controller> particulier = f.ofType(ParticulierFactuur2.class)
+						.map(fact -> new Particulier2Controller(fact, properties, database));
 				Observable<ReparatiesController> reparaties = f.ofType(ReparatiesFactuur.class)
 						.map(fact -> new ReparatiesController(fact, database));
 
