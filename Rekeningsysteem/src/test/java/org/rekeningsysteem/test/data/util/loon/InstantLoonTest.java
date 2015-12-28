@@ -4,10 +4,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.data.util.loon.InstantLoon;
 
+@Ignore
+@Deprecated
 public class InstantLoonTest extends AbstractLoonTest {
 
 	private InstantLoon item;

@@ -4,11 +4,14 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.data.util.loon.AbstractLoon;
 import org.rekeningsysteem.test.data.util.BtwListItemTest;
 
+@Ignore
+@Deprecated
 public abstract class AbstractLoonTest extends BtwListItemTest {
 
 	private AbstractLoon loon;
