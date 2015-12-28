@@ -19,25 +19,20 @@ public interface ListItemVisitor<T> {
 	T visit(MutatiesBon item);
 	
 	@Deprecated
-	T visit(GebruiktEsselinkArtikel item);
+	T visit(GebruiktEsselinkArtikel item); // TODO remove old
+	T visit(EsselinkParticulierArtikel item);
 	
 	@Deprecated
-	T visit(AnderArtikel item);
+	T visit(AnderArtikel item); // TODO remove old
+	T visit(ParticulierArtikel2Impl item);
 	
 	T visit(ReparatiesBon item);
 	
 	@Deprecated
-	T visit(InstantLoon item);
+	T visit(InstantLoon item); // TODO remove old
+	T visit(InstantLoon2 item);
 	
 	@Deprecated
-	T visit(ProductLoon item);
-
-	// TODO dit herschikken once done
-	T visit(ParticulierArtikel2Impl item);
-
-	T visit(EsselinkParticulierArtikel item);
-
-	T visit(InstantLoon2 item);
-
+	T visit(ProductLoon item); // TODO remove old
 	T visit(ProductLoon2 item);
 }
