@@ -14,6 +14,7 @@ import org.rekeningsysteem.data.util.header.OmschrFactuurHeader;
 import org.rekeningsysteem.data.util.loon.AbstractLoon;
 import org.rekeningsysteem.io.xml.adaptee.particulier.ParticulierFactuurAdaptee;
 
+@Deprecated
 public class ParticulierFactuurAdapteeTest {
 
 	private ParticulierFactuurAdaptee adaptee;

@@ -8,6 +8,7 @@ import org.rekeningsysteem.data.util.ItemList;
 import org.rekeningsysteem.data.util.loon.AbstractLoon;
 import org.rekeningsysteem.io.xml.adaptee.util.loon.LoonListAdaptee;
 
+@Deprecated
 public class LoonListAdapter extends XmlAdapter<LoonListAdaptee, ItemList<AbstractLoon>> {
 
 	@Override

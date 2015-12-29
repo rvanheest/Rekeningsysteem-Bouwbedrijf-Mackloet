@@ -6,16 +6,16 @@ import javax.management.modelmbean.XMLParseException;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.rekeningsysteem.data.aangenomen.AangenomenFactuur;
 import org.rekeningsysteem.data.mutaties.MutatiesFactuur;
 import org.rekeningsysteem.data.offerte.Offerte;
-import org.rekeningsysteem.data.particulier.ParticulierFactuur;
+import org.rekeningsysteem.data.particulier2.ParticulierFactuur2;
 import org.rekeningsysteem.data.reparaties.ReparatiesFactuur;
 import org.rekeningsysteem.data.util.AbstractRekening;
 import org.rekeningsysteem.io.FactuurLoader;
 import org.rekeningsysteem.io.xml.XmlReader;
 import org.rekeningsysteem.io.xml.XmlReader1;
 import org.rekeningsysteem.io.xml.XmlReader2;
+import org.rekeningsysteem.io.xml.XmlReader3;
 
 import rx.observers.TestSubscriber;
 
@@ -24,13 +24,15 @@ public class XmlReaderIntegrationTest {
 	private FactuurLoader loader1;
 	private FactuurLoader loader2;
 	private FactuurLoader loader3;
+	private FactuurLoader loader4;
 	private TestSubscriber<Class<? extends AbstractRekening>> testObserver;
 
 	@Before
 	public void setUp() {
 		this.loader1 = new XmlReader1();
 		this.loader2 = new XmlReader2();
-		this.loader3 = new XmlReader();
+		this.loader3 = new XmlReader3();
+		this.loader4 = new XmlReader();
 		this.testObserver = new TestSubscriber<>();
 	}
 
@@ -59,6 +61,17 @@ public class XmlReaderIntegrationTest {
 	@Test
 	public void testReadMutatiesFactuur1XmlWithLoader3() {
 		this.loader3.load(new File("src\\test\\resources\\xml\\xml1\\MutatiesFactuur.xml"))
+				.map(AbstractRekening::getClass)
+				.subscribe(this.testObserver);
+		
+		this.testObserver.assertNoValues();
+		this.testObserver.assertError(XMLParseException.class);
+		this.testObserver.assertNotCompleted();
+	}
+
+	@Test
+	public void testReadMutatiesFactuur1XmlWithLoader4() {
+		this.loader4.load(new File("src\\test\\resources\\xml\\xml1\\MutatiesFactuur.xml"))
 				.map(AbstractRekening::getClass)
 				.subscribe(this.testObserver);
 		
@@ -96,6 +109,17 @@ public class XmlReaderIntegrationTest {
         		.subscribe(this.testObserver);
         
         this.testObserver.assertNoValues();
+        this.testObserver.assertError(XMLParseException.class);
+        this.testObserver.assertNotCompleted();
+	}
+
+	@Test
+	public void testReadOfferte1XmlWithLoader4() {
+		this.loader4.load(new File("src\\test\\resources\\xml\\xml1\\Offerte.xml"))
+        		.map(AbstractRekening::getClass)
+        		.subscribe(this.testObserver);
+        
+        this.testObserver.assertNoValues();
         this.testObserver.assertError(IllegalArgumentException.class);
         this.testObserver.assertNotCompleted();
 	}
@@ -106,7 +130,7 @@ public class XmlReaderIntegrationTest {
         		.map(AbstractRekening::getClass)
         		.subscribe(this.testObserver);
         
-        this.testObserver.assertValue(ParticulierFactuur.class);
+        this.testObserver.assertValue(ParticulierFactuur2.class);
         this.testObserver.assertNoErrors();
         this.testObserver.assertCompleted();
 	}
@@ -129,6 +153,17 @@ public class XmlReaderIntegrationTest {
         		.subscribe(this.testObserver);
         
         this.testObserver.assertNoValues();
+        this.testObserver.assertError(XMLParseException.class);
+        this.testObserver.assertNotCompleted();
+	}
+
+	@Test
+	public void testReadPartFactuur1XmlWithLoader4() {
+		this.loader4.load(new File("src\\test\\resources\\xml\\xml1\\PartFactuur.xml"))
+        		.map(AbstractRekening::getClass)
+        		.subscribe(this.testObserver);
+        
+        this.testObserver.assertNoValues();
         this.testObserver.assertError(IllegalArgumentException.class);
         this.testObserver.assertNotCompleted();
 	}
@@ -139,7 +174,7 @@ public class XmlReaderIntegrationTest {
         		.map(AbstractRekening::getClass)
         		.subscribe(this.testObserver);
         
-        this.testObserver.assertValue(ParticulierFactuur.class);
+        this.testObserver.assertValue(ParticulierFactuur2.class);
         this.testObserver.assertNoErrors();
         this.testObserver.assertCompleted();
 	}
@@ -162,6 +197,17 @@ public class XmlReaderIntegrationTest {
         		.subscribe(this.testObserver);
         
         this.testObserver.assertNoValues();
+        this.testObserver.assertError(XMLParseException.class);
+        this.testObserver.assertNotCompleted();
+	}
+
+	@Test
+	public void testRead1ParticulierFactuur1XmlWithLoader4() {
+		this.loader4.load(new File("src\\test\\resources\\xml\\xml1\\ParticulierFactuur1.xml"))
+        		.map(AbstractRekening::getClass)
+        		.subscribe(this.testObserver);
+        
+        this.testObserver.assertNoValues();
         this.testObserver.assertError(IllegalArgumentException.class);
         this.testObserver.assertNotCompleted();
 	}
@@ -172,7 +218,7 @@ public class XmlReaderIntegrationTest {
         		.map(AbstractRekening::getClass)
         		.subscribe(this.testObserver);
         
-        this.testObserver.assertValue(ParticulierFactuur.class);
+        this.testObserver.assertValue(ParticulierFactuur2.class);
         this.testObserver.assertNoErrors();
         this.testObserver.assertCompleted();
 	}
@@ -191,6 +237,17 @@ public class XmlReaderIntegrationTest {
 	@Test
 	public void testRead1ParticulierFactuur2XmlWithLoader3() {
 		this.loader3.load(new File("src\\test\\resources\\xml\\xml1\\ParticulierFactuur2.xml"))
+        		.map(AbstractRekening::getClass)
+        		.subscribe(this.testObserver);
+        
+        this.testObserver.assertNoValues();
+        this.testObserver.assertError(XMLParseException.class);
+        this.testObserver.assertNotCompleted();
+	}
+
+	@Test
+	public void testRead1ParticulierFactuur2XmlWithLoader4() {
+		this.loader4.load(new File("src\\test\\resources\\xml\\xml1\\ParticulierFactuur2.xml"))
         		.map(AbstractRekening::getClass)
         		.subscribe(this.testObserver);
         
@@ -228,6 +285,17 @@ public class XmlReaderIntegrationTest {
         		.subscribe(this.testObserver);
         
         this.testObserver.assertNoValues();
+        this.testObserver.assertError(XMLParseException.class);
+        this.testObserver.assertNotCompleted();
+	}
+
+	@Test
+	public void testReadReparatiesFactuur1XmlWithNewLoader4() {
+		this.loader4.load(new File("src\\test\\resources\\xml\\xml1\\ReparatiesFactuur.xml"))
+        		.map(AbstractRekening::getClass)
+        		.subscribe(this.testObserver);
+        
+        this.testObserver.assertNoValues();
         this.testObserver.assertError(IllegalArgumentException.class);
         this.testObserver.assertNotCompleted();
 	}
@@ -249,7 +317,7 @@ public class XmlReaderIntegrationTest {
         		.map(AbstractRekening::getClass)
         		.subscribe(this.testObserver);
 
-		this.testObserver.assertValue(AangenomenFactuur.class);
+		this.testObserver.assertValue(ParticulierFactuur2.class);
         this.testObserver.assertNoErrors();
         this.testObserver.assertCompleted();
 	}
@@ -257,6 +325,17 @@ public class XmlReaderIntegrationTest {
 	@Test
 	public void testReadAangenomenFactuur2XmlWithLoader3() {
 		this.loader3.load(new File("src\\test\\resources\\xml\\xml2\\aangenomenFactuurXMLTest.xml"))
+				.map(AbstractRekening::getClass)
+				.subscribe(this.testObserver);
+		
+		this.testObserver.assertNoValues();
+		this.testObserver.assertError(XMLParseException.class);
+		this.testObserver.assertNotCompleted();
+	}
+
+	@Test
+	public void testReadAangenomenFactuur2XmlWithLoader4() {
+		this.loader4.load(new File("src\\test\\resources\\xml\\xml2\\aangenomenFactuurXMLTest.xml"))
 				.map(AbstractRekening::getClass)
 				.subscribe(this.testObserver);
 		
@@ -294,6 +373,17 @@ public class XmlReaderIntegrationTest {
         		.subscribe(this.testObserver);
         
         this.testObserver.assertNoValues();
+        this.testObserver.assertError(XMLParseException.class);
+        this.testObserver.assertNotCompleted();
+	}
+
+	@Test
+	public void testReadMutatiesFactuur2XmlWithLoader4() {
+		this.loader4.load(new File("src\\test\\resources\\xml\\xml2\\mutatiesFactuurXMLTest.xml"))
+        		.map(AbstractRekening::getClass)
+        		.subscribe(this.testObserver);
+        
+        this.testObserver.assertNoValues();
         this.testObserver.assertError(IllegalArgumentException.class);
         this.testObserver.assertNotCompleted();
 	}
@@ -327,6 +417,17 @@ public class XmlReaderIntegrationTest {
         		.subscribe(this.testObserver);
         
         this.testObserver.assertNoValues();
+        this.testObserver.assertError(XMLParseException.class);
+        this.testObserver.assertNotCompleted();
+	}
+
+	@Test
+	public void testReadOfferte2XmlWithLoader4() {
+		this.loader4.load(new File("src\\test\\resources\\xml\\xml2\\offerteXMLTest.xml"))
+        		.map(AbstractRekening::getClass)
+        		.subscribe(this.testObserver);
+        
+        this.testObserver.assertNoValues();
         this.testObserver.assertError(IllegalArgumentException.class);
         this.testObserver.assertNotCompleted();
 	}
@@ -348,7 +449,7 @@ public class XmlReaderIntegrationTest {
         		.map(AbstractRekening::getClass)
         		.subscribe(this.testObserver);
         
-        this.testObserver.assertValue(ParticulierFactuur.class);
+        this.testObserver.assertValue(ParticulierFactuur2.class);
         this.testObserver.assertNoErrors();
         this.testObserver.assertCompleted();
 	}
@@ -356,6 +457,17 @@ public class XmlReaderIntegrationTest {
 	@Test
 	public void testReadParticulierFactuur2XmlWithLoader3() {
 		this.loader3.load(new File("src\\test\\resources\\xml\\xml2\\particulierFactuurXMLTest.xml"))
+        		.map(AbstractRekening::getClass)
+        		.subscribe(this.testObserver);
+        
+        this.testObserver.assertNoValues();
+        this.testObserver.assertError(XMLParseException.class);
+        this.testObserver.assertNotCompleted();
+	}
+
+	@Test
+	public void testReadParticulierFactuur2XmlWithLoader4() {
+		this.loader4.load(new File("src\\test\\resources\\xml\\xml2\\particulierFactuurXMLTest.xml"))
         		.map(AbstractRekening::getClass)
         		.subscribe(this.testObserver);
         
@@ -393,6 +505,17 @@ public class XmlReaderIntegrationTest {
         		.subscribe(this.testObserver);
         
         this.testObserver.assertNoValues();
+        this.testObserver.assertError(XMLParseException.class);
+        this.testObserver.assertNotCompleted();
+	}
+
+	@Test
+	public void testReadReparatiesFactuur2XmlWithLoader4() {
+		this.loader4.load(new File("src\\test\\resources\\xml\\xml2\\reparatiesFactuurXMLTest.xml"))
+        		.map(AbstractRekening::getClass)
+        		.subscribe(this.testObserver);
+        
+        this.testObserver.assertNoValues();
         this.testObserver.assertError(IllegalArgumentException.class);
         this.testObserver.assertNotCompleted();
 	}
@@ -425,7 +548,18 @@ public class XmlReaderIntegrationTest {
         		.map(AbstractRekening::getClass)
         		.subscribe(this.testObserver);
         
-        this.testObserver.assertValue(AangenomenFactuur.class);
+        this.testObserver.assertValue(ParticulierFactuur2.class);
+        this.testObserver.assertNoErrors();
+        this.testObserver.assertCompleted();
+	}
+
+	@Test
+	public void testReadAangenomenFactuur3XmlWithLoader4() {
+		this.loader3.load(new File("src\\test\\resources\\xml\\xml3\\aangenomenFactuurXMLTest.xml"))
+        		.map(AbstractRekening::getClass)
+        		.subscribe(this.testObserver);
+        
+        this.testObserver.assertValue(ParticulierFactuur2.class);
         this.testObserver.assertNoErrors();
         this.testObserver.assertCompleted();
 	}
@@ -464,6 +598,17 @@ public class XmlReaderIntegrationTest {
 	}
 
 	@Test
+	public void testReadMutatiesFactuur3XmlWithLoader4() {
+		this.loader4.load(new File("src\\test\\resources\\xml\\xml3\\mutatiesFactuurXMLTest.xml"))
+        		.map(AbstractRekening::getClass)
+        		.subscribe(this.testObserver);
+        
+        this.testObserver.assertNoValues();
+        this.testObserver.assertError(IllegalArgumentException.class);
+        this.testObserver.assertNotCompleted();
+	}
+
+	@Test
 	public void testReadOfferteFactuur3XmlWithLoader1() {
 		this.loader1.load(new File("src\\test\\resources\\xml\\xml3\\offerteXMLTest.xml"))
         		.map(AbstractRekening::getClass)
@@ -497,6 +642,17 @@ public class XmlReaderIntegrationTest {
 	}
 
 	@Test
+	public void testReadOfferteFactuur3XmlWithLoader4() {
+		this.loader4.load(new File("src\\test\\resources\\xml\\xml3\\offerteXMLTest.xml"))
+        		.map(AbstractRekening::getClass)
+        		.subscribe(this.testObserver);
+        
+        this.testObserver.assertNoValues();
+        this.testObserver.assertError(IllegalArgumentException.class);
+        this.testObserver.assertNotCompleted();
+	}
+
+	@Test
 	public void testReadParticulierFactuur3XmlWithLoader1() {
 		this.loader1.load(new File("src\\test\\resources\\xml\\xml3\\particulierFactuurXMLTest.xml"))
         		.map(AbstractRekening::getClass)
@@ -524,9 +680,20 @@ public class XmlReaderIntegrationTest {
         		.map(AbstractRekening::getClass)
         		.subscribe(this.testObserver);
         
-        this.testObserver.assertValue(ParticulierFactuur.class);
+        this.testObserver.assertValue(ParticulierFactuur2.class);
         this.testObserver.assertNoErrors();
         this.testObserver.assertCompleted();
+	}
+
+	@Test
+	public void testReadParticulierFactuur3XmlWithLoader4() {
+		this.loader4.load(new File("src\\test\\resources\\xml\\xml3\\particulierFactuurXMLTest.xml"))
+        		.map(AbstractRekening::getClass)
+        		.subscribe(this.testObserver);
+        
+        this.testObserver.assertNoValues();
+        this.testObserver.assertError(IllegalArgumentException.class);
+        this.testObserver.assertNotCompleted();
 	}
 
 	@Test
@@ -554,6 +721,193 @@ public class XmlReaderIntegrationTest {
 	@Test
 	public void testReadReparatiesFactuur3XmlWithLoader3() {
 		this.loader3.load(new File("src\\test\\resources\\xml\\xml3\\reparatiesFactuurXMLTest.xml"))
+        		.map(AbstractRekening::getClass)
+        		.subscribe(this.testObserver);
+        
+        this.testObserver.assertValue(ReparatiesFactuur.class);
+        this.testObserver.assertNoErrors();
+        this.testObserver.assertCompleted();
+	}
+
+	@Test
+	public void testReadReparatiesFactuur3XmlWithLoader4() {
+		this.loader4.load(new File("src\\test\\resources\\xml\\xml3\\reparatiesFactuurXMLTest.xml"))
+        		.map(AbstractRekening::getClass)
+        		.subscribe(this.testObserver);
+        
+        this.testObserver.assertNoValues();
+        this.testObserver.assertError(IllegalArgumentException.class);
+        this.testObserver.assertNotCompleted();
+	}
+
+	@Test
+	public void testReadMutatiesFactuur4XmlWithLoader1() {
+		this.loader1.load(new File("src\\test\\resources\\xml\\xml4\\mutatiesFactuurXMLTest.xml"))
+        		.map(AbstractRekening::getClass)
+        		.subscribe(this.testObserver);
+        
+        this.testObserver.assertNoValues();
+        this.testObserver.assertError(XMLParseException.class);
+        this.testObserver.assertNotCompleted();
+	}
+
+	@Test
+	public void testReadMutatiesFactuur4XmlWithLoader2() {
+		this.loader2.load(new File("src\\test\\resources\\xml\\xml4\\mutatiesFactuurXMLTest.xml"))
+        		.map(AbstractRekening::getClass)
+        		.subscribe(this.testObserver);
+        
+        this.testObserver.assertValue(MutatiesFactuur.class);
+        this.testObserver.assertNoErrors();
+        this.testObserver.assertCompleted();
+	}
+
+	@Test
+	public void testReadMutatiesFactuur4XmlWithLoader3() {
+		this.loader3.load(new File("src\\test\\resources\\xml\\xml4\\mutatiesFactuurXMLTest.xml"))
+        		.map(AbstractRekening::getClass)
+        		.subscribe(this.testObserver);
+        
+        this.testObserver.assertNoValues();
+        this.testObserver.assertError(XMLParseException.class);
+        this.testObserver.assertNotCompleted();
+	}
+
+	@Test
+	public void testReadMutatiesFactuur4XmlWithLoader4() {
+		this.loader4.load(new File("src\\test\\resources\\xml\\xml4\\mutatiesFactuurXMLTest.xml"))
+        		.map(AbstractRekening::getClass)
+        		.subscribe(this.testObserver);
+        
+        this.testObserver.assertValue(MutatiesFactuur.class);
+        this.testObserver.assertNoErrors();
+        this.testObserver.assertCompleted();
+	}
+
+	@Test
+	public void testReadOfferteFactuur4XmlWithLoader1() {
+		this.loader1.load(new File("src\\test\\resources\\xml\\xml4\\offerteXMLTest.xml"))
+        		.map(AbstractRekening::getClass)
+        		.subscribe(this.testObserver);
+        
+        this.testObserver.assertNoValues();
+        this.testObserver.assertError(XMLParseException.class);
+        this.testObserver.assertNotCompleted();
+	}
+
+	@Test
+	public void testReadOfferteFactuur4XmlWithLoader2() {
+		this.loader2.load(new File("src\\test\\resources\\xml\\xml4\\offerteXMLTest.xml"))
+        		.map(AbstractRekening::getClass)
+        		.subscribe(this.testObserver);
+        
+        this.testObserver.assertValue(Offerte.class);
+        this.testObserver.assertNoErrors();
+        this.testObserver.assertCompleted();
+	}
+
+	@Test
+	public void testReadOfferteFactuur4XmlWithLoader3() {
+		this.loader3.load(new File("src\\test\\resources\\xml\\xml4\\offerteXMLTest.xml"))
+        		.map(AbstractRekening::getClass)
+        		.subscribe(this.testObserver);
+        
+        this.testObserver.assertNoValues();
+        this.testObserver.assertError(XMLParseException.class);
+        this.testObserver.assertNotCompleted();
+	}
+
+	@Test
+	public void testReadOfferteFactuur4XmlWithLoader4() {
+		this.loader4.load(new File("src\\test\\resources\\xml\\xml4\\offerteXMLTest.xml"))
+        		.map(AbstractRekening::getClass)
+        		.subscribe(this.testObserver);
+        
+        this.testObserver.assertValue(Offerte.class);
+        this.testObserver.assertNoErrors();
+        this.testObserver.assertCompleted();
+	}
+
+	@Test
+	public void testReadParticulierFactuur4XmlWithLoader1() {
+		this.loader1.load(new File("src\\test\\resources\\xml\\xml4\\particulierFactuurXMLTest.xml"))
+        		.map(AbstractRekening::getClass)
+        		.subscribe(this.testObserver);
+        
+        this.testObserver.assertNoValues();
+        this.testObserver.assertError(XMLParseException.class);
+        this.testObserver.assertNotCompleted();
+	}
+
+	@Test
+	public void testReadParticulierFactuur4XmlWithLoader2() {
+		this.loader2.load(new File("src\\test\\resources\\xml\\xml4\\particulierFactuurXMLTest.xml"))
+        		.map(AbstractRekening::getClass)
+        		.subscribe(this.testObserver);
+        
+        this.testObserver.assertNoValues();
+        this.testObserver.assertError(IllegalArgumentException.class);
+        this.testObserver.assertNotCompleted();
+	}
+
+	@Test
+	public void testReadParticulierFactuur4XmlWithLoader3() {
+		this.loader3.load(new File("src\\test\\resources\\xml\\xml4\\particulierFactuurXMLTest.xml"))
+        		.map(AbstractRekening::getClass)
+        		.subscribe(this.testObserver);
+        
+		this.testObserver.assertNoValues();
+		this.testObserver.assertError(XMLParseException.class);
+        this.testObserver.assertNotCompleted();
+	}
+
+	@Test
+	public void testReadParticulierFactuur4XmlWithLoader4() {
+		this.loader4.load(new File("src\\test\\resources\\xml\\xml4\\particulierFactuurXMLTest.xml"))
+        		.map(AbstractRekening::getClass)
+        		.subscribe(this.testObserver);
+        
+        this.testObserver.assertValue(ParticulierFactuur2.class);
+        this.testObserver.assertNoErrors();
+        this.testObserver.assertCompleted();
+	}
+
+	@Test
+	public void testReadReparatiesFactuur4XmlWithLoader1() {
+		this.loader1.load(new File("src\\test\\resources\\xml\\xml4\\reparatiesFactuurXMLTest.xml"))
+        		.map(AbstractRekening::getClass)
+        		.subscribe(this.testObserver);
+        
+        this.testObserver.assertNoValues();
+        this.testObserver.assertError(XMLParseException.class);
+        this.testObserver.assertNotCompleted();
+	}
+
+	@Test
+	public void testReadReparatiesFactuur4XmlWithLoader2() {
+		this.loader2.load(new File("src\\test\\resources\\xml\\xml4\\reparatiesFactuurXMLTest.xml"))
+        		.map(AbstractRekening::getClass)
+        		.subscribe(this.testObserver);
+        
+        this.testObserver.assertValue(ReparatiesFactuur.class);
+        this.testObserver.assertNoErrors();
+        this.testObserver.assertCompleted();
+	}
+
+	@Test
+	public void testReadReparatiesFactuur4XmlWithLoader3() {
+		this.loader3.load(new File("src\\test\\resources\\xml\\xml4\\reparatiesFactuurXMLTest.xml"))
+        		.map(AbstractRekening::getClass)
+        		.subscribe(this.testObserver);
+        
+        this.testObserver.assertNoValues();
+        this.testObserver.assertError(XMLParseException.class);
+        this.testObserver.assertNotCompleted();
+	}
+
+	@Test
+	public void testReadReparatiesFactuur4XmlWithLoader4() {
+		this.loader4.load(new File("src\\test\\resources\\xml\\xml4\\reparatiesFactuurXMLTest.xml"))
         		.map(AbstractRekening::getClass)
         		.subscribe(this.testObserver);
         

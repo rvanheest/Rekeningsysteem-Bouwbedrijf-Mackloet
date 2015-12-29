@@ -17,6 +17,7 @@ import java.util.Map;
 import javax.xml.bind.Marshaller;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -25,6 +26,7 @@ import org.rekeningsysteem.data.aangenomen.AangenomenFactuur;
 import org.rekeningsysteem.data.mutaties.MutatiesFactuur;
 import org.rekeningsysteem.data.offerte.Offerte;
 import org.rekeningsysteem.data.particulier.ParticulierFactuur;
+import org.rekeningsysteem.data.particulier2.ParticulierFactuur2;
 import org.rekeningsysteem.data.reparaties.ReparatiesFactuur;
 import org.rekeningsysteem.data.util.ItemList;
 import org.rekeningsysteem.data.util.header.Debiteur;
@@ -34,6 +36,7 @@ import org.rekeningsysteem.io.xml.XmlMakerVisitor;
 import org.rekeningsysteem.io.xml.root.AangenomenFactuurRoot;
 import org.rekeningsysteem.io.xml.root.MutatiesFactuurRoot;
 import org.rekeningsysteem.io.xml.root.OfferteRoot;
+import org.rekeningsysteem.io.xml.root.ParticulierFactuur2Root;
 import org.rekeningsysteem.io.xml.root.ParticulierFactuurRoot;
 import org.rekeningsysteem.io.xml.root.ReparatiesFactuurRoot;
 import org.rekeningsysteem.io.xml.root.Root;
@@ -59,6 +62,7 @@ public class XmlMakerVisitorTest {
 		this.marshallerMap.put(MutatiesFactuurRoot.class, this.mockedMarshaller);
 		this.marshallerMap.put(OfferteRoot.class, this.mockedMarshaller);
 		this.marshallerMap.put(ParticulierFactuurRoot.class, this.mockedMarshaller);
+		this.marshallerMap.put(ParticulierFactuur2Root.class, this.mockedMarshaller);
 		this.marshallerMap.put(ReparatiesFactuurRoot.class, this.mockedMarshaller);
 
 		this.visitor.setSaveLocation(this.mockedFile);
@@ -100,10 +104,22 @@ public class XmlMakerVisitorTest {
 		verify(this.mockedMarshaller).marshal(anyObject(), eq(this.mockedFile));
 	}
 
+	@Ignore // TODO delete this
 	@Test
 	public void testVisitParticulierFactuur() throws Exception {
 		ParticulierFactuur factuur = new ParticulierFactuur(this.testOmschrHeader,
 				Currency.getInstance(Locale.US), new ItemList<>(), new ItemList<>());
+		this.visitor.visit(factuur);
+
+		verify(this.mockedMarshaller).setProperty(anyString(), anyObject());
+		verify(this.mockedMarshaller).marshal(anyObject(), eq(this.mockedFile));
+	}
+
+	// TODO testVisitParticulierFactuur
+	@Test
+	public void testVisitParticulierFactuur2() throws Exception {
+		ParticulierFactuur2 factuur = new ParticulierFactuur2(this.testOmschrHeader,
+				Currency.getInstance(Locale.US), new ItemList<>());
 		this.visitor.visit(factuur);
 
 		verify(this.mockedMarshaller).setProperty(anyString(), anyObject());

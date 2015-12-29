@@ -8,6 +8,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.io.xml.adapter.util.GeldAdapter;
 
+@Deprecated
 @XmlRootElement(name = "product-loon")
 @XmlType(propOrder = { "omschrijving", "uren", "uurloon", "loonBtwPercentage" })
 public class ProductLoonAdaptee extends AbstractLoonAdaptee {

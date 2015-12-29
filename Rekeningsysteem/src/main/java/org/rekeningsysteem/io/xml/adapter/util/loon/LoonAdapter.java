@@ -9,6 +9,7 @@ import org.rekeningsysteem.io.xml.adaptee.util.loon.AbstractLoonAdaptee;
 import org.rekeningsysteem.io.xml.adaptee.util.loon.InstantLoonAdaptee;
 import org.rekeningsysteem.io.xml.adaptee.util.loon.ProductLoonAdaptee;
 
+@Deprecated
 public class LoonAdapter extends XmlAdapter<AbstractLoonAdaptee, AbstractLoon> {
 
 	@Override

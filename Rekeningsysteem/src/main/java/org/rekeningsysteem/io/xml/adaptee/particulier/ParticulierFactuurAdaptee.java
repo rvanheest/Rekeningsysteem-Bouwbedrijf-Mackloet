@@ -14,6 +14,7 @@ import org.rekeningsysteem.io.xml.adapter.util.CurrencyAdapter;
 import org.rekeningsysteem.io.xml.adapter.util.header.OmschrFactuurHeaderAdapter;
 import org.rekeningsysteem.io.xml.adapter.util.loon.LoonListAdapter;
 
+@Deprecated
 @XmlType(propOrder = { "factuurHeader", "currency", "itemList", "loonList" })
 public class ParticulierFactuurAdaptee {
 

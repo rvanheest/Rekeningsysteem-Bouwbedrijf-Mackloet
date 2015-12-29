@@ -10,6 +10,7 @@ import org.junit.Test;
 import org.rekeningsysteem.data.particulier.ParticulierArtikel;
 import org.rekeningsysteem.io.xml.adaptee.particulier.ParticulierItemListAdaptee;
 
+@Deprecated
 public class ParticulierItemListAdapteeTest {
 
 	private ParticulierItemListAdaptee adaptee;

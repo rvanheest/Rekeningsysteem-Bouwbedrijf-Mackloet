@@ -10,6 +10,7 @@ import org.junit.Test;
 import org.rekeningsysteem.data.util.loon.AbstractLoon;
 import org.rekeningsysteem.io.xml.adaptee.util.loon.LoonListAdaptee;
 
+@Deprecated
 public class LoonListAdapteeTest {
 
 	private LoonListAdaptee adaptee;

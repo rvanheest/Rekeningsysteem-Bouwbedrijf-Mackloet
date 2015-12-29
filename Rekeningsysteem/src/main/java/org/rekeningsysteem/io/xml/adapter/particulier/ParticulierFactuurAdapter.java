@@ -6,6 +6,7 @@ import org.rekeningsysteem.data.particulier.ParticulierFactuur;
 import org.rekeningsysteem.data.util.ItemList;
 import org.rekeningsysteem.io.xml.adaptee.particulier.ParticulierFactuurAdaptee;
 
+@Deprecated
 public class ParticulierFactuurAdapter extends
 		XmlAdapter<ParticulierFactuurAdaptee, ParticulierFactuur> {
 

@@ -10,6 +10,7 @@ import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.data.util.ItemList;
 import org.rekeningsysteem.io.xml.adapter.particulier.ParticulierItemListAdapter;
 
+@Deprecated
 public class ParticulierItemListAdapterTest {
 
 	private ParticulierItemListAdapter adapter;

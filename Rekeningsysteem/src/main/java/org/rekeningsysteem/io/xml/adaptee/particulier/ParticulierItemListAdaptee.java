@@ -8,6 +8,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.rekeningsysteem.data.particulier.ParticulierArtikel;
 import org.rekeningsysteem.io.xml.adapter.particulier.ParticulierArtikelAdapter;
 
+@Deprecated
 public class ParticulierItemListAdaptee {
 
 	private List<ParticulierArtikel> list;

@@ -6,20 +6,15 @@ import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.data.util.visitor.ListItemVisitor;
 
 // TODO AnderArtikel
-public class ParticulierArtikel2Impl implements ParticulierArtikel2 {
+public class ParticulierArtikel2Impl extends ParticulierArtikel2 {
 
-	private final String omschrijving;
 	private final Geld prijs;
 	private final double btwPercentage;
 
 	public ParticulierArtikel2Impl(String omschrijving, Geld prijs, double btwPercentage) {
-		this.omschrijving = omschrijving;
+		super(omschrijving);
 		this.prijs = prijs;
 		this.btwPercentage = btwPercentage;
-	}
-
-	public String getOmschrijving() {
-		return this.omschrijving;
 	}
 
 	@Override
@@ -56,7 +51,7 @@ public class ParticulierArtikel2Impl implements ParticulierArtikel2 {
 	public boolean equals(Object other) {
 		if (other instanceof ParticulierArtikel2Impl) {
 			ParticulierArtikel2Impl that = (ParticulierArtikel2Impl) other;
-			return Objects.equals(this.omschrijving, that.omschrijving)
+			return super.equals(that)
 					&& Objects.equals(this.prijs, that.prijs)
 					&& Objects.equals(this.btwPercentage, that.btwPercentage);
 		}
@@ -65,12 +60,12 @@ public class ParticulierArtikel2Impl implements ParticulierArtikel2 {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(this.omschrijving, this.prijs, this.btwPercentage);
+		return Objects.hash(super.hashCode(), this.prijs, this.btwPercentage);
 	}
 
 	@Override
 	public String toString() {
-		return "<ParticulierArtikelImpl[" + String.valueOf(this.omschrijving) + ", "
+		return "<ParticulierArtikelImpl[" + String.valueOf(this.getOmschrijving()) + ", "
 				+ String.valueOf(this.prijs) + ", "
 				+ String.valueOf(this.btwPercentage) + "]>";
 	}

@@ -20,6 +20,7 @@ import org.rekeningsysteem.data.util.loon.AbstractLoon;
 import org.rekeningsysteem.data.util.loon.ProductLoon;
 import org.rekeningsysteem.io.xml.root.ParticulierFactuurRoot;
 
+@Deprecated
 public class ParticulierFactuurRootTest {
 
 	private ParticulierFactuurRoot root;

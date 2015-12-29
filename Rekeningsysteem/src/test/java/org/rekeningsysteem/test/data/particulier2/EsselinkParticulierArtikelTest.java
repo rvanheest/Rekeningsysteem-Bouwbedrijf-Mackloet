@@ -20,12 +20,12 @@ public class EsselinkParticulierArtikelTest extends ParticulierArtikel2Test {
 
 	@Override
 	protected EsselinkParticulierArtikel makeInstance() {
-		return new EsselinkParticulierArtikel(this.artikel, this.aantal, this.btwPercentage);
+		return new EsselinkParticulierArtikel(this.getTestOmschrijving(), this.artikel, this.aantal, this.btwPercentage);
 	}
 
 	@Override
 	protected EsselinkParticulierArtikel makeNotInstance() {
-		return new EsselinkParticulierArtikel(this.artikel, this.aantal + 1, this.btwPercentage);
+		return new EsselinkParticulierArtikel(this.getTestOmschrijving(), this.artikel, this.aantal + 1, this.btwPercentage);
 	}
 
 	@Before

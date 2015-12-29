@@ -7,6 +7,7 @@ import org.rekeningsysteem.data.particulier.EsselinkArtikel;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.io.xml.adaptee.particulier.GebruiktEsselinkArtikelAdaptee;
 
+@Deprecated
 public class GebruiktEsselinkArtikelAdapteeTest extends ParticulierArtikelAdapteeTest {
 
 	@Override

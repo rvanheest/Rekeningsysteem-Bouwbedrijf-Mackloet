@@ -14,10 +14,9 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.rekeningsysteem.data.util.AbstractRekening;
 import org.rekeningsysteem.io.FactuurLoader;
-import org.rekeningsysteem.io.xml.root.AangenomenFactuurRoot;
 import org.rekeningsysteem.io.xml.root.MutatiesFactuurRoot;
 import org.rekeningsysteem.io.xml.root.OfferteRoot;
-import org.rekeningsysteem.io.xml.root.ParticulierFactuurRoot;
+import org.rekeningsysteem.io.xml.root.ParticulierFactuur2Root;
 import org.rekeningsysteem.io.xml.root.ReparatiesFactuurRoot;
 import org.rekeningsysteem.io.xml.root.Root;
 import org.rekeningsysteem.logging.ApplicationLogger;
@@ -39,14 +38,12 @@ public class XmlReader implements FactuurLoader {
 		try {
 			this.builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 
-			this.map.put(AangenomenFactuurRoot.class,
-					JAXBContext.newInstance(AangenomenFactuurRoot.class).createUnmarshaller());
 			this.map.put(MutatiesFactuurRoot.class,
 					JAXBContext.newInstance(MutatiesFactuurRoot.class).createUnmarshaller());
 			this.map.put(OfferteRoot.class,
 					JAXBContext.newInstance(OfferteRoot.class).createUnmarshaller());
-			this.map.put(ParticulierFactuurRoot.class,
-					JAXBContext.newInstance(ParticulierFactuurRoot.class).createUnmarshaller());
+			this.map.put(ParticulierFactuur2Root.class,
+					JAXBContext.newInstance(ParticulierFactuur2Root.class).createUnmarshaller());
 			this.map.put(ReparatiesFactuurRoot.class,
 					JAXBContext.newInstance(ReparatiesFactuurRoot.class).createUnmarshaller());
 		}
@@ -76,13 +73,8 @@ public class XmlReader implements FactuurLoader {
 			String type = ((Element) factuur).getAttribute("type");
 			String version = ((Element) factuur).getAttribute("version");
 
-			if ("3".equals(version)) {
+			if ("4".equals(version)) {
     			switch (type) {
-    				case "AangenomenFactuur": {
-    					Unmarshaller unmarshaller = this.map.get(AangenomenFactuurRoot.class);
-    					Observable<? extends AbstractRekening> result = this.readXML(unmarshaller, doc).map(Root::getRekening);
-    					return result;
-    				}
     				case "MutatiesFactuur": {
     					Unmarshaller unmarshaller = this.map.get(MutatiesFactuurRoot.class);
     					Observable<? extends AbstractRekening> result = this.readXML(unmarshaller, doc).map(Root::getRekening);
@@ -94,7 +86,7 @@ public class XmlReader implements FactuurLoader {
     					return result;
     				}
     				case "ParticulierFactuur": {
-    					Unmarshaller unmarshaller = this.map.get(ParticulierFactuurRoot.class);
+    					Unmarshaller unmarshaller = this.map.get(ParticulierFactuur2Root.class);
     					Observable<? extends AbstractRekening> result = this.readXML(unmarshaller, doc).map(Root::getRekening);
     					return result;
     				}

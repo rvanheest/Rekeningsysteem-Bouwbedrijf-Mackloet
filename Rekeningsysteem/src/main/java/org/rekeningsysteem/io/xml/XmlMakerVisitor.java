@@ -19,6 +19,7 @@ import org.rekeningsysteem.data.util.visitor.RekeningVisitor;
 import org.rekeningsysteem.io.xml.root.AangenomenFactuurRoot;
 import org.rekeningsysteem.io.xml.root.MutatiesFactuurRoot;
 import org.rekeningsysteem.io.xml.root.OfferteRoot;
+import org.rekeningsysteem.io.xml.root.ParticulierFactuur2Root;
 import org.rekeningsysteem.io.xml.root.ParticulierFactuurRoot;
 import org.rekeningsysteem.io.xml.root.ReparatiesFactuurRoot;
 import org.rekeningsysteem.io.xml.root.Root;
@@ -41,6 +42,8 @@ public class XmlMakerVisitor implements RekeningVisitor {
 					JAXBContext.newInstance(OfferteRoot.class).createMarshaller());
 			this.map.put(ParticulierFactuurRoot.class,
 					JAXBContext.newInstance(ParticulierFactuurRoot.class).createMarshaller());
+			this.map.put(ParticulierFactuur2Root.class,
+					JAXBContext.newInstance(ParticulierFactuur2Root.class).createMarshaller());
 			this.map.put(ReparatiesFactuurRoot.class,
 					JAXBContext.newInstance(ReparatiesFactuurRoot.class).createMarshaller());
 		}
@@ -82,21 +85,22 @@ public class XmlMakerVisitor implements RekeningVisitor {
 	}
 
 	@Override
-	@Deprecated
+	@Deprecated // TODO delete this
 	public void visit(ParticulierFactuur factuur) throws Exception {
 		Marshaller marshaller = this.map.get(ParticulierFactuurRoot.class);
 		this.save(marshaller, new ParticulierFactuurRoot(), factuur);
 	}
 
 	@Override
-	public void visit(ReparatiesFactuur factuur) throws Exception {
-		Marshaller marshaller = this.map.get(ReparatiesFactuurRoot.class);
-		this.save(marshaller, new ReparatiesFactuurRoot(), factuur);
+	public void visit(ParticulierFactuur2 factuur) throws Exception {
+		Marshaller marshaller = this.map.get(ParticulierFactuur2Root.class);
+		this.save(marshaller, new ParticulierFactuur2Root(), factuur);
 	}
 
 	@Override
-	public void visit(ParticulierFactuur2 factuur) throws Exception {
-		// TODO Auto-generated method stub
+	public void visit(ReparatiesFactuur factuur) throws Exception {
+		Marshaller marshaller = this.map.get(ReparatiesFactuurRoot.class);
+		this.save(marshaller, new ReparatiesFactuurRoot(), factuur);
 	}
 
 	private <T extends AbstractRekening> void save(Marshaller marshaller, Root<T> root, T rekening)

@@ -6,22 +6,24 @@ import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Currency;
+import java.util.function.Supplier;
 
 import javax.management.modelmbean.XMLParseException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.rekeningsysteem.data.aangenomen.AangenomenFactuur;
-import org.rekeningsysteem.data.aangenomen.AangenomenListItem;
 import org.rekeningsysteem.data.mutaties.MutatiesBon;
 import org.rekeningsysteem.data.mutaties.MutatiesFactuur;
 import org.rekeningsysteem.data.offerte.Offerte;
-import org.rekeningsysteem.data.particulier.AnderArtikel;
 import org.rekeningsysteem.data.particulier.EsselinkArtikel;
-import org.rekeningsysteem.data.particulier.GebruiktEsselinkArtikel;
-import org.rekeningsysteem.data.particulier.ParticulierArtikel;
-import org.rekeningsysteem.data.particulier.ParticulierFactuur;
+import org.rekeningsysteem.data.particulier2.EsselinkParticulierArtikel;
+import org.rekeningsysteem.data.particulier2.ParticulierArtikel2;
+import org.rekeningsysteem.data.particulier2.ParticulierArtikel2Impl;
+import org.rekeningsysteem.data.particulier2.ParticulierFactuur2;
+import org.rekeningsysteem.data.particulier2.loon.AbstractLoon2;
+import org.rekeningsysteem.data.particulier2.loon.InstantLoon2;
+import org.rekeningsysteem.data.particulier2.loon.ProductLoon2;
 import org.rekeningsysteem.data.reparaties.ReparatiesBon;
 import org.rekeningsysteem.data.reparaties.ReparatiesFactuur;
 import org.rekeningsysteem.data.util.AbstractRekening;
@@ -30,9 +32,6 @@ import org.rekeningsysteem.data.util.ItemList;
 import org.rekeningsysteem.data.util.header.Debiteur;
 import org.rekeningsysteem.data.util.header.FactuurHeader;
 import org.rekeningsysteem.data.util.header.OmschrFactuurHeader;
-import org.rekeningsysteem.data.util.loon.AbstractLoon;
-import org.rekeningsysteem.data.util.loon.InstantLoon;
-import org.rekeningsysteem.data.util.loon.ProductLoon;
 import org.rekeningsysteem.io.FactuurLoader;
 import org.rekeningsysteem.logging.ApplicationLogger;
 import org.w3c.dom.Document;
@@ -138,6 +137,19 @@ public class XmlReader2 implements FactuurLoader {
 		return Observable.just(n.getNodeValue());
 	}
 
+	private Observable<Node> nodeListOrError(Supplier<NodeList> listSupplier) {
+		return Observable.<NodeList>create(subscriber -> {
+			NodeList list = listSupplier.get();
+			if (list == null) {
+				subscriber.onError(new IllegalArgumentException("No itemList found."));
+			}
+			else {
+				subscriber.onNext(list);
+				subscriber.onCompleted();
+			}
+		}).flatMap(list -> Observable.range(0, list.getLength()).map(list::item));
+	}
+
 	private Observable<Debiteur> makeDebiteur(Node node) {
 		Observable<String> naam = this.getNodeValue(node, "naam");
 		Observable<String> straat = this.getNodeValue(node, "straat");
@@ -209,41 +221,41 @@ public class XmlReader2 implements FactuurLoader {
 		return Observable.zip(loon, materiaal, BtwPercentage::new);
 	}
 
-	private Observable<Func2<Double, Double, AangenomenListItem>> makeAangenomenListItem(Node node) {
+	private Observable<Func2<Double, Double, Observable<ParticulierArtikel2>>> makeAangenomenListItem(Node node) {
 		Observable<String> omschrijving = this.getNodeValue(node, "omschrijving");
 		Observable<Geld> loon = this
 				.makeGeld(((Element) node).getElementsByTagName("loon").item(0));
 		Observable<Geld> materiaal = this.makeGeld(((Element) node).getElementsByTagName(
 				"materiaal").item(0));
 
-		return Observable.zip(omschrijving, loon, materiaal, (omschr, l, m) ->
-				(btwL, btwM) -> new AangenomenListItem(omschr, l, btwL, m, btwM));
+		return Observable.zip(omschrijving, loon, materiaal,
+				(omschr, l, m) -> (lb, mb) -> Observable.just(
+						new ParticulierArtikel2Impl(omschr, m, mb),
+						new InstantLoon2(omschr, l, lb)));
 	}
 
-	private Func2<Double, Double, Observable<ItemList<AangenomenListItem>>> makeAangenomenList(Node node) {
-		NodeList list = ((Element) node).getElementsByTagName("list-item");
-		return (btwL, btwM) -> Observable.range(0, list.getLength())
-				.map(list::item)
+	private Func2<Double, Double, Observable<ItemList<ParticulierArtikel2>>> makeAangenomenList(Node node) {
+		return (btwL, btwM) -> this.nodeListOrError(() -> ((Element) node).getElementsByTagName("list-item"))
 				.flatMap(this::makeAangenomenListItem)
-				.map(f -> f.call(btwL, btwM))
+				.flatMap(f -> f.call(btwL, btwM))
 				.collect(ItemList::new, Collection::add);
 	}
 
-	private Observable<AangenomenFactuur> makeAangenomenFactuur(Node node) {
+	private Observable<ParticulierFactuur2> makeAangenomenFactuur(Node node) {
 		Observable<OmschrFactuurHeader> header = this.makeFactuurHeader(((Element) node)
 				.getElementsByTagName("factuurHeader").item(0));
 		Observable<Currency> currency = this.getNodeValue(node, "currency")
 				.map(s -> Currency.getAvailableCurrencies().parallelStream()
 						.filter(cur -> s.equals(cur.getCurrencyCode()))
 						.findFirst().get());
-		Func2<Double, Double, Observable<ItemList<AangenomenListItem>>> listFunc =
+		Func2<Double, Double, Observable<ItemList<ParticulierArtikel2>>> listFunc =
 				this.makeAangenomenList(((Element) node).getElementsByTagName("list").item(0));
 		Observable<BtwPercentage> btw = this.makeBtwPercentage(((Element) node)
 				.getElementsByTagName("btwPercentage").item(0));
-		Observable<ItemList<AangenomenListItem>> list = btw.flatMap(b -> listFunc
+		Observable<ItemList<ParticulierArtikel2>> list = btw.flatMap(b -> listFunc
 				.call(b.loonPercentage, b.materiaalPercentage));
 
-		return Observable.zip(header, currency, list, AangenomenFactuur::new);
+		return Observable.zip(header, currency, list, ParticulierFactuur2::new);
 	}
 
 	private Observable<MutatiesBon> makeMutatiesBon(Node node) {
@@ -256,9 +268,7 @@ public class XmlReader2 implements FactuurLoader {
 	}
 
 	private Observable<ItemList<MutatiesBon>> makeMutatiesList(Node node) {
-		NodeList list = ((Element) node).getElementsByTagName("list-item");
-		return Observable.range(0, list.getLength())
-				.map(list::item)
+		return this.nodeListOrError(() -> ((Element) node).getElementsByTagName("list-item"))
 				.flatMap(this::makeMutatiesBon)
 				.collect(ItemList::new, Collection::add);
 	}
@@ -298,29 +308,26 @@ public class XmlReader2 implements FactuurLoader {
 				EsselinkArtikel::new);
 	}
 
-	private Observable<Func1<Double, GebruiktEsselinkArtikel>> makeGebruiktArtikelEsselink(Node node) {
+	private Observable<Func1<Double, EsselinkParticulierArtikel>> makeGebruiktArtikelEsselink(Node node) {
 		Observable<EsselinkArtikel> artikel = this.makeEsselinkArtikel(((Element) node)
 				.getElementsByTagName("artikel").item(0));
 		Observable<Double> aantal = this.getNodeValue(node, "aantal").map(Double::parseDouble);
 
 		return Observable.zip(artikel, aantal, (art, aant) ->
-				btw -> new GebruiktEsselinkArtikel(art, aant, btw));
+				btw -> new EsselinkParticulierArtikel(art, aant, btw));
 	}
 
-	private Observable<Func1<Double, AnderArtikel>> makeAnderArtikel(Node node) {
+	private Observable<Func1<Double, ParticulierArtikel2Impl>> makeAnderArtikel(Node node) {
 		Observable<String> omschrijving = this.getNodeValue(node, "omschrijving");
 		Observable<Geld> prijs = this.makeGeld(((Element) node)
 				.getElementsByTagName("prijs").item(0));
 
 		return Observable.zip(omschrijving, prijs, (omschr, pr) ->
-				btw -> new AnderArtikel(omschr, pr, btw));
+				btw -> new ParticulierArtikel2Impl(omschr, pr, btw));
 	}
 
-	private Func1<Double, Observable<ItemList<ParticulierArtikel>>> makeParticulierList(Node node) {
-		NodeList list = node.getChildNodes();
-
-		return btw -> Observable.range(0, list.getLength())
-				.map(list::item)
+	private Func1<Double, Observable<ItemList<ParticulierArtikel2>>> makeParticulierList(Node node) {
+		return btw -> this.nodeListOrError(() -> node.getChildNodes())
 				.filter(item -> !"#text".equals(item.getNodeName()))
 				.flatMap(item -> {
 					switch (item.getNodeName()) {
@@ -337,28 +344,27 @@ public class XmlReader2 implements FactuurLoader {
 				.collect(ItemList::new, Collection::add);
 	}
 
-	private Observable<Func1<Double, ProductLoon>> makeProductLoon(Node node) {
+	private Observable<Func1<Double, ProductLoon2>> makeProductLoon(Node node) {
 		Observable<String> omschrijving = this.getNodeValue(node, "omschrijving");
 		Observable<Double> uren = this.getNodeValue(node, "uren").map(Double::parseDouble);
 		Observable<Geld> uurloon = this.makeGeld(((Element) node)
 				.getElementsByTagName("uurloon").item(0));
 
-		return Observable.zip(omschrijving, uren, uurloon, (omschr, u, ul) -> btw -> new ProductLoon(omschr, u, ul, btw));
+		return Observable.zip(omschrijving, uren, uurloon, (omschr, u, ul) ->
+				btw -> new ProductLoon2(omschr, u, ul, btw));
 	}
 
-	private Observable<Func1<Double, InstantLoon>> makeInstantLoon(Node node) {
+	private Observable<Func1<Double, InstantLoon2>> makeInstantLoon(Node node) {
 		Observable<String> omschrijving = this.getNodeValue(node, "omschrijving");
 		Observable<Geld> loon = this.makeGeld(((Element) node)
 				.getElementsByTagName("loon").item(0));
 
-		return Observable.zip(omschrijving, loon, (omschr, l) -> btw -> new InstantLoon(omschr, l, btw));
+		return Observable.zip(omschrijving, loon, (omschr, l) ->
+				btw -> new InstantLoon2(omschr, l, btw));
 	}
 
-	private Func1<Double, Observable<ItemList<AbstractLoon>>> makeLoonList(Node node) {
-		NodeList list = node.getChildNodes();
-
-		return btw -> Observable.range(0, list.getLength())
-				.map(list::item)
+	private Func1<Double, Observable<ItemList<AbstractLoon2>>> makeLoonList(Node node) {
+		return btw -> this.nodeListOrError(() -> node.getChildNodes())
 				.filter(n -> !"#text".equals(n.getNodeName()))
 				.flatMap(item -> {
 					switch (item.getNodeName()) {
@@ -375,24 +381,27 @@ public class XmlReader2 implements FactuurLoader {
 				.collect(ItemList::new, Collection::add);
 	}
 
-	private Observable<ParticulierFactuur> makeParticulierFactuur(Node node) {
+	private Observable<ParticulierFactuur2> makeParticulierFactuur(Node node) {
 		Observable<OmschrFactuurHeader> header = this.makeFactuurHeader(((Element) node)
 				.getElementsByTagName("factuurHeader").item(0));
 		Observable<Currency> currency = this.getNodeValue(node, "currency")
 				.map(s -> Currency.getAvailableCurrencies().parallelStream()
 						.filter(cur -> s.equals(cur.getCurrencyCode()))
 						.findFirst().get());
-		Func1<Double, Observable<ItemList<ParticulierArtikel>>> listFunc =
+		Func1<Double, Observable<ItemList<ParticulierArtikel2>>> listFunc =
 				this.makeParticulierList(((Element) node).getElementsByTagName("itemList").item(0));
-		Func1<Double, Observable<ItemList<AbstractLoon>>> loonFunc =
+		Func1<Double, Observable<ItemList<AbstractLoon2>>> loonFunc =
 				this.makeLoonList(((Element) node).getElementsByTagName("loonList").item(0));
 		Observable<BtwPercentage> btw = this.makeBtwPercentage(((Element) node)
 				.getElementsByTagName("btwPercentage").item(0));
 		return btw.first().publish(percentage -> {
-			Observable<ItemList<ParticulierArtikel>> arts = percentage.map(b -> b.materiaalPercentage).flatMap(b -> listFunc.call(b));
-			Observable<ItemList<AbstractLoon>> loon = percentage.map(b -> b.loonPercentage).flatMap(b -> loonFunc.call(b));
+			Observable<ItemList<ParticulierArtikel2>> arts = percentage.map(b -> b.materiaalPercentage).flatMap(b -> listFunc.call(b));
+			Observable<ItemList<AbstractLoon2>> loon = percentage.map(b -> b.loonPercentage).flatMap(b -> loonFunc.call(b));
 
-			return Observable.zip(header, currency, arts, loon, ParticulierFactuur::new);
+			return Observable.zip(header, currency, arts, loon, (h, c, li, lo) -> {
+				li.addAll(lo);
+				return new ParticulierFactuur2(h, c, li);
+			});
 		});
 	}
 
@@ -408,9 +417,7 @@ public class XmlReader2 implements FactuurLoader {
 	}
 
 	private Observable<ItemList<ReparatiesBon>> makeReparatiesList(Node node) {
-		NodeList list = ((Element) node).getElementsByTagName("list-item");
-		return Observable.range(0, list.getLength())
-				.map(list::item)
+		return this.nodeListOrError(() -> ((Element) node).getElementsByTagName("list-item"))
 				.flatMap(this::makeReparatiesBon)
 				.collect(ItemList::new, Collection::add);
 	}

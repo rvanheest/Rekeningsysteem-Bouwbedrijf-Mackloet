@@ -7,7 +7,8 @@ import org.junit.Test;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.io.xml.adaptee.util.loon.InstantLoonAdaptee;
 
-public class InstantLoonAdapteeTest {
+@Deprecated
+public class InstantLoonAdapteeTest extends AbstractLoonAdapteeTest {
 
 	private InstantLoonAdaptee adaptee;
 

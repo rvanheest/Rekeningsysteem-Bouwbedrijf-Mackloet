@@ -20,6 +20,7 @@ import org.rekeningsysteem.data.util.loon.AbstractLoon;
 import org.rekeningsysteem.data.util.loon.ProductLoon;
 import org.rekeningsysteem.io.xml.adapter.particulier.ParticulierFactuurAdapter;
 
+@Deprecated
 public class ParticulierFactuurAdapterTest {
 
 	private ParticulierFactuurAdapter adapter;

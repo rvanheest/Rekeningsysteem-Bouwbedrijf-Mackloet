@@ -8,6 +8,7 @@ import org.rekeningsysteem.data.particulier.ParticulierArtikel;
 import org.rekeningsysteem.data.util.ItemList;
 import org.rekeningsysteem.io.xml.adaptee.particulier.ParticulierItemListAdaptee;
 
+@Deprecated
 public class ParticulierItemListAdapter extends
 		XmlAdapter<ParticulierItemListAdaptee, ItemList<ParticulierArtikel>> {
 

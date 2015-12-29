@@ -8,6 +8,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.rekeningsysteem.data.util.loon.AbstractLoon;
 import org.rekeningsysteem.io.xml.adapter.util.loon.LoonAdapter;
 
+@Deprecated
 public class LoonListAdaptee {
 
 	private List<AbstractLoon> list;

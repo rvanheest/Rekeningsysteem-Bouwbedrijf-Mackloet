@@ -7,9 +7,8 @@ import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.data.util.visitor.ListItemVisitor;
 
 // TODO GebruiktEsselinkArtikel
-public class EsselinkParticulierArtikel implements ParticulierArtikel2 {
+public class EsselinkParticulierArtikel extends ParticulierArtikel2 {
 
-	private final String omschrijving;
 	private final Geld prijs;
 	private final double btwPercentage;
 	private final EsselinkArtikel artikel;
@@ -21,15 +20,11 @@ public class EsselinkParticulierArtikel implements ParticulierArtikel2 {
 
 	public EsselinkParticulierArtikel(String omschrijving, EsselinkArtikel artikel,
 			double aantal, double btwPercentage) {
-		this.omschrijving = omschrijving;
+		super(omschrijving);
 		this.prijs = artikel.getVerkoopPrijs().multiply(aantal).divide(artikel.getPrijsPer());
 		this.btwPercentage = btwPercentage;
 		this.aantal = aantal;
 		this.artikel = artikel;
-	}
-	
-	public String getOmschrijving() {
-		return this.omschrijving;
 	}
 
 	@Override
@@ -69,7 +64,7 @@ public class EsselinkParticulierArtikel implements ParticulierArtikel2 {
 	public boolean equals(Object other) {
 		if (other instanceof EsselinkParticulierArtikel) {
 			EsselinkParticulierArtikel that = (EsselinkParticulierArtikel) other;
-			return Objects.equals(this.omschrijving, that.omschrijving)
+			return super.equals(that)
 					&& Objects.equals(this.prijs, that.prijs)
 					&& Objects.equals(this.btwPercentage, that.btwPercentage)
 					&& Objects.equals(this.aantal, that.aantal)
@@ -80,13 +75,13 @@ public class EsselinkParticulierArtikel implements ParticulierArtikel2 {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(this.omschrijving, this.prijs, this.btwPercentage,
+		return Objects.hash(super.hashCode(), this.prijs, this.btwPercentage,
 				this.aantal, this.artikel);
 	}
 
 	@Override
 	public String toString() {
-		return "<EsselinkParticulierArtikel[" + String.valueOf(this.omschrijving) + ", "
+		return "<EsselinkParticulierArtikel[" + String.valueOf(this.getOmschrijving()) + ", "
 				+ String.valueOf(this.prijs) + ", "
 				+ String.valueOf(this.btwPercentage) + ", "
 				+ String.valueOf(this.aantal) + ", "

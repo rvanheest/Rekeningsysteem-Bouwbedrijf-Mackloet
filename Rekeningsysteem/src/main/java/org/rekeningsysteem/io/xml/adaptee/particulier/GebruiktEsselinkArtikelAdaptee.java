@@ -8,6 +8,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.rekeningsysteem.data.particulier.EsselinkArtikel;
 import org.rekeningsysteem.io.xml.adapter.particulier.EsselinkArtikelAdapter;
 
+@Deprecated
 @XmlRootElement(name = "gebruikt-esselink-artikel")
 @XmlType(propOrder = { "artikel", "aantal", "materiaalBtwPercentage" })
 public class GebruiktEsselinkArtikelAdaptee extends ParticulierArtikelAdaptee {

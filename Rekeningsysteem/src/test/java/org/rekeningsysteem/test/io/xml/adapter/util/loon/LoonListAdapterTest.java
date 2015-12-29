@@ -10,6 +10,7 @@ import org.rekeningsysteem.data.util.loon.AbstractLoon;
 import org.rekeningsysteem.data.util.loon.InstantLoon;
 import org.rekeningsysteem.io.xml.adapter.util.loon.LoonListAdapter;
 
+@Deprecated
 public class LoonListAdapterTest {
 
 	private LoonListAdapter adapter;

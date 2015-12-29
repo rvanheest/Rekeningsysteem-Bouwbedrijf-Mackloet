@@ -9,6 +9,7 @@ import org.rekeningsysteem.io.xml.adaptee.particulier.AnderArtikelAdaptee;
 import org.rekeningsysteem.io.xml.adaptee.particulier.GebruiktEsselinkArtikelAdaptee;
 import org.rekeningsysteem.io.xml.adaptee.particulier.ParticulierArtikelAdaptee;
 
+@Deprecated
 public class ParticulierArtikelAdapter extends
 		XmlAdapter<ParticulierArtikelAdaptee, ParticulierArtikel> {
 

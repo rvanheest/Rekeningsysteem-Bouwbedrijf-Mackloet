@@ -3,6 +3,7 @@ package org.rekeningsysteem.test.io.xml.adaptee.particulier;
 import org.junit.Before;
 import org.rekeningsysteem.io.xml.adaptee.particulier.ParticulierArtikelAdaptee;
 
+@Deprecated
 public abstract class ParticulierArtikelAdapteeTest {
 
 	private ParticulierArtikelAdaptee adaptee;

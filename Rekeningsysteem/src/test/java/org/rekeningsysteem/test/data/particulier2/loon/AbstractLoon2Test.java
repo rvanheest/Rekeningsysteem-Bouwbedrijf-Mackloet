@@ -1,7 +1,6 @@
 package org.rekeningsysteem.test.data.particulier2.loon;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -12,25 +11,15 @@ import org.rekeningsysteem.test.data.particulier2.ParticulierArtikel2Test;
 public abstract class AbstractLoon2Test extends ParticulierArtikel2Test {
 
 	private AbstractLoon2 loon;
-	private String omschrijving = "omschrijving";
 
 	@Override
 	protected abstract AbstractLoon2 makeInstance();
-
-	protected String getTestOmschrijving() {
-		return this.omschrijving;
-	}
 
 	@Before
 	@Override
 	public void setUp() {
 		super.setUp();
 		this.loon = this.makeInstance();
-	}
-
-	@Test
-	public void testGetOmschrijving() {
-		assertEquals(this.omschrijving, this.loon.getOmschrijving());
 	}
 
 	@Test
@@ -48,11 +37,5 @@ public abstract class AbstractLoon2Test extends ParticulierArtikel2Test {
 	public void testGetMateriaalBtw() {
 		super.testGetMateriaalBtw();
 		assertEquals(new Geld(0), this.loon.getMateriaalBtw());
-	}
-
-	@Test
-	public void testEqualsFalseOtherOmschrijving() {
-		this.omschrijving = "foo";
-		assertFalse(this.makeInstance().equals(this.loon));
 	}
 }

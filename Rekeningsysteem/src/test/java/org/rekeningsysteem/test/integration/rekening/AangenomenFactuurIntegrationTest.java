@@ -4,6 +4,7 @@ import java.io.File;
 import java.time.LocalDate;
 import java.util.Currency;
 
+import org.junit.Ignore;
 import org.rekeningsysteem.data.aangenomen.AangenomenFactuur;
 import org.rekeningsysteem.data.aangenomen.AangenomenListItem;
 import org.rekeningsysteem.data.util.Geld;
@@ -11,6 +12,8 @@ import org.rekeningsysteem.data.util.ItemList;
 import org.rekeningsysteem.data.util.header.Debiteur;
 import org.rekeningsysteem.data.util.header.OmschrFactuurHeader;
 
+@Ignore
+@Deprecated
 public class AangenomenFactuurIntegrationTest extends AbstractRekeningIntegrationTest {
 
 	@Override

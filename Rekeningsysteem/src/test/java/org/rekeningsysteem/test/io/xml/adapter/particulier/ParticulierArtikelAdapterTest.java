@@ -10,6 +10,7 @@ import org.rekeningsysteem.data.particulier.GebruiktEsselinkArtikel;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.io.xml.adapter.particulier.ParticulierArtikelAdapter;
 
+@Deprecated
 public class ParticulierArtikelAdapterTest {
 
 	private ParticulierArtikelAdapter adapter;

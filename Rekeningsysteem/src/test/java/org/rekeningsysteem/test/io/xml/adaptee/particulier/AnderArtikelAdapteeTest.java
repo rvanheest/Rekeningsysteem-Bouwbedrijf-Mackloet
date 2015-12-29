@@ -6,6 +6,7 @@ import org.junit.Test;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.io.xml.adaptee.particulier.AnderArtikelAdaptee;
 
+@Deprecated
 public class AnderArtikelAdapteeTest extends ParticulierArtikelAdapteeTest {
 
 	@Override
