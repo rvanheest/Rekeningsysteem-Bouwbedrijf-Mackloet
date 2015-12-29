@@ -1,4 +1,4 @@
-package org.rekeningsysteem.ui.particulier2;
+package org.rekeningsysteem.ui.particulier;
 
 import org.rekeningsysteem.ui.particulier.tabpane.ItemType;
 

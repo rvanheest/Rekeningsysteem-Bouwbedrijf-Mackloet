@@ -1,4 +1,4 @@
-package org.rekeningsysteem.ui.particulier2;
+package org.rekeningsysteem.ui.particulier;
 
 import java.util.Currency;
 import java.util.concurrent.TimeUnit;
@@ -8,7 +8,7 @@ import org.rekeningsysteem.data.particulier.EsselinkArtikel;
 import org.rekeningsysteem.data.particulier.EsselinkParticulierArtikel;
 import org.rekeningsysteem.logic.database.ArtikellijstDBInteraction;
 import org.rekeningsysteem.rxjavafx.JavaFxScheduler;
-import org.rekeningsysteem.ui.particulier2.EsselinkArtikelToggle2;
+import org.rekeningsysteem.ui.particulier.EsselinkArtikelToggle2;
 import org.rekeningsysteem.ui.textfields.searchbox.AbstractSearchBox;
 import org.rekeningsysteem.ui.textfields.searchbox.EsselinkSearchBox;
 import org.rekeningsysteem.ui.textfields.searchbox.SearchBoxController;

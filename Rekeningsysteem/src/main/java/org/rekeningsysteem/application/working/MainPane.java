@@ -29,7 +29,7 @@ import org.rekeningsysteem.properties.PropertyModelEnum;
 import org.rekeningsysteem.rxjavafx.Observables;
 import org.rekeningsysteem.ui.mutaties.MutatiesController;
 import org.rekeningsysteem.ui.offerte.OfferteController;
-import org.rekeningsysteem.ui.particulier2.Particulier2Controller;
+import org.rekeningsysteem.ui.particulier.Particulier2Controller;
 import org.rekeningsysteem.ui.reparaties.ReparatiesController;
 
 import rx.Observable;

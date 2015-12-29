@@ -1,4 +1,4 @@
-package org.rekeningsysteem.ui.particulier2;
+package org.rekeningsysteem.ui.particulier;
 
 // TODO EsselinkArtikelToggle
 public enum EsselinkArtikelToggle2 {

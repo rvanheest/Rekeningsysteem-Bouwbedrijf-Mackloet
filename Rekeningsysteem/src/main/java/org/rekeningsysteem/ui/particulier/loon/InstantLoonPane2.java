@@ -1,4 +1,4 @@
-package org.rekeningsysteem.ui.particulier2.loon;
+package org.rekeningsysteem.ui.particulier.loon;
 
 import java.math.BigDecimal;
 import java.util.Currency;

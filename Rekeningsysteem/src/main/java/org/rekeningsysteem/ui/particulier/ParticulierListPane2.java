@@ -1,4 +1,4 @@
-package org.rekeningsysteem.ui.particulier2;
+package org.rekeningsysteem.ui.particulier;
 
 import java.util.Arrays;
 import java.util.List;
@@ -13,7 +13,7 @@ import org.rekeningsysteem.data.particulier.loon.ProductLoon2;
 import org.rekeningsysteem.ui.list.AbstractListPane;
 import org.rekeningsysteem.ui.list.DoubleCell;
 import org.rekeningsysteem.ui.list.MoneyCell;
-import org.rekeningsysteem.ui.particulier2.ParticulierListPane2.ParticulierModel2;
+import org.rekeningsysteem.ui.particulier.ParticulierListPane2.ParticulierModel2;
 
 // TODO ParticulierListPane
 public class ParticulierListPane2 extends AbstractListPane<ParticulierModel2> {

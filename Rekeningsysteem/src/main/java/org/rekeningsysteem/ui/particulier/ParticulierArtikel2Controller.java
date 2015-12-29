@@ -1,4 +1,4 @@
-package org.rekeningsysteem.ui.particulier2;
+package org.rekeningsysteem.ui.particulier;
 
 import java.util.Currency;
 import java.util.Optional;
@@ -8,8 +8,8 @@ import org.rekeningsysteem.data.util.BtwPercentage;
 import org.rekeningsysteem.io.database.Database;
 import org.rekeningsysteem.logic.database.ArtikellijstDBInteraction;
 import org.rekeningsysteem.ui.list.AbstractListItemController;
-import org.rekeningsysteem.ui.particulier2.loon.InstantLoonController2;
-import org.rekeningsysteem.ui.particulier2.loon.ProductLoonController2;
+import org.rekeningsysteem.ui.particulier.loon.InstantLoonController2;
+import org.rekeningsysteem.ui.particulier.loon.ProductLoonController2;
 
 // TODO ParticulierArtikelController
 public class ParticulierArtikel2Controller extends AbstractListItemController<ParticulierArtikel2> {

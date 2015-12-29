@@ -1,4 +1,4 @@
-package org.rekeningsysteem.ui.particulier2;
+package org.rekeningsysteem.ui.particulier;
 
 import java.util.Currency;
 import java.util.List;
@@ -13,7 +13,7 @@ import org.rekeningsysteem.data.util.BtwPercentage;
 import org.rekeningsysteem.data.util.ItemList;
 import org.rekeningsysteem.io.database.Database;
 import org.rekeningsysteem.ui.list.AbstractListController;
-import org.rekeningsysteem.ui.particulier2.ParticulierListPane2.ParticulierModel2;
+import org.rekeningsysteem.ui.particulier.ParticulierListPane2.ParticulierModel2;
 
 // TODO ParticulierListController
 public class ParticulierListController2 extends AbstractListController<ParticulierArtikel2, ParticulierModel2> {
