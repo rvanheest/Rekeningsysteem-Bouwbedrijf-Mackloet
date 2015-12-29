@@ -8,7 +8,7 @@ import javafx.scene.control.Tab;
 
 import org.rekeningsysteem.data.mutaties.MutatiesFactuur;
 import org.rekeningsysteem.data.offerte.Offerte;
-import org.rekeningsysteem.data.particulier2.ParticulierFactuur2;
+import org.rekeningsysteem.data.particulier.ParticulierFactuur2;
 import org.rekeningsysteem.data.reparaties.ReparatiesFactuur;
 import org.rekeningsysteem.data.util.AbstractRekening;
 import org.rekeningsysteem.data.util.header.Debiteur;

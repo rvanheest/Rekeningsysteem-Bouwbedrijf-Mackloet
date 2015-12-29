@@ -7,7 +7,7 @@ import java.util.Currency;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.rekeningsysteem.data.particulier2.ParticulierArtikel2;
+import org.rekeningsysteem.data.particulier.ParticulierArtikel2;
 import org.rekeningsysteem.data.util.ItemList;
 import org.rekeningsysteem.data.util.header.Debiteur;
 import org.rekeningsysteem.data.util.header.OmschrFactuurHeader;

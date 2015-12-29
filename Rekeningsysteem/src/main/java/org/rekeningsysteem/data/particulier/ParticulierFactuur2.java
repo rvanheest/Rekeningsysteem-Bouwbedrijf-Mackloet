@@ -1,4 +1,4 @@
-package org.rekeningsysteem.data.particulier2;
+package org.rekeningsysteem.data.particulier;
 
 import java.util.Currency;
 

@@ -4,11 +4,11 @@ import java.util.Currency;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.rekeningsysteem.data.particulier2.EsselinkParticulierArtikel;
-import org.rekeningsysteem.data.particulier2.ParticulierArtikel2;
-import org.rekeningsysteem.data.particulier2.ParticulierArtikel2Impl;
-import org.rekeningsysteem.data.particulier2.loon.InstantLoon2;
-import org.rekeningsysteem.data.particulier2.loon.ProductLoon2;
+import org.rekeningsysteem.data.particulier.EsselinkParticulierArtikel;
+import org.rekeningsysteem.data.particulier.ParticulierArtikel2;
+import org.rekeningsysteem.data.particulier.ParticulierArtikel2Impl;
+import org.rekeningsysteem.data.particulier.loon.InstantLoon2;
+import org.rekeningsysteem.data.particulier.loon.ProductLoon2;
 import org.rekeningsysteem.data.util.BtwPercentage;
 import org.rekeningsysteem.data.util.ItemList;
 import org.rekeningsysteem.io.database.Database;

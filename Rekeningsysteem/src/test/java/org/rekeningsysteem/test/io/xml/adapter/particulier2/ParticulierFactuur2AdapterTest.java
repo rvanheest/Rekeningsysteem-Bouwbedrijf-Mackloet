@@ -7,16 +7,16 @@ import java.util.Currency;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.rekeningsysteem.data.particulier2.ParticulierArtikel2Impl;
+import org.rekeningsysteem.data.particulier.loon.ProductLoon2;
 import org.rekeningsysteem.data.particulier.EsselinkArtikel;
-import org.rekeningsysteem.data.particulier2.EsselinkParticulierArtikel;
-import org.rekeningsysteem.data.particulier2.ParticulierArtikel2;
-import org.rekeningsysteem.data.particulier2.ParticulierFactuur2;
+import org.rekeningsysteem.data.particulier.EsselinkParticulierArtikel;
+import org.rekeningsysteem.data.particulier.ParticulierArtikel2;
+import org.rekeningsysteem.data.particulier.ParticulierArtikel2Impl;
+import org.rekeningsysteem.data.particulier.ParticulierFactuur2;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.data.util.ItemList;
 import org.rekeningsysteem.data.util.header.Debiteur;
 import org.rekeningsysteem.data.util.header.OmschrFactuurHeader;
-import org.rekeningsysteem.data.particulier2.loon.ProductLoon2;
 import org.rekeningsysteem.io.xml.adapter.particulier2.ParticulierFactuur2Adapter;
 
 public class ParticulierFactuur2AdapterTest {

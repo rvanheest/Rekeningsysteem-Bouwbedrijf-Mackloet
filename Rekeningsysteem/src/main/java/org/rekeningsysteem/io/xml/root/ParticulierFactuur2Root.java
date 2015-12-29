@@ -4,7 +4,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import org.rekeningsysteem.data.particulier2.ParticulierFactuur2;
+import org.rekeningsysteem.data.particulier.ParticulierFactuur2;
 import org.rekeningsysteem.io.xml.adapter.particulier2.ParticulierFactuur2Adapter;
 
 @XmlRootElement(name = "bestand")

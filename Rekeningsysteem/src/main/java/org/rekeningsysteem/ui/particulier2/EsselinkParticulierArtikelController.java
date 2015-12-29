@@ -5,7 +5,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
 import org.rekeningsysteem.data.particulier.EsselinkArtikel;
-import org.rekeningsysteem.data.particulier2.EsselinkParticulierArtikel;
+import org.rekeningsysteem.data.particulier.EsselinkParticulierArtikel;
 import org.rekeningsysteem.logic.database.ArtikellijstDBInteraction;
 import org.rekeningsysteem.rxjavafx.JavaFxScheduler;
 import org.rekeningsysteem.ui.particulier2.EsselinkArtikelToggle2;

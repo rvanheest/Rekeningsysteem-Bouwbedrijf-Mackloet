@@ -1,4 +1,4 @@
-package org.rekeningsysteem.test.data.particulier2;
+package org.rekeningsysteem.test.data.particulier;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -6,7 +6,7 @@ import static org.junit.Assert.assertFalse;
 import org.junit.Before;
 import org.junit.Test;
 import org.rekeningsysteem.data.particulier.EsselinkArtikel;
-import org.rekeningsysteem.data.particulier2.EsselinkParticulierArtikel;
+import org.rekeningsysteem.data.particulier.EsselinkParticulierArtikel;
 import org.rekeningsysteem.data.util.Geld;
 
 // TODO GebruiktEsselinkArtikelTest

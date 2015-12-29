@@ -1,6 +1,6 @@
-package org.rekeningsysteem.data.particulier2.loon;
+package org.rekeningsysteem.data.particulier.loon;
 
-import org.rekeningsysteem.data.particulier2.ParticulierArtikel2;
+import org.rekeningsysteem.data.particulier.ParticulierArtikel2;
 import org.rekeningsysteem.data.util.Geld;
 
 // TODO AbstractLoon

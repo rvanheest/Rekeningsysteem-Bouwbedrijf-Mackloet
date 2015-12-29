@@ -1,11 +1,11 @@
-package org.rekeningsysteem.test.data.particulier2;
+package org.rekeningsysteem.test.data.particulier;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.rekeningsysteem.data.particulier2.ParticulierArtikel2Impl;
+import org.rekeningsysteem.data.particulier.ParticulierArtikel2Impl;
 import org.rekeningsysteem.data.util.Geld;
 
 // TODO AnderArtikelTest

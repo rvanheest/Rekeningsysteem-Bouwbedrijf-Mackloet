@@ -6,10 +6,10 @@ import java.util.List;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.cell.PropertyValueFactory;
 
-import org.rekeningsysteem.data.particulier2.EsselinkParticulierArtikel;
-import org.rekeningsysteem.data.particulier2.ParticulierArtikel2Impl;
-import org.rekeningsysteem.data.particulier2.loon.InstantLoon2;
-import org.rekeningsysteem.data.particulier2.loon.ProductLoon2;
+import org.rekeningsysteem.data.particulier.EsselinkParticulierArtikel;
+import org.rekeningsysteem.data.particulier.ParticulierArtikel2Impl;
+import org.rekeningsysteem.data.particulier.loon.InstantLoon2;
+import org.rekeningsysteem.data.particulier.loon.ProductLoon2;
 import org.rekeningsysteem.ui.list.AbstractListPane;
 import org.rekeningsysteem.ui.list.DoubleCell;
 import org.rekeningsysteem.ui.list.MoneyCell;

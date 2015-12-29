@@ -7,7 +7,7 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.rekeningsysteem.data.particulier2.ParticulierArtikel2;
+import org.rekeningsysteem.data.particulier.ParticulierArtikel2;
 import org.rekeningsysteem.io.xml.adaptee.particulier2.ParticulierItem2ListAdaptee;
 
 public class ParticulierItem2ListAdapteeTest {

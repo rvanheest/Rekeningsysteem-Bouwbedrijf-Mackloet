@@ -4,7 +4,7 @@ import java.util.Currency;
 import java.util.Optional;
 
 import org.rekeningsysteem.application.working.RekeningSplitPane;
-import org.rekeningsysteem.data.particulier2.ParticulierFactuur2;
+import org.rekeningsysteem.data.particulier.ParticulierFactuur2;
 import org.rekeningsysteem.data.util.BtwPercentage;
 import org.rekeningsysteem.io.database.Database;
 import org.rekeningsysteem.properties.PropertiesWorker;

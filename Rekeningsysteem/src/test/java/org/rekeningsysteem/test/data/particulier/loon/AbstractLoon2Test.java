@@ -1,12 +1,12 @@
-package org.rekeningsysteem.test.data.particulier2.loon;
+package org.rekeningsysteem.test.data.particulier.loon;
 
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.rekeningsysteem.data.particulier2.loon.AbstractLoon2;
+import org.rekeningsysteem.data.particulier.loon.AbstractLoon2;
 import org.rekeningsysteem.data.util.Geld;
-import org.rekeningsysteem.test.data.particulier2.ParticulierArtikel2Test;
+import org.rekeningsysteem.test.data.particulier.ParticulierArtikel2Test;
 
 public abstract class AbstractLoon2Test extends ParticulierArtikel2Test {
 

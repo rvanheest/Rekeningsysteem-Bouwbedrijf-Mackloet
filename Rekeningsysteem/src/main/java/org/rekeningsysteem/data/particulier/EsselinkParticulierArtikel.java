@@ -1,8 +1,7 @@
-package org.rekeningsysteem.data.particulier2;
+package org.rekeningsysteem.data.particulier;
 
 import java.util.Objects;
 
-import org.rekeningsysteem.data.particulier.EsselinkArtikel;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.data.util.visitor.ListItemVisitor;
 

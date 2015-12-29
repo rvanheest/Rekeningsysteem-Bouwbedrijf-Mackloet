@@ -2,7 +2,7 @@ package org.rekeningsysteem.ui.particulier2;
 
 import java.util.Currency;
 
-import org.rekeningsysteem.data.particulier2.ParticulierArtikel2Impl;
+import org.rekeningsysteem.data.particulier.ParticulierArtikel2Impl;
 import org.rekeningsysteem.data.util.Geld;
 
 import rx.Observable;

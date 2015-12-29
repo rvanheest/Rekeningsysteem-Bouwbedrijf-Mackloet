@@ -1,4 +1,4 @@
-package org.rekeningsysteem.test.data.particulier2;
+package org.rekeningsysteem.test.data.particulier;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -16,8 +16,8 @@ import java.util.Optional;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.rekeningsysteem.data.particulier2.ParticulierArtikel2;
-import org.rekeningsysteem.data.particulier2.ParticulierFactuur2;
+import org.rekeningsysteem.data.particulier.ParticulierArtikel2;
+import org.rekeningsysteem.data.particulier.ParticulierFactuur2;
 import org.rekeningsysteem.data.util.AbstractFactuur;
 import org.rekeningsysteem.data.util.ItemList;
 import org.rekeningsysteem.data.util.Totalen;

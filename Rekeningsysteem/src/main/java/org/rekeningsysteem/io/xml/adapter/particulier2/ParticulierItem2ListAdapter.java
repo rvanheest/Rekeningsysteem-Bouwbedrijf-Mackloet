@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
-import org.rekeningsysteem.data.particulier2.ParticulierArtikel2;
+import org.rekeningsysteem.data.particulier.ParticulierArtikel2;
 import org.rekeningsysteem.data.util.ItemList;
 import org.rekeningsysteem.io.xml.adaptee.particulier2.ParticulierItem2ListAdaptee;
 

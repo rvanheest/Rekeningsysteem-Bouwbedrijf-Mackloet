@@ -2,7 +2,7 @@ package org.rekeningsysteem.io.xml.adapter.particulier2;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
-import org.rekeningsysteem.data.particulier2.ParticulierFactuur2;
+import org.rekeningsysteem.data.particulier.ParticulierFactuur2;
 import org.rekeningsysteem.data.util.ItemList;
 import org.rekeningsysteem.io.xml.adaptee.particulier2.ParticulierFactuur2Adaptee;
 

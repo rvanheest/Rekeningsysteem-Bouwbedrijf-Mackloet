@@ -1,11 +1,11 @@
-package org.rekeningsysteem.test.data.particulier2.loon;
+package org.rekeningsysteem.test.data.particulier.loon;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.rekeningsysteem.data.particulier2.loon.InstantLoon2;
+import org.rekeningsysteem.data.particulier.loon.InstantLoon2;
 import org.rekeningsysteem.data.util.Geld;
 
 public class InstantLoon2Test extends AbstractLoon2Test {

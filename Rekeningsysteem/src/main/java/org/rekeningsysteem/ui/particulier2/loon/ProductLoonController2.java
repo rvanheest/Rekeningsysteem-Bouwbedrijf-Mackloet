@@ -2,7 +2,7 @@ package org.rekeningsysteem.ui.particulier2.loon;
 
 import java.util.Currency;
 
-import org.rekeningsysteem.data.particulier2.loon.ProductLoon2;
+import org.rekeningsysteem.data.particulier.loon.ProductLoon2;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.properties.PropertiesWorker;
 import org.rekeningsysteem.properties.PropertyModelEnum;

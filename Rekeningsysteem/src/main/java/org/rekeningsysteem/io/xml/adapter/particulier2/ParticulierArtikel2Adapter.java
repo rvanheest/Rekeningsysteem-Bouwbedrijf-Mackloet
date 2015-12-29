@@ -2,11 +2,11 @@ package org.rekeningsysteem.io.xml.adapter.particulier2;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
-import org.rekeningsysteem.data.particulier2.ParticulierArtikel2Impl;
-import org.rekeningsysteem.data.particulier2.EsselinkParticulierArtikel;
-import org.rekeningsysteem.data.particulier2.ParticulierArtikel2;
-import org.rekeningsysteem.data.particulier2.loon.InstantLoon2;
-import org.rekeningsysteem.data.particulier2.loon.ProductLoon2;
+import org.rekeningsysteem.data.particulier.EsselinkParticulierArtikel;
+import org.rekeningsysteem.data.particulier.ParticulierArtikel2;
+import org.rekeningsysteem.data.particulier.ParticulierArtikel2Impl;
+import org.rekeningsysteem.data.particulier.loon.InstantLoon2;
+import org.rekeningsysteem.data.particulier.loon.ProductLoon2;
 import org.rekeningsysteem.io.xml.adaptee.particulier2.ParticulierArtikel2ImplAdaptee;
 import org.rekeningsysteem.io.xml.adaptee.particulier2.EsselinkParticulierArtikelAdaptee;
 import org.rekeningsysteem.io.xml.adaptee.particulier2.ParticulierArtikel2Adaptee;

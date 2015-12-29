@@ -3,7 +3,7 @@ package org.rekeningsysteem.ui.particulier2;
 import java.util.Currency;
 import java.util.Optional;
 
-import org.rekeningsysteem.data.particulier2.ParticulierArtikel2;
+import org.rekeningsysteem.data.particulier.ParticulierArtikel2;
 import org.rekeningsysteem.data.util.BtwPercentage;
 import org.rekeningsysteem.io.database.Database;
 import org.rekeningsysteem.logic.database.ArtikellijstDBInteraction;

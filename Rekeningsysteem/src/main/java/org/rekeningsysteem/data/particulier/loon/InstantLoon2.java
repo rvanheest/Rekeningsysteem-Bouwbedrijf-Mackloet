@@ -1,4 +1,4 @@
-package org.rekeningsysteem.data.particulier2.loon;
+package org.rekeningsysteem.data.particulier.loon;
 
 import java.util.Objects;
 
