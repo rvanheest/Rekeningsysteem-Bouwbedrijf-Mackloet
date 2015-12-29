@@ -8,19 +8,15 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
-import org.rekeningsysteem.data.aangenomen.AangenomenFactuur;
 import org.rekeningsysteem.data.mutaties.MutatiesFactuur;
 import org.rekeningsysteem.data.offerte.Offerte;
-import org.rekeningsysteem.data.particulier.ParticulierFactuur;
 import org.rekeningsysteem.data.particulier2.ParticulierFactuur2;
 import org.rekeningsysteem.data.reparaties.ReparatiesFactuur;
 import org.rekeningsysteem.data.util.AbstractRekening;
 import org.rekeningsysteem.data.util.visitor.RekeningVisitor;
-import org.rekeningsysteem.io.xml.root.AangenomenFactuurRoot;
 import org.rekeningsysteem.io.xml.root.MutatiesFactuurRoot;
 import org.rekeningsysteem.io.xml.root.OfferteRoot;
 import org.rekeningsysteem.io.xml.root.ParticulierFactuur2Root;
-import org.rekeningsysteem.io.xml.root.ParticulierFactuurRoot;
 import org.rekeningsysteem.io.xml.root.ReparatiesFactuurRoot;
 import org.rekeningsysteem.io.xml.root.Root;
 import org.rekeningsysteem.logging.ApplicationLogger;
@@ -63,13 +59,6 @@ public class XmlMakerVisitor implements RekeningVisitor {
 	}
 
 	@Override
-	@Deprecated // TODO delete this
-	public void visit(AangenomenFactuur factuur) throws Exception {
-		Marshaller marshaller = this.map.get(AangenomenFactuurRoot.class);
-		this.save(marshaller, new AangenomenFactuurRoot(), factuur);
-	}
-
-	@Override
 	public void visit(MutatiesFactuur factuur) throws Exception {
 		Marshaller marshaller = this.map.get(MutatiesFactuurRoot.class);
 		this.save(marshaller, new MutatiesFactuurRoot(), factuur);
@@ -79,13 +68,6 @@ public class XmlMakerVisitor implements RekeningVisitor {
 	public void visit(Offerte offerte) throws Exception {
 		Marshaller marshaller = this.map.get(OfferteRoot.class);
 		this.save(marshaller, new OfferteRoot(), offerte);
-	}
-
-	@Override
-	@Deprecated // TODO delete this
-	public void visit(ParticulierFactuur factuur) throws Exception {
-		Marshaller marshaller = this.map.get(ParticulierFactuurRoot.class);
-		this.save(marshaller, new ParticulierFactuurRoot(), factuur);
 	}
 
 	@Override

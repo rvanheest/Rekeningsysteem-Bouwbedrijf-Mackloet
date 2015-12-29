@@ -11,10 +11,8 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import org.apache.commons.io.FileUtils;
-import org.rekeningsysteem.data.aangenomen.AangenomenFactuur;
 import org.rekeningsysteem.data.mutaties.MutatiesFactuur;
 import org.rekeningsysteem.data.offerte.Offerte;
-import org.rekeningsysteem.data.particulier.ParticulierFactuur;
 import org.rekeningsysteem.data.particulier2.ParticulierFactuur2;
 import org.rekeningsysteem.data.reparaties.ReparatiesFactuur;
 import org.rekeningsysteem.data.util.Totalen;
@@ -85,12 +83,6 @@ public class PdfExporterVisitor implements RekeningVisitor {
 	}
 
 	@Override
-	@Deprecated
-	public void visit(AangenomenFactuur factuur) {
-		// TODO delete this
-	}
-
-	@Override
 	public void visit(MutatiesFactuur factuur) throws Exception {
 		Optional<File> templateTex = this.properties.getProperty(PropertyModelEnum.PDF_MUTATIES_TEMPLATE).map(File::new);
 		if (templateTex.isPresent()) {
@@ -104,12 +96,6 @@ public class PdfExporterVisitor implements RekeningVisitor {
 		if (templateTex.isPresent()) {
 			this.general(templateTex.get(), this.convert(offerte));
 		}
-	}
-
-	@Override
-	@Deprecated
-	public void visit(ParticulierFactuur factuur) {
-		// TODO delete this
 	}
 
 	@Override
@@ -164,17 +150,6 @@ public class PdfExporterVisitor implements RekeningVisitor {
 		};
 	}
 
-	@Deprecated // TODO delete this
-	private Consumer<PdfConverter> convert(AangenomenFactuur factuur) {
-		return this.convertOmschrFactuurHeader(factuur.getFactuurHeader())
-				.andThen(converter -> converter.replace("Valuta", factuur.getCurrency().getSymbol()))
-				.andThen(converter -> converter.replace("aangenomenList", factuur.getItemList()
-						.stream()
-						.flatMap(item -> item.accept(this.itemVisitor).stream())
-        				.collect(Collectors.toList())))
-        		.andThen(this.convertTotalen(factuur.getTotalen()));
-	}
-
 	private Consumer<PdfConverter> convert(MutatiesFactuur factuur) {
 		return this.convertFactuurHeader(factuur.getFactuurHeader())
 				.andThen(converter -> converter.replace("Valuta", factuur.getCurrency().getSymbol()))
@@ -189,21 +164,6 @@ public class PdfExporterVisitor implements RekeningVisitor {
 		return this.convertFactuurHeader(offerte.getFactuurHeader())
 				.andThen(converter -> converter.replace("Tekst", offerte.getTekst()))
 				.andThen(converter -> converter.replace("Ondertekenen", "" + offerte.isOndertekenen()));
-	}
-
-	@Deprecated // TODO delete this
-	private Consumer<PdfConverter> convert(ParticulierFactuur factuur) {
-		return this.convertOmschrFactuurHeader(factuur.getFactuurHeader())
-				.andThen(converter -> converter.replace("Valuta", factuur.getCurrency().getSymbol()))
-				.andThen(converter -> converter.replace("artikelList", factuur.getItemList()
-						.stream()
-						.flatMap(artikel -> artikel.accept(this.itemVisitor).stream())
-						.collect(Collectors.toList())))
-				.andThen(converter -> converter.replace("loonList", factuur.getLoonList()
-						.stream()
-						.flatMap(loon -> loon.accept(this.itemVisitor).stream())
-						.collect(Collectors.toList())))
-				.andThen(this.convertTotalen(factuur.getTotalen()));
 	}
 
 	private Consumer<PdfConverter> convert(ParticulierFactuur2 factuur) {
