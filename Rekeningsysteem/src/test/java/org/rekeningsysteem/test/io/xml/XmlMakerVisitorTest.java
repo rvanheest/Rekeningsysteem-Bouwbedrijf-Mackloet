@@ -23,7 +23,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.rekeningsysteem.data.mutaties.MutatiesFactuur;
 import org.rekeningsysteem.data.offerte.Offerte;
-import org.rekeningsysteem.data.particulier.ParticulierFactuur2;
+import org.rekeningsysteem.data.particulier.ParticulierFactuur;
 import org.rekeningsysteem.data.reparaties.ReparatiesFactuur;
 import org.rekeningsysteem.data.util.ItemList;
 import org.rekeningsysteem.data.util.header.Debiteur;
@@ -32,7 +32,7 @@ import org.rekeningsysteem.data.util.header.OmschrFactuurHeader;
 import org.rekeningsysteem.io.xml.XmlMakerVisitor;
 import org.rekeningsysteem.io.xml.root.MutatiesFactuurRoot;
 import org.rekeningsysteem.io.xml.root.OfferteRoot;
-import org.rekeningsysteem.io.xml.root.ParticulierFactuur2Root;
+import org.rekeningsysteem.io.xml.root.ParticulierFactuurRoot;
 import org.rekeningsysteem.io.xml.root.ReparatiesFactuurRoot;
 import org.rekeningsysteem.io.xml.root.Root;
 
@@ -55,7 +55,7 @@ public class XmlMakerVisitorTest {
 
 		this.marshallerMap.put(MutatiesFactuurRoot.class, this.mockedMarshaller);
 		this.marshallerMap.put(OfferteRoot.class, this.mockedMarshaller);
-		this.marshallerMap.put(ParticulierFactuur2Root.class, this.mockedMarshaller);
+		this.marshallerMap.put(ParticulierFactuurRoot.class, this.mockedMarshaller);
 		this.marshallerMap.put(ReparatiesFactuurRoot.class, this.mockedMarshaller);
 
 		this.visitor.setSaveLocation(this.mockedFile);
@@ -89,7 +89,7 @@ public class XmlMakerVisitorTest {
 
 	@Test
 	public void testVisitParticulierFactuur() throws Exception {
-		ParticulierFactuur2 factuur = new ParticulierFactuur2(this.testOmschrHeader,
+		ParticulierFactuur factuur = new ParticulierFactuur(this.testOmschrHeader,
 				Currency.getInstance(Locale.US), new ItemList<>());
 		this.visitor.visit(factuur);
 

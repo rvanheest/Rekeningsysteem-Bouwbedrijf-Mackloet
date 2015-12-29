@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.io.FileUtils;
 import org.rekeningsysteem.data.mutaties.MutatiesFactuur;
 import org.rekeningsysteem.data.offerte.Offerte;
-import org.rekeningsysteem.data.particulier.ParticulierFactuur2;
+import org.rekeningsysteem.data.particulier.ParticulierFactuur;
 import org.rekeningsysteem.data.reparaties.ReparatiesFactuur;
 import org.rekeningsysteem.data.util.Totalen;
 import org.rekeningsysteem.data.util.header.Debiteur;
@@ -99,7 +99,7 @@ public class PdfExporterVisitor implements RekeningVisitor {
 	}
 
 	@Override
-	public void visit(ParticulierFactuur2 factuur) throws Exception {
+	public void visit(ParticulierFactuur factuur) throws Exception {
 		Optional<File> templateTex = this.properties.getProperty(PropertyModelEnum.PDF_PARTICULIER_TEMPLATE).map(File::new);
 		if (templateTex.isPresent()) {
 			this.general(templateTex.get(), this.convert(factuur));
@@ -166,7 +166,7 @@ public class PdfExporterVisitor implements RekeningVisitor {
 				.andThen(converter -> converter.replace("Ondertekenen", "" + offerte.isOndertekenen()));
 	}
 
-	private Consumer<PdfConverter> convert(ParticulierFactuur2 factuur) {
+	private Consumer<PdfConverter> convert(ParticulierFactuur factuur) {
 		return this.convertOmschrFactuurHeader(factuur.getFactuurHeader())
 				.andThen(converter -> converter.replace("Valuta", factuur.getCurrency().getSymbol()))
 				.andThen(converter -> converter.replace("artikelList", factuur.getItemList()

@@ -5,13 +5,13 @@ import java.time.LocalDate;
 import java.util.Currency;
 
 import org.rekeningsysteem.data.particulier.EsselinkArtikel;
-import org.rekeningsysteem.data.particulier.EsselinkParticulierArtikel;
-import org.rekeningsysteem.data.particulier.ParticulierArtikel2;
-import org.rekeningsysteem.data.particulier.ParticulierArtikel2Impl;
-import org.rekeningsysteem.data.particulier.ParticulierFactuur2;
-import org.rekeningsysteem.data.particulier.loon.AbstractLoon2;
-import org.rekeningsysteem.data.particulier.loon.InstantLoon2;
-import org.rekeningsysteem.data.particulier.loon.ProductLoon2;
+import org.rekeningsysteem.data.particulier.GebruiktEsselinkArtikel;
+import org.rekeningsysteem.data.particulier.ParticulierArtikel;
+import org.rekeningsysteem.data.particulier.AnderArtikel;
+import org.rekeningsysteem.data.particulier.ParticulierFactuur;
+import org.rekeningsysteem.data.particulier.loon.AbstractLoon;
+import org.rekeningsysteem.data.particulier.loon.InstantLoon;
+import org.rekeningsysteem.data.particulier.loon.ProductLoon;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.data.util.ItemList;
 import org.rekeningsysteem.data.util.header.Debiteur;
@@ -19,8 +19,8 @@ import org.rekeningsysteem.data.util.header.OmschrFactuurHeader;
 
 public class ParticulierFactuurIntegrationTest extends AbstractRekeningIntegrationTest {
 
-	protected ItemList<ParticulierArtikel2> addArtikels() {
-		ItemList<ParticulierArtikel2> list = new ItemList<>();
+	protected ItemList<ParticulierArtikel> addArtikels() {
+		ItemList<ParticulierArtikel> list = new ItemList<>();
 
 		EsselinkArtikel sub1 = new EsselinkArtikel("2018021117", "Product 1", 1, "Zak",
 				new Geld(5.16));
@@ -37,31 +37,31 @@ public class ParticulierFactuurIntegrationTest extends AbstractRekeningIntegrati
 		EsselinkArtikel sub7 = new EsselinkArtikel("2009200105", "Product 7", 1, "Stuks",
 				new Geld(7.44));
 
-		list.add(new EsselinkParticulierArtikel(sub1, 8, 21));
-		list.add(new EsselinkParticulierArtikel(sub2, 1, 21));
-		list.add(new EsselinkParticulierArtikel(sub3, 1, 21));
-		list.add(new EsselinkParticulierArtikel(sub4, 1, 21));
-		list.add(new EsselinkParticulierArtikel(sub5, 1, 21));
-		list.add(new EsselinkParticulierArtikel(sub6, 1, 21));
-		list.add(new EsselinkParticulierArtikel(sub7, 1, 21));
-		list.add(new ParticulierArtikel2Impl("Stucloper + trapfolie", new Geld(15.00), 21));
-		list.add(new ParticulierArtikel2Impl("Kitwerk", new Geld(149.50), 21));
+		list.add(new GebruiktEsselinkArtikel(sub1, 8, 21));
+		list.add(new GebruiktEsselinkArtikel(sub2, 1, 21));
+		list.add(new GebruiktEsselinkArtikel(sub3, 1, 21));
+		list.add(new GebruiktEsselinkArtikel(sub4, 1, 21));
+		list.add(new GebruiktEsselinkArtikel(sub5, 1, 21));
+		list.add(new GebruiktEsselinkArtikel(sub6, 1, 21));
+		list.add(new GebruiktEsselinkArtikel(sub7, 1, 21));
+		list.add(new AnderArtikel("Stucloper + trapfolie", new Geld(15.00), 21));
+		list.add(new AnderArtikel("Kitwerk", new Geld(149.50), 21));
 
 		return list;
 	}
 
-	protected ItemList<AbstractLoon2> addLoon() {
-		ItemList<AbstractLoon2> list = new ItemList<>();
+	protected ItemList<AbstractLoon> addLoon() {
+		ItemList<AbstractLoon> list = new ItemList<>();
 
-		list.add(new ProductLoon2("Uurloon à 38.50", 25, new Geld(38.50), 6));
-		list.add(new ProductLoon2("test123", 12, new Geld(12.50), 6));
-		list.add(new InstantLoon2("foobar", new Geld(40.00), 6));
+		list.add(new ProductLoon("Uurloon à 38.50", 25, new Geld(38.50), 6));
+		list.add(new ProductLoon("test123", 12, new Geld(12.50), 6));
+		list.add(new InstantLoon("foobar", new Geld(40.00), 6));
 
 		return list;
 	}
 
 	@Override
-	protected ParticulierFactuur2 makeRekening() {
+	protected ParticulierFactuur makeRekening() {
 		Debiteur debiteur = new Debiteur("Name", "Street", "Number", "Zipcode",
 				"Place");
 		LocalDate datum = LocalDate.of(2011, 4, 2);
@@ -71,10 +71,10 @@ public class ParticulierFactuurIntegrationTest extends AbstractRekeningIntegrati
 		OmschrFactuurHeader header = new OmschrFactuurHeader(debiteur, datum, factuurnummer,
 				omschrijving);
 
-		ItemList<ParticulierArtikel2> itemList = this.addArtikels();
+		ItemList<ParticulierArtikel> itemList = this.addArtikels();
 		itemList.addAll(this.addLoon());
 
-		return new ParticulierFactuur2(header, Currency.getInstance("EUR"), itemList);
+		return new ParticulierFactuur(header, Currency.getInstance("EUR"), itemList);
 	}
 
 	@Override

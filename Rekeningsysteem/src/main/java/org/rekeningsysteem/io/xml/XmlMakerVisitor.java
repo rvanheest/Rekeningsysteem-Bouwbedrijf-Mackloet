@@ -10,13 +10,13 @@ import javax.xml.bind.Marshaller;
 
 import org.rekeningsysteem.data.mutaties.MutatiesFactuur;
 import org.rekeningsysteem.data.offerte.Offerte;
-import org.rekeningsysteem.data.particulier.ParticulierFactuur2;
+import org.rekeningsysteem.data.particulier.ParticulierFactuur;
 import org.rekeningsysteem.data.reparaties.ReparatiesFactuur;
 import org.rekeningsysteem.data.util.AbstractRekening;
 import org.rekeningsysteem.data.util.visitor.RekeningVisitor;
 import org.rekeningsysteem.io.xml.root.MutatiesFactuurRoot;
 import org.rekeningsysteem.io.xml.root.OfferteRoot;
-import org.rekeningsysteem.io.xml.root.ParticulierFactuur2Root;
+import org.rekeningsysteem.io.xml.root.ParticulierFactuurRoot;
 import org.rekeningsysteem.io.xml.root.ReparatiesFactuurRoot;
 import org.rekeningsysteem.io.xml.root.Root;
 import org.rekeningsysteem.logging.ApplicationLogger;
@@ -34,8 +34,8 @@ public class XmlMakerVisitor implements RekeningVisitor {
 					JAXBContext.newInstance(MutatiesFactuurRoot.class).createMarshaller());
 			this.map.put(OfferteRoot.class,
 					JAXBContext.newInstance(OfferteRoot.class).createMarshaller());
-			this.map.put(ParticulierFactuur2Root.class,
-					JAXBContext.newInstance(ParticulierFactuur2Root.class).createMarshaller());
+			this.map.put(ParticulierFactuurRoot.class,
+					JAXBContext.newInstance(ParticulierFactuurRoot.class).createMarshaller());
 			this.map.put(ReparatiesFactuurRoot.class,
 					JAXBContext.newInstance(ReparatiesFactuurRoot.class).createMarshaller());
 		}
@@ -71,9 +71,9 @@ public class XmlMakerVisitor implements RekeningVisitor {
 	}
 
 	@Override
-	public void visit(ParticulierFactuur2 factuur) throws Exception {
-		Marshaller marshaller = this.map.get(ParticulierFactuur2Root.class);
-		this.save(marshaller, new ParticulierFactuur2Root(), factuur);
+	public void visit(ParticulierFactuur factuur) throws Exception {
+		Marshaller marshaller = this.map.get(ParticulierFactuurRoot.class);
+		this.save(marshaller, new ParticulierFactuurRoot(), factuur);
 	}
 
 	@Override

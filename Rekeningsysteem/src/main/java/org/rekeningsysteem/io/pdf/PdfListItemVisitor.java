@@ -6,10 +6,10 @@ import java.util.List;
 
 import org.rekeningsysteem.data.mutaties.MutatiesBon;
 import org.rekeningsysteem.data.particulier.EsselinkArtikel;
-import org.rekeningsysteem.data.particulier.EsselinkParticulierArtikel;
-import org.rekeningsysteem.data.particulier.ParticulierArtikel2Impl;
-import org.rekeningsysteem.data.particulier.loon.InstantLoon2;
-import org.rekeningsysteem.data.particulier.loon.ProductLoon2;
+import org.rekeningsysteem.data.particulier.GebruiktEsselinkArtikel;
+import org.rekeningsysteem.data.particulier.AnderArtikel;
+import org.rekeningsysteem.data.particulier.loon.InstantLoon;
+import org.rekeningsysteem.data.particulier.loon.ProductLoon;
 import org.rekeningsysteem.data.reparaties.ReparatiesBon;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.data.util.visitor.ListItemVisitor;
@@ -32,7 +32,7 @@ public class PdfListItemVisitor implements ListItemVisitor<List<List<String>>> {
 	}
 
 	@Override
-	public List<List<String>> visit(EsselinkParticulierArtikel item) {
+	public List<List<String>> visit(GebruiktEsselinkArtikel item) {
 		EsselinkArtikel artikel = item.getArtikel();
 		Geld materiaal = item.getMateriaal();
 
@@ -52,7 +52,7 @@ public class PdfListItemVisitor implements ListItemVisitor<List<List<String>>> {
 	}
 
 	@Override
-	public List<List<String>> visit(ParticulierArtikel2Impl item) {
+	public List<List<String>> visit(AnderArtikel item) {
 		Geld materiaal = item.getMateriaal();
 
 		if (!materiaal.isZero()) {
@@ -82,7 +82,7 @@ public class PdfListItemVisitor implements ListItemVisitor<List<List<String>>> {
 	}
 
 	@Override
-	public List<List<String>> visit(InstantLoon2 item) {
+	public List<List<String>> visit(InstantLoon item) {
 		Geld loon = item.getLoon();
 
 		if (!loon.isZero()) {
@@ -96,7 +96,7 @@ public class PdfListItemVisitor implements ListItemVisitor<List<List<String>>> {
 	}
 
 	@Override
-	public List<List<String>> visit(ProductLoon2 item) {
+	public List<List<String>> visit(ProductLoon item) {
 		Geld loon = item.getLoon();
 
 		if (!loon.isZero()) {

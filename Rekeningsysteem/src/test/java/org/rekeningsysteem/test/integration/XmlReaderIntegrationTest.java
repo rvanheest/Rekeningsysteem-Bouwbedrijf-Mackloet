@@ -8,7 +8,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.rekeningsysteem.data.mutaties.MutatiesFactuur;
 import org.rekeningsysteem.data.offerte.Offerte;
-import org.rekeningsysteem.data.particulier.ParticulierFactuur2;
+import org.rekeningsysteem.data.particulier.ParticulierFactuur;
 import org.rekeningsysteem.data.reparaties.ReparatiesFactuur;
 import org.rekeningsysteem.data.util.AbstractRekening;
 import org.rekeningsysteem.io.FactuurLoader;
@@ -130,7 +130,7 @@ public class XmlReaderIntegrationTest {
         		.map(AbstractRekening::getClass)
         		.subscribe(this.testObserver);
         
-        this.testObserver.assertValue(ParticulierFactuur2.class);
+        this.testObserver.assertValue(ParticulierFactuur.class);
         this.testObserver.assertNoErrors();
         this.testObserver.assertCompleted();
 	}
@@ -174,7 +174,7 @@ public class XmlReaderIntegrationTest {
         		.map(AbstractRekening::getClass)
         		.subscribe(this.testObserver);
         
-        this.testObserver.assertValue(ParticulierFactuur2.class);
+        this.testObserver.assertValue(ParticulierFactuur.class);
         this.testObserver.assertNoErrors();
         this.testObserver.assertCompleted();
 	}
@@ -218,7 +218,7 @@ public class XmlReaderIntegrationTest {
         		.map(AbstractRekening::getClass)
         		.subscribe(this.testObserver);
         
-        this.testObserver.assertValue(ParticulierFactuur2.class);
+        this.testObserver.assertValue(ParticulierFactuur.class);
         this.testObserver.assertNoErrors();
         this.testObserver.assertCompleted();
 	}
@@ -317,7 +317,7 @@ public class XmlReaderIntegrationTest {
         		.map(AbstractRekening::getClass)
         		.subscribe(this.testObserver);
 
-		this.testObserver.assertValue(ParticulierFactuur2.class);
+		this.testObserver.assertValue(ParticulierFactuur.class);
         this.testObserver.assertNoErrors();
         this.testObserver.assertCompleted();
 	}
@@ -449,7 +449,7 @@ public class XmlReaderIntegrationTest {
         		.map(AbstractRekening::getClass)
         		.subscribe(this.testObserver);
         
-        this.testObserver.assertValue(ParticulierFactuur2.class);
+        this.testObserver.assertValue(ParticulierFactuur.class);
         this.testObserver.assertNoErrors();
         this.testObserver.assertCompleted();
 	}
@@ -548,7 +548,7 @@ public class XmlReaderIntegrationTest {
         		.map(AbstractRekening::getClass)
         		.subscribe(this.testObserver);
         
-        this.testObserver.assertValue(ParticulierFactuur2.class);
+        this.testObserver.assertValue(ParticulierFactuur.class);
         this.testObserver.assertNoErrors();
         this.testObserver.assertCompleted();
 	}
@@ -559,7 +559,7 @@ public class XmlReaderIntegrationTest {
         		.map(AbstractRekening::getClass)
         		.subscribe(this.testObserver);
         
-        this.testObserver.assertValue(ParticulierFactuur2.class);
+        this.testObserver.assertValue(ParticulierFactuur.class);
         this.testObserver.assertNoErrors();
         this.testObserver.assertCompleted();
 	}
@@ -680,7 +680,7 @@ public class XmlReaderIntegrationTest {
         		.map(AbstractRekening::getClass)
         		.subscribe(this.testObserver);
         
-        this.testObserver.assertValue(ParticulierFactuur2.class);
+        this.testObserver.assertValue(ParticulierFactuur.class);
         this.testObserver.assertNoErrors();
         this.testObserver.assertCompleted();
 	}
@@ -867,7 +867,7 @@ public class XmlReaderIntegrationTest {
         		.map(AbstractRekening::getClass)
         		.subscribe(this.testObserver);
         
-        this.testObserver.assertValue(ParticulierFactuur2.class);
+        this.testObserver.assertValue(ParticulierFactuur.class);
         this.testObserver.assertNoErrors();
         this.testObserver.assertCompleted();
 	}

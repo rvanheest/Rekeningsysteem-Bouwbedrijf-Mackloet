@@ -28,7 +28,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.rekeningsysteem.data.mutaties.MutatiesFactuur;
 import org.rekeningsysteem.data.offerte.Offerte;
-import org.rekeningsysteem.data.particulier.ParticulierFactuur2;
+import org.rekeningsysteem.data.particulier.ParticulierFactuur;
 import org.rekeningsysteem.data.reparaties.ReparatiesFactuur;
 import org.rekeningsysteem.data.util.AbstractRekening;
 import org.rekeningsysteem.data.util.ItemList;
@@ -38,7 +38,7 @@ import org.rekeningsysteem.data.util.header.OmschrFactuurHeader;
 import org.rekeningsysteem.io.xml.XmlReader;
 import org.rekeningsysteem.io.xml.root.MutatiesFactuurRoot;
 import org.rekeningsysteem.io.xml.root.OfferteRoot;
-import org.rekeningsysteem.io.xml.root.ParticulierFactuur2Root;
+import org.rekeningsysteem.io.xml.root.ParticulierFactuurRoot;
 import org.rekeningsysteem.io.xml.root.ReparatiesFactuurRoot;
 import org.rekeningsysteem.io.xml.root.Root;
 import org.w3c.dom.Document;
@@ -64,7 +64,7 @@ public class XmlReaderTest {
 
 		this.map.put(MutatiesFactuurRoot.class, this.unmarshaller);
 		this.map.put(OfferteRoot.class, this.unmarshaller);
-		this.map.put(ParticulierFactuur2Root.class, this.unmarshaller);
+		this.map.put(ParticulierFactuurRoot.class, this.unmarshaller);
 		this.map.put(ReparatiesFactuurRoot.class, this.unmarshaller);
 	}
 
@@ -141,8 +141,8 @@ public class XmlReaderTest {
 		Element factuur = mock(Element.class);
 		String type = "ParticulierFactuur";
 		String version = "4";
-		Root<ParticulierFactuur2> root = mock(Root.class);
-		ParticulierFactuur2 rekening = new ParticulierFactuur2(new OmschrFactuurHeader(
+		Root<ParticulierFactuur> root = mock(Root.class);
+		ParticulierFactuur rekening = new ParticulierFactuur(new OmschrFactuurHeader(
 				new Debiteur("", "", "", "", "", ""), LocalDate.now(), "", ""),
 				Currency.getInstance(Locale.US), new ItemList<>());
 
