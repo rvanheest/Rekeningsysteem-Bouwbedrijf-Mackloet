@@ -10,6 +10,7 @@ import org.rekeningsysteem.ui.list.AbstractListItemController;
 
 import rx.Observable;
 
+@Deprecated
 public class AangenomenListItemController extends AbstractListItemController<AangenomenListItem> {
 
 	public AangenomenListItemController(Currency currency, BtwPercentage defaultBtw) {

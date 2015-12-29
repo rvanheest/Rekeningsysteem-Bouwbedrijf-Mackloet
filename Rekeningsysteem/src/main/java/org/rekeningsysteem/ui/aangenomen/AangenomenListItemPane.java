@@ -18,6 +18,7 @@ import org.rekeningsysteem.ui.textfields.PercentageField;
 
 import rx.Observable;
 
+@Deprecated
 public class AangenomenListItemPane extends ItemPane {
 
 	private final TextField omschrTF = new TextField();

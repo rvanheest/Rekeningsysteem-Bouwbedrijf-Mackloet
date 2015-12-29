@@ -2,11 +2,13 @@ package org.rekeningsysteem.test.io.xml.adaptee.particulier;
 
 import static org.junit.Assert.assertEquals;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.rekeningsysteem.data.particulier.EsselinkArtikel;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.io.xml.adaptee.particulier.GebruiktEsselinkArtikelAdaptee;
 
+@Ignore
 @Deprecated
 public class GebruiktEsselinkArtikelAdapteeTest extends ParticulierArtikelAdapteeTest {
 

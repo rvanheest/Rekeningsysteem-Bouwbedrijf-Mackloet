@@ -3,10 +3,13 @@ package org.rekeningsysteem.test.io.xml.adaptee.aangenomen;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.io.xml.adaptee.aangenomen.AangenomenListItemAdaptee;
 
+@Ignore
+@Deprecated
 public class AangenomenListItemAdapteeTest {
 
 	private AangenomenListItemAdaptee adaptee;

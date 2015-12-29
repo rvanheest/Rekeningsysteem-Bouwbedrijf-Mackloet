@@ -13,6 +13,7 @@ import org.rekeningsysteem.ui.aangenomen.AangenomenListPane.AangenomenModel;
 import org.rekeningsysteem.ui.list.AbstractListPane;
 import org.rekeningsysteem.ui.list.MoneyCell;
 
+@Deprecated
 public class AangenomenListPane extends AbstractListPane<AangenomenModel> {
 
 	public AangenomenListPane() {

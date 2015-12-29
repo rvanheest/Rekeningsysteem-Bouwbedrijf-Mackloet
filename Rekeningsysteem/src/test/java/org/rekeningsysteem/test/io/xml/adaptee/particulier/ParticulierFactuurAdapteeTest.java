@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.util.Currency;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.rekeningsysteem.data.particulier.ParticulierArtikel;
 import org.rekeningsysteem.data.util.ItemList;
@@ -14,6 +15,7 @@ import org.rekeningsysteem.data.util.header.OmschrFactuurHeader;
 import org.rekeningsysteem.data.util.loon.AbstractLoon;
 import org.rekeningsysteem.io.xml.adaptee.particulier.ParticulierFactuurAdaptee;
 
+@Ignore
 @Deprecated
 public class ParticulierFactuurAdapteeTest {
 

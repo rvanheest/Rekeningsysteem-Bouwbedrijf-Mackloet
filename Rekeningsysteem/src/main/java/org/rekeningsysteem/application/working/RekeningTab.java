@@ -6,7 +6,6 @@ import java.util.Optional;
 
 import javafx.scene.control.Tab;
 
-import org.rekeningsysteem.data.aangenomen.AangenomenFactuur;
 import org.rekeningsysteem.data.mutaties.MutatiesFactuur;
 import org.rekeningsysteem.data.offerte.Offerte;
 import org.rekeningsysteem.data.particulier2.ParticulierFactuur2;
@@ -17,7 +16,6 @@ import org.rekeningsysteem.io.database.Database;
 import org.rekeningsysteem.logic.database.DebiteurDBInteraction;
 import org.rekeningsysteem.properties.PropertiesWorker;
 import org.rekeningsysteem.ui.AbstractRekeningController;
-import org.rekeningsysteem.ui.aangenomen.AangenomenController;
 import org.rekeningsysteem.ui.mutaties.MutatiesController;
 import org.rekeningsysteem.ui.offerte.OfferteController;
 import org.rekeningsysteem.ui.particulier2.Particulier2Controller;
@@ -94,8 +92,6 @@ public class RekeningTab extends Tab {
 			PropertiesWorker properties = PropertiesWorker.getInstance();
 
 			return ioWorker.load(file).publish(f -> {
-				Observable<AangenomenController> aangenomen = f.ofType(AangenomenFactuur.class)
-						.map(fact -> new AangenomenController(fact, properties, database));
 				Observable<MutatiesController> mutaties = f.ofType(MutatiesFactuur.class)
 						.map(fact -> new MutatiesController(fact, database));
 				Observable<OfferteController> offerte = f.ofType(Offerte.class)
@@ -105,7 +101,7 @@ public class RekeningTab extends Tab {
 				Observable<ReparatiesController> reparaties = f.ofType(ReparatiesFactuur.class)
 						.map(fact -> new ReparatiesController(fact, database));
 
-				return Observable.merge(aangenomen, mutaties, offerte, particulier, reparaties);
+				return Observable.merge(mutaties, offerte, particulier, reparaties);
 			}).map(c -> new RekeningTab(file.getName(), c, file, database)).single();
 		}
 		return Observable.empty();

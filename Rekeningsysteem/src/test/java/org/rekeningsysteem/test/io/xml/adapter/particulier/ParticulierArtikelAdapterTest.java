@@ -3,6 +3,7 @@ package org.rekeningsysteem.test.io.xml.adapter.particulier;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.rekeningsysteem.data.particulier.AnderArtikel;
 import org.rekeningsysteem.data.particulier.EsselinkArtikel;
@@ -10,6 +11,7 @@ import org.rekeningsysteem.data.particulier.GebruiktEsselinkArtikel;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.io.xml.adapter.particulier.ParticulierArtikelAdapter;
 
+@Ignore
 @Deprecated
 public class ParticulierArtikelAdapterTest {
 

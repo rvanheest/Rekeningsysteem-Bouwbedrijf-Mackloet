@@ -6,6 +6,7 @@ import org.rekeningsysteem.data.aangenomen.AangenomenFactuur;
 import org.rekeningsysteem.data.util.ItemList;
 import org.rekeningsysteem.io.xml.adaptee.aangenomen.AangenomenFactuurAdaptee;
 
+@Deprecated
 public class AangenomenFactuurAdapter extends
 		XmlAdapter<AangenomenFactuurAdaptee, AangenomenFactuur> {
 

@@ -3,12 +3,15 @@ package org.rekeningsysteem.test.io.xml.adapter.aangenomen;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.rekeningsysteem.data.aangenomen.AangenomenListItem;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.data.util.ItemList;
 import org.rekeningsysteem.io.xml.adapter.aangenomen.AangenomenItemListAdapter;
 
+@Ignore
+@Deprecated
 public class AangenomenItemListAdapterTest {
 
 	private AangenomenItemListAdapter adapter;

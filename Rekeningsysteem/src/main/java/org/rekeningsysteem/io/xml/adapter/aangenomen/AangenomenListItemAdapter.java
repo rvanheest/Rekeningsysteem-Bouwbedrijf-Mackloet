@@ -5,6 +5,7 @@ import javax.xml.bind.annotation.adapters.XmlAdapter;
 import org.rekeningsysteem.data.aangenomen.AangenomenListItem;
 import org.rekeningsysteem.io.xml.adaptee.aangenomen.AangenomenListItemAdaptee;
 
+@Deprecated
 public class AangenomenListItemAdapter extends
 		XmlAdapter<AangenomenListItemAdaptee, AangenomenListItem> {
 

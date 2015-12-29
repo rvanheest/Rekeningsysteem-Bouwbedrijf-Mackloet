@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.util.Currency;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.rekeningsysteem.data.particulier.AnderArtikel;
 import org.rekeningsysteem.data.particulier.EsselinkArtikel;
@@ -20,6 +21,7 @@ import org.rekeningsysteem.data.util.loon.AbstractLoon;
 import org.rekeningsysteem.data.util.loon.ProductLoon;
 import org.rekeningsysteem.io.xml.root.ParticulierFactuurRoot;
 
+@Ignore
 @Deprecated
 public class ParticulierFactuurRootTest {
 

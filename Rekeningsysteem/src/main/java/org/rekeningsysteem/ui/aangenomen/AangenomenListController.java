@@ -11,6 +11,7 @@ import org.rekeningsysteem.data.util.ItemList;
 import org.rekeningsysteem.ui.aangenomen.AangenomenListPane.AangenomenModel;
 import org.rekeningsysteem.ui.list.AbstractListController;
 
+@Deprecated
 public class AangenomenListController extends AbstractListController<AangenomenListItem, AangenomenModel> {
 
 	public AangenomenListController(Currency currency, BtwPercentage defaultBtw) {

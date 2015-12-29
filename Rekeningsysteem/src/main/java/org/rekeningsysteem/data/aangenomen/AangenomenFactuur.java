@@ -7,6 +7,7 @@ import org.rekeningsysteem.data.util.ItemList;
 import org.rekeningsysteem.data.util.header.OmschrFactuurHeader;
 import org.rekeningsysteem.data.util.visitor.RekeningVisitor;
 
+@Deprecated
 public class AangenomenFactuur extends AbstractFactuur<AangenomenListItem> {
 
 	public AangenomenFactuur(OmschrFactuurHeader header, Currency currency,

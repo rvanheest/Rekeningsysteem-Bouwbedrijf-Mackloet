@@ -8,6 +8,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.rekeningsysteem.data.aangenomen.AangenomenListItem;
 import org.rekeningsysteem.io.xml.adapter.aangenomen.AangenomenListItemAdapter;
 
+@Deprecated
 public class AangenomenItemListAdaptee {
 
 	private List<AangenomenListItem> list;

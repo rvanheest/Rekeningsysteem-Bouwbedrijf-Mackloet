@@ -7,6 +7,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.io.xml.adapter.util.GeldAdapter;
 
+@Deprecated
 @XmlType(propOrder = { "omschrijving", "loon", "loonBtwPercentage", "materiaal",
 		"materiaalBtwPercentage" })
 public class AangenomenListItemAdaptee {

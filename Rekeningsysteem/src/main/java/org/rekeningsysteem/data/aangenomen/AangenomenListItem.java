@@ -6,6 +6,7 @@ import org.rekeningsysteem.data.util.BtwListItem;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.data.util.visitor.ListItemVisitor;
 
+@Deprecated
 public final class AangenomenListItem implements BtwListItem {
 
 	private final String omschrijving;

@@ -22,12 +22,10 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.soap.Node;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.rekeningsysteem.data.aangenomen.AangenomenFactuur;
 import org.rekeningsysteem.data.mutaties.MutatiesFactuur;
 import org.rekeningsysteem.data.offerte.Offerte;
 import org.rekeningsysteem.data.particulier2.ParticulierFactuur2;
@@ -38,7 +36,6 @@ import org.rekeningsysteem.data.util.header.Debiteur;
 import org.rekeningsysteem.data.util.header.FactuurHeader;
 import org.rekeningsysteem.data.util.header.OmschrFactuurHeader;
 import org.rekeningsysteem.io.xml.XmlReader;
-import org.rekeningsysteem.io.xml.root.AangenomenFactuurRoot;
 import org.rekeningsysteem.io.xml.root.MutatiesFactuurRoot;
 import org.rekeningsysteem.io.xml.root.OfferteRoot;
 import org.rekeningsysteem.io.xml.root.ParticulierFactuur2Root;
@@ -65,44 +62,10 @@ public class XmlReaderTest {
 		this.reader = new XmlReader(this.map, this.builder);
 		this.testObserver = new TestSubscriber<>();
 
-		this.map.put(AangenomenFactuurRoot.class, this.unmarshaller);
 		this.map.put(MutatiesFactuurRoot.class, this.unmarshaller);
 		this.map.put(OfferteRoot.class, this.unmarshaller);
 		this.map.put(ParticulierFactuur2Root.class, this.unmarshaller);
 		this.map.put(ReparatiesFactuurRoot.class, this.unmarshaller);
-	}
-
-	@Ignore // TODO Remove test
-	@Test
-	@SuppressWarnings("unchecked")
-	public void testLoadAangenomenFactuur() throws SAXException, IOException, JAXBException {
-		File file = mock(File.class);
-		Document doc = mock(Document.class);
-		Element docElem = mock(Element.class);
-		NodeList nodeList = mock(NodeList.class);
-		Element factuur = mock(Element.class);
-		String type = "AangenomenFactuur";
-		String version = "4";
-		Root<AangenomenFactuur> root = mock(Root.class);
-		AangenomenFactuur rekening = new AangenomenFactuur(new OmschrFactuurHeader(
-				new Debiteur("", "", "", "", "", ""), LocalDate.now(), "", ""),
-				Currency.getInstance(Locale.US), new ItemList<>());
-
-		when(this.builder.parse((File) anyObject())).thenReturn(doc);
-		when(doc.getDocumentElement()).thenReturn(docElem);
-		when(doc.getElementsByTagName(anyString())).thenReturn(nodeList);
-		when(nodeList.item(anyInt())).thenReturn(factuur);
-		when(factuur.getAttribute(eq("type"))).thenReturn(type);
-		when(factuur.getAttribute(eq("version"))).thenReturn(version);
-		when(this.unmarshaller.unmarshal((Node) anyObject())).thenReturn(root);
-		when(root.getRekening()).thenReturn(rekening);
-
-		this.reader.load(file).subscribe(this.testObserver);
-
-		this.testObserver.assertValue(rekening);
-		this.testObserver.assertNoErrors();
-		this.testObserver.assertCompleted();
-		verify(this.unmarshaller).unmarshal(eq(doc));
 	}
 
 	@Test

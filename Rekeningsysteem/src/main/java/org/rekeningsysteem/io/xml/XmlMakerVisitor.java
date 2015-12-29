@@ -34,14 +34,10 @@ public class XmlMakerVisitor implements RekeningVisitor {
 		this.map = new HashMap<>();
 
 		try {
-			this.map.put(AangenomenFactuurRoot.class,
-					JAXBContext.newInstance(AangenomenFactuurRoot.class).createMarshaller());
 			this.map.put(MutatiesFactuurRoot.class,
 					JAXBContext.newInstance(MutatiesFactuurRoot.class).createMarshaller());
 			this.map.put(OfferteRoot.class,
 					JAXBContext.newInstance(OfferteRoot.class).createMarshaller());
-			this.map.put(ParticulierFactuurRoot.class,
-					JAXBContext.newInstance(ParticulierFactuurRoot.class).createMarshaller());
 			this.map.put(ParticulierFactuur2Root.class,
 					JAXBContext.newInstance(ParticulierFactuur2Root.class).createMarshaller());
 			this.map.put(ReparatiesFactuurRoot.class,
@@ -67,6 +63,7 @@ public class XmlMakerVisitor implements RekeningVisitor {
 	}
 
 	@Override
+	@Deprecated // TODO delete this
 	public void visit(AangenomenFactuur factuur) throws Exception {
 		Marshaller marshaller = this.map.get(AangenomenFactuurRoot.class);
 		this.save(marshaller, new AangenomenFactuurRoot(), factuur);

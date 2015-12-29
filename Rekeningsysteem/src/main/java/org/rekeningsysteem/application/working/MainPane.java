@@ -27,7 +27,6 @@ import org.rekeningsysteem.properties.PropertiesWorker;
 import org.rekeningsysteem.properties.PropertyKey;
 import org.rekeningsysteem.properties.PropertyModelEnum;
 import org.rekeningsysteem.rxjavafx.Observables;
-import org.rekeningsysteem.ui.aangenomen.AangenomenController;
 import org.rekeningsysteem.ui.mutaties.MutatiesController;
 import org.rekeningsysteem.ui.offerte.OfferteController;
 import org.rekeningsysteem.ui.particulier2.Particulier2Controller;
@@ -108,10 +107,9 @@ public class MainPane extends BorderPane {
 	}
 
 	private void initButtonHandlers(Stage stage) {
-		this.initAangenomenObservable()
-				.mergeWith(this.initMutatiesObservable())
+		this.initMutatiesObservable()
 				.mergeWith(this.initReparatiesObservable())
-				.mergeWith(this.initParticulier2Observable())
+				.mergeWith(this.initParticulierObservable())
 				.mergeWith(this.initOfferteObservable())
 				.mergeWith(this.initOpenObservable(stage))
 				.retry()
@@ -277,11 +275,6 @@ public class MainPane extends BorderPane {
 		return Optional.ofNullable(chooser.showSaveDialog(stage));
 	}
 
-	private Observable<RekeningTab> initAangenomenObservable() {
-		return Observables.fromNodeEvents(this.aangenomen, ActionEvent.ACTION)
-				.map(event -> new RekeningTab("Aangenomen factuur", new AangenomenController(this.database), this.database));
-	}
-
 	private Observable<RekeningTab> initMutatiesObservable() {
 		return Observables.fromNodeEvents(this.mutaties, ActionEvent.ACTION)
 				.map(event -> new RekeningTab("Mutaties factuur", new MutatiesController(this.database), this.database));
@@ -292,8 +285,7 @@ public class MainPane extends BorderPane {
 				.map(event -> new RekeningTab("Reparaties factuur", new ReparatiesController(this.database), this.database));
 	}
 
-	// TODO initParticulierObservable()
-	private Observable<RekeningTab> initParticulier2Observable() {
+	private Observable<RekeningTab> initParticulierObservable() {
 		return Observables.fromNodeEvents(this.particulier2, ActionEvent.ACTION)
 				.map(event -> new RekeningTab("Particulier2 factuur", new Particulier2Controller(this.database), this.database));
 	}

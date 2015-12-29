@@ -85,6 +85,7 @@ public class PdfExporterVisitor implements RekeningVisitor {
 	}
 
 	@Override
+	@Deprecated
 	public void visit(AangenomenFactuur factuur) throws Exception {
 		Optional<File> templateTex = this.properties.getProperty(PropertyModelEnum.PDF_AANGENOMEN_TEMPLATE).map(File::new);
 		if (templateTex.isPresent()) {

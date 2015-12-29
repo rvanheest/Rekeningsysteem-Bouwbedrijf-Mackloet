@@ -8,6 +8,7 @@ import org.rekeningsysteem.data.aangenomen.AangenomenListItem;
 import org.rekeningsysteem.data.util.ItemList;
 import org.rekeningsysteem.io.xml.adaptee.aangenomen.AangenomenItemListAdaptee;
 
+@Deprecated
 public class AangenomenItemListAdapter extends
 		XmlAdapter<AangenomenItemListAdaptee, ItemList<AangenomenListItem>> {
 

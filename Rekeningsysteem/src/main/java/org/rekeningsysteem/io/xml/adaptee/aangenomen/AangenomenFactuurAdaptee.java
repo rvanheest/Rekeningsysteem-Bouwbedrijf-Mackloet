@@ -12,6 +12,7 @@ import org.rekeningsysteem.io.xml.adapter.aangenomen.AangenomenItemListAdapter;
 import org.rekeningsysteem.io.xml.adapter.util.CurrencyAdapter;
 import org.rekeningsysteem.io.xml.adapter.util.header.OmschrFactuurHeaderAdapter;
 
+@Deprecated
 @XmlType(propOrder = { "factuurHeader", "currency", "list" })
 public class AangenomenFactuurAdaptee {
 

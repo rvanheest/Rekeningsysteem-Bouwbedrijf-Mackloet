@@ -6,10 +6,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.rekeningsysteem.data.util.loon.AbstractLoon;
 import org.rekeningsysteem.io.xml.adaptee.util.loon.LoonListAdaptee;
 
+@Ignore
 @Deprecated
 public class LoonListAdapteeTest {
 

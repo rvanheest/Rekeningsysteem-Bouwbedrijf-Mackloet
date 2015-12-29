@@ -14,6 +14,7 @@ import org.rekeningsysteem.ui.header.OmschrFactuurHeaderController;
 
 import rx.Observable;
 
+@Deprecated
 public class AangenomenController extends AbstractRekeningController<AangenomenFactuur> {
 
 	private final OmschrFactuurHeaderController header;

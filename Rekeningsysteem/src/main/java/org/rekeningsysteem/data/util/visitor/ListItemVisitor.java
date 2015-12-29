@@ -14,7 +14,8 @@ import org.rekeningsysteem.data.util.loon.ProductLoon;
 
 public interface ListItemVisitor<T> {
 
-	T visit(AangenomenListItem item);
+	@Deprecated
+	T visit(AangenomenListItem item); // TODO remove old
 	
 	T visit(MutatiesBon item);
 	

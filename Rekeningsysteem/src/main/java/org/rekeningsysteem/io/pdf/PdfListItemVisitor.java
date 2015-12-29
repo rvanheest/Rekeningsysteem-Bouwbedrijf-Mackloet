@@ -23,6 +23,7 @@ import org.rekeningsysteem.data.util.visitor.ListItemVisitor;
 public class PdfListItemVisitor implements ListItemVisitor<List<List<String>>> {
 
 	@Override
+	@Deprecated
 	public List<List<String>> visit(AangenomenListItem item) {
 		Geld loon = item.getLoon();
 		Geld materiaal = item.getMateriaal();

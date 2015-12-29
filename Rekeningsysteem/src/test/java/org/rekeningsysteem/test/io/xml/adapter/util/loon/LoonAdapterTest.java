@@ -3,11 +3,14 @@ package org.rekeningsysteem.test.io.xml.adapter.util.loon;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.data.util.loon.InstantLoon;
 import org.rekeningsysteem.data.util.loon.ProductLoon;
 import org.rekeningsysteem.io.xml.adapter.util.loon.LoonAdapter;
+
+@Ignore
 @Deprecated
 public class LoonAdapterTest {
 

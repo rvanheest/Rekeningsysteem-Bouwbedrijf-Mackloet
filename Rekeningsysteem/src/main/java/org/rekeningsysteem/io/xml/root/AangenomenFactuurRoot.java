@@ -7,6 +7,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.rekeningsysteem.data.aangenomen.AangenomenFactuur;
 import org.rekeningsysteem.io.xml.adapter.aangenomen.AangenomenFactuurAdapter;
 
+@Deprecated
 @XmlRootElement(name = "bestand")
 public class AangenomenFactuurRoot implements Root<AangenomenFactuur> {
 

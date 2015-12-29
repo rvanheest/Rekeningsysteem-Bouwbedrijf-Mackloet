@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.util.Currency;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.rekeningsysteem.data.aangenomen.AangenomenListItem;
 import org.rekeningsysteem.data.util.ItemList;
@@ -13,6 +14,8 @@ import org.rekeningsysteem.data.util.header.Debiteur;
 import org.rekeningsysteem.data.util.header.OmschrFactuurHeader;
 import org.rekeningsysteem.io.xml.adaptee.aangenomen.AangenomenFactuurAdaptee;
 
+@Ignore
+@Deprecated
 public class AangenomenFactuurAdapteeTest {
 
 	private AangenomenFactuurAdaptee adaptee;

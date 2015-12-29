@@ -1,8 +1,10 @@
 package org.rekeningsysteem.test.io.xml.adaptee.particulier;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.rekeningsysteem.io.xml.adaptee.particulier.ParticulierArtikelAdaptee;
 
+@Ignore
 @Deprecated
 public abstract class ParticulierArtikelAdapteeTest {
 

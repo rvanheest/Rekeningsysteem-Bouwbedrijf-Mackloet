@@ -9,7 +9,8 @@ import org.rekeningsysteem.data.reparaties.ReparatiesFactuur;
 
 public interface RekeningVisitor {
 
-	void visit(AangenomenFactuur factuur) throws Exception;
+	@Deprecated
+	void visit(AangenomenFactuur factuur) throws Exception; // TODO remove this
 
 	void visit(MutatiesFactuur factuur) throws Exception;
 
