@@ -20,6 +20,7 @@
         <currency>EUR</currency>
         <list>
             <gebruikt-esselink-artikel>
+                <omschrijving>Product 1</omschrijving>
                 <artikel>
                     <artikelNummer>2018021117</artikelNummer>
                     <omschrijving>Product 1</omschrijving>
@@ -33,6 +34,7 @@
 				<materiaalBtwPercentage>21.0</materiaalBtwPercentage>
             </gebruikt-esselink-artikel>
             <gebruikt-esselink-artikel>
+                <omschrijving>Product 2</omschrijving>
                 <artikel>
                     <artikelNummer>2003131360</artikelNummer>
                     <omschrijving>Product 2</omschrijving>
@@ -46,6 +48,7 @@
 				<materiaalBtwPercentage>21.0</materiaalBtwPercentage>
             </gebruikt-esselink-artikel>
             <gebruikt-esselink-artikel>
+                <omschrijving>Product 3</omschrijving>
                 <artikel>
                     <artikelNummer>2003131060</artikelNummer>
                     <omschrijving>Product 3</omschrijving>
@@ -59,6 +62,7 @@
 				<materiaalBtwPercentage>21.0</materiaalBtwPercentage>
             </gebruikt-esselink-artikel>
             <gebruikt-esselink-artikel>
+                <omschrijving>Product 4</omschrijving>
                 <artikel>
                     <artikelNummer>2003131306</artikelNummer>
                     <omschrijving>Product 4</omschrijving>
@@ -72,6 +76,7 @@
 				<materiaalBtwPercentage>21.0</materiaalBtwPercentage>
             </gebruikt-esselink-artikel>
             <gebruikt-esselink-artikel>
+                <omschrijving>Product 5</omschrijving>
                 <artikel>
                     <artikelNummer>4010272112</artikelNummer>
                     <omschrijving>Product 5</omschrijving>
@@ -85,6 +90,7 @@
 				<materiaalBtwPercentage>21.0</materiaalBtwPercentage>
             </gebruikt-esselink-artikel>
             <gebruikt-esselink-artikel>
+                <omschrijving>Product 6</omschrijving>
                 <artikel>
                     <artikelNummer>2009200131</artikelNummer>
                     <omschrijving>Product 6</omschrijving>
@@ -98,6 +104,7 @@
 				<materiaalBtwPercentage>21.0</materiaalBtwPercentage>
             </gebruikt-esselink-artikel>
             <gebruikt-esselink-artikel>
+                <omschrijving>Product 7</omschrijving>
                 <artikel>
                     <artikelNummer>2009200105</artikelNummer>
                     <omschrijving>Product 7</omschrijving>
