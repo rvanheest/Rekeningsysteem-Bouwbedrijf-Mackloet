@@ -19,38 +19,6 @@
 
 \newcommand*{\format}[1]{\npdecimalsign{,}\npthousandsep{.}\npthousandthpartsep{}\numprint{#1}}
 
-\newenvironment{aangenomenTable}[1][]{
-	\newcommand*{\aangenomenRow}[3]{
-		##1 & ##2 & ##3\% \\
-	}
-
-	\newcommand*{\subtotalRow}[1]{
-		\hline\hline
-		{\bf Subtotaal} & ##1 & \\
-	}
-
-	\newcommand*{\btwRow}[2]{
-		{\bf BTW ##1\%} & ##2 & \\
-	}
-
-	\newcommand*{\totalRow}[1]{
-		\hline\hline
-		{\bf Totaal} & ##1 & \\
-	}
-
-	\renewcommand{\tabcolsep}{3ex}
-	\setlength\LTleft{0pt}
-	\setlength\LTright{0pt}
-	\begin{longtable}[c]{@{\extracolsep{\tabcolsep}} p{8.1cm} r r}
-		\hline\hline\hline
-		{\bf OMSCHRIJVING} & {\bf BEDRAG (#1)} & {\bf BTW (\%)} \\*
-		\hline\hline
-		\endhead
-}{
-	\hline\hline\hline
-	\end{longtable}
-}
-
 \newenvironment{particulierTable}[1][]{
 	\newcommand*{\particulierRow}[3]{
 		##1 & ##2 & ##3\% \\
