@@ -32,19 +32,19 @@ public class PdfExporterVisitor implements RekeningVisitor {
 
 	private final boolean autoOpen;
 	private final PropertiesWorker properties;
-	private final ListItemVisitor<List<List<String>>> itemVisitor;
+	private final ListItemVisitor<List<String>> itemVisitor;
 	private File saveLocation;
 
-	public PdfExporterVisitor(ListItemVisitor<List<List<String>>> itemVisitor) {
+	public PdfExporterVisitor(ListItemVisitor<List<String>> itemVisitor) {
 		this(true, PropertiesWorker.getInstance(), itemVisitor);
 	}
 
-	public PdfExporterVisitor(boolean autoOpen, ListItemVisitor<List<List<String>>> itemVisitor) {
+	public PdfExporterVisitor(boolean autoOpen, ListItemVisitor<List<String>> itemVisitor) {
 		this(autoOpen, PropertiesWorker.getInstance(), itemVisitor);
 	}
 
 	public PdfExporterVisitor(boolean autoOpen, PropertiesWorker properties,
-			ListItemVisitor<List<List<String>>> itemVisitor) {
+			ListItemVisitor<List<String>> itemVisitor) {
 		this.autoOpen = autoOpen;
 		this.properties = properties;
 		this.itemVisitor = itemVisitor;
@@ -155,7 +155,7 @@ public class PdfExporterVisitor implements RekeningVisitor {
 				.andThen(converter -> converter.replace("Valuta", factuur.getCurrency().getSymbol()))
 				.andThen(converter -> converter.replace("bonList", factuur.getItemList()
 						.stream()
-        				.flatMap(item -> item.accept(this.itemVisitor).stream())
+        				.map(item -> item.accept(this.itemVisitor))
         				.collect(Collectors.toList())))
         		.andThen(converter -> converter.replace("TotaalBedrag", factuur.getTotalen().getTotaal().formattedString()));
 	}
@@ -171,7 +171,7 @@ public class PdfExporterVisitor implements RekeningVisitor {
 				.andThen(converter -> converter.replace("Valuta", factuur.getCurrency().getSymbol()))
 				.andThen(converter -> converter.replace("artikelList", factuur.getItemList()
 						.stream()
-						.flatMap(artikel -> artikel.accept(this.itemVisitor).stream())
+						.map(artikel -> artikel.accept(this.itemVisitor))
 						.collect(Collectors.toList())))
 				.andThen(this.convertTotalen(factuur.getTotalen()));
 	}
@@ -181,7 +181,7 @@ public class PdfExporterVisitor implements RekeningVisitor {
 				.andThen(converter -> converter.replace("Valuta", factuur.getCurrency().getSymbol()))
 				.andThen(converter -> converter.replace("bonList", factuur.getItemList()
 						.stream()
-        				.flatMap(item -> item.accept(this.itemVisitor).stream())
+        				.map(item -> item.accept(this.itemVisitor))
         				.collect(Collectors.toList())))
         		.andThen(converter -> converter.replace("TotaalBedrag", factuur.getTotalen().getTotaal().formattedString()));
 	}
