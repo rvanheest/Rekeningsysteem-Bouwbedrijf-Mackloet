@@ -1,4 +1,4 @@
-package org.rekeningsysteem.io.xml.adaptee.particulier2;
+package org.rekeningsysteem.io.xml.adaptee.particulier;
 
 import java.util.Currency;
 
@@ -8,7 +8,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.rekeningsysteem.data.particulier.ParticulierArtikel2;
 import org.rekeningsysteem.data.util.ItemList;
 import org.rekeningsysteem.data.util.header.OmschrFactuurHeader;
-import org.rekeningsysteem.io.xml.adapter.particulier2.ParticulierItem2ListAdapter;
+import org.rekeningsysteem.io.xml.adapter.particulier.ParticulierItem2ListAdapter;
 import org.rekeningsysteem.io.xml.adapter.util.CurrencyAdapter;
 import org.rekeningsysteem.io.xml.adapter.util.header.OmschrFactuurHeaderAdapter;
 

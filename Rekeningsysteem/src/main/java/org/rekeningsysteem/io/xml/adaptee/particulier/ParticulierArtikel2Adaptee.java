@@ -1,9 +1,9 @@
-package org.rekeningsysteem.io.xml.adaptee.particulier2;
+package org.rekeningsysteem.io.xml.adaptee.particulier;
 
 import javax.xml.bind.annotation.XmlSeeAlso;
 
-import org.rekeningsysteem.io.xml.adaptee.particulier2.loon.InstantLoon2Adaptee;
-import org.rekeningsysteem.io.xml.adaptee.particulier2.loon.ProductLoon2Adaptee;
+import org.rekeningsysteem.io.xml.adaptee.particulier.loon.InstantLoon2Adaptee;
+import org.rekeningsysteem.io.xml.adaptee.particulier.loon.ProductLoon2Adaptee;
 
 // TODO ParticulierArtikelAdaptee
 @XmlSeeAlso({ ParticulierArtikel2ImplAdaptee.class, EsselinkParticulierArtikelAdaptee.class,

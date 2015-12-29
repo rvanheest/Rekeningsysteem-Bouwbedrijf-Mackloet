@@ -1,4 +1,4 @@
-package org.rekeningsysteem.io.xml.adaptee.particulier2;
+package org.rekeningsysteem.io.xml.adaptee.particulier;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;

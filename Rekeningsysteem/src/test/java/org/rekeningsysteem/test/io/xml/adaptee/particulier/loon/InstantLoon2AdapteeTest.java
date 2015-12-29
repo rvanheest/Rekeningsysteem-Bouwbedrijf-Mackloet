@@ -1,11 +1,11 @@
-package org.rekeningsysteem.test.io.xml.adaptee.particulier2.loon;
+package org.rekeningsysteem.test.io.xml.adaptee.particulier.loon;
 
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 import org.rekeningsysteem.data.util.Geld;
-import org.rekeningsysteem.io.xml.adaptee.particulier2.loon.InstantLoon2Adaptee;
-import org.rekeningsysteem.test.io.xml.adaptee.particulier2.ParticulierArtikel2AdapteeTest;
+import org.rekeningsysteem.io.xml.adaptee.particulier.loon.InstantLoon2Adaptee;
+import org.rekeningsysteem.test.io.xml.adaptee.particulier.ParticulierArtikel2AdapteeTest;
 
 public class InstantLoon2AdapteeTest extends ParticulierArtikel2AdapteeTest {
 

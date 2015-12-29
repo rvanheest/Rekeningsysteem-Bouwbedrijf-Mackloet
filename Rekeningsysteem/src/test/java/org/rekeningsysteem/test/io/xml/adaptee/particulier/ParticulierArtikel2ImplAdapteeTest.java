@@ -1,10 +1,10 @@
-package org.rekeningsysteem.test.io.xml.adaptee.particulier2;
+package org.rekeningsysteem.test.io.xml.adaptee.particulier;
 
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 import org.rekeningsysteem.data.util.Geld;
-import org.rekeningsysteem.io.xml.adaptee.particulier2.ParticulierArtikel2ImplAdaptee;
+import org.rekeningsysteem.io.xml.adaptee.particulier.ParticulierArtikel2ImplAdaptee;
 
 public class ParticulierArtikel2ImplAdapteeTest extends ParticulierArtikel2AdapteeTest {
 

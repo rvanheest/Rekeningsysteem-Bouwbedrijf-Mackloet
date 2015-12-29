@@ -1,4 +1,4 @@
-package org.rekeningsysteem.test.io.xml.adapter.particulier2;
+package org.rekeningsysteem.test.io.xml.adapter.particulier;
 
 import static org.junit.Assert.assertEquals;
 
@@ -12,7 +12,7 @@ import org.rekeningsysteem.data.particulier.loon.InstantLoon2;
 import org.rekeningsysteem.data.particulier.loon.ProductLoon2;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.data.util.ItemList;
-import org.rekeningsysteem.io.xml.adapter.particulier2.ParticulierItem2ListAdapter;
+import org.rekeningsysteem.io.xml.adapter.particulier.ParticulierItem2ListAdapter;
 
 public class ParticulierItem2ListAdapterTest {
 

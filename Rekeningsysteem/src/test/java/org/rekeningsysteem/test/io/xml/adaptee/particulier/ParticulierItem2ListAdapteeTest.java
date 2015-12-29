@@ -1,4 +1,4 @@
-package org.rekeningsysteem.test.io.xml.adaptee.particulier2;
+package org.rekeningsysteem.test.io.xml.adaptee.particulier;
 
 import static org.junit.Assert.assertEquals;
 
@@ -8,7 +8,7 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.rekeningsysteem.data.particulier.ParticulierArtikel2;
-import org.rekeningsysteem.io.xml.adaptee.particulier2.ParticulierItem2ListAdaptee;
+import org.rekeningsysteem.io.xml.adaptee.particulier.ParticulierItem2ListAdaptee;
 
 public class ParticulierItem2ListAdapteeTest {
 

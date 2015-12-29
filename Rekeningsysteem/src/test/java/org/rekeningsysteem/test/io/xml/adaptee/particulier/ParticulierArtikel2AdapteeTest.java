@@ -1,7 +1,7 @@
-package org.rekeningsysteem.test.io.xml.adaptee.particulier2;
+package org.rekeningsysteem.test.io.xml.adaptee.particulier;
 
 import org.junit.Before;
-import org.rekeningsysteem.io.xml.adaptee.particulier2.ParticulierArtikel2Adaptee;
+import org.rekeningsysteem.io.xml.adaptee.particulier.ParticulierArtikel2Adaptee;
 
 public abstract class ParticulierArtikel2AdapteeTest {
 

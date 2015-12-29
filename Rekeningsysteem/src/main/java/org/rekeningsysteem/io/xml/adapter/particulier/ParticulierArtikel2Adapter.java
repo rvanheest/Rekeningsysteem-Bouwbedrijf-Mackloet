@@ -1,4 +1,4 @@
-package org.rekeningsysteem.io.xml.adapter.particulier2;
+package org.rekeningsysteem.io.xml.adapter.particulier;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
@@ -7,11 +7,11 @@ import org.rekeningsysteem.data.particulier.ParticulierArtikel2;
 import org.rekeningsysteem.data.particulier.ParticulierArtikel2Impl;
 import org.rekeningsysteem.data.particulier.loon.InstantLoon2;
 import org.rekeningsysteem.data.particulier.loon.ProductLoon2;
-import org.rekeningsysteem.io.xml.adaptee.particulier2.ParticulierArtikel2ImplAdaptee;
-import org.rekeningsysteem.io.xml.adaptee.particulier2.EsselinkParticulierArtikelAdaptee;
-import org.rekeningsysteem.io.xml.adaptee.particulier2.ParticulierArtikel2Adaptee;
-import org.rekeningsysteem.io.xml.adaptee.particulier2.loon.InstantLoon2Adaptee;
-import org.rekeningsysteem.io.xml.adaptee.particulier2.loon.ProductLoon2Adaptee;
+import org.rekeningsysteem.io.xml.adaptee.particulier.EsselinkParticulierArtikelAdaptee;
+import org.rekeningsysteem.io.xml.adaptee.particulier.ParticulierArtikel2Adaptee;
+import org.rekeningsysteem.io.xml.adaptee.particulier.ParticulierArtikel2ImplAdaptee;
+import org.rekeningsysteem.io.xml.adaptee.particulier.loon.InstantLoon2Adaptee;
+import org.rekeningsysteem.io.xml.adaptee.particulier.loon.ProductLoon2Adaptee;
 
 public class ParticulierArtikel2Adapter extends
 		XmlAdapter<ParticulierArtikel2Adaptee, ParticulierArtikel2> {

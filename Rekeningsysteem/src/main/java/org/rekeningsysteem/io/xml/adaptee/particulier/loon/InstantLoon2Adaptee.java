@@ -1,4 +1,4 @@
-package org.rekeningsysteem.io.xml.adaptee.particulier2.loon;
+package org.rekeningsysteem.io.xml.adaptee.particulier.loon;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -6,7 +6,7 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.rekeningsysteem.data.util.Geld;
-import org.rekeningsysteem.io.xml.adaptee.particulier2.ParticulierArtikel2Adaptee;
+import org.rekeningsysteem.io.xml.adaptee.particulier.ParticulierArtikel2Adaptee;
 import org.rekeningsysteem.io.xml.adapter.util.GeldAdapter;
 
 @XmlRootElement(name = "instant-loon")

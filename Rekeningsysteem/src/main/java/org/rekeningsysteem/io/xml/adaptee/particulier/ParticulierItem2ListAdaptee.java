@@ -1,4 +1,4 @@
-package org.rekeningsysteem.io.xml.adaptee.particulier2;
+package org.rekeningsysteem.io.xml.adaptee.particulier;
 
 import java.util.List;
 
@@ -6,7 +6,7 @@ import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.rekeningsysteem.data.particulier.ParticulierArtikel2;
-import org.rekeningsysteem.io.xml.adapter.particulier2.ParticulierArtikel2Adapter;
+import org.rekeningsysteem.io.xml.adapter.particulier.ParticulierArtikel2Adapter;
 
 public class ParticulierItem2ListAdaptee {
 

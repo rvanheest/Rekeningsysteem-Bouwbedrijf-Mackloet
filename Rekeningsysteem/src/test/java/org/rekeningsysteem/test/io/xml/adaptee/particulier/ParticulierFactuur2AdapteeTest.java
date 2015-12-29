@@ -1,4 +1,4 @@
-package org.rekeningsysteem.test.io.xml.adaptee.particulier2;
+package org.rekeningsysteem.test.io.xml.adaptee.particulier;
 
 import static org.junit.Assert.assertEquals;
 
@@ -11,7 +11,7 @@ import org.rekeningsysteem.data.particulier.ParticulierArtikel2;
 import org.rekeningsysteem.data.util.ItemList;
 import org.rekeningsysteem.data.util.header.Debiteur;
 import org.rekeningsysteem.data.util.header.OmschrFactuurHeader;
-import org.rekeningsysteem.io.xml.adaptee.particulier2.ParticulierFactuur2Adaptee;
+import org.rekeningsysteem.io.xml.adaptee.particulier.ParticulierFactuur2Adaptee;
 
 public class ParticulierFactuur2AdapteeTest {
 
