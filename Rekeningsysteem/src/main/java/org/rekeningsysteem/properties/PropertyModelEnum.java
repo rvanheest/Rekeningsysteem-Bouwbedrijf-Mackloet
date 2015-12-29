@@ -23,11 +23,9 @@ public enum PropertyModelEnum implements PropertyKey {
 	LAST_SAVE_LOCATION("lastsavelocation"),
 	LAST_SAVE_LOCATION_OFFERTE("lastsavelocationofferte"),
 	
-	PDF_AANGENOMEN_TEMPLATE("pdfaangenomentemplate"),
 	PDF_MUTATIES_TEMPLATE("pdfmutatiestemplate"),
 	PDF_OFFERTE_TEMPLATE("pdfoffertetemplate"),
 	PDF_PARTICULIER_TEMPLATE("pdfparticuliertemplate"),
-	PDF_PARTICULIER_2_TEMPLATE("pdfparticulier2template"),
 	PDF_REPARATIES_TEMPLATE("pdfreparatiestemplate"),
 	
 	FULL_SCREEN("fullscreen");

@@ -45,11 +45,9 @@ public class MainPane extends BorderPane {
 	private SettingsPane settingsPane = null;
 	private final Func0<SettingsPane> settingsPaneFactory;
 
-	private final Button aangenomen = new Button();
 	private final Button mutaties = new Button();
 	private final Button reparaties = new Button();
 	private final Button particulier = new Button();
-	private final Button particulier2 = new Button();
 	private final Button offerte = new Button();
 	private final Button open = new Button();
 	private final Button save = new Button();
@@ -69,9 +67,8 @@ public class MainPane extends BorderPane {
 		Region spacer = new Region();
 		HBox.setHgrow(spacer, Priority.ALWAYS);
 
-		this.toolbar = new RekeningToolbar(this.aangenomen, this.mutaties,
-				this.reparaties, this.particulier, this.particulier2, this.offerte, this.open,
-				this.save, this.pdf, spacer, this.settings);
+		this.toolbar = new RekeningToolbar(this.mutaties, this.reparaties, this.particulier,
+				this.offerte, this.open, this.save, this.pdf, spacer, this.settings);
 		this.tabpane = new RekeningTabpane();
 		this.settingsPaneFactory = () -> new SettingsPane(stage, this.settings, this.database);
 		this.centerPane = new StackPane(this.tabpane);
@@ -83,15 +80,11 @@ public class MainPane extends BorderPane {
 	}
 
 	private void initButtons() {
-		this.aangenomen.setGraphic(new ImageView(new Image(Main
-				.getResource("/images/aangenomen.png"))));
 		this.mutaties.setGraphic(new ImageView(new Image(Main
 				.getResource("/images/mutaties.png"))));
 		this.reparaties.setGraphic(new ImageView(new Image(Main
 				.getResource("/images/reparaties.png"))));
 		this.particulier.setGraphic(new ImageView(new Image(Main
-				.getResource("/images/particulier.png"))));
-		this.particulier2.setGraphic(new ImageView(new Image(Main
 				.getResource("/images/particulier.png"))));
 		this.offerte.setGraphic(new ImageView(new Image(Main
 				.getResource("/images/offerte.png"))));
@@ -184,11 +177,9 @@ public class MainPane extends BorderPane {
 						this.settingsPane = null;
 					}
 					
-					this.aangenomen.setDisable(selected);
 					this.mutaties.setDisable(selected);
 					this.reparaties.setDisable(selected);
 					this.particulier.setDisable(selected);
-					this.particulier2.setDisable(selected);
 					this.offerte.setDisable(selected);
 					this.open.setDisable(selected);
 				});
@@ -286,8 +277,8 @@ public class MainPane extends BorderPane {
 	}
 
 	private Observable<RekeningTab> initParticulierObservable() {
-		return Observables.fromNodeEvents(this.particulier2, ActionEvent.ACTION)
-				.map(event -> new RekeningTab("Particulier2 factuur", new Particulier2Controller(this.database), this.database));
+		return Observables.fromNodeEvents(this.particulier, ActionEvent.ACTION)
+				.map(event -> new RekeningTab("Particulier factuur", new Particulier2Controller(this.database), this.database));
 	}
 
 	private Observable<RekeningTab> initOfferteObservable() {

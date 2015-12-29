@@ -86,11 +86,8 @@ public class PdfExporterVisitor implements RekeningVisitor {
 
 	@Override
 	@Deprecated
-	public void visit(AangenomenFactuur factuur) throws Exception {
-		Optional<File> templateTex = this.properties.getProperty(PropertyModelEnum.PDF_AANGENOMEN_TEMPLATE).map(File::new);
-		if (templateTex.isPresent()) {
-			this.general(templateTex.get(), this.convert(factuur));
-		}
+	public void visit(AangenomenFactuur factuur) {
+		// TODO delete this
 	}
 
 	@Override
@@ -111,16 +108,13 @@ public class PdfExporterVisitor implements RekeningVisitor {
 
 	@Override
 	@Deprecated
-	public void visit(ParticulierFactuur factuur) throws Exception {
-		Optional<File> templateTex = this.properties.getProperty(PropertyModelEnum.PDF_PARTICULIER_TEMPLATE).map(File::new);
-		if (templateTex.isPresent()) {
-			this.general(templateTex.get(), this.convert(factuur));
-		}
+	public void visit(ParticulierFactuur factuur) {
+		// TODO delete this
 	}
 
 	@Override
 	public void visit(ParticulierFactuur2 factuur) throws Exception {
-		Optional<File> templateTex = this.properties.getProperty(PropertyModelEnum.PDF_PARTICULIER_2_TEMPLATE).map(File::new);
+		Optional<File> templateTex = this.properties.getProperty(PropertyModelEnum.PDF_PARTICULIER_TEMPLATE).map(File::new);
 		if (templateTex.isPresent()) {
 			this.general(templateTex.get(), this.convert(factuur));
 		}
@@ -170,6 +164,7 @@ public class PdfExporterVisitor implements RekeningVisitor {
 		};
 	}
 
+	@Deprecated // TODO delete this
 	private Consumer<PdfConverter> convert(AangenomenFactuur factuur) {
 		return this.convertOmschrFactuurHeader(factuur.getFactuurHeader())
 				.andThen(converter -> converter.replace("Valuta", factuur.getCurrency().getSymbol()))
@@ -196,6 +191,7 @@ public class PdfExporterVisitor implements RekeningVisitor {
 				.andThen(converter -> converter.replace("Ondertekenen", "" + offerte.isOndertekenen()));
 	}
 
+	@Deprecated // TODO delete this
 	private Consumer<PdfConverter> convert(ParticulierFactuur factuur) {
 		return this.convertOmschrFactuurHeader(factuur.getFactuurHeader())
 				.andThen(converter -> converter.replace("Valuta", factuur.getCurrency().getSymbol()))
