@@ -45,6 +45,11 @@ public class GebruiktEsselinkArtikel extends ParticulierArtikel {
 		return 0;
 	}
 
+	@Override
+	public final Geld getLoonBtw() {
+		return new Geld(0);
+	}
+
 	public EsselinkArtikel getArtikel() {
 		return this.artikel;
 	}
