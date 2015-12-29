@@ -11,7 +11,6 @@ import org.rekeningsysteem.properties.PropertiesWorker;
 import org.rekeningsysteem.properties.PropertyModelEnum;
 import org.rekeningsysteem.ui.AbstractRekeningController;
 import org.rekeningsysteem.ui.header.OmschrFactuurHeaderController;
-import org.rekeningsysteem.ui.particulier.loon.LoonListPaneController;
 
 import rx.Observable;
 
@@ -19,7 +18,6 @@ public class ParticulierController extends AbstractRekeningController<Particulie
 
 	private final OmschrFactuurHeaderController header;
 	private final ParticulierListPaneController list;
-	private final LoonListPaneController loon;
 
 	public ParticulierController(Database database) {
 		this(PropertiesWorker.getInstance(), database);
@@ -31,29 +29,24 @@ public class ParticulierController extends AbstractRekeningController<Particulie
 
 	public ParticulierController(Currency currency, BtwPercentage defaultBtw, Database database) {
 		this(new OmschrFactuurHeaderController(database),
-				new ParticulierListPaneController(currency, database, defaultBtw),
-				new LoonListPaneController(currency, defaultBtw));
+				new ParticulierListPaneController(currency, database, defaultBtw));
 	}
 
 	public ParticulierController(ParticulierFactuur input, PropertiesWorker properties,
 			Database database) {
 		this(new OmschrFactuurHeaderController(input.getFactuurHeader(), database),
 				new ParticulierListPaneController(input.getCurrency(), database,
-						getDefaultBtwPercentage(properties), input.getItemList()),
-				new LoonListPaneController(input.getCurrency(),
-						getDefaultBtwPercentage(properties), input.getLoonList()));
+						getDefaultBtwPercentage(properties), input.getItemList()));
 	}
 
 	public ParticulierController(OmschrFactuurHeaderController header,
-			ParticulierListPaneController body, LoonListPaneController loon) {
-		super(new RekeningSplitPane(header.getUI(), body.getUI(), loon.getUI()),
+			ParticulierListPaneController body) {
+		super(new RekeningSplitPane(header.getUI(), body.getUI()),
 				Observable.combineLatest(header.getModel(), body.getListModel(),
-						loon.getListModel(),
-						(head, list, loonList) -> new ParticulierFactuur(head, body.getCurrency(),
-								list, loonList)));
+						(head, list) -> new ParticulierFactuur(head, body.getCurrency(),
+								list)));
 		this.header = header;
 		this.list = body;
-		this.loon = loon;
 	}
 
 	public OmschrFactuurHeaderController getHeaderController() {
@@ -62,10 +55,6 @@ public class ParticulierController extends AbstractRekeningController<Particulie
 
 	public ParticulierListPaneController getListController() {
 		return this.list;
-	}
-
-	public LoonListPaneController getLoonController() {
-		return this.loon;
 	}
 
 	@Override

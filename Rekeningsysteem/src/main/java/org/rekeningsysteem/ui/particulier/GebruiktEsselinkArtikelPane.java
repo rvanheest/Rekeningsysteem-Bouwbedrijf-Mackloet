@@ -4,6 +4,13 @@ import java.math.BigDecimal;
 import java.util.Currency;
 import java.util.Objects;
 
+import org.rekeningsysteem.data.particulier.EsselinkArtikel;
+import org.rekeningsysteem.rxjavafx.Observables;
+import org.rekeningsysteem.ui.textfields.NumberField;
+import org.rekeningsysteem.ui.textfields.PercentageField;
+import org.rekeningsysteem.ui.textfields.searchbox.AbstractSearchBox;
+
+import rx.Observable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
@@ -12,14 +19,6 @@ import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
-
-import org.rekeningsysteem.data.particulier.EsselinkArtikel;
-import org.rekeningsysteem.rxjavafx.Observables;
-import org.rekeningsysteem.ui.textfields.NumberField;
-import org.rekeningsysteem.ui.textfields.PercentageField;
-import org.rekeningsysteem.ui.textfields.searchbox.AbstractSearchBox;
-
-import rx.Observable;
 
 public class GebruiktEsselinkArtikelPane extends GridPane {
 

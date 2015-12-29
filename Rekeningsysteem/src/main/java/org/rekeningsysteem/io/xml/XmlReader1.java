@@ -15,11 +15,13 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.rekeningsysteem.data.mutaties.MutatiesBon;
 import org.rekeningsysteem.data.mutaties.MutatiesFactuur;
 import org.rekeningsysteem.data.offerte.Offerte;
-import org.rekeningsysteem.data.particulier.AnderArtikel;
 import org.rekeningsysteem.data.particulier.EsselinkArtikel;
 import org.rekeningsysteem.data.particulier.GebruiktEsselinkArtikel;
 import org.rekeningsysteem.data.particulier.ParticulierArtikel;
+import org.rekeningsysteem.data.particulier.AnderArtikel;
 import org.rekeningsysteem.data.particulier.ParticulierFactuur;
+import org.rekeningsysteem.data.particulier.loon.AbstractLoon;
+import org.rekeningsysteem.data.particulier.loon.ProductLoon;
 import org.rekeningsysteem.data.reparaties.ReparatiesBon;
 import org.rekeningsysteem.data.reparaties.ReparatiesFactuur;
 import org.rekeningsysteem.data.util.AbstractRekening;
@@ -28,8 +30,6 @@ import org.rekeningsysteem.data.util.ItemList;
 import org.rekeningsysteem.data.util.header.Debiteur;
 import org.rekeningsysteem.data.util.header.FactuurHeader;
 import org.rekeningsysteem.data.util.header.OmschrFactuurHeader;
-import org.rekeningsysteem.data.util.loon.AbstractLoon;
-import org.rekeningsysteem.data.util.loon.ProductLoon;
 import org.rekeningsysteem.exception.GeldParseException;
 import org.rekeningsysteem.io.FactuurLoader;
 import org.rekeningsysteem.logging.ApplicationLogger;
@@ -219,7 +219,8 @@ public class XmlReader1 implements FactuurLoader {
 		Observable<Geld> prijs = this.getNodeValue(((Element) node).getElementsByTagName("prijs"))
 				.flatMap(this::makeGeld);
 
-		return Observable.zip(omschrijving, prijs, (omschr, pr) -> btw -> new AnderArtikel(omschr, pr, btw));
+		return Observable.zip(omschrijving, prijs, (omschr, pr) ->
+				btw -> new AnderArtikel(omschr, pr, btw));
 	}
 
 	private Observable<EsselinkArtikel> makeArtikelEsselink(Node node) {
@@ -239,15 +240,16 @@ public class XmlReader1 implements FactuurLoader {
 				.getElementsByTagName("artikel").item(0));
 		Observable<Double> aantal = this.getNodeValue(node, "aantal").map(Double::parseDouble);
 
-		return Observable.zip(artikel, aantal, (art, aant) -> btw -> new GebruiktEsselinkArtikel(art, aant, btw));
+		return Observable.zip(artikel, aantal, (art, aant) ->
+				btw -> new GebruiktEsselinkArtikel(art, aant, btw));
 	}
 
 	private Observable<Func1<Double, ProductLoon>> makeLoon(Node node) {
 		Observable<Geld> uurloon = this.getNodeValue(node, "uurloon").flatMap(this::makeGeld);
 		Observable<Double> uren = this.getNodeValue(node, "uren").map(Double::parseDouble);
 
-		return Observable.zip(uurloon, uren,
-				(ul, ur) -> btw -> new ProductLoon("Uurloon à " + ul.formattedString(), ur, ul, btw));
+		return Observable.zip(uurloon, uren, (ul, ur) ->
+				btw -> new ProductLoon("Uurloon à " + ul.formattedString(), ur, ul, btw));
 	}
 
 	private Observable<BtwPercentage> makeEnkelBtw(Node node) {
@@ -297,7 +299,10 @@ public class XmlReader1 implements FactuurLoader {
 			Observable<ItemList<ParticulierArtikel>> art = percentage.map(b -> b.materiaalPercentage).flatMap(b -> itemList.call(b));
 			Observable<ItemList<AbstractLoon>> loon = percentage.map(b -> b.loonPercentage).flatMap(b -> loonList.call(b));
 			
-			return Observable.zip(header, art, loon, (h, i, l) -> new ParticulierFactuur(h, this.currency, i, l));
+			return Observable.zip(header, art, loon,(h, li, lo) -> {
+				li.addAll(lo);
+				return new ParticulierFactuur(h, this.currency, li);
+			});
 		});
 	}
 
@@ -333,7 +338,10 @@ public class XmlReader1 implements FactuurLoader {
 			Observable<ItemList<ParticulierArtikel>> art = percentage.map(b -> b.materiaalPercentage).flatMap(b -> itemList.call(b));
 			Observable<ItemList<AbstractLoon>> loon = percentage.map(b -> b.loonPercentage).flatMap(b -> loonList.call(b));
 			
-			return Observable.zip(header, art, loon, (h, i, l) -> new ParticulierFactuur(h, this.currency, i, l));
+			return Observable.zip(header, art, loon, (h, li, lo) -> {
+				li.addAll(lo);
+				return new ParticulierFactuur(h, this.currency, li);
+			});
 		});
 	}
 

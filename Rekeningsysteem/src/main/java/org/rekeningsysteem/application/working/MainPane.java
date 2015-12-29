@@ -27,7 +27,6 @@ import org.rekeningsysteem.properties.PropertiesWorker;
 import org.rekeningsysteem.properties.PropertyKey;
 import org.rekeningsysteem.properties.PropertyModelEnum;
 import org.rekeningsysteem.rxjavafx.Observables;
-import org.rekeningsysteem.ui.aangenomen.AangenomenController;
 import org.rekeningsysteem.ui.mutaties.MutatiesController;
 import org.rekeningsysteem.ui.offerte.OfferteController;
 import org.rekeningsysteem.ui.particulier.ParticulierController;
@@ -46,7 +45,6 @@ public class MainPane extends BorderPane {
 	private SettingsPane settingsPane = null;
 	private final Func0<SettingsPane> settingsPaneFactory;
 
-	private final Button aangenomen = new Button();
 	private final Button mutaties = new Button();
 	private final Button reparaties = new Button();
 	private final Button particulier = new Button();
@@ -69,9 +67,8 @@ public class MainPane extends BorderPane {
 		Region spacer = new Region();
 		HBox.setHgrow(spacer, Priority.ALWAYS);
 
-		this.toolbar = new RekeningToolbar(this.aangenomen, this.mutaties,
-				this.reparaties, this.particulier, this.offerte, this.open,
-				this.save, this.pdf, spacer, this.settings);
+		this.toolbar = new RekeningToolbar(this.mutaties, this.reparaties, this.particulier,
+				this.offerte, this.open, this.save, this.pdf, spacer, this.settings);
 		this.tabpane = new RekeningTabpane();
 		this.settingsPaneFactory = () -> new SettingsPane(stage, this.settings, this.database);
 		this.centerPane = new StackPane(this.tabpane);
@@ -83,8 +80,6 @@ public class MainPane extends BorderPane {
 	}
 
 	private void initButtons() {
-		this.aangenomen.setGraphic(new ImageView(new Image(Main
-				.getResource("/images/aangenomen.png"))));
 		this.mutaties.setGraphic(new ImageView(new Image(Main
 				.getResource("/images/mutaties.png"))));
 		this.reparaties.setGraphic(new ImageView(new Image(Main
@@ -105,8 +100,7 @@ public class MainPane extends BorderPane {
 	}
 
 	private void initButtonHandlers(Stage stage) {
-		this.initAangenomenObservable()
-				.mergeWith(this.initMutatiesObservable())
+		this.initMutatiesObservable()
 				.mergeWith(this.initReparatiesObservable())
 				.mergeWith(this.initParticulierObservable())
 				.mergeWith(this.initOfferteObservable())
@@ -183,7 +177,6 @@ public class MainPane extends BorderPane {
 						this.settingsPane = null;
 					}
 					
-					this.aangenomen.setDisable(selected);
 					this.mutaties.setDisable(selected);
 					this.reparaties.setDisable(selected);
 					this.particulier.setDisable(selected);
@@ -271,11 +264,6 @@ public class MainPane extends BorderPane {
 		chooser.getExtensionFilters().addAll(new ExtensionFilter("PDF", "*.pdf"));
 
 		return Optional.ofNullable(chooser.showSaveDialog(stage));
-	}
-
-	private Observable<RekeningTab> initAangenomenObservable() {
-		return Observables.fromNodeEvents(this.aangenomen, ActionEvent.ACTION)
-				.map(event -> new RekeningTab("Aangenomen factuur", new AangenomenController(this.database), this.database));
 	}
 
 	private Observable<RekeningTab> initMutatiesObservable() {

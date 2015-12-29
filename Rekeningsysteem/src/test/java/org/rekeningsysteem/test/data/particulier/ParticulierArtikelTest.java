@@ -1,41 +1,40 @@
 package org.rekeningsysteem.test.data.particulier;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.rekeningsysteem.data.particulier.ParticulierArtikel;
-import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.test.data.util.BtwListItemTest;
 
 public abstract class ParticulierArtikelTest extends BtwListItemTest {
 
-	private ParticulierArtikel item;
+	private ParticulierArtikel artikel;
+	private String omschrijving = "omschrijving";
 
 	@Override
 	protected abstract ParticulierArtikel makeInstance();
+
+	protected String getTestOmschrijving() {
+		return this.omschrijving;
+	}
 
 	@Before
 	@Override
 	public void setUp() {
 		super.setUp();
-		this.item = this.makeInstance();
+		this.artikel = this.makeInstance();
 	}
 
 	@Test
-	public void testGetLoon() {
-		assertEquals(new Geld(0), this.item.getLoon());
+	public void testGetOmschrijving() {
+		assertEquals(this.omschrijving, this.artikel.getOmschrijving());
 	}
 
 	@Test
-	public void testGetLoonBtwPercentage() {
-		assertEquals(0.0, this.item.getLoonBtwPercentage(), 0.0);
-	}
-
-	@Test
-	@Override
-	public void testGetLoonBtw() {
-		super.testGetLoonBtw();
-		assertEquals(new Geld(0), this.item.getLoonBtw());
+	public void testEqualsFalseOtherOmschrijving() {
+		this.omschrijving = "foo";
+		assertFalse(this.makeInstance().equals(this.artikel));
 	}
 }

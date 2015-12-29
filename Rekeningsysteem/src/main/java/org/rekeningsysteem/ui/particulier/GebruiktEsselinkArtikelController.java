@@ -8,6 +8,7 @@ import org.rekeningsysteem.data.particulier.EsselinkArtikel;
 import org.rekeningsysteem.data.particulier.GebruiktEsselinkArtikel;
 import org.rekeningsysteem.logic.database.ArtikellijstDBInteraction;
 import org.rekeningsysteem.rxjavafx.JavaFxScheduler;
+import org.rekeningsysteem.ui.particulier.EsselinkArtikelToggle;
 import org.rekeningsysteem.ui.textfields.searchbox.AbstractSearchBox;
 import org.rekeningsysteem.ui.textfields.searchbox.EsselinkSearchBox;
 import org.rekeningsysteem.ui.textfields.searchbox.SearchBoxController;

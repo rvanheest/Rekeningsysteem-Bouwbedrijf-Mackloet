@@ -64,9 +64,6 @@ $Omschrijving
 	#foreach( $artikel in $artikelList )
 		\particulierRow{$artikel[0]}{$artikel[1]}{$artikel[2]}
 	#end
-	#foreach( $loon in $loonList )
-		\loonRow{$loon[0]}{$loon[1]}{$loon[2]}
-	#end
 	\subtotalRow{$SubTotaalBedrag}
 	#foreach( $btw in $btwList)
 		\btwRow{$btw[0]}{$btw[1]}

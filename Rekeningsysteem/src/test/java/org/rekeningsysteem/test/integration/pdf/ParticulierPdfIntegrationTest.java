@@ -6,18 +6,18 @@ import java.util.Currency;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.rekeningsysteem.data.particulier.AnderArtikel;
 import org.rekeningsysteem.data.particulier.EsselinkArtikel;
 import org.rekeningsysteem.data.particulier.GebruiktEsselinkArtikel;
 import org.rekeningsysteem.data.particulier.ParticulierArtikel;
+import org.rekeningsysteem.data.particulier.AnderArtikel;
 import org.rekeningsysteem.data.particulier.ParticulierFactuur;
+import org.rekeningsysteem.data.particulier.loon.AbstractLoon;
+import org.rekeningsysteem.data.particulier.loon.InstantLoon;
+import org.rekeningsysteem.data.particulier.loon.ProductLoon;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.data.util.ItemList;
 import org.rekeningsysteem.data.util.header.Debiteur;
 import org.rekeningsysteem.data.util.header.OmschrFactuurHeader;
-import org.rekeningsysteem.data.util.loon.AbstractLoon;
-import org.rekeningsysteem.data.util.loon.InstantLoon;
-import org.rekeningsysteem.data.util.loon.ProductLoon;
 import org.rekeningsysteem.io.pdf.PdfExporter;
 
 public class ParticulierPdfIntegrationTest {
@@ -123,10 +123,10 @@ public class ParticulierPdfIntegrationTest {
 				omschrijving);
 
 		ItemList<ParticulierArtikel> itemList = this.addArtikels2();
-		ItemList<AbstractLoon> loonList = this.addLoon2();
+		itemList.addAll(this.addLoon2());
 
 		ParticulierFactuur factuur = new ParticulierFactuur(header, Currency.getInstance("EUR"),
-				itemList, loonList);
+				itemList);
 		this.exporter.export(factuur, new File("src\\test\\resources\\pdf\\"
 				+ "ParticulierFactuurTest123TwoBtw.pdf"));
 	}
@@ -143,10 +143,10 @@ public class ParticulierPdfIntegrationTest {
 				omschrijving);
 
 		ItemList<ParticulierArtikel> itemList = this.addArtikels1();
-		ItemList<AbstractLoon> loonList = this.addLoon1();
+		itemList.addAll(this.addLoon1());
 
 		ParticulierFactuur factuur = new ParticulierFactuur(header, Currency.getInstance("EUR"),
-				itemList, loonList);
+				itemList);
 		this.exporter.export(factuur, new File("src\\test\\resources\\pdf\\"
 				+ "ParticulierFactuurTest123OneBtw.pdf"));
 	}

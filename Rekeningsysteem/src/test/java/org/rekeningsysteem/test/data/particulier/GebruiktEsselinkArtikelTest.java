@@ -19,12 +19,12 @@ public class GebruiktEsselinkArtikelTest extends ParticulierArtikelTest {
 
 	@Override
 	protected GebruiktEsselinkArtikel makeInstance() {
-		return new GebruiktEsselinkArtikel(this.artikel, this.aantal, this.btwPercentage);
+		return new GebruiktEsselinkArtikel(this.getTestOmschrijving(), this.artikel, this.aantal, this.btwPercentage);
 	}
 
 	@Override
 	protected GebruiktEsselinkArtikel makeNotInstance() {
-		return new GebruiktEsselinkArtikel(this.artikel, this.aantal + 1, this.btwPercentage);
+		return new GebruiktEsselinkArtikel(this.getTestOmschrijving(), this.artikel, this.aantal + 1, this.btwPercentage);
 	}
 
 	@Before
@@ -78,7 +78,8 @@ public class GebruiktEsselinkArtikelTest extends ParticulierArtikelTest {
 
 	@Test
 	public void testToString() {
-		assertEquals("<GebruiktEsselinkArtikel[<EsselinkArtikel[artikelnummer, omschrijving, 2, "
-				+ "eenheid, <Geld[1,00]>]>, 5.0, 10.0]>", this.gebruiktArtikel.toString());
+		assertEquals("<GebruiktEsselinkArtikel[omschrijving, <Geld[2,50]>, 10.0, 5.0, "
+				+ "<EsselinkArtikel[artikelnummer, omschrijving, 2, eenheid, <Geld[1,00]>]>]>",
+				this.gebruiktArtikel.toString());
 	}
 }

@@ -21,7 +21,7 @@ public class ReparatiesFactuurRoot implements Root<ReparatiesFactuur> {
 	@Override
 	@XmlAttribute
 	public String getVersion() {
-		return "3";
+		return "4";
 	}
 
 	@Override

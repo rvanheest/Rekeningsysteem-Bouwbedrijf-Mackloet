@@ -4,18 +4,18 @@ import java.io.File;
 import java.time.LocalDate;
 import java.util.Currency;
 
-import org.rekeningsysteem.data.particulier.AnderArtikel;
 import org.rekeningsysteem.data.particulier.EsselinkArtikel;
 import org.rekeningsysteem.data.particulier.GebruiktEsselinkArtikel;
 import org.rekeningsysteem.data.particulier.ParticulierArtikel;
+import org.rekeningsysteem.data.particulier.AnderArtikel;
 import org.rekeningsysteem.data.particulier.ParticulierFactuur;
+import org.rekeningsysteem.data.particulier.loon.AbstractLoon;
+import org.rekeningsysteem.data.particulier.loon.InstantLoon;
+import org.rekeningsysteem.data.particulier.loon.ProductLoon;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.data.util.ItemList;
 import org.rekeningsysteem.data.util.header.Debiteur;
 import org.rekeningsysteem.data.util.header.OmschrFactuurHeader;
-import org.rekeningsysteem.data.util.loon.AbstractLoon;
-import org.rekeningsysteem.data.util.loon.InstantLoon;
-import org.rekeningsysteem.data.util.loon.ProductLoon;
 
 public class ParticulierFactuurIntegrationTest extends AbstractRekeningIntegrationTest {
 
@@ -72,9 +72,9 @@ public class ParticulierFactuurIntegrationTest extends AbstractRekeningIntegrati
 				omschrijving);
 
 		ItemList<ParticulierArtikel> itemList = this.addArtikels();
-		ItemList<AbstractLoon> loonList = this.addLoon();
+		itemList.addAll(this.addLoon());
 
-		return new ParticulierFactuur(header, Currency.getInstance("EUR"), itemList, loonList);
+		return new ParticulierFactuur(header, Currency.getInstance("EUR"), itemList);
 	}
 
 	@Override

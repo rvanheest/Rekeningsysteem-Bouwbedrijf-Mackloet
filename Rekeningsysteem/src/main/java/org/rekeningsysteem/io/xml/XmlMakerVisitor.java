@@ -8,14 +8,12 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
-import org.rekeningsysteem.data.aangenomen.AangenomenFactuur;
 import org.rekeningsysteem.data.mutaties.MutatiesFactuur;
 import org.rekeningsysteem.data.offerte.Offerte;
 import org.rekeningsysteem.data.particulier.ParticulierFactuur;
 import org.rekeningsysteem.data.reparaties.ReparatiesFactuur;
 import org.rekeningsysteem.data.util.AbstractRekening;
 import org.rekeningsysteem.data.util.visitor.RekeningVisitor;
-import org.rekeningsysteem.io.xml.root.AangenomenFactuurRoot;
 import org.rekeningsysteem.io.xml.root.MutatiesFactuurRoot;
 import org.rekeningsysteem.io.xml.root.OfferteRoot;
 import org.rekeningsysteem.io.xml.root.ParticulierFactuurRoot;
@@ -32,8 +30,6 @@ public class XmlMakerVisitor implements RekeningVisitor {
 		this.map = new HashMap<>();
 
 		try {
-			this.map.put(AangenomenFactuurRoot.class,
-					JAXBContext.newInstance(AangenomenFactuurRoot.class).createMarshaller());
 			this.map.put(MutatiesFactuurRoot.class,
 					JAXBContext.newInstance(MutatiesFactuurRoot.class).createMarshaller());
 			this.map.put(OfferteRoot.class,
@@ -60,12 +56,6 @@ public class XmlMakerVisitor implements RekeningVisitor {
 
 	public void setSaveLocation(File saveLocation) {
 		this.saveLocation = saveLocation;
-	}
-
-	@Override
-	public void visit(AangenomenFactuur factuur) throws Exception {
-		Marshaller marshaller = this.map.get(AangenomenFactuurRoot.class);
-		this.save(marshaller, new AangenomenFactuurRoot(), factuur);
 	}
 
 	@Override

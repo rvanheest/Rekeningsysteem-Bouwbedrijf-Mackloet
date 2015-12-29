@@ -21,7 +21,7 @@ public class OfferteRoot implements Root<Offerte> {
 	@Override
 	@XmlAttribute
 	public String getVersion() {
-		return "3";
+		return "4";
 	}
 
 	@Override

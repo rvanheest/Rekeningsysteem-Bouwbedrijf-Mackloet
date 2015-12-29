@@ -26,7 +26,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.rekeningsysteem.data.aangenomen.AangenomenFactuur;
 import org.rekeningsysteem.data.mutaties.MutatiesFactuur;
 import org.rekeningsysteem.data.offerte.Offerte;
 import org.rekeningsysteem.data.particulier.ParticulierFactuur;
@@ -37,7 +36,6 @@ import org.rekeningsysteem.data.util.header.Debiteur;
 import org.rekeningsysteem.data.util.header.FactuurHeader;
 import org.rekeningsysteem.data.util.header.OmschrFactuurHeader;
 import org.rekeningsysteem.io.xml.XmlReader;
-import org.rekeningsysteem.io.xml.root.AangenomenFactuurRoot;
 import org.rekeningsysteem.io.xml.root.MutatiesFactuurRoot;
 import org.rekeningsysteem.io.xml.root.OfferteRoot;
 import org.rekeningsysteem.io.xml.root.ParticulierFactuurRoot;
@@ -64,43 +62,10 @@ public class XmlReaderTest {
 		this.reader = new XmlReader(this.map, this.builder);
 		this.testObserver = new TestSubscriber<>();
 
-		this.map.put(AangenomenFactuurRoot.class, this.unmarshaller);
 		this.map.put(MutatiesFactuurRoot.class, this.unmarshaller);
 		this.map.put(OfferteRoot.class, this.unmarshaller);
 		this.map.put(ParticulierFactuurRoot.class, this.unmarshaller);
 		this.map.put(ReparatiesFactuurRoot.class, this.unmarshaller);
-	}
-
-	@Test
-	@SuppressWarnings("unchecked")
-	public void testLoadAangenomenFactuur() throws SAXException, IOException, JAXBException {
-		File file = mock(File.class);
-		Document doc = mock(Document.class);
-		Element docElem = mock(Element.class);
-		NodeList nodeList = mock(NodeList.class);
-		Element factuur = mock(Element.class);
-		String type = "AangenomenFactuur";
-		String version = "3";
-		Root<AangenomenFactuur> root = mock(Root.class);
-		AangenomenFactuur rekening = new AangenomenFactuur(new OmschrFactuurHeader(
-				new Debiteur("", "", "", "", "", ""), LocalDate.now(), "", ""),
-				Currency.getInstance(Locale.US), new ItemList<>());
-
-		when(this.builder.parse((File) anyObject())).thenReturn(doc);
-		when(doc.getDocumentElement()).thenReturn(docElem);
-		when(doc.getElementsByTagName(anyString())).thenReturn(nodeList);
-		when(nodeList.item(anyInt())).thenReturn(factuur);
-		when(factuur.getAttribute(eq("type"))).thenReturn(type);
-		when(factuur.getAttribute(eq("version"))).thenReturn(version);
-		when(this.unmarshaller.unmarshal((Node) anyObject())).thenReturn(root);
-		when(root.getRekening()).thenReturn(rekening);
-
-		this.reader.load(file).subscribe(this.testObserver);
-
-		this.testObserver.assertValue(rekening);
-		this.testObserver.assertNoErrors();
-		this.testObserver.assertCompleted();
-		verify(this.unmarshaller).unmarshal(eq(doc));
 	}
 
 	@Test
@@ -112,7 +77,7 @@ public class XmlReaderTest {
 		NodeList nodeList = mock(NodeList.class);
 		Element factuur = mock(Element.class);
 		String type = "MutatiesFactuur";
-		String version = "3";
+		String version = "4";
 		Root<MutatiesFactuur> root = mock(Root.class);
 		MutatiesFactuur rekening = new MutatiesFactuur(new FactuurHeader(
 				new Debiteur("", "", "", "", "", ""), LocalDate.now(), ""),
@@ -144,7 +109,7 @@ public class XmlReaderTest {
 		NodeList nodeList = mock(NodeList.class);
 		Element factuur = mock(Element.class);
 		String type = "Offerte";
-		String version = "3";
+		String version = "4";
 		Root<Offerte> root = mock(Root.class);
 		Offerte rekening = new Offerte(new FactuurHeader(new Debiteur("", "", "", "", "", ""),
 				LocalDate.now(), ""), "", true);
@@ -175,11 +140,11 @@ public class XmlReaderTest {
 		NodeList nodeList = mock(NodeList.class);
 		Element factuur = mock(Element.class);
 		String type = "ParticulierFactuur";
-		String version = "3";
+		String version = "4";
 		Root<ParticulierFactuur> root = mock(Root.class);
 		ParticulierFactuur rekening = new ParticulierFactuur(new OmschrFactuurHeader(
 				new Debiteur("", "", "", "", "", ""), LocalDate.now(), "", ""),
-				Currency.getInstance(Locale.US), new ItemList<>(), new ItemList<>());
+				Currency.getInstance(Locale.US), new ItemList<>());
 
 		when(this.builder.parse((File) anyObject())).thenReturn(doc);
 		when(doc.getDocumentElement()).thenReturn(docElem);
@@ -207,7 +172,7 @@ public class XmlReaderTest {
 		NodeList nodeList = mock(NodeList.class);
 		Element factuur = mock(Element.class);
 		String type = "ReparatiesFactuur";
-		String version = "3";
+		String version = "4";
 		Root<ReparatiesFactuur> root = mock(Root.class);
 		ReparatiesFactuur rekening = new ReparatiesFactuur(new FactuurHeader(
 				new Debiteur("", "", "", "", "", ""), LocalDate.now(), ""),
@@ -286,7 +251,7 @@ public class XmlReaderTest {
 		NodeList nodeList = mock(NodeList.class);
 		Element factuur = mock(Element.class);
 		String type = "ReparatiesFactuur";
-		String version = "3";
+		String version = "4";
 
 		when(this.builder.parse((File) anyObject())).thenReturn(doc);
 		when(doc.getDocumentElement()).thenReturn(docElem);

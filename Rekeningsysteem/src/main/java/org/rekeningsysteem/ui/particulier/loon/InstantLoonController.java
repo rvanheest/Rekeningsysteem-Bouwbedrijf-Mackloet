@@ -2,8 +2,8 @@ package org.rekeningsysteem.ui.particulier.loon;
 
 import java.util.Currency;
 
+import org.rekeningsysteem.data.particulier.loon.InstantLoon;
 import org.rekeningsysteem.data.util.Geld;
-import org.rekeningsysteem.data.util.loon.InstantLoon;
 
 import rx.Observable;
 

@@ -4,17 +4,16 @@ import java.math.BigDecimal;
 import java.util.Currency;
 import java.util.Objects;
 
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.scene.control.Label;
-import javafx.scene.layout.GridPane;
-
 import org.rekeningsysteem.rxjavafx.Observables;
 import org.rekeningsysteem.ui.textfields.MoneyField;
 import org.rekeningsysteem.ui.textfields.NumberField;
 import org.rekeningsysteem.ui.textfields.PercentageField;
 
 import rx.Observable;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.control.Label;
+import javafx.scene.layout.GridPane;
 
 public class ProductLoonPane extends GridPane {
 

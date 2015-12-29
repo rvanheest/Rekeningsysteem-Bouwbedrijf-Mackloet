@@ -1,22 +1,32 @@
 package org.rekeningsysteem.data.particulier;
 
+import java.util.Objects;
+
 import org.rekeningsysteem.data.util.BtwListItem;
-import org.rekeningsysteem.data.util.Geld;
 
 public abstract class ParticulierArtikel implements BtwListItem {
 
-	@Override
-	public final Geld getLoon() {
-		return new Geld(0);
+	private final String omschrijving;
+
+	public ParticulierArtikel(String omschrijving) {
+		this.omschrijving = omschrijving;
+	}
+
+	public String getOmschrijving() {
+		return this.omschrijving;
 	}
 
 	@Override
-	public final double getLoonBtwPercentage() {
-		return 0;
+	public boolean equals(Object other) {
+		if (other instanceof ParticulierArtikel) {
+			ParticulierArtikel that = (ParticulierArtikel) other;
+			return Objects.equals(this.omschrijving, that.omschrijving);
+		}
+		return false;
 	}
 
 	@Override
-	public final Geld getLoonBtw() {
-		return new Geld(0);
+	public int hashCode() {
+		return Objects.hash(this.omschrijving);
 	}
 }

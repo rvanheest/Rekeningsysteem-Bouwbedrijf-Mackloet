@@ -16,24 +16,19 @@ public class ParticulierArtikelPane extends ItemPane {
 
 	private final ItemTabPane content;
 
-	private Map<String, ParticulierArtikelType> lookupTable = new HashMap<>();
-	private Observable<ParticulierArtikelType> type;
+	private final Map<String, ParticulierArtikelType> lookupTable = new HashMap<>();
+	private final Observable<ParticulierArtikelType> type;
 
 	public ParticulierArtikelPane(Currency currency) {
 		super("Nieuw particulier artikel");
-		this.content = this.getContent();
+
+		this.content = new ItemTabPane(this.lookupTable::get);
+		this.content.setId("particulier-tabs");
+		this.content.setTabClosingPolicy(TabClosingPolicy.UNAVAILABLE);
+
+		this.type = this.content.getType().cast(ParticulierArtikelType.class);
 
 		this.getChildren().add(1, this.content);
-	}
-
-	private ItemTabPane getContent() {
-		ItemTabPane content = new ItemTabPane(this.lookupTable::get);
-		content.setId("particulier-tabs");
-		content.setTabClosingPolicy(TabClosingPolicy.UNAVAILABLE);
-
-		this.type = content.getType().cast(ParticulierArtikelType.class);
-
-		return content;
 	}
 
 	public void addContent(ParticulierArtikelType tabName, Node content) {

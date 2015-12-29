@@ -10,16 +10,16 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.rekeningsysteem.data.aangenomen.AangenomenFactuur;
-import org.rekeningsysteem.data.aangenomen.AangenomenListItem;
 import org.rekeningsysteem.data.mutaties.MutatiesBon;
 import org.rekeningsysteem.data.mutaties.MutatiesFactuur;
 import org.rekeningsysteem.data.offerte.Offerte;
-import org.rekeningsysteem.data.particulier.AnderArtikel;
 import org.rekeningsysteem.data.particulier.EsselinkArtikel;
 import org.rekeningsysteem.data.particulier.GebruiktEsselinkArtikel;
 import org.rekeningsysteem.data.particulier.ParticulierArtikel;
+import org.rekeningsysteem.data.particulier.AnderArtikel;
 import org.rekeningsysteem.data.particulier.ParticulierFactuur;
+import org.rekeningsysteem.data.particulier.loon.InstantLoon;
+import org.rekeningsysteem.data.particulier.loon.ProductLoon;
 import org.rekeningsysteem.data.reparaties.ReparatiesBon;
 import org.rekeningsysteem.data.reparaties.ReparatiesFactuur;
 import org.rekeningsysteem.data.util.AbstractRekening;
@@ -28,9 +28,6 @@ import org.rekeningsysteem.data.util.ItemList;
 import org.rekeningsysteem.data.util.header.Debiteur;
 import org.rekeningsysteem.data.util.header.FactuurHeader;
 import org.rekeningsysteem.data.util.header.OmschrFactuurHeader;
-import org.rekeningsysteem.data.util.loon.AbstractLoon;
-import org.rekeningsysteem.data.util.loon.InstantLoon;
-import org.rekeningsysteem.data.util.loon.ProductLoon;
 import org.rekeningsysteem.io.xml.XmlReader2;
 
 import rx.observers.TestSubscriber;
@@ -74,14 +71,12 @@ public class XmlReader2Test {
 				"Product 7", 1, "Stuks", new Geld(7.44)), 1.0, 21.0));
 		itemList.add(new AnderArtikel("Stucloper + trapfolie", new Geld(15.0), 21.0));
 		itemList.add(new AnderArtikel("Kitwerk", new Geld(149.5), 21.0));
-
-		ItemList<AbstractLoon> loonList = new ItemList<>();
-		loonList.add(new ProductLoon("Uurloon à 38.50", 25.0, new Geld(38.5), 6.0));
-		loonList.add(new ProductLoon("test123", 12.0, new Geld(12.5), 6.0));
-		loonList.add(new InstantLoon("foobar", new Geld(40.0), 6.0));
+		itemList.add(new ProductLoon("Uurloon à 38.50", 25.0, new Geld(38.5), 6.0));
+		itemList.add(new ProductLoon("test123", 12.0, new Geld(12.5), 6.0));
+		itemList.add(new InstantLoon("foobar", new Geld(40.0), 6.0));
 
 		ParticulierFactuur expected = new ParticulierFactuur(factuurHeader,
-				Currency.getInstance("EUR"), itemList, loonList);
+				Currency.getInstance("EUR"), itemList);
 
 		this.reader.load(file).subscribe(this.testObserver);
 
@@ -181,13 +176,17 @@ public class XmlReader2Test {
 				"Street", "Number", "ZipCode", "Place"), LocalDate.of(2013, 4, 5), "122013",
 				"Voor u verrichte werkzaamheden");
 
-		ItemList<AangenomenListItem> itemList = new ItemList<>();
-		itemList.add(new AangenomenListItem("omschr1", new Geld(5183.75), 6, new Geld(2791.25), 21));
-		itemList.add(new AangenomenListItem("omschr2", new Geld(1314.8), 6, new Geld(1972.2), 21));
-		itemList.add(new AangenomenListItem("omschr3", new Geld(2300.0), 6, new Geld(5667), 21));
-		itemList.add(new AangenomenListItem("omschr4", new Geld(-800.0), 6, new Geld(0), 21));
+		ItemList<ParticulierArtikel> itemList = new ItemList<>();
+		itemList.add(new AnderArtikel("omschr1", new Geld(2791.25), 21));
+		itemList.add(new InstantLoon("omschr1", new Geld(5183.75), 6));
+		itemList.add(new AnderArtikel("omschr2", new Geld(1972.2), 21));
+		itemList.add(new InstantLoon("omschr2", new Geld(1314.8), 6));
+		itemList.add(new AnderArtikel("omschr3", new Geld(5667), 21));
+		itemList.add(new InstantLoon("omschr3", new Geld(2300.0), 6));
+		itemList.add(new AnderArtikel("omschr4", new Geld(0), 21));
+		itemList.add(new InstantLoon("omschr4", new Geld(-800.0), 6));
 
-		AangenomenFactuur expected = new AangenomenFactuur(factuurHeader,
+		ParticulierFactuur expected = new ParticulierFactuur(factuurHeader,
 				Currency.getInstance("EUR"), itemList);
 
 		this.reader.load(file).subscribe(this.testObserver);

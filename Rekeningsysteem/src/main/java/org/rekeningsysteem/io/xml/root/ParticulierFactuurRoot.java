@@ -21,7 +21,7 @@ public class ParticulierFactuurRoot implements Root<ParticulierFactuur> {
 	@Override
 	@XmlAttribute
 	public String getVersion() {
-		return "3";
+		return "4";
 	}
 
 	@Override

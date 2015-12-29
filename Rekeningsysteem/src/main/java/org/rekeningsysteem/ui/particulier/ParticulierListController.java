@@ -4,19 +4,18 @@ import java.util.Currency;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.rekeningsysteem.data.particulier.AnderArtikel;
-import org.rekeningsysteem.data.particulier.EsselinkArtikel;
 import org.rekeningsysteem.data.particulier.GebruiktEsselinkArtikel;
 import org.rekeningsysteem.data.particulier.ParticulierArtikel;
+import org.rekeningsysteem.data.particulier.AnderArtikel;
+import org.rekeningsysteem.data.particulier.loon.InstantLoon;
+import org.rekeningsysteem.data.particulier.loon.ProductLoon;
 import org.rekeningsysteem.data.util.BtwPercentage;
-import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.data.util.ItemList;
 import org.rekeningsysteem.io.database.Database;
 import org.rekeningsysteem.ui.list.AbstractListController;
 import org.rekeningsysteem.ui.particulier.ParticulierListPane.ParticulierModel;
 
-public class ParticulierListController
-		extends AbstractListController<ParticulierArtikel, ParticulierModel> {
+public class ParticulierListController extends AbstractListController<ParticulierArtikel, ParticulierModel> {
 
 	public ParticulierListController(Currency currency, Database db, BtwPercentage defaultBtw) {
 		this(currency, db, defaultBtw, new ParticulierListPane());
@@ -38,37 +37,45 @@ public class ParticulierListController
 		return list.stream().map(item -> {
 			if (item instanceof GebruiktEsselinkArtikel) {
 				GebruiktEsselinkArtikel artikel = (GebruiktEsselinkArtikel) item;
-				EsselinkArtikel art = artikel.getArtikel();
-				return new ParticulierModel(art.getArtikelNummer(), art.getOmschrijving(),
-						String.valueOf(art.getPrijsPer()), art.getEenheid(),
-						art.getVerkoopPrijs().getBedrag(), String.valueOf(artikel.getAantal()),
-						artikel.getMateriaalBtwPercentage());
+				return new ParticulierModel(artikel);
 			}
-			assert item instanceof AnderArtikel;
-			AnderArtikel artikel = (AnderArtikel) item;
-			return new ParticulierModel("", artikel.getOmschrijving(), "", "",
-					artikel.getMateriaal().getBedrag(), "",
-					artikel.getMateriaalBtwPercentage());
+			else if (item instanceof AnderArtikel) {
+    			AnderArtikel artikel = (AnderArtikel) item;
+    			return new ParticulierModel(artikel);
+			}
+			else if (item instanceof InstantLoon) {
+				InstantLoon loon = (InstantLoon) item;
+				return new ParticulierModel(loon);
+			}
+			else {
+				assert item instanceof ProductLoon;
+				ProductLoon loon = (ProductLoon) item;
+				return new ParticulierModel(loon);
+			}
 		}).collect(Collectors.toList());
 	}
 
 	@Override
 	protected ItemList<ParticulierArtikel> uiToModel(List<? extends ParticulierModel> list) {
 		return list.stream().map(item -> {
-			String artikelNummer = item.getArtikelNummer();
-			String omschrijving = item.getOmschrijving();
-			String prijsPer = item.getPrijsPer();
-			String eenheid = item.getEenheid();
-			Geld verkoopPrijs = new Geld(item.getVerkoopPrijs());
-			String aantal = item.getAantal();
-			double percentage = item.getBtwPercentage();
+			GebruiktEsselinkArtikel esselink = item.getEsselink();
+			AnderArtikel ander = item.getAnder();
+			InstantLoon instant = item.getInstant();
+			ProductLoon product = item.getProduct();
 
-			if ("".equals(artikelNummer)) {
-				return new AnderArtikel(omschrijving, verkoopPrijs, percentage);
+			if (esselink != null) {
+				return esselink;
 			}
-			return new GebruiktEsselinkArtikel(new EsselinkArtikel(artikelNummer, omschrijving,
-					Integer.parseInt(prijsPer), eenheid, verkoopPrijs),
-					Double.parseDouble(aantal), percentage);
+			else if (ander != null) {
+				return ander;
+			}
+			else if (instant != null) {
+				return instant;
+			}
+			else {
+				assert product != null;
+				return product;
+			}
 		}).collect(Collectors.toCollection(ItemList::new));
 	}
 }

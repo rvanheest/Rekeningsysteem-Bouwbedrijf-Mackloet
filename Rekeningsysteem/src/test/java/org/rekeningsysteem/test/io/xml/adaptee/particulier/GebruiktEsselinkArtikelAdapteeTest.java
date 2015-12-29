@@ -20,6 +20,12 @@ public class GebruiktEsselinkArtikelAdapteeTest extends ParticulierArtikelAdapte
 	}
 
 	@Test
+	public void testSetGetOmschrijving() {
+		this.getInstance().setOmschrijving("abc");
+		assertEquals("abc", this.getInstance().getOmschrijving());
+	}
+
+	@Test
 	public void testSetGetArtikel() {
 		EsselinkArtikel artikel = new EsselinkArtikel("artnr", "omschr", 12, "eenheid", new Geld(
 				12.30));

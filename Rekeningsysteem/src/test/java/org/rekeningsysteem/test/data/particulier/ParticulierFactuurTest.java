@@ -24,7 +24,6 @@ import org.rekeningsysteem.data.util.Totalen;
 import org.rekeningsysteem.data.util.header.Debiteur;
 import org.rekeningsysteem.data.util.header.FactuurHeader;
 import org.rekeningsysteem.data.util.header.OmschrFactuurHeader;
-import org.rekeningsysteem.data.util.loon.AbstractLoon;
 import org.rekeningsysteem.data.util.visitor.RekeningVisitor;
 import org.rekeningsysteem.logic.factuurnummer.FactuurnummerManager;
 import org.rekeningsysteem.test.data.util.AbstractFactuurTest;
@@ -34,7 +33,6 @@ public class ParticulierFactuurTest extends AbstractFactuurTest<ParticulierArtik
 	private ParticulierFactuur factuur;
 	private final OmschrFactuurHeader header = new OmschrFactuurHeader(
 			new Debiteur("a", "b", "c", "d", "e"), LocalDate.of(1992, 7, 30), "g");
-	@Mock private ItemList<AbstractLoon> loonList;
 	@Mock private RekeningVisitor visitor;
 
 	@Override
@@ -45,7 +43,7 @@ public class ParticulierFactuurTest extends AbstractFactuurTest<ParticulierArtik
 	@Override
 	protected AbstractFactuur<ParticulierArtikel> makeInstance(FactuurHeader header,
 			Currency currency, ItemList<ParticulierArtikel> itemList) {
-		return new ParticulierFactuur(this.header, currency, itemList, this.loonList);
+		return new ParticulierFactuur(this.header, currency, itemList);
 	}
 
 	@Override
@@ -58,7 +56,7 @@ public class ParticulierFactuurTest extends AbstractFactuurTest<ParticulierArtik
 			Currency currency, ItemList<ParticulierArtikel> itemList) {
 		OmschrFactuurHeader otherHeader2 = new OmschrFactuurHeader(
 				new Debiteur("", "", "", "", ""), LocalDate.of(1992, 7, 30), "");
-		return new ParticulierFactuur(otherHeader2, currency, itemList, this.loonList);
+		return new ParticulierFactuur(otherHeader2, currency, itemList);
 	}
 
 	@Before
@@ -66,11 +64,6 @@ public class ParticulierFactuurTest extends AbstractFactuurTest<ParticulierArtik
 	public void setUp() {
 		super.setUp();
 		this.factuur = this.makeInstance();
-	}
-
-	@Test
-	public void testGetLoonList() {
-		assertEquals(this.loonList, this.factuur.getLoonList());
 	}
 
 	@Test
@@ -106,14 +99,11 @@ public class ParticulierFactuurTest extends AbstractFactuurTest<ParticulierArtik
 	@Override
 	public void testGetTotalen() {
 		Totalen t1 = new Totalen();
-		Totalen t2 = new Totalen();
 		Totalen expected = new Totalen();
 		when(this.factuur.getItemList().getTotalen()).thenReturn(t1);
-		when(this.loonList.getTotalen()).thenReturn(t2);
 
 		assertEquals(expected, this.factuur.getTotalen());
 		verify(this.factuur.getItemList()).getTotalen();
-		verify(this.loonList).getTotalen();
 	}
 
 	@Test
@@ -125,9 +115,8 @@ public class ParticulierFactuurTest extends AbstractFactuurTest<ParticulierArtik
 
 	@Test
 	public void testToString() {
-		String expected = "<ParticulierFactuur[<FactuurHeader[<Debiteur[Optional.empty, a, b, c, "
-				+ "d, e, Optional.empty]>, 1992-07-30, Optional.empty, g]>, EUR, itemList, "
-				+ "loonList]>";
-		assertEquals(expected, this.factuur.toString());
+		assertEquals("<ParticulierFactuur[<FactuurHeader[<Debiteur[Optional.empty, a, b, c, "
+				+ "d, e, Optional.empty]>, 1992-07-30, Optional.empty, g]>, EUR, itemList]>",
+				this.factuur.toString());
 	}
 }

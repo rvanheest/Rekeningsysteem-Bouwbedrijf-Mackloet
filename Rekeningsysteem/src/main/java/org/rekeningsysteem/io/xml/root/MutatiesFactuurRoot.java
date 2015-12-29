@@ -21,7 +21,7 @@ public class MutatiesFactuurRoot implements Root<MutatiesFactuur> {
 	@Override
 	@XmlAttribute
 	public String getVersion() {
-		return "3";
+		return "4";
 	}
 
 	@Override

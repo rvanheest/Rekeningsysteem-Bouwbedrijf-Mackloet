@@ -4,17 +4,16 @@ import java.math.BigDecimal;
 import java.util.Currency;
 import java.util.Objects;
 
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
-import javafx.scene.layout.GridPane;
-
 import org.rekeningsysteem.rxjavafx.Observables;
 import org.rekeningsysteem.ui.textfields.MoneyField;
 import org.rekeningsysteem.ui.textfields.PercentageField;
 
 import rx.Observable;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.GridPane;
 
 public class InstantLoonPane extends GridPane {
 
@@ -50,7 +49,7 @@ public class InstantLoonPane extends GridPane {
 
 		Label omschrL = new Label("Omschrijving");
 		Label loonL = new Label("Loon");
-		Label loonBtwL = new Label("Loon btw");
+		Label loonBtwL = new Label("Btw percentage");
 
 		this.add(omschrL, 0, 0);
 		this.add(loonL, 0, 1);

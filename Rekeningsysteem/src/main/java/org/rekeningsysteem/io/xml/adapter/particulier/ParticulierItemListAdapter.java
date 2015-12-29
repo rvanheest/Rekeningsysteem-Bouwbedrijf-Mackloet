@@ -22,4 +22,5 @@ public class ParticulierItemListAdapter extends
 		adaptee.setList(new ArrayList<>(v));
 		return adaptee;
 	}
+
 }
