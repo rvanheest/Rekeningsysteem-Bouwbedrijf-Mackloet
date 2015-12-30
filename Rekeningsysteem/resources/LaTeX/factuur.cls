@@ -33,8 +33,8 @@
 		{\bf Subtotaal} & ##1 & \\
 	}
 
-	\newcommand*{\btwRow}[2]{
-		{\bf BTW ##1\%} & ##2 & \\
+	\newcommand*{\btwRow}[3]{
+		{\bf BTW ##1\% over #1 ##2} & ##3 & \\
 	}
 
 	\newcommand*{\totalRow}[1]{
