@@ -6,14 +6,14 @@ import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.rekeningsysteem.data.particulier.ParticulierArtikel;
-import org.rekeningsysteem.io.xml.adapter.particulier.ParticulierArtikelAdapter;
+import org.rekeningsysteem.io.xml.adapter.ListItemAdapter;
 
 public class ParticulierItemListAdaptee {
 
 	private List<ParticulierArtikel> list;
 
 	@XmlElementRef
-	@XmlJavaTypeAdapter(ParticulierArtikelAdapter.class)
+	@XmlJavaTypeAdapter(ListItemAdapter.class)
 	public List<ParticulierArtikel> getList() {
 		return this.list;
 	}

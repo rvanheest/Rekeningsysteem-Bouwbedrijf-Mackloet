@@ -6,12 +6,12 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.rekeningsysteem.data.util.Geld;
-import org.rekeningsysteem.io.xml.adaptee.particulier.ParticulierArtikelAdaptee;
+import org.rekeningsysteem.io.xml.adaptee.ListItemAdaptee;
 import org.rekeningsysteem.io.xml.adapter.util.GeldAdapter;
 
 @XmlRootElement(name = "instant-loon")
 @XmlType(propOrder = { "omschrijving", "loon", "loonBtwPercentage" })
-public class InstantLoonAdaptee extends ParticulierArtikelAdaptee {
+public class InstantLoonAdaptee extends ListItemAdaptee {
 
 	private String omschrijving;
 	private Geld loon;

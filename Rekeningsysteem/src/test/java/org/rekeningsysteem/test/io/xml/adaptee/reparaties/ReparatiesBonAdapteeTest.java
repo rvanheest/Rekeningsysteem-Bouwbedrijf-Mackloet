@@ -2,43 +2,46 @@ package org.rekeningsysteem.test.io.xml.adaptee.reparaties;
 
 import static org.junit.Assert.assertEquals;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.io.xml.adaptee.reparaties.ReparatiesBonAdaptee;
+import org.rekeningsysteem.test.io.xml.adaptee.ListItemAdapteeTest;
 
-public class ReparatiesBonAdapteeTest {
+public class ReparatiesBonAdapteeTest extends ListItemAdapteeTest {
 
-	private ReparatiesBonAdaptee adaptee;
+	@Override
+	protected ReparatiesBonAdaptee makeInstance() {
+		return new ReparatiesBonAdaptee();
+	}
 
-	@Before
-	public void setUp() {
-		this.adaptee = new ReparatiesBonAdaptee();
+	@Override
+	protected ReparatiesBonAdaptee getInstance() {
+		return (ReparatiesBonAdaptee) super.getInstance();
 	}
 
 	@Test
 	public void testSetGetOmschrijving() {
-		this.adaptee.setOmschrijving("omschr");
-		assertEquals("omschr", this.adaptee.getOmschrijving());
+		this.getInstance().setOmschrijving("omschr");
+		assertEquals("omschr", this.getInstance().getOmschrijving());
 	}
 
 	@Test
 	public void testSetGetBonnummer() {
-		this.adaptee.setBonnummer("bonnr");
-		assertEquals("bonnr", this.adaptee.getBonnummer());
+		this.getInstance().setBonnummer("bonnr");
+		assertEquals("bonnr", this.getInstance().getBonnummer());
 	}
 
 	@Test
 	public void testSetGetLoon() {
 		Geld loon = new Geld(12.04);
-		this.adaptee.setLoon(loon);
-		assertEquals(loon, this.adaptee.getLoon());
+		this.getInstance().setLoon(loon);
+		assertEquals(loon, this.getInstance().getLoon());
 	}
 
 	@Test
 	public void testSetGetMateriaal() {
 		Geld materiaal = new Geld(16.40);
-		this.adaptee.setMateriaal(materiaal);
-		assertEquals(materiaal, this.adaptee.getMateriaal());
+		this.getInstance().setMateriaal(materiaal);
+		assertEquals(materiaal, this.getInstance().getMateriaal());
 	}
 }

@@ -6,8 +6,9 @@ import org.junit.Test;
 import org.rekeningsysteem.data.particulier.EsselinkArtikel;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.io.xml.adaptee.particulier.GebruiktEsselinkArtikelAdaptee;
+import org.rekeningsysteem.test.io.xml.adaptee.ListItemAdapteeTest;
 
-public class GebruiktEsselinkArtikelAdapteeTest extends ParticulierArtikelAdapteeTest {
+public class GebruiktEsselinkArtikelAdapteeTest extends ListItemAdapteeTest {
 
 	@Override
 	protected GebruiktEsselinkArtikelAdaptee makeInstance() {

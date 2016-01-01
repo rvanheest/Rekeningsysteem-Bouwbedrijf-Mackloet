@@ -1,23 +1,29 @@
-package org.rekeningsysteem.io.xml.adapter.particulier;
+package org.rekeningsysteem.io.xml.adapter;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
-import org.rekeningsysteem.data.particulier.GebruiktEsselinkArtikel;
-import org.rekeningsysteem.data.particulier.ParticulierArtikel;
+import org.rekeningsysteem.data.mutaties.MutatiesBon;
 import org.rekeningsysteem.data.particulier.AnderArtikel;
+import org.rekeningsysteem.data.particulier.GebruiktEsselinkArtikel;
 import org.rekeningsysteem.data.particulier.loon.InstantLoon;
 import org.rekeningsysteem.data.particulier.loon.ProductLoon;
-import org.rekeningsysteem.io.xml.adaptee.particulier.GebruiktEsselinkArtikelAdaptee;
-import org.rekeningsysteem.io.xml.adaptee.particulier.ParticulierArtikelAdaptee;
+import org.rekeningsysteem.data.reparaties.ReparatiesBon;
+import org.rekeningsysteem.data.util.ListItem;
+import org.rekeningsysteem.io.xml.adaptee.ListItemAdaptee;
+import org.rekeningsysteem.io.xml.adaptee.mutaties.MutatiesBonAdaptee;
 import org.rekeningsysteem.io.xml.adaptee.particulier.AnderArtikelAdaptee;
+import org.rekeningsysteem.io.xml.adaptee.particulier.GebruiktEsselinkArtikelAdaptee;
 import org.rekeningsysteem.io.xml.adaptee.particulier.loon.InstantLoonAdaptee;
 import org.rekeningsysteem.io.xml.adaptee.particulier.loon.ProductLoonAdaptee;
+import org.rekeningsysteem.io.xml.adaptee.reparaties.ReparatiesBonAdaptee;
 
-public class ParticulierArtikelAdapter extends
-		XmlAdapter<ParticulierArtikelAdaptee, ParticulierArtikel> {
+public class ListItemAdapter extends XmlAdapter<ListItemAdaptee, ListItem> {
+
+	// TODO refactor to visitor pattern (2x)
 
 	@Override
-	public ParticulierArtikel unmarshal(ParticulierArtikelAdaptee adaptee) {
+	public ListItem unmarshal(ListItemAdaptee adaptee) {
+		System.out.println("unmarshal called with " + adaptee);
 		if (adaptee instanceof AnderArtikelAdaptee) {
 			return this.unmarshal((AnderArtikelAdaptee) adaptee);
 		}
@@ -25,10 +31,16 @@ public class ParticulierArtikelAdapter extends
 			return this.unmarshal((GebruiktEsselinkArtikelAdaptee) adaptee);
 		}
 		else if (adaptee instanceof InstantLoonAdaptee) {
-			return this.unmarshall((InstantLoonAdaptee) adaptee);
+			return this.unmarshal((InstantLoonAdaptee) adaptee);
 		}
 		else if (adaptee instanceof ProductLoonAdaptee) {
-			return this.unmarshall((ProductLoonAdaptee) adaptee);
+			return this.unmarshal((ProductLoonAdaptee) adaptee);
+		}
+		else if (adaptee instanceof MutatiesBonAdaptee) {
+			return this.unmarshal((MutatiesBonAdaptee) adaptee);
+		}
+		else if (adaptee instanceof ReparatiesBonAdaptee) {
+			return this.unmarshal((ReparatiesBonAdaptee) adaptee);
 		}
 		return null;
 	}
@@ -43,18 +55,29 @@ public class ParticulierArtikelAdapter extends
 				adaptee.getAantal(), adaptee.getMateriaalBtwPercentage());
 	}
 
-	private InstantLoon unmarshall(InstantLoonAdaptee adaptee) {
+	private InstantLoon unmarshal(InstantLoonAdaptee adaptee) {
 		return new InstantLoon(adaptee.getOmschrijving(), adaptee.getLoon(),
 				adaptee.getLoonBtwPercentage());
 	}
 
-	private ProductLoon unmarshall(ProductLoonAdaptee adaptee) {
+	private ProductLoon unmarshal(ProductLoonAdaptee adaptee) {
 		return new ProductLoon(adaptee.getOmschrijving(), adaptee.getUren(), adaptee.getUurloon(),
 				adaptee.getLoonBtwPercentage());
 	}
 
+	private MutatiesBon unmarshal(MutatiesBonAdaptee adaptee) {
+		return new MutatiesBon(adaptee.getOmschrijving(), adaptee.getBonnummer(),
+				adaptee.getPrijs());
+	}
+
+	private ReparatiesBon unmarshal(ReparatiesBonAdaptee adaptee) {
+		return new ReparatiesBon(adaptee.getOmschrijving(), adaptee.getBonnummer(),
+				adaptee.getLoon(), adaptee.getMateriaal());
+	}
+
 	@Override
-	public ParticulierArtikelAdaptee marshal(ParticulierArtikel v) {
+	public ListItemAdaptee marshal(ListItem v) {
+		System.out.println("marshal called with " + v);
 		if (v instanceof AnderArtikel) {
 			return this.marshal((AnderArtikel) v);
 		}
@@ -66,6 +89,12 @@ public class ParticulierArtikelAdapter extends
 		}
 		else if (v instanceof ProductLoon) {
 			return this.marshal((ProductLoon) v);
+		}
+		else if (v instanceof MutatiesBon) {
+			return this.marshal((MutatiesBon) v);
+		}
+		else if (v instanceof ReparatiesBon) {
+			return this.marshal((ReparatiesBon) v);
 		}
 		return null;
 	}
@@ -102,6 +131,23 @@ public class ParticulierArtikelAdapter extends
 		adaptee.setUren(loon.getUren());
 		adaptee.setUurloon(loon.getUurloon());
 		adaptee.setLoonBtwPercentage(loon.getLoonBtwPercentage());
+		return adaptee;
+	}
+
+	private MutatiesBonAdaptee marshal(MutatiesBon bon) {
+		MutatiesBonAdaptee adaptee = new MutatiesBonAdaptee();
+		adaptee.setOmschrijving(bon.getOmschrijving());
+		adaptee.setBonnummer(bon.getBonnummer());
+		adaptee.setPrijs(bon.getMateriaal());
+		return adaptee;
+	}
+
+	private ReparatiesBonAdaptee marshal(ReparatiesBon bon) {
+		ReparatiesBonAdaptee adaptee = new ReparatiesBonAdaptee();
+		adaptee.setOmschrijving(bon.getOmschrijving());
+		adaptee.setBonnummer(bon.getBonnummer());
+		adaptee.setLoon(bon.getLoon());
+		adaptee.setMateriaal(bon.getMateriaal());
 		return adaptee;
 	}
 }

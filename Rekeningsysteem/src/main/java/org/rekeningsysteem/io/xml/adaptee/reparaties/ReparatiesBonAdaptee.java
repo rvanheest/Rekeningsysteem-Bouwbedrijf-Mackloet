@@ -1,14 +1,17 @@
 package org.rekeningsysteem.io.xml.adaptee.reparaties;
 
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.rekeningsysteem.data.util.Geld;
+import org.rekeningsysteem.io.xml.adaptee.ListItemAdaptee;
 import org.rekeningsysteem.io.xml.adapter.util.GeldAdapter;
 
+@XmlRootElement(name = "reparaties-bon")
 @XmlType(propOrder = { "omschrijving", "bonnummer", "loon", "materiaal" })
-public class ReparatiesBonAdaptee {
+public class ReparatiesBonAdaptee extends ListItemAdaptee {
 
 	private String omschrijving;
 	private String bonnummer;

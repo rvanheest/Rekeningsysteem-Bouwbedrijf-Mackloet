@@ -19,7 +19,7 @@
         </factuurHeader>
         <currency>EUR</currency>
         <list>
-            <list-item>
+            <reparaties-bon>
                 <omschrijving>Bonnummer</omschrijving>
                 <bonnummer>110543</bonnummer>
                 <loon>
@@ -28,8 +28,8 @@
                 <materiaal>
                     <bedrag>6.5</bedrag>
                 </materiaal>
-            </list-item>
-            <list-item>
+            </reparaties-bon>
+            <reparaties-bon>
                 <omschrijving>Bonnummer</omschrijving>
                 <bonnummer>111558</bonnummer>
                 <loon>
@@ -38,8 +38,8 @@
                 <materiaal>
                     <bedrag>9.0</bedrag>
                 </materiaal>
-            </list-item>
-            <list-item>
+            </reparaties-bon>
+            <reparaties-bon>
                 <omschrijving>Bonnummer</omschrijving>
                 <bonnummer>111518</bonnummer>
                 <loon>
@@ -48,8 +48,8 @@
                 <materiaal>
                     <bedrag>0.0</bedrag>
                 </materiaal>
-            </list-item>
-            <list-item>
+            </reparaties-bon>
+            <reparaties-bon>
                 <omschrijving>Bonnummer</omschrijving>
                 <bonnummer>111660</bonnummer>
                 <loon>
@@ -58,8 +58,8 @@
                 <materiaal>
                     <bedrag>0.0</bedrag>
                 </materiaal>
-            </list-item>
-            <list-item>
+            </reparaties-bon>
+            <reparaties-bon>
                 <omschrijving>Bonnummer</omschrijving>
                 <bonnummer>111563</bonnummer>
                 <loon>
@@ -68,8 +68,8 @@
                 <materiaal>
                     <bedrag>13.5</bedrag>
                 </materiaal>
-            </list-item>
-            <list-item>
+            </reparaties-bon>
+            <reparaties-bon>
                 <omschrijving>Bonnummer</omschrijving>
                 <bonnummer>111625</bonnummer>
                 <loon>
@@ -78,8 +78,8 @@
                 <materiaal>
                     <bedrag>15.0</bedrag>
                 </materiaal>
-            </list-item>
-            <list-item>
+            </reparaties-bon>
+            <reparaties-bon>
                 <omschrijving>Bonnummer</omschrijving>
                 <bonnummer>111764</bonnummer>
                 <loon>
@@ -88,8 +88,8 @@
                 <materiaal>
                     <bedrag>0.0</bedrag>
                 </materiaal>
-            </list-item>
-            <list-item>
+            </reparaties-bon>
+            <reparaties-bon>
                 <omschrijving>Bonnummer</omschrijving>
                 <bonnummer>111751</bonnummer>
                 <loon>
@@ -98,8 +98,8 @@
                 <materiaal>
                     <bedrag>0.0</bedrag>
                 </materiaal>
-            </list-item>
-            <list-item>
+            </reparaties-bon>
+            <reparaties-bon>
                 <omschrijving>Bonnummer</omschrijving>
                 <bonnummer>111745</bonnummer>
                 <loon>
@@ -108,8 +108,8 @@
                 <materiaal>
                     <bedrag>0.0</bedrag>
                 </materiaal>
-            </list-item>
-            <list-item>
+            </reparaties-bon>
+            <reparaties-bon>
                 <omschrijving>Bonnummer</omschrijving>
                 <bonnummer>111571</bonnummer>
                 <loon>
@@ -118,8 +118,8 @@
                 <materiaal>
                     <bedrag>3.5</bedrag>
                 </materiaal>
-            </list-item>
-            <list-item>
+            </reparaties-bon>
+            <reparaties-bon>
                 <omschrijving>Bonnummer</omschrijving>
                 <bonnummer>111876</bonnummer>
                 <loon>
@@ -128,8 +128,8 @@
                 <materiaal>
                     <bedrag>0.0</bedrag>
                 </materiaal>
-            </list-item>
-            <list-item>
+            </reparaties-bon>
+            <reparaties-bon>
                 <omschrijving>Bonnummer</omschrijving>
                 <bonnummer>111716</bonnummer>
                 <loon>
@@ -138,8 +138,8 @@
                 <materiaal>
                     <bedrag>7.5</bedrag>
                 </materiaal>
-            </list-item>
-            <list-item>
+            </reparaties-bon>
+            <reparaties-bon>
                 <omschrijving>Bonnummer</omschrijving>
                 <bonnummer>111854</bonnummer>
                 <loon>
@@ -148,8 +148,8 @@
                 <materiaal>
                     <bedrag>183.5</bedrag>
                 </materiaal>
-            </list-item>
-            <list-item>
+            </reparaties-bon>
+            <reparaties-bon>
                 <omschrijving>Bonnummer</omschrijving>
                 <bonnummer>111912</bonnummer>
                 <loon>
@@ -158,8 +158,8 @@
                 <materiaal>
                     <bedrag>9.0</bedrag>
                 </materiaal>
-            </list-item>
-            <list-item>
+            </reparaties-bon>
+            <reparaties-bon>
                 <omschrijving>Bonnummer</omschrijving>
                 <bonnummer>111940</bonnummer>
                 <loon>
@@ -168,8 +168,8 @@
                 <materiaal>
                     <bedrag>9.0</bedrag>
                 </materiaal>
-            </list-item>
-            <list-item>
+            </reparaties-bon>
+            <reparaties-bon>
                 <omschrijving>Bonnummer</omschrijving>
                 <bonnummer>111928</bonnummer>
                 <loon>
@@ -178,8 +178,8 @@
                 <materiaal>
                     <bedrag>4.5</bedrag>
                 </materiaal>
-            </list-item>
-            <list-item>
+            </reparaties-bon>
+            <reparaties-bon>
                 <omschrijving>Bonnummer</omschrijving>
                 <bonnummer>111723</bonnummer>
                 <loon>
@@ -188,8 +188,8 @@
                 <materiaal>
                     <bedrag>0.0</bedrag>
                 </materiaal>
-            </list-item>
-            <list-item>
+            </reparaties-bon>
+            <reparaties-bon>
                 <omschrijving>Bonnummer</omschrijving>
                 <bonnummer>111963</bonnummer>
                 <loon>
@@ -198,8 +198,8 @@
                 <materiaal>
                     <bedrag>448.88</bedrag>
                 </materiaal>
-            </list-item>
-            <list-item>
+            </reparaties-bon>
+            <reparaties-bon>
                 <omschrijving>Bonnummer</omschrijving>
                 <bonnummer>111739</bonnummer>
                 <loon>
@@ -208,8 +208,8 @@
                 <materiaal>
                     <bedrag>136.52</bedrag>
                 </materiaal>
-            </list-item>
-            <list-item>
+            </reparaties-bon>
+            <reparaties-bon>
                 <omschrijving>Bonnummer</omschrijving>
                 <bonnummer>111091</bonnummer>
                 <loon>
@@ -218,8 +218,8 @@
                 <materiaal>
                     <bedrag>967.51</bedrag>
                 </materiaal>
-            </list-item>
-            <list-item>
+            </reparaties-bon>
+            <reparaties-bon>
                 <omschrijving>Bonnummer</omschrijving>
                 <bonnummer>111409</bonnummer>
                 <loon>
@@ -228,8 +228,8 @@
                 <materiaal>
                     <bedrag>1697.72</bedrag>
                 </materiaal>
-            </list-item>
-            <list-item>
+            </reparaties-bon>
+            <reparaties-bon>
                 <omschrijving>Bonnummer</omschrijving>
                 <bonnummer>111272</bonnummer>
                 <loon>
@@ -238,8 +238,8 @@
                 <materiaal>
                     <bedrag>2420.44</bedrag>
                 </materiaal>
-            </list-item>
-            <list-item>
+            </reparaties-bon>
+            <reparaties-bon>
                 <omschrijving>Bonnummer</omschrijving>
                 <bonnummer>111148</bonnummer>
                 <loon>
@@ -248,7 +248,7 @@
                 <materiaal>
                     <bedrag>2585.46</bedrag>
                 </materiaal>
-            </list-item>
+            </reparaties-bon>
         </list>
     </rekening>
 </bestand>

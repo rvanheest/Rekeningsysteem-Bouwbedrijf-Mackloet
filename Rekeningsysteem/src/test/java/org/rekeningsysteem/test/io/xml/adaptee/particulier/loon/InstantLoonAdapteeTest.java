@@ -5,9 +5,9 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.io.xml.adaptee.particulier.loon.InstantLoonAdaptee;
-import org.rekeningsysteem.test.io.xml.adaptee.particulier.ParticulierArtikelAdapteeTest;
+import org.rekeningsysteem.test.io.xml.adaptee.ListItemAdapteeTest;
 
-public class InstantLoonAdapteeTest extends ParticulierArtikelAdapteeTest {
+public class InstantLoonAdapteeTest extends ListItemAdapteeTest {
 
 	@Override
 	protected InstantLoonAdaptee makeInstance() {

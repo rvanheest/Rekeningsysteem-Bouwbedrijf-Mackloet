@@ -6,11 +6,12 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.rekeningsysteem.data.particulier.EsselinkArtikel;
+import org.rekeningsysteem.io.xml.adaptee.ListItemAdaptee;
 import org.rekeningsysteem.io.xml.adapter.particulier.EsselinkArtikelAdapter;
 
 @XmlRootElement(name = "gebruikt-esselink-artikel")
 @XmlType(propOrder = { "omschrijving", "artikel", "aantal", "materiaalBtwPercentage" })
-public class GebruiktEsselinkArtikelAdaptee extends ParticulierArtikelAdaptee {
+public class GebruiktEsselinkArtikelAdaptee extends ListItemAdaptee {
 
 	private String omschrijving;
 	private EsselinkArtikel artikel;

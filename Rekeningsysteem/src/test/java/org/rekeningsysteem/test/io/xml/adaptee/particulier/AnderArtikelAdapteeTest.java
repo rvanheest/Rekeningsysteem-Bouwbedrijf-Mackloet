@@ -5,8 +5,9 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.io.xml.adaptee.particulier.AnderArtikelAdaptee;
+import org.rekeningsysteem.test.io.xml.adaptee.ListItemAdapteeTest;
 
-public class AnderArtikelAdapteeTest extends ParticulierArtikelAdapteeTest {
+public class AnderArtikelAdapteeTest extends ListItemAdapteeTest {
 
 	@Override
 	protected AnderArtikelAdaptee makeInstance() {

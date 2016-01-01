@@ -19,27 +19,27 @@
         </factuurHeader>
         <currency>EUR</currency>
         <list>
-            <list-item>
+            <mutaties-bon>
                 <omschrijving>Bonnummer</omschrijving>
                 <bonnummer>111390</bonnummer>
                 <prijs>
                     <bedrag>4971.96</bedrag>
                 </prijs>
-            </list-item>
-            <list-item>
+            </mutaties-bon>
+            <mutaties-bon>
                 <omschrijving>Bonnummer</omschrijving>
                 <bonnummer>111477</bonnummer>
                 <prijs>
                     <bedrag>4820.96</bedrag>
                 </prijs>
-            </list-item>
-            <list-item>
+            </mutaties-bon>
+            <mutaties-bon>
                 <omschrijving>Bonnummer</omschrijving>
                 <bonnummer>112308</bonnummer>
                 <prijs>
                     <bedrag>5510.74</bedrag>
                 </prijs>
-            </list-item>
+            </mutaties-bon>
         </list>
     </rekening>
 </bestand>
