@@ -57,8 +57,9 @@ public class PdfExporterVisitor implements RekeningVisitor {
 	public void setSaveLocation(File saveLocation) {
 		this.saveLocation = saveLocation;
 	}
-	
-	private void general(File templateTex, Consumer<PdfConverter> convert) throws PdfException, IOException {
+
+	private void general(File templateTex, Consumer<PdfConverter> convert)
+			throws PdfException, IOException {
 		String pdfName = this.saveLocation.getName();
 		pdfName = pdfName.substring(0, pdfName.lastIndexOf("."));
 
@@ -67,16 +68,16 @@ public class PdfExporterVisitor implements RekeningVisitor {
 			tempTemplateDir.mkdir();
 		}
 		File resultTex = new File(tempTemplateDir.getAbsolutePath() + "\\" + pdfName + ".tex");
-		
+
 		File templateDir = templateTex.getParentFile();
 
 		PdfConverter converter = new PdfConverter(templateDir);
 		convert.accept(converter);
 		this.parse(converter, templateTex, resultTex);
 		this.generate(new JLRGenerator(), resultTex, templateDir);
-		
+
 		FileUtils.deleteDirectory(tempTemplateDir);
-		
+
 		if (this.autoOpen) {
 			JLROpener.open(this.saveLocation);
 		}
@@ -84,7 +85,9 @@ public class PdfExporterVisitor implements RekeningVisitor {
 
 	@Override
 	public void visit(MutatiesFactuur factuur) throws Exception {
-		Optional<File> templateTex = this.properties.getProperty(PropertyModelEnum.PDF_MUTATIES_TEMPLATE).map(File::new);
+		Optional<File> templateTex = this.properties
+				.getProperty(PropertyModelEnum.PDF_MUTATIES_TEMPLATE)
+				.map(File::new);
 		if (templateTex.isPresent()) {
 			this.general(templateTex.get(), this.convert(factuur));
 		}
@@ -92,7 +95,9 @@ public class PdfExporterVisitor implements RekeningVisitor {
 
 	@Override
 	public void visit(Offerte offerte) throws Exception {
-		Optional<File> templateTex = this.properties.getProperty(PropertyModelEnum.PDF_OFFERTE_TEMPLATE).map(File::new);
+		Optional<File> templateTex = this.properties
+				.getProperty(PropertyModelEnum.PDF_OFFERTE_TEMPLATE)
+				.map(File::new);
 		if (templateTex.isPresent()) {
 			this.general(templateTex.get(), this.convert(offerte));
 		}
@@ -100,7 +105,9 @@ public class PdfExporterVisitor implements RekeningVisitor {
 
 	@Override
 	public void visit(ParticulierFactuur factuur) throws Exception {
-		Optional<File> templateTex = this.properties.getProperty(PropertyModelEnum.PDF_PARTICULIER_TEMPLATE).map(File::new);
+		Optional<File> templateTex = this.properties
+				.getProperty(PropertyModelEnum.PDF_PARTICULIER_TEMPLATE)
+				.map(File::new);
 		if (templateTex.isPresent()) {
 			this.general(templateTex.get(), this.convert(factuur));
 		}
@@ -108,7 +115,9 @@ public class PdfExporterVisitor implements RekeningVisitor {
 
 	@Override
 	public void visit(ReparatiesFactuur factuur) throws Exception {
-		Optional<File> templateTex = this.properties.getProperty(PropertyModelEnum.PDF_REPARATIES_TEMPLATE).map(File::new);
+		Optional<File> templateTex = this.properties
+				.getProperty(PropertyModelEnum.PDF_REPARATIES_TEMPLATE)
+				.map(File::new);
 		if (templateTex.isPresent()) {
 			this.general(templateTex.get(), this.convert(factuur));
 		}
@@ -116,19 +125,19 @@ public class PdfExporterVisitor implements RekeningVisitor {
 
 	private Consumer<PdfConverter> convertFactuurHeader(FactuurHeader header) {
 		return converter -> {
-    		Debiteur debiteur = header.getDebiteur();
-    		converter.replace("DebiteurNaam", debiteur.getNaam());
-    		converter.replace("DebiteurStraat", debiteur.getStraat());
-    		converter.replace("DebiteurNummer", debiteur.getNummer());
-    		converter.replace("DebiteurPostcode", debiteur.getPostcode());
-    		converter.replace("DebiteurPlaats", debiteur.getPlaats());
-    		converter.replace("HasDebiteurBtwNummer", debiteur.getBtwNummer().isPresent());
-    		converter.replace("DebiteurBtwNummer", debiteur.getBtwNummer().orElse(""));
-    
-    		converter.replace("Factuurnummer", header.getFactuurnummer().orElse(""));
-    		this.properties.getProperty(PropertyModelEnum.DATE_FORMAT)
-    				.map(format -> header.getDatum().format(DateTimeFormatter.ofPattern(format)))
-    				.ifPresent(datum -> converter.replace("Datum", datum));
+			Debiteur debiteur = header.getDebiteur();
+			converter.replace("DebiteurNaam", debiteur.getNaam());
+			converter.replace("DebiteurStraat", debiteur.getStraat());
+			converter.replace("DebiteurNummer", debiteur.getNummer());
+			converter.replace("DebiteurPostcode", debiteur.getPostcode());
+			converter.replace("DebiteurPlaats", debiteur.getPlaats());
+			converter.replace("HasDebiteurBtwNummer", debiteur.getBtwNummer().isPresent());
+			converter.replace("DebiteurBtwNummer", debiteur.getBtwNummer().orElse(""));
+
+			converter.replace("Factuurnummer", header.getFactuurnummer().orElse(""));
+			this.properties.getProperty(PropertyModelEnum.DATE_FORMAT)
+					.map(format -> header.getDatum().format(DateTimeFormatter.ofPattern(format)))
+					.ifPresent(datum -> converter.replace("Datum", datum));
 		};
 	}
 
@@ -140,11 +149,12 @@ public class PdfExporterVisitor implements RekeningVisitor {
 	private Consumer<PdfConverter> convertTotalen(Totalen totalen) {
 		return converter -> {
 			converter.replace("SubTotaalBedrag", totalen.getSubtotaal().formattedString());
-			converter.replace("btwList", totalen.getBtw().entrySet()
+			converter.replace("btwList", totalen.getNettoBtwTuple().entrySet()
 					.stream()
 					.sorted(Map.Entry.comparingByKey())
 					.map(entry -> Arrays.asList(String.valueOf(entry.getKey()),
-							entry.getValue().formattedString()))
+							entry.getValue().getNetto().formattedString(),
+							entry.getValue().getBtw().formattedString()))
 					.collect(Collectors.toList()));
 			converter.replace("TotaalBedrag", totalen.getTotaal().formattedString());
 		};
@@ -152,23 +162,28 @@ public class PdfExporterVisitor implements RekeningVisitor {
 
 	private Consumer<PdfConverter> convert(MutatiesFactuur factuur) {
 		return this.convertFactuurHeader(factuur.getFactuurHeader())
-				.andThen(converter -> converter.replace("Valuta", factuur.getCurrency().getSymbol()))
+				.andThen(converter -> converter.replace("Valuta", factuur.getCurrency()
+						.getSymbol()))
 				.andThen(converter -> converter.replace("bonList", factuur.getItemList()
 						.stream()
-        				.map(item -> item.accept(this.itemVisitor))
-        				.collect(Collectors.toList())))
-        		.andThen(converter -> converter.replace("TotaalBedrag", factuur.getTotalen().getTotaal().formattedString()));
+						.map(item -> item.accept(this.itemVisitor))
+						.collect(Collectors.toList())))
+				.andThen(converter -> converter.replace("TotaalBedrag", factuur.getTotalen()
+						.getTotaal()
+						.formattedString()));
 	}
 
 	private Consumer<PdfConverter> convert(Offerte offerte) {
 		return this.convertFactuurHeader(offerte.getFactuurHeader())
 				.andThen(converter -> converter.replace("Tekst", offerte.getTekst()))
-				.andThen(converter -> converter.replace("Ondertekenen", "" + offerte.isOndertekenen()));
+				.andThen(converter -> converter.replace("Ondertekenen",
+						String.valueOf(offerte.isOndertekenen())));
 	}
 
 	private Consumer<PdfConverter> convert(ParticulierFactuur factuur) {
 		return this.convertOmschrFactuurHeader(factuur.getFactuurHeader())
-				.andThen(converter -> converter.replace("Valuta", factuur.getCurrency().getSymbol()))
+				.andThen(converter -> converter.replace("Valuta", factuur.getCurrency()
+						.getSymbol()))
 				.andThen(converter -> converter.replace("artikelList", factuur.getItemList()
 						.stream()
 						.map(artikel -> artikel.accept(this.itemVisitor))
@@ -178,21 +193,26 @@ public class PdfExporterVisitor implements RekeningVisitor {
 
 	private Consumer<PdfConverter> convert(ReparatiesFactuur factuur) {
 		return this.convertFactuurHeader(factuur.getFactuurHeader())
-				.andThen(converter -> converter.replace("Valuta", factuur.getCurrency().getSymbol()))
+				.andThen(converter -> converter.replace("Valuta", factuur.getCurrency()
+						.getSymbol()))
 				.andThen(converter -> converter.replace("bonList", factuur.getItemList()
 						.stream()
-        				.map(item -> item.accept(this.itemVisitor))
-        				.collect(Collectors.toList())))
-        		.andThen(converter -> converter.replace("TotaalBedrag", factuur.getTotalen().getTotaal().formattedString()));
+						.map(item -> item.accept(this.itemVisitor))
+						.collect(Collectors.toList())))
+				.andThen(converter -> converter.replace("TotaalBedrag", factuur.getTotalen()
+						.getTotaal()
+						.formattedString()));
 	}
 
-	private void parse(PdfConverter converter, File templateTex, File resultTex) throws PdfException, IOException {
+	private void parse(PdfConverter converter, File templateTex, File resultTex)
+			throws PdfException, IOException {
 		if (!converter.parse(templateTex, resultTex)) {
 			throw new PdfException(converter.getErrorMessage());
 		}
 	}
 
-	private void generate(JLRGenerator generator, File resultTex, File templateDir) throws PdfException, IOException {
+	private void generate(JLRGenerator generator, File resultTex, File templateDir)
+			throws PdfException, IOException {
 		generator.deleteTempFiles(true, true, true);
 
 		if (!generator.generate(resultTex, this.saveLocation.getParentFile(), templateDir)) {
