@@ -26,8 +26,8 @@ public class Offerte extends AbstractRekening {
 	}
 
 	@Override
-	public void accept(RekeningVisitor visitor) throws Exception {
-		visitor.visit(this);
+	public <T> T accept(RekeningVisitor<T> visitor) throws Exception {
+		return visitor.visit(this);
 	}
 
 	@Override

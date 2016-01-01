@@ -23,7 +23,7 @@ import org.rekeningsysteem.test.data.util.AbstractFactuurTest;
 public class MutatiesFactuurTest extends AbstractFactuurTest<MutatiesBon> {
 
 	private MutatiesFactuur factuur;
-	@Mock private RekeningVisitor visitor;
+	@Mock private RekeningVisitor<Object> visitor;
 
 	@Override
 	protected MutatiesFactuur makeInstance() {

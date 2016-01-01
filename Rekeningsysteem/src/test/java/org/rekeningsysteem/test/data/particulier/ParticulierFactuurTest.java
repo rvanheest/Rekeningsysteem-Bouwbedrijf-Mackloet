@@ -36,7 +36,7 @@ public class ParticulierFactuurTest extends AbstractFactuurTest<ParticulierArtik
 	private ParticulierFactuur factuur;
 	private final OmschrFactuurHeader header = new OmschrFactuurHeader(
 			new Debiteur("a", "b", "c", "d", "e"), LocalDate.of(1992, 7, 30), "g");
-	@Mock private RekeningVisitor visitor;
+	@Mock private RekeningVisitor<Object> visitor;
 
 	@Override
 	protected ParticulierFactuur makeInstance() {

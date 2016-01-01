@@ -22,7 +22,7 @@ public final class OfferteTest extends AbstractRekeningTest {
 
 	private Offerte offerte;
 	private final String tekst = "Lorem ipsum dolor sit amet.";
-	@Mock private RekeningVisitor visitor;
+	@Mock private RekeningVisitor<Object> visitor;
 
 	@Override
 	protected Offerte makeInstance() {

@@ -15,8 +15,8 @@ public class MutatiesFactuur extends AbstractFactuur<MutatiesBon> {
 	}
 
 	@Override
-	public void accept(RekeningVisitor visitor) throws Exception {
-		visitor.visit(this);
+	public <T> T accept(RekeningVisitor<T> visitor) throws Exception {
+		return visitor.visit(this);
 	}
 
 	@Override
