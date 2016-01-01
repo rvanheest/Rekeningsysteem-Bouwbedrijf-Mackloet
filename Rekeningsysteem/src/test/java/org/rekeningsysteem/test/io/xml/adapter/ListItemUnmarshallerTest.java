@@ -18,78 +18,84 @@ import org.rekeningsysteem.io.xml.adaptee.particulier.GebruiktEsselinkArtikelAda
 import org.rekeningsysteem.io.xml.adaptee.particulier.loon.InstantLoonAdaptee;
 import org.rekeningsysteem.io.xml.adaptee.particulier.loon.ProductLoonAdaptee;
 import org.rekeningsysteem.io.xml.adaptee.reparaties.ReparatiesBonAdaptee;
-import org.rekeningsysteem.io.xml.adapter.MarshalListItemVisitor;
+import org.rekeningsysteem.io.xml.adapter.ListItemUnmarshaller;
 
-public class MarshalListItemVisitorTest {
+public class ListItemUnmarshallerTest {
 
-	private MarshalListItemVisitor visitor;
+	private ListItemUnmarshaller visitor;
 
 	@Before
 	public void setUp() {
-		this.visitor = new MarshalListItemVisitor();
+		this.visitor = new ListItemUnmarshaller();
 	}
 
 	@Test
 	public void testVisitMutatiesBon() {
+		MutatiesBonAdaptee adaptee = new MutatiesBonAdaptee();
+		adaptee.setOmschrijving("omschr");
+		adaptee.setBonnummer("bonn");
+		adaptee.setPrijs(new Geld(12));
 		MutatiesBon bon = new MutatiesBon("omschr", "bonn", new Geld(12));
-		MutatiesBonAdaptee adaptee = this.visitor.visit(bon);
 
-		assertEquals("omschr", adaptee.getOmschrijving());
-		assertEquals("bonn", adaptee.getBonnummer());
-		assertEquals(new Geld(12), adaptee.getPrijs());
+		assertEquals(bon, this.visitor.visit(adaptee));
 	}
 
 	@Test
 	public void testVisitGebruiktEsselinkArtikel() {
 		EsselinkArtikel artikel = new EsselinkArtikel("artNr", "omschr", 1, "eenh", new Geld(12));
+		GebruiktEsselinkArtikelAdaptee adaptee = new GebruiktEsselinkArtikelAdaptee();
+		adaptee.setOmschrijving("omschr");
+		adaptee.setArtikel(artikel);
+		adaptee.setAantal(2.3);
+		adaptee.setMateriaalBtwPercentage(4.2);
 		GebruiktEsselinkArtikel bon = new GebruiktEsselinkArtikel(artikel, 2.3, 4.2);
-		GebruiktEsselinkArtikelAdaptee adaptee = this.visitor.visit(bon);
 
-		assertEquals("omschr", adaptee.getOmschrijving());
-		assertEquals(artikel, adaptee.getArtikel());
-		assertEquals(2.3, adaptee.getAantal(), 0.0);
-		assertEquals(4.2, adaptee.getMateriaalBtwPercentage(), 0.0);
+		assertEquals(bon, this.visitor.visit(adaptee));
 	}
 
 	@Test
 	public void testVisitAnderArtikel() {
+		AnderArtikelAdaptee adaptee = new AnderArtikelAdaptee();
+		adaptee.setOmschrijving("omschr");
+		adaptee.setPrijs(new Geld(12));
+		adaptee.setMateriaalBtwPercentage(42);
 		AnderArtikel bon = new AnderArtikel("omschr", new Geld(12), 42.0);
-		AnderArtikelAdaptee adaptee = this.visitor.visit(bon);
 
-		assertEquals("omschr", adaptee.getOmschrijving());
-		assertEquals(new Geld(12), adaptee.getPrijs());
-		assertEquals(42.0, adaptee.getMateriaalBtwPercentage(), 0.0);
+		assertEquals(bon, this.visitor.visit(adaptee));
 	}
 
 	@Test
 	public void testVisitReparatiesBon() {
+		ReparatiesBonAdaptee adaptee = new ReparatiesBonAdaptee();
+		adaptee.setOmschrijving("omschr");
+		adaptee.setBonnummer("bonn");
+		adaptee.setLoon(new Geld(12));
+		adaptee.setMateriaal(new Geld(1334));
 		ReparatiesBon bon = new ReparatiesBon("omschr", "bonn", new Geld(12), new Geld(1334));
-		ReparatiesBonAdaptee adaptee = this.visitor.visit(bon);
 
-		assertEquals("omschr", adaptee.getOmschrijving());
-		assertEquals("bonn", adaptee.getBonnummer());
-		assertEquals(new Geld(12), adaptee.getLoon());
-		assertEquals(new Geld(1334), adaptee.getMateriaal());
+		assertEquals(bon, this.visitor.visit(adaptee));
 	}
 
 	@Test
 	public void testVisitInstantLoon() {
+		InstantLoonAdaptee adaptee = new InstantLoonAdaptee();
+		adaptee.setOmschrijving("omschr");
+		adaptee.setLoon(new Geld(12));
+		adaptee.setLoonBtwPercentage(21);
 		InstantLoon bon = new InstantLoon("omschr", new Geld(12), 21);
-		InstantLoonAdaptee adaptee = this.visitor.visit(bon);
 
-		assertEquals("omschr", adaptee.getOmschrijving());
-		assertEquals(new Geld(12), adaptee.getLoon());
-		assertEquals(21.0, adaptee.getLoonBtwPercentage(), 0.0);
+		assertEquals(bon, this.visitor.visit(adaptee));
 	}
 
 	@Test
 	public void testVisitProductLoon() {
+		ProductLoonAdaptee adaptee = new ProductLoonAdaptee();
+		adaptee.setOmschrijving("omschr");
+		adaptee.setUren(15);
+		adaptee.setUurloon(new Geld(12));
+		adaptee.setLoonBtwPercentage(21);
 		ProductLoon bon = new ProductLoon("omschr", 15, new Geld(12), 21);
-		ProductLoonAdaptee adaptee = this.visitor.visit(bon);
 
-		assertEquals("omschr", adaptee.getOmschrijving());
-		assertEquals(15.0, adaptee.getUren(), 0.0);
-		assertEquals(new Geld(12), adaptee.getUurloon());
-		assertEquals(21.0, adaptee.getLoonBtwPercentage(), 0.0);
+		assertEquals(bon, this.visitor.visit(adaptee));
 	}
 }

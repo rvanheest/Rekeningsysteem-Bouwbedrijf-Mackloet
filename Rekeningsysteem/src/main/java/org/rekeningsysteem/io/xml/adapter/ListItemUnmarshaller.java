@@ -15,7 +15,7 @@ import org.rekeningsysteem.io.xml.adaptee.particulier.loon.InstantLoonAdaptee;
 import org.rekeningsysteem.io.xml.adaptee.particulier.loon.ProductLoonAdaptee;
 import org.rekeningsysteem.io.xml.adaptee.reparaties.ReparatiesBonAdaptee;
 
-public class UnmarshalListItemVisitor implements ListItemAdapteeVisitor<ListItem> {
+public class ListItemUnmarshaller implements ListItemAdapteeVisitor<ListItem> {
 
 	@Override
 	public ListItem visit(MutatiesBonAdaptee adaptee) {
