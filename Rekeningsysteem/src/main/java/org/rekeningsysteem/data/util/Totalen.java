@@ -4,93 +4,143 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Function;
 
 public final class Totalen {
 
-	private final Geld loon;
-	private final Geld materiaal;
-	private final Map<Double, Geld> btwPerPercentage;
+	public class NettoBtwTuple {
+
+		private final Geld netto;
+		private final Geld btw;
+
+		public NettoBtwTuple(Geld netto, Geld btw) {
+			this.netto = netto;
+			this.btw = btw;
+		}
+
+		public NettoBtwTuple add(NettoBtwTuple other) {
+			return new NettoBtwTuple(this.netto.add(other.netto), this.btw.add(other.btw));
+		}
+
+		public Geld getNetto() {
+			return this.netto;
+		}
+
+		public Geld getBtw() {
+			return this.btw;
+		}
+
+		public Geld getTotaal() {
+			return this.netto.add(this.btw);
+		}
+
+		@Override
+		public boolean equals(Object other) {
+			if (other instanceof NettoBtwTuple) {
+				NettoBtwTuple that = (NettoBtwTuple) other;
+				return Objects.equals(this.netto, that.netto)
+						&& Objects.equals(this.btw, that.btw);
+			}
+			return false;
+		}
+
+		@Override
+		public int hashCode() {
+			return Objects.hash(this.netto, this.btw);
+		}
+
+		@Override
+		public String toString() {
+			return "<NettoBtwTuple[" + String.valueOf(this.netto) + ", "
+					+ String.valueOf(this.btw) + "]>";
+		}
+	}
+
+	private final Map<Double, NettoBtwTuple> nettoBtwPerPercentage;
 
 	public Totalen() {
-		this(new Geld(0), new Geld(0), new HashMap<>());
+		this(new HashMap<>());
 	}
 
-	private Totalen(Geld loon, Geld materiaal, Map<Double, Geld> btwPerPercentage) {
-		this.loon = loon;
-		this.materiaal = materiaal;
-		this.btwPerPercentage = btwPerPercentage;
+	public Totalen(double percentage, Geld netto, Geld btw) {
+		this();
+		this.nettoBtwPerPercentage.put(percentage, new NettoBtwTuple(netto, btw));
 	}
 
-	public Totalen addBtw(double percentage, Geld btw) {
-		if (!btw.isZero()) {
-			Map<Double, Geld> newMap = new HashMap<>(this.btwPerPercentage);
-			newMap.merge(percentage, btw, Geld::add);
-			return new Totalen(this.loon, this.materiaal, newMap);
-		}
-		return this;
+	private Totalen(Map<Double, NettoBtwTuple> nettoBtwPerPercentage) {
+		this.nettoBtwPerPercentage = nettoBtwPerPercentage;
+	}
+
+	public Totalen add(Geld netto) {
+		return this.add(0.0, netto, new Geld(0));
+	}
+
+	public Totalen add(double percentage, Geld netto, Geld btw) {
+		Map<Double, NettoBtwTuple> map = new HashMap<>(this.nettoBtwPerPercentage);
+		map.merge(percentage, new NettoBtwTuple(netto, btw), NettoBtwTuple::add);
+
+		return new Totalen(map);
+	}
+
+	private static <K, V1, V2> Map<K, V2> sep(Map<K, V1> map, Function<V1, V2> f) {
+		Map<K, V2> res = new HashMap<>();
+		map.entrySet()
+				.stream()
+				.forEach(entry -> res.put(entry.getKey(), f.apply(entry.getValue())));
+
+		return Collections.unmodifiableMap(res);
+	}
+
+	public Map<Double, NettoBtwTuple> getNettoBtwTuple() {
+		return Collections.unmodifiableMap(this.nettoBtwPerPercentage);
+	}
+
+	public Map<Double, Geld> getNetto() {
+		return Collections.unmodifiableMap(sep(this.nettoBtwPerPercentage, NettoBtwTuple::getNetto));
 	}
 
 	public Map<Double, Geld> getBtw() {
-		return Collections.unmodifiableMap(this.btwPerPercentage);
-	}
-
-	public Totalen addLoon(Geld loon) {
-		return new Totalen(this.loon.add(loon), this.materiaal, this.btwPerPercentage);
-	}
-
-	public Geld getLoon() {
-		return this.loon;
-	}
-
-	public Totalen addMateriaal(Geld materiaal) {
-		return new Totalen(this.loon, this.materiaal.add(materiaal), this.btwPerPercentage);
-	}
-
-	public Geld getMateriaal() {
-		return this.materiaal;
+		return Collections.unmodifiableMap(sep(this.nettoBtwPerPercentage, NettoBtwTuple::getBtw));
 	}
 
 	public Geld getSubtotaal() {
-		return this.materiaal.add(this.loon);
+		return this.nettoBtwPerPercentage.values()
+				.parallelStream()
+				.map(NettoBtwTuple::getNetto)
+				.reduce(new Geld(0.0), Geld::add);
 	}
 
 	public Geld getTotaal() {
-		return this.getSubtotaal().add(this.btwPerPercentage.entrySet()
-				.stream()
-				.map(Map.Entry::getValue)
-				.reduce(new Geld(0), Geld::add));
+		return this.nettoBtwPerPercentage.values()
+				.parallelStream()
+				.map(NettoBtwTuple::getTotaal)
+				.reduce(new Geld(0.0), Geld::add);
 	}
 
 	public Totalen plus(Totalen t2) {
-		Geld loon = this.loon.add(t2.loon);
-		Geld materiaal = this.materiaal.add(t2.materiaal);
-		Map<Double, Geld> btw = new HashMap<>(this.btwPerPercentage);
-		t2.btwPerPercentage
-				.forEach((percentage, bedrag) -> btw.merge(percentage, bedrag, Geld::add));
+		Map<Double, NettoBtwTuple> map = new HashMap<>(this.nettoBtwPerPercentage);
+		t2.nettoBtwPerPercentage
+				.forEach((percentage, bedrag) -> map.merge(percentage, bedrag, NettoBtwTuple::add));
 
-		return new Totalen(loon, materiaal, btw);
+		return new Totalen(map);
 	}
 
 	@Override
 	public boolean equals(Object other) {
 		if (other instanceof Totalen) {
 			Totalen that = (Totalen) other;
-			return Objects.equals(this.loon, that.loon)
-					&& Objects.equals(this.materiaal, that.materiaal)
-					&& Objects.equals(this.btwPerPercentage, that.btwPerPercentage);
+			return Objects.equals(this.nettoBtwPerPercentage, that.nettoBtwPerPercentage);
 		}
 		return false;
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(this.loon, this.materiaal, this.btwPerPercentage);
+		return Objects.hash(this.nettoBtwPerPercentage);
 	}
 
 	@Override
 	public String toString() {
-		return "<Totalen[" + String.valueOf(this.loon) + ", "
-				+ String.valueOf(this.materiaal) + ", "
-				+ String.valueOf(this.btwPerPercentage) + "]>";
+		return "<Totalen[" + String.valueOf(this.nettoBtwPerPercentage) + "]>";
 	}
 }
