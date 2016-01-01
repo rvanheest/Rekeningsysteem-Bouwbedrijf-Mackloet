@@ -8,7 +8,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.rekeningsysteem.data.reparaties.ReparatiesBon;
 import org.rekeningsysteem.data.util.ItemList;
 import org.rekeningsysteem.data.util.header.FactuurHeader;
-import org.rekeningsysteem.io.xml.adapter.reparaties.ReparatiesItemListAdapter;
+import org.rekeningsysteem.io.xml.adapter.ItemListAdapter;
 import org.rekeningsysteem.io.xml.adapter.util.CurrencyAdapter;
 import org.rekeningsysteem.io.xml.adapter.util.header.FactuurHeaderAdapter;
 
@@ -37,7 +37,7 @@ public class ReparatiesFactuurAdaptee {
 		this.currency = currency;
 	}
 
-	@XmlJavaTypeAdapter(ReparatiesItemListAdapter.class)
+	@XmlJavaTypeAdapter(ItemListAdapter.class)
 	public ItemList<ReparatiesBon> getList() {
 		return this.list;
 	}
