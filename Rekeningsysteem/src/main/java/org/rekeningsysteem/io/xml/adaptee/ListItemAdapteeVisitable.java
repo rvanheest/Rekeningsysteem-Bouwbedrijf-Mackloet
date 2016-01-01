@@ -12,5 +12,7 @@ import org.rekeningsysteem.io.xml.adaptee.reparaties.ReparatiesBonAdaptee;
 @XmlSeeAlso({ MutatiesBonAdaptee.class, ReparatiesBonAdaptee.class,
 	AnderArtikelAdaptee.class, GebruiktEsselinkArtikelAdaptee.class,
 	InstantLoonAdaptee.class, ProductLoonAdaptee.class })
-public abstract class ListItemAdaptee {
+public abstract class ListItemAdapteeVisitable {
+
+	public abstract <T> T accept(ListItemAdapteeVisitor<T> visitor);
 }

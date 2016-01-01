@@ -6,12 +6,13 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.rekeningsysteem.data.util.Geld;
-import org.rekeningsysteem.io.xml.adaptee.ListItemAdaptee;
+import org.rekeningsysteem.io.xml.adaptee.ListItemAdapteeVisitable;
+import org.rekeningsysteem.io.xml.adaptee.ListItemAdapteeVisitor;
 import org.rekeningsysteem.io.xml.adapter.util.GeldAdapter;
 
 @XmlRootElement(name = "mutaties-bon")
 @XmlType(propOrder = { "omschrijving", "bonnummer", "prijs" })
-public class MutatiesBonAdaptee extends ListItemAdaptee {
+public class MutatiesBonAdaptee extends ListItemAdapteeVisitable {
 
 	private String omschrijving;
 	private String bonnummer;
@@ -42,5 +43,10 @@ public class MutatiesBonAdaptee extends ListItemAdaptee {
 
 	public void setPrijs(Geld prijs) {
 		this.prijs = prijs;
+	}
+
+	@Override
+	public <T> T accept(ListItemAdapteeVisitor<T> visitor) {
+		return visitor.visit(this);
 	}
 }

@@ -15,7 +15,9 @@ import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.rekeningsysteem.data.particulier.ParticulierArtikel;
 import org.rekeningsysteem.data.particulier.ParticulierFactuur;
 import org.rekeningsysteem.data.util.AbstractFactuur;
@@ -28,6 +30,7 @@ import org.rekeningsysteem.data.util.visitor.RekeningVisitor;
 import org.rekeningsysteem.logic.factuurnummer.FactuurnummerManager;
 import org.rekeningsysteem.test.data.util.AbstractFactuurTest;
 
+@RunWith(MockitoJUnitRunner.class)
 public class ParticulierFactuurTest extends AbstractFactuurTest<ParticulierArtikel> {
 
 	private ParticulierFactuur factuur;

@@ -2,19 +2,26 @@ package org.rekeningsysteem.test.data.mutaties;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.mockito.Mockito.*;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.rekeningsysteem.data.mutaties.MutatiesBon;
 import org.rekeningsysteem.data.util.Geld;
+import org.rekeningsysteem.data.util.visitor.ListItemVisitor;
 import org.rekeningsysteem.test.data.util.ListItemTest;
 
+@RunWith(MockitoJUnitRunner.class)
 public class MutatiesBonTest extends ListItemTest {
 
 	private MutatiesBon bon;
 	private final String omschrijving = "omschrijving";
 	private final String bonnummer = "bonnummer";
 	private final Geld prijs = new Geld(10);
+	@Mock private ListItemVisitor<Object> visitor;
 
 	@Override
 	protected MutatiesBon makeInstance() {
@@ -51,6 +58,13 @@ public class MutatiesBonTest extends ListItemTest {
 	@Test
 	public void testGetMateriaal() {
 		assertEquals(this.prijs, this.bon.getMateriaal());
+	}
+
+	@Test
+	public void testAccept() {
+		this.bon.accept(this.visitor);
+
+		verify(this.visitor).visit(eq(this.bon));
 	}
 
 	@Test

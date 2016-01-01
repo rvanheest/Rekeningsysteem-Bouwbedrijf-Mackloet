@@ -1,15 +1,15 @@
 package org.rekeningsysteem.test.io.xml.adaptee;
 
 import org.junit.Before;
-import org.rekeningsysteem.io.xml.adaptee.ListItemAdaptee;
+import org.rekeningsysteem.io.xml.adaptee.ListItemAdapteeVisitable;
 
 public abstract class ListItemAdapteeTest {
 
-	private ListItemAdaptee adaptee;
+	private ListItemAdapteeVisitable adaptee;
 
-	protected abstract ListItemAdaptee makeInstance();
+	protected abstract ListItemAdapteeVisitable makeInstance();
 
-	protected ListItemAdaptee getInstance() {
+	protected ListItemAdapteeVisitable getInstance() {
 		return this.adaptee;
 	}
 
