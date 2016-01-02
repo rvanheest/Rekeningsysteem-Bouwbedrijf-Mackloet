@@ -12,10 +12,10 @@ import org.rekeningsysteem.data.particulier.EsselinkArtikel;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.io.xml.adaptee.ListItemAdapteeVisitor;
 import org.rekeningsysteem.io.xml.adaptee.particulier.GebruiktEsselinkArtikelAdaptee;
-import org.rekeningsysteem.test.io.xml.adaptee.ListItemAdapteeTest;
+import org.rekeningsysteem.test.io.xml.adaptee.ListItemAdapteeVisitableTest;
 
 @RunWith(MockitoJUnitRunner.class)
-public class GebruiktEsselinkArtikelAdapteeTest extends ListItemAdapteeTest {
+public class GebruiktEsselinkArtikelAdapteeTest extends ListItemAdapteeVisitableTest {
 
 	@Mock private ListItemAdapteeVisitor<Object> visitor;
 

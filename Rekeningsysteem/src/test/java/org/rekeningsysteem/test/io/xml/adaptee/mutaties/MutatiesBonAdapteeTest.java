@@ -11,10 +11,10 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.io.xml.adaptee.ListItemAdapteeVisitor;
 import org.rekeningsysteem.io.xml.adaptee.mutaties.MutatiesBonAdaptee;
-import org.rekeningsysteem.test.io.xml.adaptee.ListItemAdapteeTest;
+import org.rekeningsysteem.test.io.xml.adaptee.ListItemAdapteeVisitableTest;
 
 @RunWith(MockitoJUnitRunner.class)
-public class MutatiesBonAdapteeTest extends ListItemAdapteeTest {
+public class MutatiesBonAdapteeTest extends ListItemAdapteeVisitableTest {
 
 	@Mock private ListItemAdapteeVisitor<Object> visitor;
 

@@ -2,30 +2,34 @@ package org.rekeningsysteem.io.xml.adaptee.mutaties;
 
 import java.util.Currency;
 
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.rekeningsysteem.data.mutaties.MutatiesBon;
 import org.rekeningsysteem.data.util.ItemList;
 import org.rekeningsysteem.data.util.header.FactuurHeader;
+import org.rekeningsysteem.io.xml.adaptee.RekeningAdapteeVisitable;
+import org.rekeningsysteem.io.xml.adaptee.RekeningAdapteeVisitor;
 import org.rekeningsysteem.io.xml.adapter.ItemListAdapter;
 import org.rekeningsysteem.io.xml.adapter.util.CurrencyAdapter;
 import org.rekeningsysteem.io.xml.adapter.util.header.FactuurHeaderAdapter;
 
+@XmlRootElement(name = "mutaties-factuur")
 @XmlType(propOrder = { "factuurHeader", "currency", "list" })
-public class MutatiesFactuurAdaptee {
+public class MutatiesFactuurAdaptee extends RekeningAdapteeVisitable {
 
-	private FactuurHeader header;
+	private FactuurHeader factuurHeader;
 	private Currency currency;
 	private ItemList<MutatiesBon> list = new ItemList<>();
 
 	@XmlJavaTypeAdapter(FactuurHeaderAdapter.class)
 	public FactuurHeader getFactuurHeader() {
-		return this.header;
+		return this.factuurHeader;
 	}
 
-	public void setFactuurHeader(FactuurHeader header) {
-		this.header = header;
+	public void setFactuurHeader(FactuurHeader factuurHeader) {
+		this.factuurHeader = factuurHeader;
 	}
 
 	@XmlJavaTypeAdapter(CurrencyAdapter.class)
@@ -44,5 +48,10 @@ public class MutatiesFactuurAdaptee {
 
 	public void setList(ItemList<MutatiesBon> list) {
 		this.list = list;
+	}
+
+	@Override
+	public <T> T accept(RekeningAdapteeVisitor<T> visitor) {
+		return visitor.visit(this);
 	}
 }

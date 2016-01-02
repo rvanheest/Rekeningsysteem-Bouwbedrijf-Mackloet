@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <bestand type="MutatiesFactuur" version="4">
-    <rekening>
+    <mutaties-factuur>
         <factuurHeader>
             <debiteur>
                 <naam>Name</naam>
@@ -41,5 +41,5 @@
                 </prijs>
             </mutaties-bon>
         </list>
-    </rekening>
+    </mutaties-factuur>
 </bestand>

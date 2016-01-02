@@ -3,7 +3,7 @@ package org.rekeningsysteem.test.io.xml.adaptee;
 import org.junit.Before;
 import org.rekeningsysteem.io.xml.adaptee.ListItemAdapteeVisitable;
 
-public abstract class ListItemAdapteeTest {
+public abstract class ListItemAdapteeVisitableTest {
 
 	private ListItemAdapteeVisitable adaptee;
 

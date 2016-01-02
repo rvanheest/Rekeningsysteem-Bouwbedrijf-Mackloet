@@ -9,8 +9,8 @@ import org.rekeningsysteem.io.xml.adaptee.ListItemAdapteeVisitor;
 
 public class ListItemAdapter extends XmlAdapter<ListItemAdapteeVisitable, ListItem> {
 
-	private final ListItemAdapteeVisitor<ListItem> unmarshalVisitor = new UnmarshalListItemVisitor();
-	private final ListItemVisitor<ListItemAdapteeVisitable> marshalVisitor = new MarshalListItemVisitor();
+	private final ListItemAdapteeVisitor<ListItem> unmarshalVisitor = new ListItemUnmarshaller();
+	private final ListItemVisitor<ListItemAdapteeVisitable> marshalVisitor = new ListItemMarshaller();
 
 	@Override
 	public ListItem unmarshal(ListItemAdapteeVisitable adaptee) {

@@ -6,7 +6,9 @@ import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Currency;
+import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 import javax.management.modelmbean.XMLParseException;
 import javax.xml.parsers.DocumentBuilder;
@@ -32,6 +34,7 @@ import org.rekeningsysteem.data.util.ItemList;
 import org.rekeningsysteem.data.util.header.Debiteur;
 import org.rekeningsysteem.data.util.header.FactuurHeader;
 import org.rekeningsysteem.data.util.header.OmschrFactuurHeader;
+import org.rekeningsysteem.exception.XmlException;
 import org.rekeningsysteem.io.FactuurLoader;
 import org.rekeningsysteem.logging.ApplicationLogger;
 import org.w3c.dom.Document;
@@ -90,30 +93,36 @@ public class XmlReader2 implements FactuurLoader {
 		else {
 			String type = typeNode.getNodeValue();
     		if (type.equals("AangenomenFactuur")) {
-    			return this.makeAangenomenFactuur(((Element) bestand)
-    					.getElementsByTagName("rekening").item(0));
+    			return this.parseRekening(bestand, this::makeAangenomenFactuur, "rekening");
     		}
     		else if (type.equals("MutatiesFactuur")) {
-    			return this.makeMutatiesFactuur(((Element) bestand)
-    					.getElementsByTagName("rekening").item(0));
+    			return this.parseRekening(bestand, this::makeMutatiesFactuur, "rekening", "mutaties-factuur");
     		}
     		else if (type.equals("Offerte")) {
-    			return this.makeOfferte(((Element) bestand)
-    					.getElementsByTagName("rekening").item(0));
+    			return this.parseRekening(bestand, this::makeOfferte, "rekening", "offerte");
     		}
     		else if (type.equals("ParticulierFactuur")) {
-    			return this.makeParticulierFactuur(((Element) bestand)
-    					.getElementsByTagName("rekening").item(0));
+    			return this.parseRekening(bestand, this::makeParticulierFactuur, "rekening", "particulier-factuur");
     		}
     		else if (type.equals("ReparatiesFactuur")) {
-    			return this.makeReparatiesFactuur(((Element) bestand)
-    					.getElementsByTagName("rekening").item(0));
+    			return this.parseRekening(bestand, this::makeReparatiesFactuur, "rekening", "reparaties-factuur");
     		}
     		else {
     			return Observable.error(new XMLParseException("Geen geschikte Node gevonden. "
     					+ "Nodenaam = " + type + "."));
     		}
 		}
+	}
+
+	private <T extends AbstractRekening> Observable<T> parseRekening(Node bestand,
+			Function<Node, Observable<T>> parse, String... names) {
+		return Stream.of(names)
+				.map(((Element) bestand)::getElementsByTagName)
+				.filter(list -> list.getLength() != 0)
+				.map(list -> list.item(0))
+				.map(parse)
+				.findFirst()
+				.orElse(Observable.error(new XmlException("Could not parse file to object.")));
 	}
 
 	private Observable<String> getNodeValue(Node node, String s) {

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <bestand type="ReparatiesFactuur" version="4">
-    <rekening>
+    <reparaties-factuur>
         <factuurHeader>
             <debiteur>
                 <naam>Name</naam>
@@ -250,5 +250,5 @@
                 </materiaal>
             </reparaties-bon>
         </list>
-    </rekening>
+    </reparaties-factuur>
 </bestand>
