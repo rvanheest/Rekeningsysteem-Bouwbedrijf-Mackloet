@@ -37,7 +37,7 @@ public class XmlReaderIntegrationTest {
 	public void setUp() {
 		this.loader1 = new XmlReader1(this.logger);
 		this.loader2 = new XmlReader2(this.logger);
-		this.loader3 = new XmlReader3();
+		this.loader3 = new XmlReader3(this.logger);
 		this.loader4 = new XmlReader(this.logger);
 		this.testObserver = new TestSubscriber<>();
 	}
