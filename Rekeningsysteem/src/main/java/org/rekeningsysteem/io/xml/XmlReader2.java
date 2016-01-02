@@ -18,10 +18,10 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.rekeningsysteem.data.mutaties.MutatiesBon;
 import org.rekeningsysteem.data.mutaties.MutatiesFactuur;
 import org.rekeningsysteem.data.offerte.Offerte;
+import org.rekeningsysteem.data.particulier.AnderArtikel;
 import org.rekeningsysteem.data.particulier.EsselinkArtikel;
 import org.rekeningsysteem.data.particulier.GebruiktEsselinkArtikel;
 import org.rekeningsysteem.data.particulier.ParticulierArtikel;
-import org.rekeningsysteem.data.particulier.AnderArtikel;
 import org.rekeningsysteem.data.particulier.ParticulierFactuur;
 import org.rekeningsysteem.data.particulier.loon.AbstractLoon;
 import org.rekeningsysteem.data.particulier.loon.InstantLoon;
@@ -34,7 +34,6 @@ import org.rekeningsysteem.data.util.ItemList;
 import org.rekeningsysteem.data.util.header.Debiteur;
 import org.rekeningsysteem.data.util.header.FactuurHeader;
 import org.rekeningsysteem.data.util.header.OmschrFactuurHeader;
-import org.rekeningsysteem.exception.XmlException;
 import org.rekeningsysteem.io.FactuurLoader;
 import org.rekeningsysteem.logging.ApplicationLogger;
 import org.w3c.dom.Document;
@@ -92,25 +91,28 @@ public class XmlReader2 implements FactuurLoader {
 		}
 		else {
 			String type = typeNode.getNodeValue();
-    		if (type.equals("AangenomenFactuur")) {
-    			return this.parseRekening(bestand, this::makeAangenomenFactuur, "rekening");
-    		}
-    		else if (type.equals("MutatiesFactuur")) {
-    			return this.parseRekening(bestand, this::makeMutatiesFactuur, "rekening", "mutaties-factuur");
-    		}
-    		else if (type.equals("Offerte")) {
-    			return this.parseRekening(bestand, this::makeOfferte, "rekening", "offerte");
-    		}
-    		else if (type.equals("ParticulierFactuur")) {
-    			return this.parseRekening(bestand, this::makeParticulierFactuur, "rekening", "particulier-factuur");
-    		}
-    		else if (type.equals("ReparatiesFactuur")) {
-    			return this.parseRekening(bestand, this::makeReparatiesFactuur, "rekening", "reparaties-factuur");
-    		}
-    		else {
-    			return Observable.error(new XMLParseException("Geen geschikte Node gevonden. "
-    					+ "Nodenaam = " + type + "."));
-    		}
+			if (type.equals("AangenomenFactuur")) {
+				return this.parseRekening(bestand, this::makeAangenomenFactuur, "rekening");
+			}
+			else if (type.equals("MutatiesFactuur")) {
+				return this.parseRekening(bestand, this::makeMutatiesFactuur, "rekening",
+						"mutaties-factuur");
+			}
+			else if (type.equals("Offerte")) {
+				return this.parseRekening(bestand, this::makeOfferte, "rekening", "offerte");
+			}
+			else if (type.equals("ParticulierFactuur")) {
+				return this.parseRekening(bestand, this::makeParticulierFactuur, "rekening",
+						"particulier-factuur");
+			}
+			else if (type.equals("ReparatiesFactuur")) {
+				return this.parseRekening(bestand, this::makeReparatiesFactuur, "rekening",
+						"reparaties-factuur");
+			}
+			else {
+				return Observable.error(new XMLParseException("Geen geschikte Node gevonden. "
+						+ "Nodenaam = " + type + "."));
+			}
 		}
 	}
 
@@ -122,7 +124,7 @@ public class XmlReader2 implements FactuurLoader {
 				.map(list -> list.item(0))
 				.map(parse)
 				.findFirst()
-				.orElse(Observable.error(new XmlException("Could not parse file to object.")));
+				.orElse(Observable.error(new XMLParseException("Could not parse file to object.")));
 	}
 
 	private Observable<String> getNodeValue(Node node, String s) {
@@ -147,7 +149,7 @@ public class XmlReader2 implements FactuurLoader {
 	}
 
 	private Observable<Node> nodeListOrError(Supplier<NodeList> listSupplier) {
-		return Observable.<NodeList>create(subscriber -> {
+		return Observable.<NodeList> create(subscriber -> {
 			NodeList list = listSupplier.get();
 			if (list == null) {
 				subscriber.onError(new IllegalArgumentException("No itemList found."));
@@ -404,8 +406,12 @@ public class XmlReader2 implements FactuurLoader {
 		Observable<BtwPercentage> btw = this.makeBtwPercentage(((Element) node)
 				.getElementsByTagName("btwPercentage").item(0));
 		return btw.first().publish(percentage -> {
-			Observable<ItemList<ParticulierArtikel>> arts = percentage.map(b -> b.materiaalPercentage).flatMap(b -> listFunc.call(b));
-			Observable<ItemList<AbstractLoon>> loon = percentage.map(b -> b.loonPercentage).flatMap(b -> loonFunc.call(b));
+			Observable<ItemList<ParticulierArtikel>> arts = percentage
+					.map(b -> b.materiaalPercentage)
+					.flatMap(listFunc);
+			Observable<ItemList<AbstractLoon>> loon = percentage
+					.map(b -> b.loonPercentage)
+					.flatMap(loonFunc);
 
 			return Observable.zip(header, currency, arts, loon, (h, c, li, lo) -> {
 				li.addAll(lo);
