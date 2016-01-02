@@ -12,7 +12,7 @@ public class XmlMaker implements FactuurSaver {
 	private Logger logger;
 
 	public XmlMaker(Logger logger) {
-		this(new XmlMakerVisitor(), logger);
+		this(new XmlMakerVisitor(logger), logger);
 	}
 
 	public XmlMaker(XmlMakerVisitor visitor, Logger logger) {
