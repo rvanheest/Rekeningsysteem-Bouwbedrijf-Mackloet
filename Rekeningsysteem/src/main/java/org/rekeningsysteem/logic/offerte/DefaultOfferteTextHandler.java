@@ -1,56 +1,43 @@
 package org.rekeningsysteem.logic.offerte;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Optional;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.log4j.Logger;
-import org.rekeningsysteem.exception.NoSuchFileException;
-import org.rekeningsysteem.logging.ApplicationLogger;
+import org.rekeningsysteem.io.FileIO;
 import org.rekeningsysteem.properties.PropertiesWorker;
 import org.rekeningsysteem.properties.PropertyModelEnum;
+
+import rx.Observable;
+import rx.schedulers.Schedulers;
 
 public class DefaultOfferteTextHandler {
 
 	private final Optional<File> file;
-	private final Logger logger = ApplicationLogger.getInstance();
+	private final FileIO io;
 
 	public DefaultOfferteTextHandler() {
 		this.file = PropertiesWorker.getInstance()
 				.getProperty(PropertyModelEnum.OFFERTE_DEFAULT_TEXT_LOCATION)
 				.map(File::new);
+		this.io = new FileIO();
 	}
 
-	public String getDefaultText() {
-		return this.file.filter(File::exists)
-				.map(f -> {
-					try {
-						return FileUtils.readFileToString(f);
-					}
-					catch (IOException e) {
-						// TODO throw exception?
-						this.logger.error(e.getMessage(), e);
-						return "";
-					}
-				})
-				.orElse("");
+	public DefaultOfferteTextHandler(File file, FileIO io) {
+		this.file = Optional.ofNullable(file);
+		this.io = io;
 	}
 
-	/**
-	 * Stores the text in the file that was supplied by the constructor.
-	 * @param text the text to be stored
-	 * @throws IOException in case an IO exception occurs while writing to the file
-	 * @throws NoSuchFileException if there was no file supplied by the constructor
-	 */
-	public void setDefaultText(String text) throws IOException, NoSuchFileException {
-		if (this.file.isPresent()) {
-			File f = this.file.get();
-			FileUtils.writeStringToFile(f, text, false);
-		}
-		else {
-			throw new NoSuchFileException("Er bestaat geen file waarin deze tekst kan "
-					+ "worden opgeslagen.");
-		}
+	public Observable<String> getDefaultText() {
+		return this.file.map(file -> this.io.readFile(file)
+				.subscribeOn(Schedulers.io())
+				.reduce("\n\n", (cum, string) -> cum + string))
+				.orElseGet(() -> Observable.empty());
+	}
+
+	public Observable<Void> setDefaultText(Observable<String> text) {
+		return this.file
+				.map(file -> text.observeOn(Schedulers.io())
+						.compose(this.io.writeToFile(file, false)))
+				.orElseGet(() -> Observable.empty());
 	}
 }

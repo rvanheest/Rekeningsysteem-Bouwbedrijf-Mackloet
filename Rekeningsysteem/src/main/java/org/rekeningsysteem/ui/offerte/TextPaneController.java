@@ -1,6 +1,13 @@
 package org.rekeningsysteem.ui.offerte;
 
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonBar.ButtonData;
+
+import org.rekeningsysteem.logging.ApplicationLogger;
 import org.rekeningsysteem.logic.offerte.DefaultOfferteTextHandler;
+import org.rekeningsysteem.rxjavafx.JavaFxScheduler;
 import org.rekeningsysteem.ui.WorkingPane;
 import org.rekeningsysteem.ui.WorkingPaneController;
 
@@ -32,12 +39,24 @@ public class TextPaneController extends WorkingPaneController {
 		this.ui = ui;
 		this.model = this.ui.getText();
 
-		DefaultOfferteTextHandler textHandler = new DefaultOfferteTextHandler();
-		String text = textHandler.getDefaultText();
-		if (!text.startsWith("\n\n")) {
-			text = "\n\n" + text;
-		}
-		this.ui.setText(text);
+		this.initDefaultText();
+	}
+
+	private void initDefaultText() {
+		new DefaultOfferteTextHandler()
+				.getDefaultText()
+				.observeOn(JavaFxScheduler.getInstance())
+				.subscribe(
+						this.ui::setText,
+						e -> {
+							String alertText = "De standaard tekst voor de offerte kon niet worden geladen. Zie de error log voor meer info.";
+							ButtonType close = new ButtonType("Sluit", ButtonData.CANCEL_CLOSE);
+							Alert alert = new Alert(AlertType.ERROR, alertText, close);
+							alert.setHeaderText("Fout bij lezen");
+							alert.show();
+							ApplicationLogger.getInstance()
+									.error("error in reading default offerte text file", e);
+						});
 	}
 
 	public Observable<String> getModel() {
