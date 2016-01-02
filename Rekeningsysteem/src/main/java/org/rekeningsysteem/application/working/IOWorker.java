@@ -18,7 +18,6 @@ import org.rekeningsysteem.io.xml.XmlReader;
 import org.rekeningsysteem.io.xml.XmlReader1;
 import org.rekeningsysteem.io.xml.XmlReader2;
 import org.rekeningsysteem.io.xml.XmlReader3;
-import org.rekeningsysteem.logging.ApplicationLogger;
 
 import rx.Observable;
 
@@ -31,20 +30,23 @@ public class IOWorker {
 	private final FactuurLoader oldLoader2;
 	private final FactuurLoader oldLoader3;
 
-	private final Logger logger = ApplicationLogger.getInstance();
+	private final Logger logger;
 
-	public IOWorker() {
-		this(new XmlMaker(), new PdfExporter(), new XmlReader(), new XmlReader1(), new XmlReader2(), new XmlReader3());
+	public IOWorker(Logger logger) {
+		this(new XmlMaker(), new PdfExporter(), new XmlReader(), new XmlReader1(),
+				new XmlReader2(), new XmlReader3(), logger);
 	}
 
 	public IOWorker(FactuurSaver saver, FactuurExporter exporter, FactuurLoader loader,
-			FactuurLoader oldLoader1, FactuurLoader oldLoader2, FactuurLoader oldLoader3) {
+			FactuurLoader oldLoader1, FactuurLoader oldLoader2, FactuurLoader oldLoader3,
+			Logger logger) {
 		this.saver = saver;
 		this.exporter = exporter;
 		this.loader = loader;
 		this.oldLoader1 = oldLoader1;
 		this.oldLoader2 = oldLoader2;
 		this.oldLoader3 = oldLoader3;
+		this.logger = logger;
 	}
 
 	public void save(AbstractRekening rekening, File file) {

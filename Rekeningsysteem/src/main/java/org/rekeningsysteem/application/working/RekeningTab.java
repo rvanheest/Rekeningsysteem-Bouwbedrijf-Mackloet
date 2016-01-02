@@ -14,6 +14,7 @@ import org.rekeningsysteem.data.reparaties.ReparatiesFactuur;
 import org.rekeningsysteem.data.util.AbstractRekening;
 import org.rekeningsysteem.data.util.header.Debiteur;
 import org.rekeningsysteem.io.database.Database;
+import org.rekeningsysteem.logging.ApplicationLogger;
 import org.rekeningsysteem.logic.database.DebiteurDBInteraction;
 import org.rekeningsysteem.properties.PropertiesWorker;
 import org.rekeningsysteem.ui.AbstractRekeningController;
@@ -29,7 +30,7 @@ import rx.subjects.PublishSubject;
 
 public class RekeningTab extends Tab {
 
-	private static final IOWorker ioWorker = new IOWorker();
+	private static final IOWorker ioWorker = new IOWorker(ApplicationLogger.getInstance());
 
 	private final PublishSubject<Boolean> modified = PublishSubject.create();
 	private final BehaviorSubject<AbstractRekening> latest = BehaviorSubject.create();
