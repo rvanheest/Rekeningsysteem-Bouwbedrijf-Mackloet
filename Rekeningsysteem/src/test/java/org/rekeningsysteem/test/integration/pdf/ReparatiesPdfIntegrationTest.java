@@ -1,22 +1,31 @@
 package org.rekeningsysteem.test.integration.pdf;
 
+import static org.mockito.Mockito.*;
+
 import java.io.File;
 import java.time.LocalDate;
 import java.util.Currency;
 
+import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.rekeningsysteem.data.reparaties.ReparatiesBon;
 import org.rekeningsysteem.data.reparaties.ReparatiesFactuur;
+import org.rekeningsysteem.data.util.AbstractRekening;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.data.util.ItemList;
 import org.rekeningsysteem.data.util.header.Debiteur;
 import org.rekeningsysteem.data.util.header.FactuurHeader;
 import org.rekeningsysteem.io.pdf.PdfExporter;
 
+@RunWith(MockitoJUnitRunner.class)
 public class ReparatiesPdfIntegrationTest {
 
 	private PdfExporter exporter;
+	@Mock private Logger logger;
 
 	protected void addBonnen(ItemList<ReparatiesBon> list) {
 		list.add(new ReparatiesBon("Bonnummer", "110543", new Geld(77.00), new Geld(6.50)));
@@ -70,7 +79,7 @@ public class ReparatiesPdfIntegrationTest {
 
 	@Before
 	public void setUp() {
-		this.exporter = new PdfExporter(false);
+		this.exporter = new PdfExporter(false, this.logger);
 	}
 
 	@Test
@@ -88,5 +97,19 @@ public class ReparatiesPdfIntegrationTest {
 				itemList);
 		this.exporter.export(factuur, new File("src\\test\\resources\\pdf\\"
 				+ "ReparatiesFactuurTest123.pdf"));
+
+		verifyZeroInteractions(this.logger);
+	}
+
+	@Test
+	public void testExportWithError() throws Exception {
+		AbstractRekening rekening = mock(AbstractRekening.class);
+		File file = mock(File.class);
+
+		doThrow(Exception.class).when(rekening).accept(anyObject());
+
+		this.exporter.export(rekening, file);
+
+		verify(this.logger).error(anyString(), any(Exception.class));
 	}
 }

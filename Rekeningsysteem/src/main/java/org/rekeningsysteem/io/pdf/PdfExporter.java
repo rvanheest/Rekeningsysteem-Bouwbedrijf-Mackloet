@@ -5,23 +5,18 @@ import java.io.File;
 import org.apache.log4j.Logger;
 import org.rekeningsysteem.data.util.AbstractRekening;
 import org.rekeningsysteem.io.FactuurExporter;
-import org.rekeningsysteem.logging.ApplicationLogger;
 
 public class PdfExporter implements FactuurExporter {
 
 	private PdfExporterVisitor visitor;
 	private Logger logger;
 	
-	public PdfExporter() {
-		this(new PdfExporterVisitor(new PdfListItemVisitor()), ApplicationLogger.getInstance());
+	public PdfExporter(Logger logger) {
+		this(new PdfExporterVisitor(new PdfListItemVisitor()), logger);
 	}
 	
-	public PdfExporter(boolean autoOpen) {
-		this(new PdfExporterVisitor(autoOpen, new PdfListItemVisitor()), ApplicationLogger.getInstance());
-	}
-
-	public PdfExporter(PdfExporterVisitor visitor) {
-		this(visitor, ApplicationLogger.getInstance());
+	public PdfExporter(boolean autoOpen, Logger logger) {
+		this(new PdfExporterVisitor(autoOpen, new PdfListItemVisitor()), logger);
 	}
 
 	public PdfExporter(PdfExporterVisitor visitor, Logger logger) {

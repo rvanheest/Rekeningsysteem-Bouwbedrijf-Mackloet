@@ -33,7 +33,7 @@ public class IOWorker {
 	private final Logger logger;
 
 	public IOWorker(Logger logger) {
-		this(new XmlMaker(), new PdfExporter(), new XmlReader(), new XmlReader1(),
+		this(new XmlMaker(), new PdfExporter(logger), new XmlReader(), new XmlReader1(),
 				new XmlReader2(), new XmlReader3(), logger);
 	}
 
