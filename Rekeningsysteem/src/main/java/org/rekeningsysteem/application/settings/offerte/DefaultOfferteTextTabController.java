@@ -1,11 +1,13 @@
 package org.rekeningsysteem.application.settings.offerte;
 
+import org.apache.log4j.Logger;
+
 public class DefaultOfferteTextTabController {
 
 	private final DefaultOfferteTextTab ui;
 
-	public DefaultOfferteTextTabController() {
-		this(new DefaultOfferteTextPaneController());
+	public DefaultOfferteTextTabController(Logger logger) {
+		this(new DefaultOfferteTextPaneController(logger));
 	}
 
 	public DefaultOfferteTextTabController(DefaultOfferteTextPaneController subController) {

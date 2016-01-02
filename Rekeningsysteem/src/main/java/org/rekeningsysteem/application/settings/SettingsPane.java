@@ -19,7 +19,7 @@ public class SettingsPane extends TabPane {
 		DebiteurSettingsTabController debiteurTab = new DebiteurSettingsTabController(database);
 		PrijslijstIO prijslijstTab = new PrijslijstIO(stage,
 				new ArtikellijstDBInteraction(database), closeButton, logger);
-		DefaultOfferteTextTabController offerteTab = new DefaultOfferteTextTabController();
+		DefaultOfferteTextTabController offerteTab = new DefaultOfferteTextTabController(logger);
 
 		this.getTabs().addAll(debiteurTab.getUI(), prijslijstTab, offerteTab.getUI());
 	}

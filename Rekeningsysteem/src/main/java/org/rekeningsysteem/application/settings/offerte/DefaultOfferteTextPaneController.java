@@ -7,7 +7,6 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonBar.ButtonData;
 
 import org.apache.log4j.Logger;
-import org.rekeningsysteem.logging.ApplicationLogger;
 import org.rekeningsysteem.logic.offerte.DefaultOfferteTextHandler;
 import org.rekeningsysteem.rxjavafx.JavaFxScheduler;
 
@@ -18,9 +17,7 @@ public class DefaultOfferteTextPaneController {
 	private final DefaultOfferteTextPane ui;
 	private final DefaultOfferteTextHandler handler = new DefaultOfferteTextHandler();
 
-	private final Logger logger = ApplicationLogger.getInstance();
-
-	public DefaultOfferteTextPaneController() {
+	public DefaultOfferteTextPaneController(Logger logger) {
 		this.ui = new DefaultOfferteTextPane();
 
 		Observable<String> text = this.ui.getText();
@@ -39,7 +36,7 @@ public class DefaultOfferteTextPaneController {
 					Alert alert = new Alert(AlertType.NONE, alertText, close);
 					alert.setHeaderText("Fout bij opslaan");
 					alert.show();
-					this.logger.error(e.getMessage(), e);
+					logger.error(e.getMessage(), e);
 				})
 				.subscribe();
 
