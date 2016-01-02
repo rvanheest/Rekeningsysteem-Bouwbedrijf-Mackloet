@@ -19,6 +19,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
 
+import org.apache.log4j.Logger;
 import org.rekeningsysteem.application.Main;
 import org.rekeningsysteem.application.settings.SettingsPane;
 import org.rekeningsysteem.data.offerte.Offerte;
@@ -56,7 +57,7 @@ public class MainPane extends BorderPane {
 
 	private final PropertiesWorker properties = PropertiesWorker.getInstance();
 
-	public MainPane(Stage stage, Database database) {
+	public MainPane(Stage stage, Database database, Logger logger) {
 		this.database = database;
 
 		this.setId("main-pane");
@@ -70,7 +71,8 @@ public class MainPane extends BorderPane {
 		this.toolbar = new RekeningToolbar(this.mutaties, this.reparaties, this.particulier,
 				this.offerte, this.open, this.save, this.pdf, spacer, this.settings);
 		this.tabpane = new RekeningTabpane();
-		this.settingsPaneFactory = () -> new SettingsPane(stage, this.settings, this.database);
+		this.settingsPaneFactory = () -> new SettingsPane(stage, this.settings, this.database,
+				logger);
 		this.centerPane = new StackPane(this.tabpane);
 
 		this.setTop(this.toolbar);

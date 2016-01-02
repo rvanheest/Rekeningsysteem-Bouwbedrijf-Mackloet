@@ -20,10 +20,10 @@ import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
 
+import org.apache.log4j.Logger;
 import org.rekeningsysteem.data.particulier.EsselinkArtikel;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.exception.GeldParseException;
-import org.rekeningsysteem.logging.ApplicationLogger;
 import org.rekeningsysteem.logic.database.ArtikellijstDBInteraction;
 import org.rekeningsysteem.rxjavafx.JavaFxScheduler;
 import org.rekeningsysteem.rxjavafx.Observables;
@@ -40,7 +40,8 @@ public class PrijslijstIO extends Tab {
 			+ "wanneer nieuwe data wordt geimporteerd!");
 	private final Button startButton = new Button("Start");
 
-	public PrijslijstIO(Stage stage, ArtikellijstDBInteraction db, ButtonBase closeButton) {
+	public PrijslijstIO(Stage stage, ArtikellijstDBInteraction db, ButtonBase closeButton,
+			Logger logger) {
 		super("Esselink artikel data");
 
 		this.db = db;
@@ -72,7 +73,7 @@ public class PrijslijstIO extends Tab {
 				.subscribe(this.progressLabel::setText, e -> {
 					this.progressLabel.setText("Er is een fout opgetreden. Zie de log "
 							+ "voor info.");
-					ApplicationLogger.getInstance().error("Error occurred in importing "
+					logger.error("Error occurred in importing "
 							+ "new data", e);
 				});
 
