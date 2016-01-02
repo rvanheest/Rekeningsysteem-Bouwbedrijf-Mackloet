@@ -2,7 +2,6 @@ package org.rekeningsysteem.test.logic.offerte;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.concurrent.CountDownLatch;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -28,16 +27,12 @@ public class DefaultOfferteTextHandlerTest {
 	}
 
 	@Test
-	public void testSetDefaultText() throws InterruptedException {
-		CountDownLatch latch = new CountDownLatch(1);
-
+	public void testSetDefaultText() {
 		TestSubscriber<Void> observer = new TestSubscriber<>();
 		this.handler.setDefaultText(Observable.just("abcdef"))
-				.subscribe(observer::onNext,
-						e -> { observer.onError(e); latch.countDown(); },
-						() -> { observer.onCompleted(); latch.countDown(); });
+				.subscribe(observer);
 
-		latch.await();
+		observer.awaitTerminalEvent();
 
 		observer.assertNoValues();
 		observer.assertNoErrors();
@@ -45,18 +40,14 @@ public class DefaultOfferteTextHandlerTest {
 	}
 
 	@Test
-	public void testGetDefaultText() throws InterruptedException {
+	public void testGetDefaultText() {
 		this.testSetDefaultText();
-
-		CountDownLatch latch = new CountDownLatch(1);
 
 		TestSubscriber<String> observer = new TestSubscriber<>();
 		this.handler.getDefaultText()
-				.subscribe(observer::onNext,
-						e -> { observer.onError(e); latch.countDown(); },
-						() -> { observer.onCompleted(); latch.countDown(); });
+				.subscribe(observer);
 
-		latch.await();
+		observer.awaitTerminalEvent();
 
 		observer.assertValue("\n\nabcdef");
 		observer.assertNoErrors();
