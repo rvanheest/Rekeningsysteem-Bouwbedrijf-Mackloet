@@ -78,7 +78,7 @@ public class MainPane extends BorderPane {
 		this.setTop(this.toolbar);
 		this.setCenter(this.centerPane);
 
-		this.initButtonHandlers(stage);
+		this.initButtonHandlers(stage, logger);
 	}
 
 	private void initButtons() {
@@ -101,12 +101,12 @@ public class MainPane extends BorderPane {
 				.getResource("/images/settings.png"))));
 	}
 
-	private void initButtonHandlers(Stage stage) {
+	private void initButtonHandlers(Stage stage, Logger logger) {
 		this.initMutatiesObservable()
 				.mergeWith(this.initReparatiesObservable())
 				.mergeWith(this.initParticulierObservable())
-				.mergeWith(this.initOfferteObservable())
-				.mergeWith(this.initOpenObservable(stage))
+				.mergeWith(this.initOfferteObservable(logger))
+				.mergeWith(this.initOpenObservable(stage, logger))
 				.retry()
 				.subscribe(tab -> {
 					this.tabpane.addTab(tab);
@@ -283,16 +283,16 @@ public class MainPane extends BorderPane {
 				.map(event -> new RekeningTab("Particulier factuur", new ParticulierController(this.database), this.database));
 	}
 
-	private Observable<RekeningTab> initOfferteObservable() {
+	private Observable<RekeningTab> initOfferteObservable(Logger logger) {
 		return Observables.fromNodeEvents(this.offerte, ActionEvent.ACTION)
-				.map(event -> new RekeningTab("Offerte", new OfferteController(this.database), this.database));
+				.map(event -> new RekeningTab("Offerte", new OfferteController(this.database, logger), this.database));
 	}
 
-	private Observable<RekeningTab> initOpenObservable(Stage stage) {
+	private Observable<RekeningTab> initOpenObservable(Stage stage, Logger logger) {
 		return Observables.fromNodeEvents(this.open, ActionEvent.ACTION)
 				.flatMap(event -> this.showOpenFileChooser(stage))
 				.doOnNext(this::saveLastSaveLocationProperty)
-				.flatMap(file -> RekeningTab.openFile(file, this.database));
+				.flatMap(file -> RekeningTab.openFile(file, this.database, logger));
 	}
 
 	private Observable<RekeningTab> initSaveObservable() {

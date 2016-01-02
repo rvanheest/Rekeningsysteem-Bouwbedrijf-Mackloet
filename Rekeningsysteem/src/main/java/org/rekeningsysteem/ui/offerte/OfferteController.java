@@ -3,6 +3,7 @@ package org.rekeningsysteem.ui.offerte;
 import java.util.Currency;
 import java.util.Optional;
 
+import org.apache.log4j.Logger;
 import org.rekeningsysteem.application.working.RekeningSplitPane;
 import org.rekeningsysteem.data.offerte.Offerte;
 import org.rekeningsysteem.io.database.Database;
@@ -17,23 +18,23 @@ public class OfferteController extends AbstractRekeningController<Offerte> {
 	private final OfferteHeaderController header;
 	private final TextPaneController textPane;
 
-	public OfferteController(Database database) {
-		this(PropertiesWorker.getInstance(), database);
+	public OfferteController(Database database, Logger logger) {
+		this(PropertiesWorker.getInstance(), database, logger);
 	}
 
-	public OfferteController(PropertiesWorker properties, Database database) {
+	public OfferteController(PropertiesWorker properties, Database database, Logger logger) {
 		this(properties.getProperty(PropertyModelEnum.VALUTAISO4217)
 				.map(Currency::getInstance)
-				.orElse(Currency.getInstance("EUR")), database);
+				.orElse(Currency.getInstance("EUR")), database, logger);
 	}
 
-	public OfferteController(Currency currency, Database database) {
-		this(new OfferteHeaderController(database), new TextPaneController());
+	public OfferteController(Currency currency, Database database, Logger logger) {
+		this(new OfferteHeaderController(database), new TextPaneController(logger));
 	}
 
-	public OfferteController(Offerte input, Database database) {
+	public OfferteController(Offerte input, Database database, Logger logger) {
 		this(new OfferteHeaderController(input.getFactuurHeader(), input.isOndertekenen(), database),
-				new TextPaneController(input.getTekst()));
+				new TextPaneController(input.getTekst(), logger));
 	}
 
 	public OfferteController(OfferteHeaderController header, TextPaneController textPane) {
