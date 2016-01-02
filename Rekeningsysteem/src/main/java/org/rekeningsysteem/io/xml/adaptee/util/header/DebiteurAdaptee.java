@@ -1,8 +1,10 @@
 package org.rekeningsysteem.io.xml.adaptee.util.header;
 
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
+@XmlRootElement(name = "debiteur")
 @XmlType(propOrder = { "naam", "straat", "nummer", "postcode", "plaats", "btwNummer" })
 public class DebiteurAdaptee {
 
