@@ -12,13 +12,14 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.log4j.Logger;
 import org.rekeningsysteem.data.mutaties.MutatiesBon;
 import org.rekeningsysteem.data.mutaties.MutatiesFactuur;
 import org.rekeningsysteem.data.offerte.Offerte;
+import org.rekeningsysteem.data.particulier.AnderArtikel;
 import org.rekeningsysteem.data.particulier.EsselinkArtikel;
 import org.rekeningsysteem.data.particulier.GebruiktEsselinkArtikel;
 import org.rekeningsysteem.data.particulier.ParticulierArtikel;
-import org.rekeningsysteem.data.particulier.AnderArtikel;
 import org.rekeningsysteem.data.particulier.ParticulierFactuur;
 import org.rekeningsysteem.data.particulier.loon.AbstractLoon;
 import org.rekeningsysteem.data.particulier.loon.ProductLoon;
@@ -32,7 +33,6 @@ import org.rekeningsysteem.data.util.header.FactuurHeader;
 import org.rekeningsysteem.data.util.header.OmschrFactuurHeader;
 import org.rekeningsysteem.exception.GeldParseException;
 import org.rekeningsysteem.io.FactuurLoader;
-import org.rekeningsysteem.logging.ApplicationLogger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -53,14 +53,13 @@ public class XmlReader1 implements FactuurLoader {
 	private Currency currency;
 	private DocumentBuilder builder;
 
-	public XmlReader1() {
+	public XmlReader1(Logger logger) {
 		try {
 			this.builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 		}
 		catch (ParserConfigurationException e) {
 			// Should not happen
-			ApplicationLogger.getInstance().fatal("DocumentBuilder could not be made. "
-					+ "(should not happen)", e);
+			logger.fatal("DocumentBuilder could not be made. (should not happen)", e);
 		}
 	}
 
