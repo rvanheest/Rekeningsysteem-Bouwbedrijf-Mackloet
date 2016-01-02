@@ -61,7 +61,7 @@ public abstract class AbstractRekeningIntegrationTest {
 	@Test
 	public void testXML() {
 		FactuurSaver maker = new XmlMaker(this.logger);
-		FactuurLoader reader = new XmlReader();
+		FactuurLoader reader = new XmlReader(this.logger);
 
 		maker.save(this.rekening, this.file);
 

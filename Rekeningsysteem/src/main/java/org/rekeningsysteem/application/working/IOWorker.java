@@ -33,8 +33,8 @@ public class IOWorker {
 	private final Logger logger;
 
 	public IOWorker(Logger logger) {
-		this(new XmlMaker(logger), new PdfExporter(logger), new XmlReader(), new XmlReader1(),
-				new XmlReader2(), new XmlReader3(), logger);
+		this(new XmlMaker(logger), new PdfExporter(logger), new XmlReader(logger),
+				new XmlReader1(), new XmlReader2(), new XmlReader3(), logger);
 	}
 
 	public IOWorker(FactuurSaver saver, FactuurExporter exporter, FactuurLoader loader,

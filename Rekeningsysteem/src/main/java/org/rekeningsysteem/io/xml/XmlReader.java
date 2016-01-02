@@ -12,6 +12,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.log4j.Logger;
 import org.rekeningsysteem.data.util.AbstractRekening;
 import org.rekeningsysteem.io.FactuurLoader;
 import org.rekeningsysteem.io.xml.root.MutatiesFactuurRoot;
@@ -19,7 +20,6 @@ import org.rekeningsysteem.io.xml.root.OfferteRoot;
 import org.rekeningsysteem.io.xml.root.ParticulierFactuurRoot;
 import org.rekeningsysteem.io.xml.root.ReparatiesFactuurRoot;
 import org.rekeningsysteem.io.xml.root.Root;
-import org.rekeningsysteem.logging.ApplicationLogger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -32,7 +32,7 @@ public class XmlReader implements FactuurLoader {
 	private final Map<Class<? extends Root<?>>, Unmarshaller> map;
 	private DocumentBuilder builder;
 
-	public XmlReader() {
+	public XmlReader(Logger logger) {
 		this.map = new HashMap<>();
 
 		try {
@@ -49,12 +49,12 @@ public class XmlReader implements FactuurLoader {
 		}
 		catch (JAXBException e) {
 			// Should not happen
-			ApplicationLogger.getInstance().fatal("JAXBContext or Unmarshaller could not be "
+			logger.fatal("JAXBContext or Unmarshaller could not be "
 					+ "made. (should not happen)", e);
 		}
 		catch (ParserConfigurationException e) {
 			// Should not happen
-			ApplicationLogger.getInstance().fatal("DocumentBuilder could not be made. "
+			logger.fatal("DocumentBuilder could not be made. "
 					+ "(should not happen)", e);
 		}
 	}
