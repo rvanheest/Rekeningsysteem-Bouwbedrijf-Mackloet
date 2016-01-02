@@ -1,31 +1,20 @@
 package org.rekeningsysteem.test.integration.pdf;
 
-import static org.mockito.Mockito.*;
-
 import java.io.File;
 import java.time.LocalDate;
 import java.util.Currency;
 
-import org.apache.log4j.Logger;
-import org.junit.Before;
-import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.rekeningsysteem.data.reparaties.ReparatiesBon;
 import org.rekeningsysteem.data.reparaties.ReparatiesFactuur;
-import org.rekeningsysteem.data.util.AbstractRekening;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.data.util.ItemList;
 import org.rekeningsysteem.data.util.header.Debiteur;
 import org.rekeningsysteem.data.util.header.FactuurHeader;
-import org.rekeningsysteem.io.pdf.PdfExporter;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ReparatiesPdfIntegrationTest {
-
-	private PdfExporter exporter;
-	@Mock private Logger logger;
+public class ReparatiesPdfIntegrationTest extends AbstractPdfIntegrationTest {
 
 	protected void addBonnen(ItemList<ReparatiesBon> list) {
 		list.add(new ReparatiesBon("Bonnummer", "110543", new Geld(77.00), new Geld(6.50)));
@@ -77,13 +66,8 @@ public class ReparatiesPdfIntegrationTest {
 		list.add(new ReparatiesBon("Bonnummer1", "111148", new Geld(3878.20), new Geld(2585.46)));
 	}
 
-	@Before
-	public void setUp() {
-		this.exporter = new PdfExporter(false, this.logger);
-	}
-
-	@Test
-	public void testExport() {
+	@Override
+	protected ReparatiesFactuur makeRekening() {
 		Debiteur debiteur = new Debiteur("Name", "Street", "Number", "Zipcode",
 				"Place", "BtwNumber");
 		LocalDate datum = LocalDate.of(2011, 4, 5);
@@ -93,23 +77,12 @@ public class ReparatiesPdfIntegrationTest {
 		ItemList<ReparatiesBon> itemList = new ItemList<>();
 		this.addBonnen(itemList);
 
-		ReparatiesFactuur factuur = new ReparatiesFactuur(header, Currency.getInstance("EUR"),
+		return new ReparatiesFactuur(header, Currency.getInstance("EUR"),
 				itemList);
-		this.exporter.export(factuur, new File("src\\test\\resources\\pdf\\"
-				+ "ReparatiesFactuurTest123.pdf"));
-
-		verifyZeroInteractions(this.logger);
 	}
 
-	@Test
-	public void testExportWithError() throws Exception {
-		AbstractRekening rekening = mock(AbstractRekening.class);
-		File file = mock(File.class);
-
-		doThrow(Exception.class).when(rekening).accept(anyObject());
-
-		this.exporter.export(rekening, file);
-
-		verify(this.logger).error(anyString(), any(Exception.class));
+	@Override
+	protected File makeFile() {
+		return new File("src\\test\\resources\\pdf\\ReparatiesFactuurTest123.pdf");
 	}
 }

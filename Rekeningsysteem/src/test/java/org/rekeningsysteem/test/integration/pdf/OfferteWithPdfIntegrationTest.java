@@ -1,34 +1,16 @@
 package org.rekeningsysteem.test.integration.pdf;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyObject;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
-
 import java.io.File;
 import java.time.LocalDate;
 
-import org.apache.log4j.Logger;
-import org.junit.Before;
-import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.rekeningsysteem.data.offerte.Offerte;
-import org.rekeningsysteem.data.util.AbstractRekening;
 import org.rekeningsysteem.data.util.header.Debiteur;
 import org.rekeningsysteem.data.util.header.FactuurHeader;
-import org.rekeningsysteem.io.FactuurExporter;
-import org.rekeningsysteem.io.pdf.PdfExporter;
 
 @RunWith(MockitoJUnitRunner.class)
-public class OffertePdfIntegrationTest {
-
-	private FactuurExporter exporter;
-	@Mock private Logger logger;
+public class OfferteWithPdfIntegrationTest extends AbstractPdfIntegrationTest {
 
 	protected String makeText() {
 		return "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce quis quam tortor. "
@@ -56,48 +38,17 @@ public class OffertePdfIntegrationTest {
 				+ "ullamcorper dictum velit, sit amet pellentesque risus facilisis vel.";
 	}
 
-	@Before
-	public void setUp() {
-		this.exporter = new PdfExporter(false, this.logger);
-	}
-
-	@Test
-	public void testExportWithOndertekenen() {
+	@Override
+	protected Offerte makeRekening() {
 		Debiteur debiteur = new Debiteur("Name", "Street", "Number", "Zipcode", "Place");
 		LocalDate datum = LocalDate.of(2011, 8, 11);
 		String factuurnummer = "107";
 		FactuurHeader header = new FactuurHeader(debiteur, datum, factuurnummer);
-		Offerte offerte = new Offerte(header, this.makeText(), true);
-		
-		this.exporter.export(offerte, new File("src\\test\\resources\\pdf\\"
-				+ "OfferteTest123True.pdf"));
-
-		verifyZeroInteractions(this.logger);
+		return new Offerte(header, this.makeText(), true);
 	}
 
-	@Test
-	public void testExportWithoutOndertekenen() {
-		Debiteur debiteur = new Debiteur("Name", "Street", "Number", "Zipcode", "Place");
-		LocalDate datum = LocalDate.of(2011, 8, 11);
-		String factuurnummer = "107";
-		FactuurHeader header = new FactuurHeader(debiteur, datum, factuurnummer);
-		Offerte offerte = new Offerte(header, this.makeText(), false);
-		
-		this.exporter.export(offerte, new File("src\\test\\resources\\pdf\\"
-				+ "OfferteTest123False.pdf"));
-
-		verifyZeroInteractions(this.logger);
-	}
-
-	@Test
-	public void testExportWithError() throws Exception {
-		AbstractRekening rekening = mock(AbstractRekening.class);
-		File file = mock(File.class);
-
-		doThrow(Exception.class).when(rekening).accept(anyObject());
-
-		this.exporter.export(rekening, file);
-
-		verify(this.logger).error(anyString(), any(Exception.class));
+	@Override
+	protected File makeFile() {
+		return new File("src\\test\\resources\\pdf\\OfferteTest123True.pdf");
 	}
 }
