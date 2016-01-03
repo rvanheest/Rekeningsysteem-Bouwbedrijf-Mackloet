@@ -1,11 +1,12 @@
 package org.rekeningsysteem.io.xml.root;
 
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.rekeningsysteem.data.mutaties.MutatiesFactuur;
-import org.rekeningsysteem.io.xml.adapter.mutaties.MutatiesFactuurAdapter;
+import org.rekeningsysteem.io.xml.adapter.RekeningAdapter;
 
 @XmlRootElement(name = "bestand")
 public class MutatiesFactuurRoot implements Root<MutatiesFactuur> {
@@ -25,7 +26,8 @@ public class MutatiesFactuurRoot implements Root<MutatiesFactuur> {
 	}
 
 	@Override
-	@XmlJavaTypeAdapter(MutatiesFactuurAdapter.class)
+	@XmlElementRef
+	@XmlJavaTypeAdapter(RekeningAdapter.class)
 	public MutatiesFactuur getRekening() {
 		return this.factuur;
 	}

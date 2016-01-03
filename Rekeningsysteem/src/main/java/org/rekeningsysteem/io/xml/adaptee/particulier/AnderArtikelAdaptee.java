@@ -6,11 +6,13 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.rekeningsysteem.data.util.Geld;
+import org.rekeningsysteem.io.xml.adaptee.ListItemAdapteeVisitable;
+import org.rekeningsysteem.io.xml.adaptee.ListItemAdapteeVisitor;
 import org.rekeningsysteem.io.xml.adapter.util.GeldAdapter;
 
 @XmlRootElement(name = "ander-artikel")
 @XmlType(propOrder = { "omschrijving", "prijs", "materiaalBtwPercentage" })
-public class AnderArtikelAdaptee extends ParticulierArtikelAdaptee {
+public class AnderArtikelAdaptee extends ListItemAdapteeVisitable {
 
 	private String omschrijving;
 	private Geld prijs;
@@ -41,5 +43,10 @@ public class AnderArtikelAdaptee extends ParticulierArtikelAdaptee {
 
 	public void setMateriaalBtwPercentage(double materiaalBtwPercentage) {
 		this.materiaalBtwPercentage = materiaalBtwPercentage;
+	}
+
+	@Override
+	public <T> T accept(ListItemAdapteeVisitor<T> visitor) {
+		return visitor.visit(this);
 	}
 }

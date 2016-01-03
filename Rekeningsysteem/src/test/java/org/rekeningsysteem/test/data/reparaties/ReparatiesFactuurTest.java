@@ -8,7 +8,9 @@ import java.util.Currency;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.rekeningsysteem.data.reparaties.ReparatiesBon;
 import org.rekeningsysteem.data.reparaties.ReparatiesFactuur;
 import org.rekeningsysteem.data.util.AbstractFactuur;
@@ -17,10 +19,11 @@ import org.rekeningsysteem.data.util.header.FactuurHeader;
 import org.rekeningsysteem.data.util.visitor.RekeningVisitor;
 import org.rekeningsysteem.test.data.util.AbstractFactuurTest;
 
+@RunWith(MockitoJUnitRunner.class)
 public class ReparatiesFactuurTest extends AbstractFactuurTest<ReparatiesBon> {
 
 	private ReparatiesFactuur factuur;
-	@Mock private RekeningVisitor visitor;
+	@Mock private RekeningVisitor<Object> visitor;
 
 	@Override
 	protected ReparatiesFactuur makeInstance() {

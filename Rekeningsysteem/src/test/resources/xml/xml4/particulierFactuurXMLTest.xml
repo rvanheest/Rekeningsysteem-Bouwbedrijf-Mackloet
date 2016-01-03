@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <bestand type="ParticulierFactuur" version="4">
-    <rekening>
+    <particulier-factuur>
         <factuurHeader>
             <debiteur>
                 <naam>Name</naam>
@@ -155,5 +155,5 @@
 				<loonBtwPercentage>6.0</loonBtwPercentage>
             </instant-loon>
         </list>
-    </rekening>
+    </particulier-factuur>
 </bestand>

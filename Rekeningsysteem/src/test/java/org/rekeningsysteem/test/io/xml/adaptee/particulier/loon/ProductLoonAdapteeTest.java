@@ -1,13 +1,22 @@
 package org.rekeningsysteem.test.io.xml.adaptee.particulier.loon;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.verify;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.rekeningsysteem.data.util.Geld;
+import org.rekeningsysteem.io.xml.adaptee.ListItemAdapteeVisitor;
 import org.rekeningsysteem.io.xml.adaptee.particulier.loon.ProductLoonAdaptee;
-import org.rekeningsysteem.test.io.xml.adaptee.particulier.ParticulierArtikelAdapteeTest;
+import org.rekeningsysteem.test.io.xml.adaptee.ListItemAdapteeVisitableTest;
 
-public class ProductLoonAdapteeTest extends ParticulierArtikelAdapteeTest {
+@RunWith(MockitoJUnitRunner.class)
+public class ProductLoonAdapteeTest extends ListItemAdapteeVisitableTest {
+
+	@Mock private ListItemAdapteeVisitor<Object> visitor;
 
 	@Override
 	protected ProductLoonAdaptee makeInstance() {
@@ -42,5 +51,12 @@ public class ProductLoonAdapteeTest extends ParticulierArtikelAdapteeTest {
 	public void testSetGetLoonBtwPercentage() {
 		this.getInstance().setLoonBtwPercentage(0.4);
 		assertEquals(0.4, this.getInstance().getLoonBtwPercentage(), 0.0);
+	}
+
+	@Test
+	public void testAccept() {
+		this.getInstance().accept(this.visitor);
+
+		verify(this.visitor).visit(eq(this.getInstance()));
 	}
 }

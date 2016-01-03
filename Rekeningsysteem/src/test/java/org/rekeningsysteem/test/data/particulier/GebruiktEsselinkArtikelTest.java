@@ -2,13 +2,20 @@ package org.rekeningsysteem.test.data.particulier;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.verify;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.rekeningsysteem.data.particulier.EsselinkArtikel;
 import org.rekeningsysteem.data.particulier.GebruiktEsselinkArtikel;
 import org.rekeningsysteem.data.util.Geld;
+import org.rekeningsysteem.data.util.visitor.ListItemVisitor;
 
+@RunWith(MockitoJUnitRunner.class)
 public class GebruiktEsselinkArtikelTest extends ParticulierArtikelTest {
 
 	private GebruiktEsselinkArtikel gebruiktArtikel;
@@ -16,6 +23,7 @@ public class GebruiktEsselinkArtikelTest extends ParticulierArtikelTest {
 			"eenheid", new Geld(1));
 	private final double aantal = 5;
 	private final double btwPercentage = 10;
+	@Mock private ListItemVisitor<Object> visitor;
 
 	@Override
 	protected GebruiktEsselinkArtikel makeInstance() {
@@ -52,6 +60,13 @@ public class GebruiktEsselinkArtikelTest extends ParticulierArtikelTest {
 	@Test
 	public void testGetMateriaalBtwPercentage() {
 		assertEquals(this.btwPercentage, this.gebruiktArtikel.getMateriaalBtwPercentage(), 0.0);
+	}
+
+	@Test
+	public void testAccept() {
+		this.gebruiktArtikel.accept(this.visitor);
+
+		verify(this.visitor).visit(eq(this.gebruiktArtikel));
 	}
 
 	@Test

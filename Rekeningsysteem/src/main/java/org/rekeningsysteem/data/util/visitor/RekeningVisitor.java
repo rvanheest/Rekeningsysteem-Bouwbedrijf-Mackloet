@@ -5,13 +5,13 @@ import org.rekeningsysteem.data.offerte.Offerte;
 import org.rekeningsysteem.data.particulier.ParticulierFactuur;
 import org.rekeningsysteem.data.reparaties.ReparatiesFactuur;
 
-public interface RekeningVisitor {
+public interface RekeningVisitor<T> {
 
-	void visit(MutatiesFactuur factuur) throws Exception;
+	T visit(MutatiesFactuur factuur) throws Exception;
 
-	void visit(Offerte offerte) throws Exception;
+	T visit(Offerte offerte) throws Exception;
 
-	void visit(ParticulierFactuur factuur) throws Exception;
+	T visit(ParticulierFactuur factuur) throws Exception;
 
-	void visit(ReparatiesFactuur factuur) throws Exception;
+	T visit(ReparatiesFactuur factuur) throws Exception;
 }
