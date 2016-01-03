@@ -44,7 +44,8 @@ public class PdfConverterTest {
 								Arrays.asList("123", "456", "\\{789\\}", "f\\^o\\\"ob\\`ar"),
 								Arrays.asList("123", "456", "\\{789\\}", "f\\^o\\\"ob\\`ar"))
 				},
-				{ "test with € in it", "test with \\euro in it" }
+				{ "test with € in it", "test with \\euro in it" },
+				{ 14, 14 }
 		};
 		return Arrays.asList(values);
 	}
