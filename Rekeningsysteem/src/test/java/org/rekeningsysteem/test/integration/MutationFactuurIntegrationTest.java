@@ -1,4 +1,4 @@
-package org.rekeningsysteem.test.integration.pdf;
+package org.rekeningsysteem.test.integration;
 
 import java.io.File;
 import java.time.LocalDate;
@@ -14,7 +14,7 @@ import org.rekeningsysteem.data.util.header.Debiteur;
 import org.rekeningsysteem.data.util.header.FactuurHeader;
 
 @RunWith(MockitoJUnitRunner.class)
-public class MutatiesPdfIntegrationTest extends AbstractPdfIntegrationTest {
+public class MutationFactuurIntegrationTest extends AbstractIntegrationTest {
 
 	@Override
 	protected MutatiesFactuur makeRekening() {
@@ -33,7 +33,12 @@ public class MutatiesPdfIntegrationTest extends AbstractPdfIntegrationTest {
 	}
 
 	@Override
-	protected File makeFile() {
-		return new File("src\\test\\resources\\pdf\\MutatiesFactuurTest123.pdf");
+	protected File pdfFile() {
+		return new File("src\\test\\resources\\pdf\\MutationFactuurIntegrationTest.pdf");
+	}
+
+	@Override
+	protected File xmlFile() {
+		return new File("src\\test\\resources\\xml\\MutationFactuurIntegrationTest.xml");
 	}
 }

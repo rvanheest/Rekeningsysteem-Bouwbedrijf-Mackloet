@@ -1,4 +1,4 @@
-package org.rekeningsysteem.test.integration.pdf;
+package org.rekeningsysteem.test.integration;
 
 import java.io.File;
 import java.time.LocalDate;
@@ -10,7 +10,7 @@ import org.rekeningsysteem.data.util.header.Debiteur;
 import org.rekeningsysteem.data.util.header.FactuurHeader;
 
 @RunWith(MockitoJUnitRunner.class)
-public class OfferteWithPdfIntegrationTest extends AbstractPdfIntegrationTest {
+public class OfferteFalseIntegrationTest extends AbstractIntegrationTest {
 
 	protected String makeText() {
 		return "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce quis quam tortor. "
@@ -44,11 +44,16 @@ public class OfferteWithPdfIntegrationTest extends AbstractPdfIntegrationTest {
 		LocalDate datum = LocalDate.of(2011, 8, 11);
 		String factuurnummer = "107";
 		FactuurHeader header = new FactuurHeader(debiteur, datum, factuurnummer);
-		return new Offerte(header, this.makeText(), true);
+		return new Offerte(header, this.makeText(), false);
 	}
 
 	@Override
-	protected File makeFile() {
-		return new File("src\\test\\resources\\pdf\\OfferteTest123True.pdf");
+	protected File pdfFile() {
+		return new File("src\\test\\resources\\pdf\\OfferteFalseIntegrationTest.pdf");
+	}
+
+	@Override
+	protected File xmlFile() {
+		return new File("src\\test\\resources\\xml\\OfferteFalseIntegrationTest.xml");
 	}
 }

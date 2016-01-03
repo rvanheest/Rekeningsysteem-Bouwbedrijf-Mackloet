@@ -1,4 +1,4 @@
-package org.rekeningsysteem.test.integration.pdf;
+package org.rekeningsysteem.test.integration;
 
 import java.io.File;
 import java.time.LocalDate;
@@ -20,7 +20,7 @@ import org.rekeningsysteem.data.util.header.Debiteur;
 import org.rekeningsysteem.data.util.header.OmschrFactuurHeader;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ParticulierTwoPdfIntegrationTest extends AbstractPdfIntegrationTest {
+public class ParticulierFactuurOneBtwIntegrationTest extends AbstractIntegrationTest {
 
 	protected ItemList<ParticulierArtikel> addArtikels() {
 		ItemList<ParticulierArtikel> list = new ItemList<>();
@@ -40,15 +40,15 @@ public class ParticulierTwoPdfIntegrationTest extends AbstractPdfIntegrationTest
 		EsselinkArtikel sub7 = new EsselinkArtikel("2009200105", "Product 7", 1, "Stuks",
 				new Geld(7.44));
 
-		list.add(new GebruiktEsselinkArtikel(sub1, 8, 21));
-		list.add(new GebruiktEsselinkArtikel(sub2, 1, 21));
-		list.add(new GebruiktEsselinkArtikel(sub3, 1, 21));
-		list.add(new GebruiktEsselinkArtikel(sub4, 1, 21));
-		list.add(new GebruiktEsselinkArtikel(sub5, 1, 21));
-		list.add(new GebruiktEsselinkArtikel(sub6, 1, 21));
-		list.add(new GebruiktEsselinkArtikel(sub7, 1, 21));
-		list.add(new AnderArtikel("Stucloper + trapfolie", new Geld(15.00), 21));
-		list.add(new AnderArtikel("Kitwerk", new Geld(149.50), 21));
+		list.add(new GebruiktEsselinkArtikel(sub1, 8, 19));
+		list.add(new GebruiktEsselinkArtikel(sub2, 1, 19));
+		list.add(new GebruiktEsselinkArtikel(sub3, 1, 19));
+		list.add(new GebruiktEsselinkArtikel(sub4, 1, 19));
+		list.add(new GebruiktEsselinkArtikel(sub5, 1, 19));
+		list.add(new GebruiktEsselinkArtikel(sub6, 1, 19));
+		list.add(new GebruiktEsselinkArtikel(sub7, 1, 19));
+		list.add(new AnderArtikel("Stucloper + trapfolie", new Geld(15.00), 19));
+		list.add(new AnderArtikel("Kitwerk", new Geld(149.50), 19));
 
 		return list;
 	}
@@ -56,9 +56,9 @@ public class ParticulierTwoPdfIntegrationTest extends AbstractPdfIntegrationTest
 	protected ItemList<AbstractLoon> addLoon() {
 		ItemList<AbstractLoon> list = new ItemList<>();
 
-		list.add(new ProductLoon("Uurloon à 38.50", 25, new Geld(38.50), 6));
-		list.add(new ProductLoon("test123", 12, new Geld(12.50), 6));
-		list.add(new InstantLoon("foobar", new Geld(40.00), 6));
+		list.add(new ProductLoon("Uurloon à 38.50", 25, new Geld(38.50), 19));
+		list.add(new ProductLoon("test123", 12, new Geld(12.50), 19));
+		list.add(new InstantLoon("foobar", new Geld(40.00), 19));
 
 		return list;
 	}
@@ -81,7 +81,12 @@ public class ParticulierTwoPdfIntegrationTest extends AbstractPdfIntegrationTest
 	}
 
 	@Override
-	protected File makeFile() {
-		return new File("src\\test\\resources\\pdf\\ParticulierFactuurTest123TwoBtw.pdf");
+	protected File pdfFile() {
+		return new File("src\\test\\resources\\pdf\\ParticulierFactuurOneBtwIntegrationTest.pdf");
+	}
+
+	@Override
+	protected File xmlFile() {
+		return new File("src\\test\\resources\\xml\\ParticulierFactuurOneBtwIntegrationTest.xml");
 	}
 }

@@ -1,9 +1,11 @@
-package org.rekeningsysteem.test.integration.rekening;
+package org.rekeningsysteem.test.integration;
 
 import java.io.File;
 import java.time.LocalDate;
 import java.util.Currency;
 
+import org.junit.runner.RunWith;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.rekeningsysteem.data.reparaties.ReparatiesBon;
 import org.rekeningsysteem.data.reparaties.ReparatiesFactuur;
 import org.rekeningsysteem.data.util.Geld;
@@ -11,7 +13,8 @@ import org.rekeningsysteem.data.util.ItemList;
 import org.rekeningsysteem.data.util.header.Debiteur;
 import org.rekeningsysteem.data.util.header.FactuurHeader;
 
-public class ReparatiesFactuurIntegrationTest extends AbstractRekeningIntegrationTest {
+@RunWith(MockitoJUnitRunner.class)
+public class ReparationFactuurIntegrationTest extends AbstractIntegrationTest {
 
 	protected void addBonnen(ItemList<ReparatiesBon> list) {
 		list.add(new ReparatiesBon("Bonnummer", "110543", new Geld(77.00), new Geld(6.50)));
@@ -49,12 +52,19 @@ public class ReparatiesFactuurIntegrationTest extends AbstractRekeningIntegratio
 
 		ItemList<ReparatiesBon> itemList = new ItemList<>();
 		this.addBonnen(itemList);
+		this.addBonnen(itemList);
 
-		return new ReparatiesFactuur(header, Currency.getInstance("EUR"), itemList);
+		return new ReparatiesFactuur(header, Currency.getInstance("EUR"),
+				itemList);
 	}
 
 	@Override
-	protected File makeFile() {
-		return new File("reparatiesFactuurXMLTest.xml");
+	protected File pdfFile() {
+		return new File("src\\test\\resources\\pdf\\ReparationFactuurIntegrationTest.pdf");
+	}
+
+	@Override
+	protected File xmlFile() {
+		return new File("src\\test\\resources\\xml\\ReparationFactuurIntegrationTest.xml");
 	}
 }
