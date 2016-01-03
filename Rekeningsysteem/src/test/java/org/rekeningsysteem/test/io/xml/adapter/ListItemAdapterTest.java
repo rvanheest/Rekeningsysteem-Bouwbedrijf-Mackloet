@@ -1,24 +1,26 @@
-package org.rekeningsysteem.test.io.xml.adapter.particulier;
+package org.rekeningsysteem.test.io.xml.adapter;
 
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.rekeningsysteem.data.mutaties.MutatiesBon;
+import org.rekeningsysteem.data.particulier.AnderArtikel;
 import org.rekeningsysteem.data.particulier.EsselinkArtikel;
 import org.rekeningsysteem.data.particulier.GebruiktEsselinkArtikel;
-import org.rekeningsysteem.data.particulier.AnderArtikel;
 import org.rekeningsysteem.data.particulier.loon.InstantLoon;
 import org.rekeningsysteem.data.particulier.loon.ProductLoon;
+import org.rekeningsysteem.data.reparaties.ReparatiesBon;
 import org.rekeningsysteem.data.util.Geld;
-import org.rekeningsysteem.io.xml.adapter.particulier.ParticulierArtikelAdapter;
+import org.rekeningsysteem.io.xml.adapter.ListItemAdapter;
 
-public class ParticulierArtikelAdapterTest {
+public class ListItemAdapterTest {
 
-	private ParticulierArtikelAdapter adapter;
+	private ListItemAdapter adapter;
 
 	@Before
 	public void setUp() {
-		this.adapter = new ParticulierArtikelAdapter();
+		this.adapter = new ListItemAdapter();
 	}
 
 	@Test
@@ -35,14 +37,26 @@ public class ParticulierArtikelAdapterTest {
 	}
 
 	@Test
-	public void testInstantLoonMarshalUnmarshal() {
+	public void testMarshalUnmarshalInstantLoon() {
 		InstantLoon expected = new InstantLoon("omschr", new Geld(1.0), 6);
 		assertEquals(expected, this.adapter.unmarshal(this.adapter.marshal(expected)));
 	}
 
 	@Test
-	public void testProductLoonMarshalUnmarshal() {
+	public void testMarshalUnmarshalProductLoon() {
 		ProductLoon expected = new ProductLoon("omschr", 3.0, new Geld(1.0), 6);
+		assertEquals(expected, this.adapter.unmarshal(this.adapter.marshal(expected)));
+	}
+
+	@Test
+	public void testMarshalUnmarshalMutatiesBon() {
+		MutatiesBon expected = new MutatiesBon("omschr", "nr", new Geld(1));
+		assertEquals(expected, this.adapter.unmarshal(this.adapter.marshal(expected)));
+	}
+
+	@Test
+	public void testMarshalUnmarshalReparatiesBon() {
+		ReparatiesBon expected = new ReparatiesBon("omschr", "bonnummer", new Geld(1), new Geld(3));
 		assertEquals(expected, this.adapter.unmarshal(this.adapter.marshal(expected)));
 	}
 }

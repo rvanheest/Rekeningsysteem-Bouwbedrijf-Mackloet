@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 import org.rekeningsysteem.data.util.Geld;
+import org.rekeningsysteem.exception.GeldParseException;
 import org.rekeningsysteem.io.xml.adapter.util.GeldAdapter;
 
 public class GeldAdapterTest {
@@ -17,7 +18,7 @@ public class GeldAdapterTest {
 	}
 
 	@Test
-	public void testMarshalUnmarshal() {
+	public void testMarshalUnmarshal() throws GeldParseException {
 		Geld expected = new Geld(21);
 		assertEquals(expected, this.adapter.unmarshal(this.adapter.marshal(expected)));
 	}

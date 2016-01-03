@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <bestand type="Offerte" version="4">
-    <rekening>
+    <offerte>
         <factuurHeader>
             <debiteur>
                 <naam>Dhr. M. Stolk</naam>
@@ -18,5 +18,5 @@
         </factuurHeader>
         <tekst>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce quis quam tortor.</tekst>
         <ondertekenen>false</ondertekenen>
-    </rekening>
+    </offerte>
 </bestand>

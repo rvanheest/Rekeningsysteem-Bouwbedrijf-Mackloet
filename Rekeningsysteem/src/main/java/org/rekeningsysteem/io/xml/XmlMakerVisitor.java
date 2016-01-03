@@ -21,7 +21,7 @@ import org.rekeningsysteem.io.xml.root.ParticulierFactuurRoot;
 import org.rekeningsysteem.io.xml.root.ReparatiesFactuurRoot;
 import org.rekeningsysteem.io.xml.root.Root;
 
-public class XmlMakerVisitor implements RekeningVisitor {
+public class XmlMakerVisitor implements RekeningVisitor<Object> {
 
 	private File saveLocation;
 	private final Map<Class<? extends Root<?>>, Marshaller> map;
@@ -59,27 +59,31 @@ public class XmlMakerVisitor implements RekeningVisitor {
 	}
 
 	@Override
-	public void visit(MutatiesFactuur factuur) throws Exception {
+	public Object visit(MutatiesFactuur factuur) throws Exception {
 		Marshaller marshaller = this.map.get(MutatiesFactuurRoot.class);
 		this.save(marshaller, new MutatiesFactuurRoot(), factuur);
+		return new Object();
 	}
 
 	@Override
-	public void visit(Offerte offerte) throws Exception {
+	public Object visit(Offerte offerte) throws Exception {
 		Marshaller marshaller = this.map.get(OfferteRoot.class);
 		this.save(marshaller, new OfferteRoot(), offerte);
+		return new Object();
 	}
 
 	@Override
-	public void visit(ParticulierFactuur factuur) throws Exception {
+	public Object visit(ParticulierFactuur factuur) throws Exception {
 		Marshaller marshaller = this.map.get(ParticulierFactuurRoot.class);
 		this.save(marshaller, new ParticulierFactuurRoot(), factuur);
+		return new Object();
 	}
 
 	@Override
-	public void visit(ReparatiesFactuur factuur) throws Exception {
+	public Object visit(ReparatiesFactuur factuur) throws Exception {
 		Marshaller marshaller = this.map.get(ReparatiesFactuurRoot.class);
 		this.save(marshaller, new ReparatiesFactuurRoot(), factuur);
+		return new Object();
 	}
 
 	private <T extends AbstractRekening> void save(Marshaller marshaller, Root<T> root, T rekening)

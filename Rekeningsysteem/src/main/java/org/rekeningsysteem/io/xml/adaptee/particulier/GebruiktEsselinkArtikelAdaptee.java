@@ -6,11 +6,13 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.rekeningsysteem.data.particulier.EsselinkArtikel;
+import org.rekeningsysteem.io.xml.adaptee.ListItemAdapteeVisitable;
+import org.rekeningsysteem.io.xml.adaptee.ListItemAdapteeVisitor;
 import org.rekeningsysteem.io.xml.adapter.particulier.EsselinkArtikelAdapter;
 
 @XmlRootElement(name = "gebruikt-esselink-artikel")
 @XmlType(propOrder = { "omschrijving", "artikel", "aantal", "materiaalBtwPercentage" })
-public class GebruiktEsselinkArtikelAdaptee extends ParticulierArtikelAdaptee {
+public class GebruiktEsselinkArtikelAdaptee extends ListItemAdapteeVisitable {
 
 	private String omschrijving;
 	private EsselinkArtikel artikel;
@@ -49,7 +51,12 @@ public class GebruiktEsselinkArtikelAdaptee extends ParticulierArtikelAdaptee {
 		return this.materiaalBtwPercentage;
 	}
 
-    public void setMateriaalBtwPercentage(double materiaalBtwPercentage) {
-    	this.materiaalBtwPercentage = materiaalBtwPercentage;
-    }
+	public void setMateriaalBtwPercentage(double materiaalBtwPercentage) {
+		this.materiaalBtwPercentage = materiaalBtwPercentage;
+	}
+
+	@Override
+	public <T> T accept(ListItemAdapteeVisitor<T> visitor) {
+		return visitor.visit(this);
+	}
 }

@@ -3,19 +3,17 @@ package org.rekeningsysteem.io.xml.adapter.util;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
 import org.rekeningsysteem.data.util.Geld;
-import org.rekeningsysteem.io.xml.adaptee.util.GeldAdaptee;
+import org.rekeningsysteem.exception.GeldParseException;
 
-public class GeldAdapter extends XmlAdapter<GeldAdaptee, Geld> {
+public class GeldAdapter extends XmlAdapter<String, Geld> {
 
 	@Override
-	public Geld unmarshal(GeldAdaptee adaptee) {
-		return new Geld(adaptee.getBedrag());
+	public Geld unmarshal(String string) throws GeldParseException {
+		return new Geld(string);
 	}
 
 	@Override
-	public GeldAdaptee marshal(Geld geld) {
-		GeldAdaptee adaptee = new GeldAdaptee();
-		adaptee.setBedrag(geld.getBedrag());
-		return adaptee;
+	public String marshal(Geld geld) {
+		return geld.formattedString();
 	}
 }

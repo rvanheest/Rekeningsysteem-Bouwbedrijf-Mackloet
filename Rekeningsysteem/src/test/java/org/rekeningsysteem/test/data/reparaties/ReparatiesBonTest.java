@@ -2,13 +2,20 @@ package org.rekeningsysteem.test.data.reparaties;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.verify;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.rekeningsysteem.data.reparaties.ReparatiesBon;
 import org.rekeningsysteem.data.util.Geld;
+import org.rekeningsysteem.data.util.visitor.ListItemVisitor;
 import org.rekeningsysteem.test.data.util.ListItemTest;
 
+@RunWith(MockitoJUnitRunner.class)
 public class ReparatiesBonTest extends ListItemTest {
 
 	private ReparatiesBon bon;
@@ -16,6 +23,7 @@ public class ReparatiesBonTest extends ListItemTest {
 	private final String bonnummer = "bonnummer";
 	private final Geld loon = new Geld(1);
 	private final Geld materiaal = new Geld(12);
+	@Mock private ListItemVisitor<Object> visitor;
 
 	@Override
 	protected ReparatiesBon makeInstance() {
@@ -53,6 +61,13 @@ public class ReparatiesBonTest extends ListItemTest {
 	@Test
 	public void testGetMateriaal() {
 		assertEquals(this.materiaal, this.bon.getMateriaal());
+	}
+
+	@Test
+	public void testAccept() {
+		this.bon.accept(this.visitor);
+
+		verify(this.visitor).visit(eq(this.bon));
 	}
 
 	@Test

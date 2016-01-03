@@ -2,17 +2,25 @@ package org.rekeningsysteem.test.data.particulier.loon;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.verify;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.rekeningsysteem.data.particulier.loon.InstantLoon;
 import org.rekeningsysteem.data.util.Geld;
+import org.rekeningsysteem.data.util.visitor.ListItemVisitor;
 
+@RunWith(MockitoJUnitRunner.class)
 public class InstantLoonTest extends AbstractLoonTest {
 
 	private InstantLoon item;
 	private final Geld loon = new Geld(12);
 	private final double loonBtwPercentage = 10;
+	@Mock private ListItemVisitor<Object> visitor;
 
 	@Override
 	protected InstantLoon makeInstance() {
@@ -40,6 +48,13 @@ public class InstantLoonTest extends AbstractLoonTest {
 	@Test
 	public void testGetLoonBtwPercentage() {
 		assertEquals(this.loonBtwPercentage, this.item.getLoonBtwPercentage(), 0.0);
+	}
+
+	@Test
+	public void testAccept() {
+		this.item.accept(this.visitor);
+
+		verify(this.visitor).visit(eq(this.item));
 	}
 
 	@Test

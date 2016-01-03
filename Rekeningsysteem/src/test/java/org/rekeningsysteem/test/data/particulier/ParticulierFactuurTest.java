@@ -15,7 +15,9 @@ import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.rekeningsysteem.data.particulier.ParticulierArtikel;
 import org.rekeningsysteem.data.particulier.ParticulierFactuur;
 import org.rekeningsysteem.data.util.AbstractFactuur;
@@ -28,12 +30,13 @@ import org.rekeningsysteem.data.util.visitor.RekeningVisitor;
 import org.rekeningsysteem.logic.factuurnummer.FactuurnummerManager;
 import org.rekeningsysteem.test.data.util.AbstractFactuurTest;
 
+@RunWith(MockitoJUnitRunner.class)
 public class ParticulierFactuurTest extends AbstractFactuurTest<ParticulierArtikel> {
 
 	private ParticulierFactuur factuur;
 	private final OmschrFactuurHeader header = new OmschrFactuurHeader(
 			new Debiteur("a", "b", "c", "d", "e"), LocalDate.of(1992, 7, 30), "g");
-	@Mock private RekeningVisitor visitor;
+	@Mock private RekeningVisitor<Object> visitor;
 
 	@Override
 	protected ParticulierFactuur makeInstance() {
