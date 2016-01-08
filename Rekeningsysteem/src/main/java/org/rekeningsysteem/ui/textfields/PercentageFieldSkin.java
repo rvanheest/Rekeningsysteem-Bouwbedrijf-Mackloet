@@ -26,18 +26,9 @@ public class PercentageFieldSkin implements Skin<PercentageField> {
 	private final DecimalFormat formatter;
 	private boolean ignoreValueUpdate = false;
 
-	private final InvalidationListener percentageFieldFocusListener = obs -> {
-		if (this.control.isFocused()) {
-			this.textField.requestFocus();
-		}
-	};
-	private final InvalidationListener percentageFieldValueListener = obs -> {
-		if (!this.ignoreValueUpdate) {
-			this.updateText();
-		}
-	};
-	private final InvalidationListener percentageFieldStyleClassListener = obs -> this.textField
-			.getStyleClass().setAll(this.control.getStyleClass());
+	private final InvalidationListener percentageFieldFocusListener;
+	private final InvalidationListener percentageFieldValueListener;
+	private final InvalidationListener percentageFieldStyleClassListener;
 
 	public PercentageFieldSkin(PercentageField control) {
 		this.control = control;
@@ -64,6 +55,19 @@ public class PercentageFieldSkin implements Skin<PercentageField> {
 				}
 			}
 		};
+
+		this.percentageFieldFocusListener = obs -> {
+			if (this.control.isFocused()) {
+				this.textField.requestFocus();
+			}
+		};
+		this.percentageFieldValueListener = obs -> {
+			if (!this.ignoreValueUpdate) {
+				this.updateText();
+			}
+		};
+		this.percentageFieldStyleClassListener = obs -> this.textField
+				.getStyleClass().setAll(this.control.getStyleClass());
 
 		this.textField.setId("text-field");
 		this.textField.getStyleClass().setAll(control.getStyleClass());

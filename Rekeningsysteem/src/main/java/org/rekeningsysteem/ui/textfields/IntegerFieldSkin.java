@@ -23,18 +23,9 @@ public class IntegerFieldSkin implements Skin<IntegerField> {
 	private final DecimalFormat formatter;
 	private boolean ignoreValueUpdate = false;
 
-	private final InvalidationListener integerFieldFocusListener = obs -> {
-		if (this.control.isFocused()) {
-			this.textField.requestFocus();
-		}
-	};
-	private final InvalidationListener integerFieldValueListener = obs -> {
-		if (!this.ignoreValueUpdate) {
-			this.updateText();
-		}
-	};
-	private final InvalidationListener integerFieldStyleClassListener = obs -> this.textField
-			.getStyleClass().setAll(this.control.getStyleClass());
+	private final InvalidationListener integerFieldFocusListener;
+	private final InvalidationListener integerFieldValueListener;
+	private final InvalidationListener integerFieldStyleClassListener;
 
 	public IntegerFieldSkin(IntegerField control) {
 		this.control = control;
@@ -59,6 +50,19 @@ public class IntegerFieldSkin implements Skin<IntegerField> {
 				}
 			}
 		};
+
+		this.integerFieldFocusListener = obs -> {
+			if (this.control.isFocused()) {
+				this.textField.requestFocus();
+			}
+		};
+		this.integerFieldValueListener = obs -> {
+			if (!this.ignoreValueUpdate) {
+				this.updateText();
+			}
+		};
+		this.integerFieldStyleClassListener = obs -> this.textField
+				.getStyleClass().setAll(this.control.getStyleClass());
 
 		this.textField.setId("text-field");
 		this.textField.getStyleClass().setAll(control.getStyleClass());
@@ -127,7 +131,7 @@ public class IntegerFieldSkin implements Skin<IntegerField> {
 		if (text.length() == 0) {
 			return true;
 		}
-		
+
 		String negativePrefix = "-";
 		if (text.startsWith(negativePrefix)) {
 			text = text.substring(negativePrefix.length()).trim();
