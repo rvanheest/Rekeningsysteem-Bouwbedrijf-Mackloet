@@ -70,7 +70,7 @@ public class XmlReader2 implements FactuurLoader {
 	}
 
 	@Override
-	public Observable<? extends AbstractRekening> load(File file) {
+	public Observable<AbstractRekening> load(File file) {
 		try {
 			return this.loadRekening(file);
 		}
@@ -79,7 +79,7 @@ public class XmlReader2 implements FactuurLoader {
 		}
 	}
 
-	private Observable<? extends AbstractRekening> loadRekening(File file) throws SAXException,
+	private Observable<AbstractRekening> loadRekening(File file) throws SAXException,
 			IOException {
 		Document doc = this.builder.parse(file);
 		doc.getDocumentElement().normalize();
@@ -115,15 +115,27 @@ public class XmlReader2 implements FactuurLoader {
 		}
 	}
 
-	private <T extends AbstractRekening> Observable<T> parseRekening(Node bestand,
-			Function<Node, Observable<T>> parse, String... names) {
+	private Observable<AbstractRekening> parseRekening(Node bestand,
+			Function<Node, Observable<? extends AbstractRekening>> parse, String name) {
+		NodeList nodes = ((Element) bestand).getElementsByTagName(name);
+		if (nodes.getLength() != 0) {
+			return parse.apply(nodes.item(0)).cast(AbstractRekening.class);
+		}
+		else {
+			return Observable.error(new XMLParseException("Could not parse file to object."));
+		}
+	}
+
+	private Observable<AbstractRekening> parseRekening(Node bestand,
+			Function<Node, Observable<? extends AbstractRekening>> parse, String... names) {
 		return Stream.of(names)
 				.map(((Element) bestand)::getElementsByTagName)
 				.filter(list -> list.getLength() != 0)
 				.map(list -> list.item(0))
 				.map(parse)
 				.findFirst()
-				.orElse(Observable.error(new XMLParseException("Could not parse file to object.")));
+				.orElse(Observable.error(new XMLParseException("Could not parse file to object.")))
+				.cast(AbstractRekening.class);
 	}
 
 	private Observable<String> getNodeValue(Node node, String s) {
@@ -337,7 +349,7 @@ public class XmlReader2 implements FactuurLoader {
 	}
 
 	private Func1<Double, Observable<ItemList<ParticulierArtikel>>> makeParticulierList(Node node) {
-		return btw -> this.nodeListOrError(() -> node.getChildNodes())
+		return btw -> this.nodeListOrError(node::getChildNodes)
 				.filter(item -> !"#text".equals(item.getNodeName()))
 				.flatMap(item -> {
 					switch (item.getNodeName()) {

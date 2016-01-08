@@ -65,7 +65,7 @@ public class XmlReader implements FactuurLoader {
 	}
 
 	@Override
-	public Observable<? extends AbstractRekening> load(File file) {
+	public Observable<AbstractRekening> load(File file) {
 		try {
 			Document doc = this.builder.parse(file);
 			doc.getDocumentElement().normalize();
@@ -77,23 +77,19 @@ public class XmlReader implements FactuurLoader {
     			switch (type) {
     				case "MutatiesFactuur": {
     					Unmarshaller unmarshaller = this.map.get(MutatiesFactuurRoot.class);
-    					Observable<? extends AbstractRekening> result = this.readXML(unmarshaller, doc).map(Root::getRekening);
-    					return result;
+    					return this.readXML(unmarshaller, doc).map(Root::getRekening);
     				}
     				case "Offerte": {
     					Unmarshaller unmarshaller = this.map.get(OfferteRoot.class);
-    					Observable<? extends AbstractRekening> result = this.readXML(unmarshaller, doc).map(Root::getRekening);
-    					return result;
+    					return this.readXML(unmarshaller, doc).map(Root::getRekening);
     				}
     				case "ParticulierFactuur": {
     					Unmarshaller unmarshaller = this.map.get(ParticulierFactuurRoot.class);
-    					Observable<? extends AbstractRekening> result = this.readXML(unmarshaller, doc).map(Root::getRekening);
-    					return result;
+						return this.readXML(unmarshaller, doc).map(Root::getRekening);
     				}
     				case "ReparatiesFactuur": {
     					Unmarshaller unmarshaller = this.map.get(ReparatiesFactuurRoot.class);
-    					Observable<? extends AbstractRekening> result = this.readXML(unmarshaller, doc).map(Root::getRekening);
-    					return result;
+						return this.readXML(unmarshaller, doc).map(Root::getRekening);
     				}
     				default:
     					return Observable.error(new IllegalArgumentException("This type (" + type + ") can't be used"));
