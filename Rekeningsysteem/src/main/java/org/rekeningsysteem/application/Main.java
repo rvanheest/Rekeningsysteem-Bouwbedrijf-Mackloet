@@ -20,12 +20,14 @@ import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
 import javafx.util.Duration;
 
+import org.apache.log4j.Logger;
 import org.rekeningsysteem.application.versioning.VersionControl;
 import org.rekeningsysteem.io.database.Database;
 import org.rekeningsysteem.logging.ApplicationLogger;
 import org.rekeningsysteem.rxjavafx.Observables;
 
 import rx.Observable;
+import rx.schedulers.Schedulers;
 
 public class Main extends Application {
 
@@ -49,10 +51,11 @@ public class Main extends Application {
 
 	@Override
 	public void start(Stage stage) {
+		Logger logger = ApplicationLogger.getInstance();
 		try {
 			Database database = Database.getInstance();
 			VersionControl vc = new VersionControl(database);
-			vc.checkDBVersioning().subscribe();
+			vc.checkDBVersioning().subscribeOn(Schedulers.io()).subscribe();
 
 			main = this;
 			this.popup.setId("modalDimmer");
@@ -65,7 +68,7 @@ public class Main extends Application {
 
 			this.popup.setVisible(false);
 
-			StackPane layerPane = new StackPane(new Root(stage, database), this.popup);
+			StackPane layerPane = new StackPane(new Root(stage, database, logger), this.popup);
 
 			Scene scene = new Scene(layerPane, screenWidth, screenHeight);
 			scene.getStylesheets().add(getResource("/layout.css"));
@@ -75,7 +78,7 @@ public class Main extends Application {
 					database.close();
 				}
 				catch (SQLException e) {
-					ApplicationLogger.getInstance().error("Could not close database.", e);
+					logger.error("Could not close database.", e);
 				}
 			});
 			stage.getIcons().add(new Image(getResource("/images/icon.gif")));
@@ -85,7 +88,7 @@ public class Main extends Application {
 			stage.show();
 		}
 		catch (Exception e) {
-			ApplicationLogger.getInstance().error("Exception caught on toplevel", e);
+			logger.error("Exception caught on toplevel", e);
 		}
 	}
 

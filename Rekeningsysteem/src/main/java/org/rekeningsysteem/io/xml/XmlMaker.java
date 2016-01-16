@@ -5,15 +5,14 @@ import java.io.File;
 import org.apache.log4j.Logger;
 import org.rekeningsysteem.data.util.AbstractRekening;
 import org.rekeningsysteem.io.FactuurSaver;
-import org.rekeningsysteem.logging.ApplicationLogger;
 
 public class XmlMaker implements FactuurSaver {
 
 	private XmlMakerVisitor visitor;
 	private Logger logger;
-	
-	public XmlMaker() {
-		this(new XmlMakerVisitor(), ApplicationLogger.getInstance());
+
+	public XmlMaker(Logger logger) {
+		this(new XmlMakerVisitor(logger), logger);
 	}
 
 	public XmlMaker(XmlMakerVisitor visitor, Logger logger) {

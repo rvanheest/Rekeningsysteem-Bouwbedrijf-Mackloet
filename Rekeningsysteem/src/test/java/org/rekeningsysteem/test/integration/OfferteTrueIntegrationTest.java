@@ -1,13 +1,16 @@
-package org.rekeningsysteem.test.integration.rekening;
+package org.rekeningsysteem.test.integration;
 
 import java.io.File;
 import java.time.LocalDate;
 
+import org.junit.runner.RunWith;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.rekeningsysteem.data.offerte.Offerte;
 import org.rekeningsysteem.data.util.header.Debiteur;
 import org.rekeningsysteem.data.util.header.FactuurHeader;
 
-public class OfferteIntegrationTest extends AbstractRekeningIntegrationTest {
+@RunWith(MockitoJUnitRunner.class)
+public class OfferteTrueIntegrationTest extends AbstractIntegrationTest {
 
 	protected String makeText() {
 		return "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce quis quam tortor. "
@@ -20,13 +23,13 @@ public class OfferteIntegrationTest extends AbstractRekeningIntegrationTest {
 				+ "Nunc fringilla quam venenatis lacus condimentum, vitae mattis risus "
 				+ "ullamcorper. Maecenas pulvinar gravida libero, ac scelerisque justo "
 				+ "dignissim in.\n\n"
-
+				
 				+ "Maecenas pretium mi id magna convallis, vel auctor erat pulvinar. Cras et "
 				+ "tellus nec lacus pellentesque rutrum eget sodales nisi. In vitae sagittis "
 				+ "urna. Sed vestibulum suscipit vulputate. Vivamus commodo augue at dolor "
 				+ "volutpat blandit. Nunc in justo bibendum, cursus purus quis, scelerisque est. "
 				+ "Aenean ut accumsan arcu.\n\n"
-
+				
 				+ "Cras volutpat auctor mollis. Sed aliquam elit et accumsan dictum. Pellentesque "
 				+ "sollicitudin, turpis sollicitudin tincidunt porttitor, velit quam mollis sem, "
 				+ "non volutpat nunc arcu quis magna. Fusce vitae mattis nisl. Nulla sit amet "
@@ -37,20 +40,20 @@ public class OfferteIntegrationTest extends AbstractRekeningIntegrationTest {
 
 	@Override
 	protected Offerte makeRekening() {
-		Debiteur debiteur = new Debiteur("Name", "Street", "", "", "Place");
+		Debiteur debiteur = new Debiteur("Name", "Street", "Number", "Zipcode", "Place");
 		LocalDate datum = LocalDate.of(2011, 8, 11);
 		String factuurnummer = "107";
 		FactuurHeader header = new FactuurHeader(debiteur, datum, factuurnummer);
-
-		boolean ondertekenen = false;
-
-		Offerte offerte = new Offerte(header, this.makeText(), ondertekenen);
-
-		return offerte;
+		return new Offerte(header, this.makeText(), true);
 	}
 
 	@Override
-	protected File makeFile() {
-		return new File("offerteXMLTest.xml");
+	protected File pdfFile() {
+		return new File("src\\test\\resources\\pdf\\OfferteTrueIntegrationTest.pdf");
+	}
+
+	@Override
+	protected File xmlFile() {
+		return new File("src\\test\\resources\\xml\\OfferteTrueIntegrationTest.xml");
 	}
 }

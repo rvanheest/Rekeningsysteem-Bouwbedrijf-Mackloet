@@ -53,18 +53,9 @@ public class MoneyFieldSkin implements Skin<MoneyField> {
 	 */
 	private boolean ignoreValueUpdate = false;
 
-	private final InvalidationListener moneyFieldFocusListener = obs -> {
-		if (this.control.isFocused()) {
-			this.textField.requestFocus();
-		}
-	};
-	private final InvalidationListener moneyFieldValueListener = obs -> {
-		if (!this.ignoreValueUpdate) {
-			this.updateText();
-		}
-	};
-	private final InvalidationListener moneyFieldStyleClassListener = obs -> this.textField
-			.getStyleClass().setAll(this.control.getStyleClass());
+	private final InvalidationListener moneyFieldFocusListener;
+	private final InvalidationListener moneyFieldValueListener;
+	private final InvalidationListener moneyFieldStyleClassListener;
 
 	/**
 	 * Create a new MoneyFieldSkin.
@@ -106,6 +97,19 @@ public class MoneyFieldSkin implements Skin<MoneyField> {
 				}
 			}
 		};
+
+		this.moneyFieldFocusListener = obs -> {
+			if (this.control.isFocused()) {
+				this.textField.requestFocus();
+			}
+		};
+		this.moneyFieldValueListener = obs -> {
+			if (!this.ignoreValueUpdate) {
+				this.updateText();
+			}
+		};
+		this.moneyFieldStyleClassListener = obs -> this.textField
+				.getStyleClass().setAll(this.control.getStyleClass());
 
 		this.textField.setId("text-field");
 		this.textField.getStyleClass().setAll(control.getStyleClass());

@@ -24,18 +24,9 @@ public class NumberFieldSkin implements Skin<NumberField> {
 	private final DecimalFormat formatter;
 	private boolean ignoreValueUpdate = false;
 
-	private final InvalidationListener numberFieldFocusListener = obs -> {
-		if (this.control.isFocused()) {
-			this.textField.requestFocus();
-		}
-	};
-	private final InvalidationListener numberFieldValueListener = obs -> {
-		if (!this.ignoreValueUpdate) {
-			this.updateText();
-		}
-	};
-	private final InvalidationListener numberFieldStyleClassListener = obs -> this.textField
-			.getStyleClass().setAll(this.control.getStyleClass());
+	private final InvalidationListener numberFieldFocusListener;
+	private final InvalidationListener numberFieldValueListener;
+	private final InvalidationListener numberFieldStyleClassListener;
 
 	public NumberFieldSkin(NumberField control) {
 		this.control = control;
@@ -60,6 +51,19 @@ public class NumberFieldSkin implements Skin<NumberField> {
 				}
 			}
 		};
+
+		this.numberFieldFocusListener = obs -> {
+			if (this.control.isFocused()) {
+				this.textField.requestFocus();
+			}
+		};
+		this.numberFieldValueListener = obs -> {
+			if (!this.ignoreValueUpdate) {
+				this.updateText();
+			}
+		};
+		this.numberFieldStyleClassListener = obs -> this.textField
+				.getStyleClass().setAll(this.control.getStyleClass());
 
 		this.textField.setId("text-field");
 		this.textField.getStyleClass().setAll(control.getStyleClass());

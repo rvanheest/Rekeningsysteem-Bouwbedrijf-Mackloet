@@ -6,19 +6,21 @@ import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Currency;
+import java.util.function.Function;
 
 import javax.management.modelmbean.XMLParseException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.log4j.Logger;
 import org.rekeningsysteem.data.mutaties.MutatiesBon;
 import org.rekeningsysteem.data.mutaties.MutatiesFactuur;
 import org.rekeningsysteem.data.offerte.Offerte;
+import org.rekeningsysteem.data.particulier.AnderArtikel;
 import org.rekeningsysteem.data.particulier.EsselinkArtikel;
 import org.rekeningsysteem.data.particulier.GebruiktEsselinkArtikel;
 import org.rekeningsysteem.data.particulier.ParticulierArtikel;
-import org.rekeningsysteem.data.particulier.AnderArtikel;
 import org.rekeningsysteem.data.particulier.ParticulierFactuur;
 import org.rekeningsysteem.data.particulier.loon.AbstractLoon;
 import org.rekeningsysteem.data.particulier.loon.ProductLoon;
@@ -32,7 +34,6 @@ import org.rekeningsysteem.data.util.header.FactuurHeader;
 import org.rekeningsysteem.data.util.header.OmschrFactuurHeader;
 import org.rekeningsysteem.exception.GeldParseException;
 import org.rekeningsysteem.io.FactuurLoader;
-import org.rekeningsysteem.logging.ApplicationLogger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -53,14 +54,13 @@ public class XmlReader1 implements FactuurLoader {
 	private Currency currency;
 	private DocumentBuilder builder;
 
-	public XmlReader1() {
+	public XmlReader1(Logger logger) {
 		try {
 			this.builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 		}
 		catch (ParserConfigurationException e) {
 			// Should not happen
-			ApplicationLogger.getInstance().fatal("DocumentBuilder could not be made. "
-					+ "(should not happen)", e);
+			logger.fatal("DocumentBuilder could not be made. (should not happen)", e);
 		}
 	}
 
@@ -69,7 +69,7 @@ public class XmlReader1 implements FactuurLoader {
 	}
 
 	@Override
-	public Observable<? extends AbstractRekening> load(File file) {
+	public Observable<AbstractRekening> load(File file) {
 		try {
 			return this.loadRekening(file);
 		}
@@ -78,31 +78,36 @@ public class XmlReader1 implements FactuurLoader {
 		}
 	}
 
-	private Observable<? extends AbstractRekening> loadRekening(File file) throws SAXException,
+	private Observable<AbstractRekening> loadRekening(File file) throws SAXException,
 			IOException {
 		Document doc = this.builder.parse(file);
 		doc.getDocumentElement().normalize();
 		Node factuur = doc.getElementsByTagName("bestand").item(0).getFirstChild();
 		String soort = factuur.getNodeName();
 		if (soort.equals("particulierfactuur1") || soort.equals("partfactuur")) {
-			return this.makeParticulierFactuur1(factuur);
+			return this.parseRekening(factuur, this::makeParticulierFactuur1);
 		}
 		else if (soort.equals("particulierfactuur2")) {
-			return this.makeParticulierFactuur2(factuur);
+			return this.parseRekening(factuur, this::makeParticulierFactuur2);
 		}
 		else if (soort.equals("reparatiesfactuur")) {
-			return this.makeReparatiesFactuur(factuur);
+			return this.parseRekening(factuur, this::makeReparatiesFactuur);
 		}
 		else if (soort.equals("mutatiesfactuur")) {
-			return this.makeMutatiesFactuur(factuur);
+			return this.parseRekening(factuur, this::makeMutatiesFactuur);
 		}
 		else if (soort.equals("offerte")) {
-			return this.makeOfferte(factuur);
+			return this.parseRekening(factuur, this::makeOfferte);
 		}
 		else {
 			return Observable.error(new XMLParseException("Geen geschikte Node gevonden. "
 					+ "Nodenaam = " + soort + "."));
 		}
+	}
+
+	private Observable<AbstractRekening> parseRekening(Node bestand,
+			Function<Node, Observable<? extends AbstractRekening>> parse) {
+		return parse.apply(bestand).cast(AbstractRekening.class);
 	}
 
 	private Observable<String> getNodeValue(Node node, String s) {
@@ -296,8 +301,8 @@ public class XmlReader1 implements FactuurLoader {
 
 		Observable<BtwPercentage> btw = this.makeEnkelBtw(node);
 		return btw.first().publish(percentage -> {
-			Observable<ItemList<ParticulierArtikel>> art = percentage.map(b -> b.materiaalPercentage).flatMap(b -> itemList.call(b));
-			Observable<ItemList<AbstractLoon>> loon = percentage.map(b -> b.loonPercentage).flatMap(b -> loonList.call(b));
+			Observable<ItemList<ParticulierArtikel>> art = percentage.map(b -> b.materiaalPercentage).flatMap(itemList);
+			Observable<ItemList<AbstractLoon>> loon = percentage.map(b -> b.loonPercentage).flatMap(loonList);
 			
 			return Observable.zip(header, art, loon,(h, li, lo) -> {
 				li.addAll(lo);
@@ -335,8 +340,8 @@ public class XmlReader1 implements FactuurLoader {
 
 		Observable<BtwPercentage> btw = this.makeDubbelBtw(node);
 		return btw.first().publish(percentage -> {
-			Observable<ItemList<ParticulierArtikel>> art = percentage.map(b -> b.materiaalPercentage).flatMap(b -> itemList.call(b));
-			Observable<ItemList<AbstractLoon>> loon = percentage.map(b -> b.loonPercentage).flatMap(b -> loonList.call(b));
+			Observable<ItemList<ParticulierArtikel>> art = percentage.map(b -> b.materiaalPercentage).flatMap(itemList);
+			Observable<ItemList<AbstractLoon>> loon = percentage.map(b -> b.loonPercentage).flatMap(loonList);
 			
 			return Observable.zip(header, art, loon, (h, li, lo) -> {
 				li.addAll(lo);

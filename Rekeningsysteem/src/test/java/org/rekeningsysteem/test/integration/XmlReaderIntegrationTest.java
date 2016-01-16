@@ -4,8 +4,12 @@ import java.io.File;
 
 import javax.management.modelmbean.XMLParseException;
 
+import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.rekeningsysteem.data.mutaties.MutatiesFactuur;
 import org.rekeningsysteem.data.offerte.Offerte;
 import org.rekeningsysteem.data.particulier.ParticulierFactuur;
@@ -19,6 +23,7 @@ import org.rekeningsysteem.io.xml.XmlReader3;
 
 import rx.observers.TestSubscriber;
 
+@RunWith(MockitoJUnitRunner.class)
 public class XmlReaderIntegrationTest {
 
 	private FactuurLoader loader1;
@@ -26,13 +31,14 @@ public class XmlReaderIntegrationTest {
 	private FactuurLoader loader3;
 	private FactuurLoader loader4;
 	private TestSubscriber<Class<? extends AbstractRekening>> testObserver;
+	@Mock private Logger logger;
 
 	@Before
 	public void setUp() {
-		this.loader1 = new XmlReader1();
-		this.loader2 = new XmlReader2();
-		this.loader3 = new XmlReader3();
-		this.loader4 = new XmlReader();
+		this.loader1 = new XmlReader1(this.logger);
+		this.loader2 = new XmlReader2(this.logger);
+		this.loader3 = new XmlReader3(this.logger);
+		this.loader4 = new XmlReader(this.logger);
 		this.testObserver = new TestSubscriber<>();
 	}
 

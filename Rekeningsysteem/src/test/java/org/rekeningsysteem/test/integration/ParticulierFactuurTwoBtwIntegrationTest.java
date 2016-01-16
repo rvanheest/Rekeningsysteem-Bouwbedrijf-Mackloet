@@ -1,13 +1,15 @@
-package org.rekeningsysteem.test.integration.rekening;
+package org.rekeningsysteem.test.integration;
 
 import java.io.File;
 import java.time.LocalDate;
 import java.util.Currency;
 
+import org.junit.runner.RunWith;
+import org.mockito.runners.MockitoJUnitRunner;
+import org.rekeningsysteem.data.particulier.AnderArtikel;
 import org.rekeningsysteem.data.particulier.EsselinkArtikel;
 import org.rekeningsysteem.data.particulier.GebruiktEsselinkArtikel;
 import org.rekeningsysteem.data.particulier.ParticulierArtikel;
-import org.rekeningsysteem.data.particulier.AnderArtikel;
 import org.rekeningsysteem.data.particulier.ParticulierFactuur;
 import org.rekeningsysteem.data.particulier.loon.AbstractLoon;
 import org.rekeningsysteem.data.particulier.loon.InstantLoon;
@@ -17,7 +19,8 @@ import org.rekeningsysteem.data.util.ItemList;
 import org.rekeningsysteem.data.util.header.Debiteur;
 import org.rekeningsysteem.data.util.header.OmschrFactuurHeader;
 
-public class ParticulierFactuurIntegrationTest extends AbstractRekeningIntegrationTest {
+@RunWith(MockitoJUnitRunner.class)
+public class ParticulierFactuurTwoBtwIntegrationTest extends AbstractIntegrationTest {
 
 	protected ItemList<ParticulierArtikel> addArtikels() {
 		ItemList<ParticulierArtikel> list = new ItemList<>();
@@ -78,7 +81,12 @@ public class ParticulierFactuurIntegrationTest extends AbstractRekeningIntegrati
 	}
 
 	@Override
-	protected File makeFile() {
-		return new File("particulierFactuurXMLTest.xml");
+	protected File pdfFile() {
+		return new File("src\\test\\resources\\pdf\\ParticulierFactuurTwoBtwIntegrationTest.pdf");
+	}
+
+	@Override
+	protected File xmlFile() {
+		return new File("src\\test\\resources\\xml\\ParticulierFactuurTwoBtwIntegrationTest.xml");
 	}
 }

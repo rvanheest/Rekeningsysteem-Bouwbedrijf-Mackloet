@@ -19,6 +19,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
 
+import org.apache.log4j.Logger;
 import org.rekeningsysteem.application.Main;
 import org.rekeningsysteem.application.settings.SettingsPane;
 import org.rekeningsysteem.data.offerte.Offerte;
@@ -56,7 +57,7 @@ public class MainPane extends BorderPane {
 
 	private final PropertiesWorker properties = PropertiesWorker.getInstance();
 
-	public MainPane(Stage stage, Database database) {
+	public MainPane(Stage stage, Database database, Logger logger) {
 		this.database = database;
 
 		this.setId("main-pane");
@@ -70,13 +71,14 @@ public class MainPane extends BorderPane {
 		this.toolbar = new RekeningToolbar(this.mutaties, this.reparaties, this.particulier,
 				this.offerte, this.open, this.save, this.pdf, spacer, this.settings);
 		this.tabpane = new RekeningTabpane();
-		this.settingsPaneFactory = () -> new SettingsPane(stage, this.settings, this.database);
+		this.settingsPaneFactory = () -> new SettingsPane(stage, this.settings, this.database,
+				logger);
 		this.centerPane = new StackPane(this.tabpane);
 
 		this.setTop(this.toolbar);
 		this.setCenter(this.centerPane);
 
-		this.initButtonHandlers(stage);
+		this.initButtonHandlers(stage, logger);
 	}
 
 	private void initButtons() {
@@ -99,12 +101,12 @@ public class MainPane extends BorderPane {
 				.getResource("/images/settings.png"))));
 	}
 
-	private void initButtonHandlers(Stage stage) {
+	private void initButtonHandlers(Stage stage, Logger logger) {
 		this.initMutatiesObservable()
 				.mergeWith(this.initReparatiesObservable())
 				.mergeWith(this.initParticulierObservable())
-				.mergeWith(this.initOfferteObservable())
-				.mergeWith(this.initOpenObservable(stage))
+				.mergeWith(this.initOfferteObservable(logger))
+				.mergeWith(this.initOpenObservable(stage, logger))
 				.retry()
 				.subscribe(tab -> {
 					this.tabpane.addTab(tab);
@@ -281,16 +283,16 @@ public class MainPane extends BorderPane {
 				.map(event -> new RekeningTab("Particulier factuur", new ParticulierController(this.database), this.database));
 	}
 
-	private Observable<RekeningTab> initOfferteObservable() {
+	private Observable<RekeningTab> initOfferteObservable(Logger logger) {
 		return Observables.fromNodeEvents(this.offerte, ActionEvent.ACTION)
-				.map(event -> new RekeningTab("Offerte", new OfferteController(this.database), this.database));
+				.map(event -> new RekeningTab("Offerte", new OfferteController(this.database, logger), this.database));
 	}
 
-	private Observable<RekeningTab> initOpenObservable(Stage stage) {
+	private Observable<RekeningTab> initOpenObservable(Stage stage, Logger logger) {
 		return Observables.fromNodeEvents(this.open, ActionEvent.ACTION)
 				.flatMap(event -> this.showOpenFileChooser(stage))
 				.doOnNext(this::saveLastSaveLocationProperty)
-				.flatMap(file -> RekeningTab.openFile(file, this.database));
+				.flatMap(file -> RekeningTab.openFile(file, this.database, logger));
 	}
 
 	private Observable<RekeningTab> initSaveObservable() {

@@ -1,19 +1,16 @@
-package org.rekeningsysteem.test.integration.pdf;
+package org.rekeningsysteem.test.integration;
 
 import java.io.File;
 import java.time.LocalDate;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.rekeningsysteem.data.offerte.Offerte;
 import org.rekeningsysteem.data.util.header.Debiteur;
 import org.rekeningsysteem.data.util.header.FactuurHeader;
-import org.rekeningsysteem.io.FactuurExporter;
-import org.rekeningsysteem.io.pdf.PdfExporter;
 
-public class OffertePdfIntegrationTest {
-
-	private FactuurExporter exporter;
+@RunWith(MockitoJUnitRunner.class)
+public class OfferteFalseIntegrationTest extends AbstractIntegrationTest {
 
 	protected String makeText() {
 		return "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce quis quam tortor. "
@@ -41,32 +38,22 @@ public class OffertePdfIntegrationTest {
 				+ "ullamcorper dictum velit, sit amet pellentesque risus facilisis vel.";
 	}
 
-	@Before
-	public void setUp() {
-		this.exporter = new PdfExporter(false);
-	}
-
-	@Test
-	public void testExportWithOndertekenen() {
+	@Override
+	protected Offerte makeRekening() {
 		Debiteur debiteur = new Debiteur("Name", "Street", "Number", "Zipcode", "Place");
 		LocalDate datum = LocalDate.of(2011, 8, 11);
 		String factuurnummer = "107";
 		FactuurHeader header = new FactuurHeader(debiteur, datum, factuurnummer);
-		Offerte offerte = new Offerte(header, this.makeText(), true);
-		
-		this.exporter.export(offerte, new File("src\\test\\resources\\pdf\\"
-				+ "OfferteTest123True.pdf"));
+		return new Offerte(header, this.makeText(), false);
 	}
 
-	@Test
-	public void testExportWithoutOndertekenen() {
-		Debiteur debiteur = new Debiteur("Name", "Street", "Number", "Zipcode", "Place");
-		LocalDate datum = LocalDate.of(2011, 8, 11);
-		String factuurnummer = "107";
-		FactuurHeader header = new FactuurHeader(debiteur, datum, factuurnummer);
-		Offerte offerte = new Offerte(header, this.makeText(), false);
-		
-		this.exporter.export(offerte, new File("src\\test\\resources\\pdf\\"
-				+ "OfferteTest123False.pdf"));
+	@Override
+	protected File pdfFile() {
+		return new File("src\\test\\resources\\pdf\\OfferteFalseIntegrationTest.pdf");
+	}
+
+	@Override
+	protected File xmlFile() {
+		return new File("src\\test\\resources\\xml\\OfferteFalseIntegrationTest.xml");
 	}
 }

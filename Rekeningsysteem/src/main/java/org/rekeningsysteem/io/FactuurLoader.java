@@ -8,5 +8,5 @@ import rx.Observable;
 
 public interface FactuurLoader {
 
-	Observable<? extends AbstractRekening> load(File file);
+	Observable<AbstractRekening> load(File file);
 }

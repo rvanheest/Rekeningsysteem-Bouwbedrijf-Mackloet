@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import javafx.scene.control.Tab;
 
+import org.apache.log4j.Logger;
 import org.rekeningsysteem.data.mutaties.MutatiesFactuur;
 import org.rekeningsysteem.data.offerte.Offerte;
 import org.rekeningsysteem.data.particulier.ParticulierFactuur;
@@ -13,6 +14,7 @@ import org.rekeningsysteem.data.reparaties.ReparatiesFactuur;
 import org.rekeningsysteem.data.util.AbstractRekening;
 import org.rekeningsysteem.data.util.header.Debiteur;
 import org.rekeningsysteem.io.database.Database;
+import org.rekeningsysteem.logging.ApplicationLogger;
 import org.rekeningsysteem.logic.database.DebiteurDBInteraction;
 import org.rekeningsysteem.properties.PropertiesWorker;
 import org.rekeningsysteem.ui.AbstractRekeningController;
@@ -28,7 +30,7 @@ import rx.subjects.PublishSubject;
 
 public class RekeningTab extends Tab {
 
-	private static final IOWorker ioWorker = new IOWorker();
+	private static final IOWorker ioWorker = new IOWorker(ApplicationLogger.getInstance());
 
 	private final PublishSubject<Boolean> modified = PublishSubject.create();
 	private final BehaviorSubject<AbstractRekening> latest = BehaviorSubject.create();
@@ -78,7 +80,7 @@ public class RekeningTab extends Tab {
 		this.controller.initFactuurnummer();
 	}
 
-	public static Observable<RekeningTab> openFile(File file, Database database) {
+	public static Observable<RekeningTab> openFile(File file, Database database, Logger logger) {
 		if (file.getName().endsWith(".pdf")) {
 			try {
 				JLROpener.open(file);
@@ -95,7 +97,7 @@ public class RekeningTab extends Tab {
 				Observable<MutatiesController> mutaties = f.ofType(MutatiesFactuur.class)
 						.map(fact -> new MutatiesController(fact, database));
 				Observable<OfferteController> offerte = f.ofType(Offerte.class)
-						.map(fact -> new OfferteController(fact, database));
+						.map(fact -> new OfferteController(fact, database, logger));
 				Observable<ParticulierController> particulier = f.ofType(ParticulierFactuur.class)
 						.map(fact -> new ParticulierController(fact, properties, database));
 				Observable<ReparatiesController> reparaties = f.ofType(ReparatiesFactuur.class)

@@ -11,7 +11,6 @@ import org.rekeningsysteem.properties.PropertiesWorker;
 import org.rekeningsysteem.properties.PropertyModelEnum;
 
 import rx.Observable;
-import rx.Subscriber;
 
 public class Database implements AutoCloseable {
 
@@ -32,8 +31,8 @@ public class Database implements AutoCloseable {
 
 	private Database(PropertiesWorker worker) throws SQLException {
 		this(worker.getProperty(PropertyModelEnum.DATABASE)
-					.map(File::new)
-					.orElseThrow(() -> new SQLException("Did not find the database location.")));
+				.map(File::new)
+				.orElseThrow(() -> new SQLException("Did not find the database location.")));
 	}
 
 	public Database(File file) throws SQLException {
@@ -51,9 +50,9 @@ public class Database implements AutoCloseable {
 		__instance = null;
 		this.connection.close();
 	}
-	
+
 	public Observable<Integer> update(QueryEnumeration query) {
-		return Observable.create((Subscriber<? super Integer> subscriber) -> {
+		return Observable.<Integer> create(subscriber -> {
 			try (Statement statement = this.connection.createStatement()) {
 				subscriber.onNext(statement.executeUpdate(query.getQuery()));
 				subscriber.onCompleted();
@@ -61,14 +60,14 @@ public class Database implements AutoCloseable {
 			catch (SQLException e) {
 				subscriber.onError(e);
 			}
-		});
+		}).cache();
 	}
-	
+
 	public <A> Observable<A> query(QueryEnumeration query, ExFunc1<ResultSet, A> resultComposer) {
-		return Observable.create((Subscriber<? super A> subscriber) -> {
+		return Observable.<A> create(subscriber -> {
 			try (Statement statement = this.connection.createStatement();
 					ResultSet result = statement.executeQuery(query.getQuery())) {
-				while (result.next()) {
+				while (!subscriber.isUnsubscribed() && result.next()) {
 					subscriber.onNext(resultComposer.call(result));
 				}
 				subscriber.onCompleted();
@@ -76,6 +75,6 @@ public class Database implements AutoCloseable {
 			catch (Exception e) {
 				subscriber.onError(e);
 			}
-		});
+		}).cache();
 	}
 }

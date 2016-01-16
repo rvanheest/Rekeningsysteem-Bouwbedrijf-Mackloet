@@ -8,6 +8,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
+import org.apache.log4j.Logger;
 import org.rekeningsysteem.data.mutaties.MutatiesFactuur;
 import org.rekeningsysteem.data.offerte.Offerte;
 import org.rekeningsysteem.data.particulier.ParticulierFactuur;
@@ -19,14 +20,13 @@ import org.rekeningsysteem.io.xml.root.OfferteRoot;
 import org.rekeningsysteem.io.xml.root.ParticulierFactuurRoot;
 import org.rekeningsysteem.io.xml.root.ReparatiesFactuurRoot;
 import org.rekeningsysteem.io.xml.root.Root;
-import org.rekeningsysteem.logging.ApplicationLogger;
 
 public class XmlMakerVisitor implements RekeningVisitor<Object> {
 
 	private File saveLocation;
 	private final Map<Class<? extends Root<?>>, Marshaller> map;
 
-	public XmlMakerVisitor() {
+	public XmlMakerVisitor(Logger logger) {
 		this.map = new HashMap<>();
 
 		try {
@@ -41,7 +41,7 @@ public class XmlMakerVisitor implements RekeningVisitor<Object> {
 		}
 		catch (JAXBException e) {
 			// Should not happen
-			ApplicationLogger.getInstance().fatal("JAXBContext or Marshaller could not be "
+			logger.fatal("JAXBContext or Marshaller could not be "
 					+ "made. (should not happen)", e);
 		}
 	}
