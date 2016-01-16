@@ -52,7 +52,7 @@ public class Database implements AutoCloseable {
 	}
 
 	public Observable<Integer> update(QueryEnumeration query) {
-		return Observable.create(subscriber -> {
+		return Observable.<Integer> create(subscriber -> {
 			try (Statement statement = this.connection.createStatement()) {
 				subscriber.onNext(statement.executeUpdate(query.getQuery()));
 				subscriber.onCompleted();
@@ -60,14 +60,14 @@ public class Database implements AutoCloseable {
 			catch (SQLException e) {
 				subscriber.onError(e);
 			}
-		});
+		}).cache();
 	}
 
 	public <A> Observable<A> query(QueryEnumeration query, ExFunc1<ResultSet, A> resultComposer) {
-		return Observable.create(subscriber -> {
+		return Observable.<A> create(subscriber -> {
 			try (Statement statement = this.connection.createStatement();
 					ResultSet result = statement.executeQuery(query.getQuery())) {
-				while (result.next()) {
+				while (!subscriber.isUnsubscribed() && result.next()) {
 					subscriber.onNext(resultComposer.call(result));
 				}
 				subscriber.onCompleted();
@@ -75,6 +75,6 @@ public class Database implements AutoCloseable {
 			catch (Exception e) {
 				subscriber.onError(e);
 			}
-		});
+		}).cache();
 	}
 }
