@@ -31,8 +31,8 @@ public class Database implements AutoCloseable {
 
 	private Database(PropertiesWorker worker) throws SQLException {
 		this(worker.getProperty(PropertyModelEnum.DATABASE)
-					.map(File::new)
-					.orElseThrow(() -> new SQLException("Did not find the database location.")));
+				.map(File::new)
+				.orElseThrow(() -> new SQLException("Did not find the database location.")));
 	}
 
 	public Database(File file) throws SQLException {

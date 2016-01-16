@@ -27,6 +27,7 @@ import org.rekeningsysteem.logging.ApplicationLogger;
 import org.rekeningsysteem.rxjavafx.Observables;
 
 import rx.Observable;
+import rx.schedulers.Schedulers;
 
 public class Main extends Application {
 
@@ -54,7 +55,7 @@ public class Main extends Application {
 		try {
 			Database database = Database.getInstance();
 			VersionControl vc = new VersionControl(database);
-			vc.checkDBVersioning().subscribe();
+			vc.checkDBVersioning().subscribeOn(Schedulers.io()).subscribe();
 
 			main = this;
 			this.popup.setId("modalDimmer");

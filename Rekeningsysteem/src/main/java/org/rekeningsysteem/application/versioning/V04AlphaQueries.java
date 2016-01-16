@@ -4,7 +4,7 @@ import org.rekeningsysteem.io.database.QueryEnumeration;
 
 public enum V04AlphaQueries implements QueryEnumeration {
 
-	VERSION_TABLE_EXISTS("SELECT name FROM sqlite_master WHERE type='table' AND name='Metadata';"),
+	METADATA_EXISTS("SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name='Metadata';"),
 
 	GET_DB_VERSION("SELECT version FROM Metadata"),
 
