@@ -17,11 +17,17 @@ import org.rekeningsysteem.io.xml.root.ReparatiesFactuurRoot;
 
 public class ReparatiesFactuurRootTest {
 
+	private ReparatiesFactuur expected;
 	private ReparatiesFactuurRoot root;
 
 	@Before
 	public void setUp() {
-		this.root = new ReparatiesFactuurRoot();
+		ItemList<ReparatiesBon> itemList = new ItemList<>();
+		itemList.add(new ReparatiesBon("omschr", "bonnummer", new Geld(1), new Geld(3)));
+		this.expected = new ReparatiesFactuur(new FactuurHeader(new Debiteur("a", "b", "c", "d",
+				"e", "f"), LocalDate.now(), "g"), Currency.getInstance("EUR"), itemList);
+
+		this.root = ReparatiesFactuurRoot.build(a -> a.setRekening(this.expected));
 	}
 
 	@Test
@@ -31,12 +37,6 @@ public class ReparatiesFactuurRootTest {
 
 	@Test
 	public void testUnmarshalMarshal() {
-		ItemList<ReparatiesBon> itemList = new ItemList<>();
-		itemList.add(new ReparatiesBon("omschr", "bonnummer", new Geld(1), new Geld(3)));
-		ReparatiesFactuur expected = new ReparatiesFactuur(new FactuurHeader(new Debiteur("a", "b",
-				"c", "d", "e", "f"), LocalDate.now(), "g"), Currency.getInstance("EUR"), itemList);
-		this.root.setRekening(expected);
-
-		assertEquals(expected, this.root.getRekening());
+		assertEquals(this.expected, this.root.getRekening());
 	}
 }

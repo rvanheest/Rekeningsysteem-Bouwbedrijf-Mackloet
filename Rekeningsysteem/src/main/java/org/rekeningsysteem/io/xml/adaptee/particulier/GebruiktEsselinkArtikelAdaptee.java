@@ -1,5 +1,7 @@
 package org.rekeningsysteem.io.xml.adaptee.particulier;
 
+import java.util.function.Function;
+
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
@@ -19,13 +21,17 @@ public class GebruiktEsselinkArtikelAdaptee extends ListItemAdapteeVisitable {
 	private double aantal;
 	private double materiaalBtwPercentage;
 
+	private GebruiktEsselinkArtikelAdaptee() {
+	}
+
 	@XmlElement
 	public String getOmschrijving() {
 		return this.omschrijving;
 	}
 
-	public void setOmschrijving(String omschrijving) {
+	public GebruiktEsselinkArtikelAdaptee setOmschrijving(String omschrijving) {
 		this.omschrijving = omschrijving;
+		return this;
 	}
 
 	@XmlJavaTypeAdapter(EsselinkArtikelAdapter.class)
@@ -33,8 +39,9 @@ public class GebruiktEsselinkArtikelAdaptee extends ListItemAdapteeVisitable {
 		return this.artikel;
 	}
 
-	public void setArtikel(EsselinkArtikel artikel) {
+	public GebruiktEsselinkArtikelAdaptee setArtikel(EsselinkArtikel artikel) {
 		this.artikel = artikel;
+		return this;
 	}
 
 	@XmlElement
@@ -42,8 +49,9 @@ public class GebruiktEsselinkArtikelAdaptee extends ListItemAdapteeVisitable {
 		return this.aantal;
 	}
 
-	public void setAantal(double aantal) {
+	public GebruiktEsselinkArtikelAdaptee setAantal(double aantal) {
 		this.aantal = aantal;
+		return this;
 	}
 
 	@XmlElement
@@ -51,12 +59,18 @@ public class GebruiktEsselinkArtikelAdaptee extends ListItemAdapteeVisitable {
 		return this.materiaalBtwPercentage;
 	}
 
-	public void setMateriaalBtwPercentage(double materiaalBtwPercentage) {
+	public GebruiktEsselinkArtikelAdaptee setMateriaalBtwPercentage(double materiaalBtwPercentage) {
 		this.materiaalBtwPercentage = materiaalBtwPercentage;
+		return this;
 	}
 
 	@Override
 	public <T> T accept(ListItemAdapteeVisitor<T> visitor) {
 		return visitor.visit(this);
+	}
+
+	public static GebruiktEsselinkArtikelAdaptee build(
+			Function<GebruiktEsselinkArtikelAdaptee, GebruiktEsselinkArtikelAdaptee> builder) {
+		return builder.apply(new GebruiktEsselinkArtikelAdaptee());
 	}
 }

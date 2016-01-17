@@ -1,6 +1,7 @@
 package org.rekeningsysteem.io.xml.adaptee.util.header;
 
 import java.time.LocalDate;
+import java.util.function.Function;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -19,13 +20,17 @@ public class FactuurHeaderAdaptee {
 	private LocalDate datum;
 	private String factuurnummer;
 
+	private FactuurHeaderAdaptee() {
+	}
+
 	@XmlJavaTypeAdapter(DebiteurAdapter.class)
 	public Debiteur getDebiteur() {
 		return this.debiteur;
 	}
 
-	public void setDebiteur(Debiteur debiteur) {
+	public FactuurHeaderAdaptee setDebiteur(Debiteur debiteur) {
 		this.debiteur = debiteur;
+		return this;
 	}
 
 	@XmlJavaTypeAdapter(DatumAdapter.class)
@@ -33,8 +38,9 @@ public class FactuurHeaderAdaptee {
 		return this.datum;
 	}
 
-	public void setDatum(LocalDate datum) {
+	public FactuurHeaderAdaptee setDatum(LocalDate datum) {
 		this.datum = datum;
+		return this;
 	}
 
 	@XmlElement
@@ -42,7 +48,13 @@ public class FactuurHeaderAdaptee {
 		return this.factuurnummer;
 	}
 
-	public void setFactuurnummer(String factuurnummer) {
+	public FactuurHeaderAdaptee setFactuurnummer(String factuurnummer) {
 		this.factuurnummer = factuurnummer;
+		return this;
+	}
+
+	public static FactuurHeaderAdaptee build(
+			Function<FactuurHeaderAdaptee, FactuurHeaderAdaptee> builder) {
+		return builder.apply(new FactuurHeaderAdaptee());
 	}
 }

@@ -16,37 +16,33 @@ public class RekeningMarshaller implements RekeningVisitor<RekeningAdapteeVisita
 
 	@Override
 	public MutatiesFactuurAdaptee visit(MutatiesFactuur factuur) {
-		MutatiesFactuurAdaptee adaptee = new MutatiesFactuurAdaptee();
-		adaptee.setFactuurHeader(factuur.getFactuurHeader());
-		adaptee.setCurrency(factuur.getCurrency());
-		adaptee.setList(new ItemList<>(factuur.getItemList()));
-		return adaptee;
+		return MutatiesFactuurAdaptee.build(a -> a
+        		.setFactuurHeader(factuur.getFactuurHeader())
+        		.setCurrency(factuur.getCurrency())
+        		.setList(new ItemList<>(factuur.getItemList())));
 	}
 
 	@Override
 	public OfferteAdaptee visit(Offerte offerte) {
-		OfferteAdaptee adaptee = new OfferteAdaptee();
-		adaptee.setFactuurHeader(offerte.getFactuurHeader());
-		adaptee.setTekst(offerte.getTekst());
-		adaptee.setOndertekenen(offerte.isOndertekenen());
-		return adaptee;
+		return OfferteAdaptee.build(a -> a
+        		.setFactuurHeader(offerte.getFactuurHeader())
+        		.setTekst(offerte.getTekst())
+        		.setOndertekenen(offerte.isOndertekenen()));
 	}
 
 	@Override
 	public ParticulierFactuurAdaptee visit(ParticulierFactuur factuur) {
-		ParticulierFactuurAdaptee adaptee = new ParticulierFactuurAdaptee();
-		adaptee.setFactuurHeader(factuur.getFactuurHeader());
-		adaptee.setCurrency(factuur.getCurrency());
-		adaptee.setList(new ItemList<>(factuur.getItemList()));
-		return adaptee;
+		return ParticulierFactuurAdaptee.build(a -> a
+        		.setFactuurHeader(factuur.getFactuurHeader())
+        		.setCurrency(factuur.getCurrency())
+        		.setList(new ItemList<>(factuur.getItemList())));
 	}
 
 	@Override
 	public ReparatiesFactuurAdaptee visit(ReparatiesFactuur factuur) {
-		ReparatiesFactuurAdaptee adaptee = new ReparatiesFactuurAdaptee();
-		adaptee.setFactuurHeader(factuur.getFactuurHeader());
-		adaptee.setCurrency(factuur.getCurrency());
-		adaptee.setList(new ItemList<>(factuur.getItemList()));
-		return adaptee;
+		return ReparatiesFactuurAdaptee.build(a -> a
+        		.setFactuurHeader(factuur.getFactuurHeader())
+        		.setCurrency(factuur.getCurrency())
+        		.setList(new ItemList<>(factuur.getItemList())));
 	}
 }

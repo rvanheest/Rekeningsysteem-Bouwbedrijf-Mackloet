@@ -1,5 +1,7 @@
 package org.rekeningsysteem.io.xml.adaptee.particulier;
 
+import java.util.function.Function;
+
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
@@ -18,13 +20,17 @@ public class EsselinkArtikelAdaptee {
 	private String eenheid;
 	private Geld verkoopPrijs;
 
+	private EsselinkArtikelAdaptee() {
+	}
+
 	@XmlElement
 	public String getArtikelNummer() {
 		return this.artikelNummer;
 	}
 
-	public void setArtikelNummer(String artikelNummer) {
+	public EsselinkArtikelAdaptee setArtikelNummer(String artikelNummer) {
 		this.artikelNummer = artikelNummer;
+		return this;
 	}
 
 	@XmlElement
@@ -32,8 +38,9 @@ public class EsselinkArtikelAdaptee {
 		return this.omschrijving;
 	}
 
-	public void setOmschrijving(String omschrijving) {
+	public EsselinkArtikelAdaptee setOmschrijving(String omschrijving) {
 		this.omschrijving = omschrijving;
+		return this;
 	}
 
 	@XmlElement
@@ -41,8 +48,9 @@ public class EsselinkArtikelAdaptee {
 		return this.prijsPer;
 	}
 
-	public void setPrijsPer(int prijsPer) {
+	public EsselinkArtikelAdaptee setPrijsPer(int prijsPer) {
 		this.prijsPer = prijsPer;
+		return this;
 	}
 
 	@XmlElement
@@ -50,8 +58,9 @@ public class EsselinkArtikelAdaptee {
 		return this.eenheid;
 	}
 
-	public void setEenheid(String eenheid) {
+	public EsselinkArtikelAdaptee setEenheid(String eenheid) {
 		this.eenheid = eenheid;
+		return this;
 	}
 
 	@XmlJavaTypeAdapter(GeldAdapter.class)
@@ -59,7 +68,13 @@ public class EsselinkArtikelAdaptee {
 		return this.verkoopPrijs;
 	}
 
-	public void setVerkoopPrijs(Geld verkoopPrijs) {
+	public EsselinkArtikelAdaptee setVerkoopPrijs(Geld verkoopPrijs) {
 		this.verkoopPrijs = verkoopPrijs;
+		return this;
+	}
+
+	public static EsselinkArtikelAdaptee build(
+			Function<EsselinkArtikelAdaptee, EsselinkArtikelAdaptee> builder) {
+		return builder.apply(new EsselinkArtikelAdaptee());
 	}
 }

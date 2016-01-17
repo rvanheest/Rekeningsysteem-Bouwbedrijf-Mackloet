@@ -15,10 +15,9 @@ public class FactuurHeaderAdapter extends XmlAdapter<FactuurHeaderAdaptee, Factu
 
 	@Override
 	public FactuurHeaderAdaptee marshal(FactuurHeader header) {
-		FactuurHeaderAdaptee adaptee = new FactuurHeaderAdaptee();
-		adaptee.setDebiteur(header.getDebiteur());
-		adaptee.setDatum(header.getDatum());
-		adaptee.setFactuurnummer(header.getFactuurnummer().orElse(null));
-		return adaptee;
+		return FactuurHeaderAdaptee.build(adaptee -> adaptee
+        		.setDebiteur(header.getDebiteur())
+        		.setDatum(header.getDatum())
+        		.setFactuurnummer(header.getFactuurnummer().orElse(null)));
 	}
 }

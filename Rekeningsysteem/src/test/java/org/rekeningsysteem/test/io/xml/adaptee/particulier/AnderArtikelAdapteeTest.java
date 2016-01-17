@@ -16,11 +16,17 @@ import org.rekeningsysteem.test.io.xml.adaptee.ListItemAdapteeVisitableTest;
 @RunWith(MockitoJUnitRunner.class)
 public class AnderArtikelAdapteeTest extends ListItemAdapteeVisitableTest {
 
+	private final String omschrijving = "omschr";
+	private final Geld prijs = new Geld(12.00);
+	private final double materiaalBtw = 0.8;
 	@Mock private ListItemAdapteeVisitor<Object> visitor;
 
 	@Override
 	protected AnderArtikelAdaptee makeInstance() {
-		return new AnderArtikelAdaptee();
+		return AnderArtikelAdaptee.build(a -> a
+				.setOmschrijving(this.omschrijving)
+				.setPrijs(this.prijs)
+				.setMateriaalBtwPercentage(this.materiaalBtw));
 	}
 
 	@Override
@@ -30,21 +36,17 @@ public class AnderArtikelAdapteeTest extends ListItemAdapteeVisitableTest {
 
 	@Test
 	public void testSetGetOmschrijving() {
-		this.getInstance().setOmschrijving("omschr");
-		assertEquals("omschr", this.getInstance().getOmschrijving());
+		assertEquals(this.omschrijving, this.getInstance().getOmschrijving());
 	}
 
 	@Test
 	public void testSetGetPrijs() {
-		Geld prijs = new Geld(12.00);
-		this.getInstance().setPrijs(prijs);
-		assertEquals(prijs, this.getInstance().getPrijs());
+		assertEquals(this.prijs, this.getInstance().getPrijs());
 	}
 
 	@Test
 	public void testSetGetMateriaalBtwPercentage() {
-		this.getInstance().setMateriaalBtwPercentage(0.8);
-		assertEquals(0.8, this.getInstance().getMateriaalBtwPercentage(), 0.0);
+		assertEquals(this.materiaalBtw, this.getInstance().getMateriaalBtwPercentage(), 0.0);
 	}
 
 	@Test

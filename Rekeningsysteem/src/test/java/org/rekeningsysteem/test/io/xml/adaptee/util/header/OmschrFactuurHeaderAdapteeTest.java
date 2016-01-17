@@ -11,36 +11,38 @@ import org.rekeningsysteem.io.xml.adaptee.util.header.OmschrFactuurHeaderAdaptee
 
 public class OmschrFactuurHeaderAdapteeTest {
 
+	private final Debiteur debiteur = new Debiteur("a", "b", "c", "d", "e", "f");
+	private final LocalDate datum = LocalDate.of(1992, 7, 30);
+	private final String factuurnummer = "abcd";
+	private final String omschrijving = "efghij";
 	private OmschrFactuurHeaderAdaptee adaptee;
 
 	@Before
 	public void setUp() {
-		this.adaptee = new OmschrFactuurHeaderAdaptee();
+		this.adaptee = OmschrFactuurHeaderAdaptee.build(a -> a
+				.setDebiteur(this.debiteur)
+				.setDatum(this.datum)
+				.setFactuurnummer(this.factuurnummer)
+				.setOmschrijving(this.omschrijving));
 	}
 
 	@Test
 	public void testSetGetDebiteur() {
-		Debiteur debiteur = new Debiteur("a", "b", "c", "d", "e", "f");
-		this.adaptee.setDebiteur(debiteur);
-		assertEquals(debiteur, this.adaptee.getDebiteur());
+		assertEquals(this.debiteur, this.adaptee.getDebiteur());
 	}
 
 	@Test
 	public void testSetGetDatum() {
-		LocalDate datum = LocalDate.of(1992, 7, 30);
-		this.adaptee.setDatum(datum);
-		assertEquals(datum, this.adaptee.getDatum());
+		assertEquals(this.datum, this.adaptee.getDatum());
 	}
 
 	@Test
 	public void testSetGetFactuurnummer() {
-		this.adaptee.setFactuurnummer("abcd");
-		assertEquals("abcd", this.adaptee.getFactuurnummer());
+		assertEquals(this.factuurnummer, this.adaptee.getFactuurnummer());
 	}
 
 	@Test
 	public void testSetGetOmschrijving() {
-		this.adaptee.setOmschrijving("efghij");
-		assertEquals("efghij", this.adaptee.getOmschrijving());
+		assertEquals(this.omschrijving, this.adaptee.getOmschrijving());
 	}
 }

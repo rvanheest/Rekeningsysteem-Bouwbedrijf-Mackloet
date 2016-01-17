@@ -17,11 +17,17 @@ import org.rekeningsysteem.io.xml.root.MutatiesFactuurRoot;
 
 public class MutatiesFactuurRootTest {
 
+	private MutatiesFactuur expected;
 	private MutatiesFactuurRoot root;
 
 	@Before
 	public void setUp() {
-		this.root = new MutatiesFactuurRoot();
+		ItemList<MutatiesBon> itemList = new ItemList<>();
+		itemList.add(new MutatiesBon("omschr", "nr", new Geld(1)));
+		this.expected = new MutatiesFactuur(new FactuurHeader(new Debiteur("a", "b",
+				"c", "d", "e", "f"), LocalDate.now(), "g"), Currency.getInstance("EUR"), itemList);
+
+		this.root = MutatiesFactuurRoot.build(a -> a.setRekening(this.expected));
 	}
 
 	@Test
@@ -31,13 +37,6 @@ public class MutatiesFactuurRootTest {
 
 	@Test
 	public void testUnmarshalMarshal() {
-		ItemList<MutatiesBon> itemList = new ItemList<>();
-		itemList.add(new MutatiesBon("omschr", "nr", new Geld(1)));
-
-		MutatiesFactuur expected = new MutatiesFactuur(new FactuurHeader(new Debiteur("a", "b",
-				"c", "d", "e", "f"), LocalDate.now(), "g"), Currency.getInstance("EUR"), itemList);
-		this.root.setRekening(expected);
-
-		assertEquals(expected, this.root.getRekening());
+		assertEquals(this.expected, this.root.getRekening());
 	}
 }

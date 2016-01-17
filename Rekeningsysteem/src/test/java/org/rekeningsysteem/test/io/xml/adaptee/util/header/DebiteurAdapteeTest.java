@@ -8,46 +8,52 @@ import org.rekeningsysteem.io.xml.adaptee.util.header.DebiteurAdaptee;
 
 public class DebiteurAdapteeTest {
 
+	private final String naam = "Naam";
+	private final String straat = "Straat";
+	private final String nummer = "Nummer";
+	private final String postcode = "Postcode";
+	private final String plaats = "Plaats";
+	private final String btwNummer = "BtwNummer";
 	private DebiteurAdaptee adaptee;
 
 	@Before
 	public void setUp() {
-		this.adaptee = new DebiteurAdaptee();
+		this.adaptee = DebiteurAdaptee.build(a -> a
+				.setNaam(this.naam)
+				.setStraat(this.straat)
+				.setNummer(this.nummer)
+				.setPostcode(this.postcode)
+				.setPlaats(this.plaats)
+				.setBtwNummer(this.btwNummer));
 	}
 
 	@Test
 	public void testSetGetNaam() {
-		this.adaptee.setNaam("Naam");
-		assertEquals("Naam", this.adaptee.getNaam());
+		assertEquals(this.naam, this.adaptee.getNaam());
 	}
 
 	@Test
 	public void testSetGetStraat() {
-		this.adaptee.setStraat("Straat");
-		assertEquals("Straat", this.adaptee.getStraat());
+		assertEquals(this.straat, this.adaptee.getStraat());
 	}
 
 	@Test
 	public void testSetGetNummer() {
-		this.adaptee.setNummer("Nummer");
-		assertEquals("Nummer", this.adaptee.getNummer());
+		assertEquals(this.nummer, this.adaptee.getNummer());
 	}
 
 	@Test
 	public void testSetGetPostcode() {
-		this.adaptee.setPostcode("Postcode");
-		assertEquals("Postcode", this.adaptee.getPostcode());
+		assertEquals(this.postcode, this.adaptee.getPostcode());
 	}
 
 	@Test
 	public void testSetGetPlaats() {
-		this.adaptee.setPlaats("Plaats");
-		assertEquals("Plaats", this.adaptee.getPlaats());
+		assertEquals(this.plaats, this.adaptee.getPlaats());
 	}
 
 	@Test
 	public void testSetGetBtwNummer() {
-		this.adaptee.setBtwNummer("BtwNummer");
-		assertEquals("BtwNummer", this.adaptee.getBtwNummer());
+		assertEquals(this.btwNummer, this.adaptee.getBtwNummer());
 	}
 }

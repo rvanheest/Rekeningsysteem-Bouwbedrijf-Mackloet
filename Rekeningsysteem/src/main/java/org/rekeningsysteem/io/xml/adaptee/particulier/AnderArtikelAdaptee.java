@@ -1,5 +1,7 @@
 package org.rekeningsysteem.io.xml.adaptee.particulier;
 
+import java.util.function.Function;
+
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
@@ -18,13 +20,17 @@ public class AnderArtikelAdaptee extends ListItemAdapteeVisitable {
 	private Geld prijs;
 	private double materiaalBtwPercentage;
 
+	private AnderArtikelAdaptee() {
+	}
+
 	@XmlElement
 	public String getOmschrijving() {
 		return this.omschrijving;
 	}
 
-	public void setOmschrijving(String omschrijving) {
+	public AnderArtikelAdaptee setOmschrijving(String omschrijving) {
 		this.omschrijving = omschrijving;
+		return this;
 	}
 
 	@XmlJavaTypeAdapter(GeldAdapter.class)
@@ -32,8 +38,9 @@ public class AnderArtikelAdaptee extends ListItemAdapteeVisitable {
 		return this.prijs;
 	}
 
-	public void setPrijs(Geld prijs) {
+	public AnderArtikelAdaptee setPrijs(Geld prijs) {
 		this.prijs = prijs;
+		return this;
 	}
 
 	@XmlElement
@@ -41,12 +48,18 @@ public class AnderArtikelAdaptee extends ListItemAdapteeVisitable {
 		return this.materiaalBtwPercentage;
 	}
 
-	public void setMateriaalBtwPercentage(double materiaalBtwPercentage) {
+	public AnderArtikelAdaptee setMateriaalBtwPercentage(double materiaalBtwPercentage) {
 		this.materiaalBtwPercentage = materiaalBtwPercentage;
+		return this;
 	}
 
 	@Override
 	public <T> T accept(ListItemAdapteeVisitor<T> visitor) {
 		return visitor.visit(this);
+	}
+
+	public static AnderArtikelAdaptee build(
+			Function<AnderArtikelAdaptee, AnderArtikelAdaptee> builder) {
+		return builder.apply(new AnderArtikelAdaptee());
 	}
 }

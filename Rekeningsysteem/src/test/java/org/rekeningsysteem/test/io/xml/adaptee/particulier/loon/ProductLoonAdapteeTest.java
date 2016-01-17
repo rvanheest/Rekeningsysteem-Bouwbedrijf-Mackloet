@@ -16,11 +16,19 @@ import org.rekeningsysteem.test.io.xml.adaptee.ListItemAdapteeVisitableTest;
 @RunWith(MockitoJUnitRunner.class)
 public class ProductLoonAdapteeTest extends ListItemAdapteeVisitableTest {
 
+	private final String omschrijving = "foobar";
+	private final double uren = 1.0;
+	private final Geld uurloon = new Geld(1.0);
+	private final double loonBtw = 0.4;
 	@Mock private ListItemAdapteeVisitor<Object> visitor;
 
 	@Override
 	protected ProductLoonAdaptee makeInstance() {
-		return new ProductLoonAdaptee();
+		return ProductLoonAdaptee.build(a -> a
+				.setOmschrijving(this.omschrijving)
+				.setUren(this.uren)
+				.setUurloon(this.uurloon)
+				.setLoonBtwPercentage(this.loonBtw));
 	}
 
 	@Override
@@ -30,27 +38,22 @@ public class ProductLoonAdapteeTest extends ListItemAdapteeVisitableTest {
 
 	@Test
 	public void testSetGetOmschrijving() {
-		this.getInstance().setOmschrijving("foobar");
-		assertEquals("foobar", this.getInstance().getOmschrijving());
+		assertEquals(this.omschrijving, this.getInstance().getOmschrijving());
 	}
 
 	@Test
 	public void testSetGetUren() {
-		this.getInstance().setUren(1.0);
-		assertEquals(1.0, this.getInstance().getUren(), 0.0);
+		assertEquals(this.uren, this.getInstance().getUren(), 0.0);
 	}
 
 	@Test
 	public void testSetGetUurloon() {
-		Geld uurloon = new Geld(1.0);
-		this.getInstance().setUurloon(uurloon);
-		assertEquals(uurloon, this.getInstance().getUurloon());
+		assertEquals(this.uurloon, this.getInstance().getUurloon());
 	}
 
 	@Test
 	public void testSetGetLoonBtwPercentage() {
-		this.getInstance().setLoonBtwPercentage(0.4);
-		assertEquals(0.4, this.getInstance().getLoonBtwPercentage(), 0.0);
+		assertEquals(this.loonBtw, this.getInstance().getLoonBtwPercentage(), 0.0);
 	}
 
 	@Test

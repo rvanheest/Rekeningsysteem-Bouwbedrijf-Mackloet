@@ -22,11 +22,18 @@ import org.rekeningsysteem.test.io.xml.adaptee.RekeningAdapteeVisitableTest;
 @RunWith(MockitoJUnitRunner.class)
 public class ParticulierFactuurAdapteeTest extends RekeningAdapteeVisitableTest {
 
+	private final OmschrFactuurHeader header = new OmschrFactuurHeader(
+			new Debiteur("", "", "", "", "", ""), LocalDate.now(), "", "");
+	private final Currency currency = Currency.getInstance("EUR");
+	private final ItemList<ParticulierArtikel> list = new ItemList<>();
 	@Mock private RekeningAdapteeVisitor<Object> visitor;
 
 	@Override
 	protected ParticulierFactuurAdaptee makeInstance() {
-		return new ParticulierFactuurAdaptee();
+		return ParticulierFactuurAdaptee.build(a -> a
+				.setFactuurHeader(this.header)
+				.setCurrency(this.currency)
+				.setList(this.list));
 	}
 
 	@Override
@@ -36,23 +43,17 @@ public class ParticulierFactuurAdapteeTest extends RekeningAdapteeVisitableTest 
 
 	@Test
 	public void testSetGetFactuurHeader() {
-		OmschrFactuurHeader header = new OmschrFactuurHeader(new Debiteur("", "", "", "", "", ""),
-				LocalDate.now(), "", "");
-		this.getInstance().setFactuurHeader(header);
-		assertEquals(header, this.getInstance().getFactuurHeader());
+		assertEquals(this.header, this.getInstance().getFactuurHeader());
 	}
 
 	@Test
 	public void testSetGetValuta() {
-		this.getInstance().setCurrency(Currency.getInstance("EUR"));
-		assertEquals(Currency.getInstance("EUR"), this.getInstance().getCurrency());
+		assertEquals(this.currency, this.getInstance().getCurrency());
 	}
 
 	@Test
 	public void testSetGetList() {
-		ItemList<ParticulierArtikel> list = new ItemList<>();
-		this.getInstance().setList(list);
-		assertEquals(list, this.getInstance().getList());
+		assertEquals(this.list, this.getInstance().getList());
 	}
 
 	@Test

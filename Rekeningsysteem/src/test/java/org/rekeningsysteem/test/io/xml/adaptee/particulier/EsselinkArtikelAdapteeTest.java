@@ -9,41 +9,45 @@ import org.rekeningsysteem.io.xml.adaptee.particulier.EsselinkArtikelAdaptee;
 
 public class EsselinkArtikelAdapteeTest {
 
+	private final String artikelNummer = "ArtikelNummer";
+	private final String omschrijving = "Omschrijving";
+	private final int prijsPer = 14;
+	private final String eenheid = "Eenheid";
+	private final Geld verkoopPrijs = new Geld(43.16);
 	private EsselinkArtikelAdaptee adaptee;
 
 	@Before
 	public void setUp() {
-		this.adaptee = new EsselinkArtikelAdaptee();
+		this.adaptee = EsselinkArtikelAdaptee.build(a -> a
+				.setArtikelNummer(this.artikelNummer)
+				.setOmschrijving(this.omschrijving)
+				.setPrijsPer(this.prijsPer)
+				.setEenheid(this.eenheid)
+				.setVerkoopPrijs(this.verkoopPrijs));
 	}
 
 	@Test
 	public void testSetGetArtikelNummer() {
-		this.adaptee.setArtikelNummer("ArtikelNummer");
-		assertEquals("ArtikelNummer", this.adaptee.getArtikelNummer());
+		assertEquals(this.artikelNummer, this.adaptee.getArtikelNummer());
 	}
 
 	@Test
 	public void testSetGetOmschrijving() {
-		this.adaptee.setOmschrijving("Omschrijving");
-		assertEquals("Omschrijving", this.adaptee.getOmschrijving());
+		assertEquals(this.omschrijving, this.adaptee.getOmschrijving());
 	}
 
 	@Test
 	public void testSetGetPrijsPer() {
-		this.adaptee.setPrijsPer(14);
-		assertEquals(14, this.adaptee.getPrijsPer());
+		assertEquals(this.prijsPer, this.adaptee.getPrijsPer());
 	}
 
 	@Test
 	public void testSetGetEenheid() {
-		this.adaptee.setEenheid("Eenheid");
-		assertEquals("Eenheid", this.adaptee.getEenheid());
+		assertEquals(this.eenheid, this.adaptee.getEenheid());
 	}
 
 	@Test
 	public void testSetGetVerkoopPrijs() {
-		Geld verkoopPrijs = new Geld(43.16);
-		this.adaptee.setVerkoopPrijs(verkoopPrijs);
-		assertEquals(verkoopPrijs, this.adaptee.getVerkoopPrijs());
+		assertEquals(this.verkoopPrijs, this.adaptee.getVerkoopPrijs());
 	}
 }

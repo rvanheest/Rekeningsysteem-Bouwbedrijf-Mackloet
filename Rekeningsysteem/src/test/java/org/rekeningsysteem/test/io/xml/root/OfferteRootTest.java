@@ -13,13 +13,17 @@ import org.rekeningsysteem.io.xml.root.OfferteRoot;
 
 public class OfferteRootTest {
 
+	private Offerte expected;
 	private OfferteRoot root;
 
 	@Before
 	public void setUp() {
-		this.root = new OfferteRoot();
+		this.expected = new Offerte(new FactuurHeader(new Debiteur("a", "b", "c", "d", "e", "f"),
+				LocalDate.now(), "g"), "h", true);
+
+		this.root = OfferteRoot.build(a -> a.setRekening(this.expected));
 	}
-	
+
 	@Test
 	public void testGetType() {
 		assertEquals("Offerte", this.root.getType());
@@ -27,9 +31,6 @@ public class OfferteRootTest {
 
 	@Test
 	public void testUnmarshalMarshal() {
-		Offerte expected = new Offerte(new FactuurHeader(
-				new Debiteur("a", "b", "c", "d", "e", "f"), LocalDate.now(), "g"), "h", true);
-		this.root.setRekening(expected);
-		assertEquals(expected, this.root.getRekening());
+		assertEquals(this.expected, this.root.getRekening());
 	}
 }

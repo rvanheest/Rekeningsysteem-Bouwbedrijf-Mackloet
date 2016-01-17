@@ -17,11 +17,20 @@ import org.rekeningsysteem.test.io.xml.adaptee.ListItemAdapteeVisitableTest;
 @RunWith(MockitoJUnitRunner.class)
 public class GebruiktEsselinkArtikelAdapteeTest extends ListItemAdapteeVisitableTest {
 
+	private final String omschrijving = "abc";
+	private final EsselinkArtikel artikel = new EsselinkArtikel("artnr", "omschr", 12, "eenheid", new Geld(
+			12.30));
+	private final double aantal = 12.43;
+	private final double materiaalBtw = 0.7;
 	@Mock private ListItemAdapteeVisitor<Object> visitor;
 
 	@Override
 	protected GebruiktEsselinkArtikelAdaptee makeInstance() {
-		return new GebruiktEsselinkArtikelAdaptee();
+		return GebruiktEsselinkArtikelAdaptee.build(a -> a
+				.setOmschrijving(this.omschrijving)
+				.setArtikel(this.artikel)
+				.setAantal(this.aantal)
+				.setMateriaalBtwPercentage(this.materiaalBtw));
 	}
 
 	@Override
@@ -31,28 +40,22 @@ public class GebruiktEsselinkArtikelAdapteeTest extends ListItemAdapteeVisitable
 
 	@Test
 	public void testSetGetOmschrijving() {
-		this.getInstance().setOmschrijving("abc");
-		assertEquals("abc", this.getInstance().getOmschrijving());
+		assertEquals(this.omschrijving, this.getInstance().getOmschrijving());
 	}
 
 	@Test
 	public void testSetGetArtikel() {
-		EsselinkArtikel artikel = new EsselinkArtikel("artnr", "omschr", 12, "eenheid", new Geld(
-				12.30));
-		this.getInstance().setArtikel(artikel);
-		assertEquals(artikel, this.getInstance().getArtikel());
+		assertEquals(this.artikel, this.getInstance().getArtikel());
 	}
 
 	@Test
 	public void testSetGetAantal() {
-		this.getInstance().setAantal(12.43);
-		assertEquals(12.43, this.getInstance().getAantal(), 0.0);
+		assertEquals(this.aantal, this.getInstance().getAantal(), 0.0);
 	}
 
 	@Test
 	public void testSetGetMateriaalBtwPercentage() {
-		this.getInstance().setMateriaalBtwPercentage(0.7);
-		assertEquals(0.7, this.getInstance().getMateriaalBtwPercentage(), 0.0);
+		assertEquals(this.materiaalBtw, this.getInstance().getMateriaalBtwPercentage(), 0.0);
 	}
 
 	@Test

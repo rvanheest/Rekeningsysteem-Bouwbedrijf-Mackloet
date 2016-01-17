@@ -13,7 +13,6 @@ import org.rekeningsysteem.data.mutaties.MutatiesFactuur;
 import org.rekeningsysteem.data.offerte.Offerte;
 import org.rekeningsysteem.data.particulier.ParticulierFactuur;
 import org.rekeningsysteem.data.reparaties.ReparatiesFactuur;
-import org.rekeningsysteem.data.util.AbstractRekening;
 import org.rekeningsysteem.data.util.visitor.RekeningVisitor;
 import org.rekeningsysteem.io.xml.root.MutatiesFactuurRoot;
 import org.rekeningsysteem.io.xml.root.OfferteRoot;
@@ -61,35 +60,32 @@ public class XmlMakerVisitor implements RekeningVisitor<Object> {
 	@Override
 	public Object visit(MutatiesFactuur factuur) throws Exception {
 		Marshaller marshaller = this.map.get(MutatiesFactuurRoot.class);
-		this.save(marshaller, new MutatiesFactuurRoot(), factuur);
+		marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+		marshaller.marshal(MutatiesFactuurRoot.build(a -> a.setRekening(factuur)), this.saveLocation);
 		return new Object();
 	}
 
 	@Override
 	public Object visit(Offerte offerte) throws Exception {
 		Marshaller marshaller = this.map.get(OfferteRoot.class);
-		this.save(marshaller, new OfferteRoot(), offerte);
+		marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+		marshaller.marshal(OfferteRoot.build(a -> a.setRekening(offerte)), this.saveLocation);
 		return new Object();
 	}
 
 	@Override
 	public Object visit(ParticulierFactuur factuur) throws Exception {
 		Marshaller marshaller = this.map.get(ParticulierFactuurRoot.class);
-		this.save(marshaller, new ParticulierFactuurRoot(), factuur);
+		marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+		marshaller.marshal(ParticulierFactuurRoot.build(a -> a.setRekening(factuur)), this.saveLocation);
 		return new Object();
 	}
 
 	@Override
 	public Object visit(ReparatiesFactuur factuur) throws Exception {
 		Marshaller marshaller = this.map.get(ReparatiesFactuurRoot.class);
-		this.save(marshaller, new ReparatiesFactuurRoot(), factuur);
-		return new Object();
-	}
-
-	private <T extends AbstractRekening> void save(Marshaller marshaller, Root<T> root, T rekening)
-			throws JAXBException {
-		root.setRekening(rekening);
 		marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-		marshaller.marshal(root, this.saveLocation);
+		marshaller.marshal(ReparatiesFactuurRoot.build(a -> a.setRekening(factuur)), this.saveLocation);
+		return new Object();
 	}
 }

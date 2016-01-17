@@ -1,5 +1,7 @@
 package org.rekeningsysteem.io.xml.adaptee.mutaties;
 
+import java.util.function.Function;
+
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
@@ -18,13 +20,17 @@ public class MutatiesBonAdaptee extends ListItemAdapteeVisitable {
 	private String bonnummer;
 	private Geld prijs;
 
+	private MutatiesBonAdaptee() {
+	}
+
 	@XmlElement
 	public String getOmschrijving() {
 		return this.omschrijving;
 	}
 
-	public void setOmschrijving(String omschrijving) {
+	public MutatiesBonAdaptee setOmschrijving(String omschrijving) {
 		this.omschrijving = omschrijving;
+		return this;
 	}
 
 	@XmlElement
@@ -32,8 +38,9 @@ public class MutatiesBonAdaptee extends ListItemAdapteeVisitable {
 		return this.bonnummer;
 	}
 
-	public void setBonnummer(String bonnummer) {
+	public MutatiesBonAdaptee setBonnummer(String bonnummer) {
 		this.bonnummer = bonnummer;
+		return this;
 	}
 
 	@XmlJavaTypeAdapter(GeldAdapter.class)
@@ -41,12 +48,17 @@ public class MutatiesBonAdaptee extends ListItemAdapteeVisitable {
 		return this.prijs;
 	}
 
-	public void setPrijs(Geld prijs) {
+	public MutatiesBonAdaptee setPrijs(Geld prijs) {
 		this.prijs = prijs;
+		return this;
 	}
 
 	@Override
 	public <T> T accept(ListItemAdapteeVisitor<T> visitor) {
 		return visitor.visit(this);
+	}
+
+	public static MutatiesBonAdaptee build(Function<MutatiesBonAdaptee, MutatiesBonAdaptee> builder) {
+		return builder.apply(new MutatiesBonAdaptee());
 	}
 }

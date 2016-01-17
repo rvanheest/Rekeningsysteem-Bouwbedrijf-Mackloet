@@ -1,4 +1,4 @@
-package org.rekeningsysteem.io.xml.adapter;
+package org.rekeningsysteem.io.xml.adapter; 
 
 import org.rekeningsysteem.data.mutaties.MutatiesBon;
 import org.rekeningsysteem.data.particulier.AnderArtikel;
@@ -19,59 +19,52 @@ public final class ListItemMarshaller implements ListItemVisitor<ListItemAdaptee
 
 	@Override
 	public MutatiesBonAdaptee visit(MutatiesBon bon) {
-		MutatiesBonAdaptee adaptee = new MutatiesBonAdaptee();
-		adaptee.setOmschrijving(bon.getOmschrijving());
-		adaptee.setBonnummer(bon.getBonnummer());
-		adaptee.setPrijs(bon.getMateriaal());
-		return adaptee;
+		return MutatiesBonAdaptee.build(a -> a
+        		.setOmschrijving(bon.getOmschrijving())
+        		.setBonnummer(bon.getBonnummer())
+        		.setPrijs(bon.getMateriaal()));
 	}
 
 	@Override
 	public GebruiktEsselinkArtikelAdaptee visit(GebruiktEsselinkArtikel artikel) {
-		GebruiktEsselinkArtikelAdaptee adaptee = new GebruiktEsselinkArtikelAdaptee();
-		adaptee.setOmschrijving(artikel.getOmschrijving());
-		adaptee.setArtikel(artikel.getArtikel());
-		adaptee.setAantal(artikel.getAantal());
-		adaptee.setMateriaalBtwPercentage(artikel.getMateriaalBtwPercentage());
-		return adaptee;
+		return GebruiktEsselinkArtikelAdaptee.build(a -> a
+        		.setOmschrijving(artikel.getOmschrijving())
+        		.setArtikel(artikel.getArtikel())
+        		.setAantal(artikel.getAantal())
+        		.setMateriaalBtwPercentage(artikel.getMateriaalBtwPercentage()));
 	}
 
 	@Override
 	public AnderArtikelAdaptee visit(AnderArtikel artikel) {
-		AnderArtikelAdaptee adaptee = new AnderArtikelAdaptee();
-		adaptee.setOmschrijving(artikel.getOmschrijving());
-		adaptee.setPrijs(artikel.getMateriaal());
-		adaptee.setMateriaalBtwPercentage(artikel.getMateriaalBtwPercentage());
-		return adaptee;
+		return AnderArtikelAdaptee.build(a -> a
+        		.setOmschrijving(artikel.getOmschrijving())
+        		.setPrijs(artikel.getMateriaal())
+        		.setMateriaalBtwPercentage(artikel.getMateriaalBtwPercentage()));
 	}
 
 	@Override
 	public ReparatiesBonAdaptee visit(ReparatiesBon bon) {
-		ReparatiesBonAdaptee adaptee = new ReparatiesBonAdaptee();
-		adaptee.setOmschrijving(bon.getOmschrijving());
-		adaptee.setBonnummer(bon.getBonnummer());
-		adaptee.setLoon(bon.getLoon());
-		adaptee.setMateriaal(bon.getMateriaal());
-		return adaptee;
+		return ReparatiesBonAdaptee.build(a -> a
+        		.setOmschrijving(bon.getOmschrijving())
+        		.setBonnummer(bon.getBonnummer())
+        		.setLoon(bon.getLoon())
+        		.setMateriaal(bon.getMateriaal()));
 	}
 
 	@Override
 	public InstantLoonAdaptee visit(InstantLoon loon) {
-		InstantLoonAdaptee adaptee = new InstantLoonAdaptee();
-		adaptee.setOmschrijving(loon.getOmschrijving());
-		adaptee.setLoon(loon.getLoon());
-		adaptee.setLoonBtwPercentage(loon.getLoonBtwPercentage());
-
-		return adaptee;
+		return InstantLoonAdaptee.build(a -> a
+        		.setOmschrijving(loon.getOmschrijving())
+        		.setLoon(loon.getLoon())
+        		.setLoonBtwPercentage(loon.getLoonBtwPercentage()));
 	}
 
 	@Override
 	public ProductLoonAdaptee visit(ProductLoon loon) {
-		ProductLoonAdaptee adaptee = new ProductLoonAdaptee();
-		adaptee.setOmschrijving(loon.getOmschrijving());
-		adaptee.setUren(loon.getUren());
-		adaptee.setUurloon(loon.getUurloon());
-		adaptee.setLoonBtwPercentage(loon.getLoonBtwPercentage());
-		return adaptee;
+		return ProductLoonAdaptee.build(a -> a
+        		.setOmschrijving(loon.getOmschrijving())
+        		.setUren(loon.getUren())
+        		.setUurloon(loon.getUurloon())
+        		.setLoonBtwPercentage(loon.getLoonBtwPercentage()));
 	}
 }

@@ -16,11 +16,17 @@ import org.rekeningsysteem.test.io.xml.adaptee.ListItemAdapteeVisitableTest;
 @RunWith(MockitoJUnitRunner.class)
 public class InstantLoonAdapteeTest extends ListItemAdapteeVisitableTest {
 
+	private final String omschrijving = "foobar";
+	private final Geld loon = new Geld(2.0);
+	private final double loonBtw = 0.6;
 	@Mock private ListItemAdapteeVisitor<Object> visitor;
 
 	@Override
 	protected InstantLoonAdaptee makeInstance() {
-		return new InstantLoonAdaptee();
+		return InstantLoonAdaptee.build(a -> a
+				.setOmschrijving(this.omschrijving)
+				.setLoon(this.loon)
+				.setLoonBtwPercentage(this.loonBtw));
 	}
 
 	@Override
@@ -30,21 +36,17 @@ public class InstantLoonAdapteeTest extends ListItemAdapteeVisitableTest {
 
 	@Test
 	public void testSetGetOmschrijving() {
-		this.getInstance().setOmschrijving("foobar");
-		assertEquals("foobar", this.getInstance().getOmschrijving());
+		assertEquals(this.omschrijving, this.getInstance().getOmschrijving());
 	}
 
 	@Test
 	public void testSetGetLoon() {
-		Geld loon = new Geld(2.0);
-		this.getInstance().setLoon(loon);
-		assertEquals(loon, this.getInstance().getLoon());
+		assertEquals(this.loon, this.getInstance().getLoon());
 	}
 
 	@Test
 	public void testSetGetLoonBtwPercentage() {
-		this.getInstance().setLoonBtwPercentage(0.6);
-		assertEquals(0.6, this.getInstance().getLoonBtwPercentage(), 0.0);
+		assertEquals(this.loonBtw, this.getInstance().getLoonBtwPercentage(), 0.0);
 	}
 
 	@Test

@@ -15,10 +15,9 @@ public class DatumAdapter extends XmlAdapter<DatumAdaptee, LocalDate> {
 
 	@Override
 	public DatumAdaptee marshal(LocalDate datum) {
-		DatumAdaptee adaptee = new DatumAdaptee();
-		adaptee.setDag(datum.getDayOfMonth());
-		adaptee.setMaand(datum.getMonthValue());
-		adaptee.setJaar(datum.getYear());
-		return adaptee;
+		return DatumAdaptee.build(adaptee -> adaptee
+				.setDag(datum.getDayOfMonth())
+				.setMaand(datum.getMonthValue())
+				.setJaar(datum.getYear()));
 	}
 }

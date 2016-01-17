@@ -17,8 +17,7 @@ public class ItemListAdapter extends XmlAdapter<ItemListAdaptee, ItemList<ListIt
 
 	@Override
 	public ItemListAdaptee marshal(ItemList<ListItem> v) {
-		ItemListAdaptee adaptee = new ItemListAdaptee();
-		adaptee.setList(new ArrayList<>(v));
-		return adaptee;
+		return ItemListAdaptee.build(adaptee -> adaptee
+				.setList(new ArrayList<>(v))); // TODO this can be setList(v) as well, right?
 	}
 }

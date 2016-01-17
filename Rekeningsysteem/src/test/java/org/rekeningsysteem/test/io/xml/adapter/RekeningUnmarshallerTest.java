@@ -47,10 +47,10 @@ public class RekeningUnmarshallerTest {
 		itemList.add(new MutatiesBon("omschr", "nr", new Geld(1)));
 		MutatiesFactuur factuur = new MutatiesFactuur(header, currency, itemList);
 
-		MutatiesFactuurAdaptee adaptee = new MutatiesFactuurAdaptee();
-		adaptee.setFactuurHeader(header);
-		adaptee.setCurrency(currency);
-		adaptee.setList(itemList);
+		MutatiesFactuurAdaptee adaptee = MutatiesFactuurAdaptee.build(a -> a
+        		.setFactuurHeader(header)
+        		.setCurrency(currency)
+        		.setList(itemList));
 
 		assertEquals(factuur, this.visitor.visit(adaptee));
 	}
@@ -61,10 +61,10 @@ public class RekeningUnmarshallerTest {
 				new Debiteur("a", "b", "c", "d", "e", "f"), LocalDate.now(), "g");
 		Offerte offerte = new Offerte(header, "h", true);
 
-		OfferteAdaptee adaptee = new OfferteAdaptee();
-		adaptee.setFactuurHeader(header);
-		adaptee.setTekst("h");
-		adaptee.setOndertekenen(true);
+		OfferteAdaptee adaptee = OfferteAdaptee.build(a -> a
+        		.setFactuurHeader(header)
+        		.setTekst("h")
+        		.setOndertekenen(true));
 
 		assertEquals(offerte, this.visitor.visit(adaptee));
 	}
@@ -81,10 +81,10 @@ public class RekeningUnmarshallerTest {
 		itemList.add(new ProductLoon("productLoon", 12, new Geld(1), 6));
 		ParticulierFactuur factuur = new ParticulierFactuur(header, currency, itemList);
 
-		ParticulierFactuurAdaptee adaptee = new ParticulierFactuurAdaptee();
-		adaptee.setFactuurHeader(header);
-		adaptee.setCurrency(currency);
-		adaptee.setList(itemList);
+		ParticulierFactuurAdaptee adaptee = ParticulierFactuurAdaptee.build(a -> a
+        		.setFactuurHeader(header)
+        		.setCurrency(currency)
+        		.setList(itemList));
 
 		assertEquals(factuur, this.visitor.visit(adaptee));
 	}
@@ -98,10 +98,10 @@ public class RekeningUnmarshallerTest {
 		itemList.add(new ReparatiesBon("omschr", "bonnummer", new Geld(1), new Geld(3)));
 		ReparatiesFactuur factuur = new ReparatiesFactuur(header, currency, itemList);
 
-		ReparatiesFactuurAdaptee adaptee = new ReparatiesFactuurAdaptee();
-		adaptee.setFactuurHeader(header);
-		adaptee.setCurrency(currency);
-		adaptee.setList(itemList);
+		ReparatiesFactuurAdaptee adaptee = ReparatiesFactuurAdaptee.build(a -> a
+        		.setFactuurHeader(header)
+        		.setCurrency(currency)
+        		.setList(itemList));
 
 		assertEquals(factuur, this.visitor.visit(adaptee));
 	}

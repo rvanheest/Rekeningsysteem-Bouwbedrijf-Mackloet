@@ -15,13 +15,12 @@ public class DebiteurAdapter extends XmlAdapter<DebiteurAdaptee, Debiteur> {
 
 	@Override
 	public DebiteurAdaptee marshal(Debiteur deb) {
-		DebiteurAdaptee adaptee = new DebiteurAdaptee();
-		adaptee.setNaam(deb.getNaam());
-		adaptee.setStraat(deb.getStraat());
-		adaptee.setNummer(deb.getNummer());
-		adaptee.setPostcode(deb.getPostcode());
-		adaptee.setPlaats(deb.getPlaats());
-		adaptee.setBtwNummer(deb.getBtwNummer().orElse(null));
-		return adaptee;
+		return DebiteurAdaptee.build(adaptee -> adaptee
+        		.setNaam(deb.getNaam())
+        		.setStraat(deb.getStraat())
+        		.setNummer(deb.getNummer())
+        		.setPostcode(deb.getPostcode())
+        		.setPlaats(deb.getPlaats())
+        		.setBtwNummer(deb.getBtwNummer().orElse(null)));
 	}
 }

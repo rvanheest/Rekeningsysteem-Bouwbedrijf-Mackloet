@@ -1,5 +1,7 @@
 package org.rekeningsysteem.io.xml.root;
 
+import java.util.function.Function;
+
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -12,6 +14,9 @@ import org.rekeningsysteem.io.xml.adapter.RekeningAdapter;
 public class ReparatiesFactuurRoot implements Root<ReparatiesFactuur> {
 
 	private ReparatiesFactuur factuur;
+
+	private ReparatiesFactuurRoot() {
+	}
 
 	@Override
 	@XmlAttribute
@@ -33,7 +38,13 @@ public class ReparatiesFactuurRoot implements Root<ReparatiesFactuur> {
 	}
 
 	@Override
-	public void setRekening(ReparatiesFactuur factuur) {
+	public ReparatiesFactuurRoot setRekening(ReparatiesFactuur factuur) {
 		this.factuur = factuur;
+		return this;
+	}
+
+	public static ReparatiesFactuurRoot build(
+			Function<ReparatiesFactuurRoot, ReparatiesFactuurRoot> builder) {
+		return builder.apply(new ReparatiesFactuurRoot());
 	}
 }

@@ -1,6 +1,7 @@
 package org.rekeningsysteem.io.xml.adaptee.util.header;
 
 import java.time.LocalDate;
+import java.util.function.Function;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -20,13 +21,17 @@ public class OmschrFactuurHeaderAdaptee {
 	private String factuurnummer;
 	private String omschrijving;
 
+	private OmschrFactuurHeaderAdaptee() {
+	}
+
 	@XmlJavaTypeAdapter(DebiteurAdapter.class)
 	public Debiteur getDebiteur() {
 		return this.debiteur;
 	}
 
-	public void setDebiteur(Debiteur debiteur) {
+	public OmschrFactuurHeaderAdaptee setDebiteur(Debiteur debiteur) {
 		this.debiteur = debiteur;
+		return this;
 	}
 
 	@XmlJavaTypeAdapter(DatumAdapter.class)
@@ -34,8 +39,9 @@ public class OmschrFactuurHeaderAdaptee {
 		return this.datum;
 	}
 
-	public void setDatum(LocalDate datum) {
+	public OmschrFactuurHeaderAdaptee setDatum(LocalDate datum) {
 		this.datum = datum;
+		return this;
 	}
 
 	@XmlElement
@@ -43,8 +49,9 @@ public class OmschrFactuurHeaderAdaptee {
 		return this.factuurnummer;
 	}
 
-	public void setFactuurnummer(String factuurnummer) {
+	public OmschrFactuurHeaderAdaptee setFactuurnummer(String factuurnummer) {
 		this.factuurnummer = factuurnummer;
+		return this;
 	}
 
 	@XmlElement
@@ -52,7 +59,13 @@ public class OmschrFactuurHeaderAdaptee {
 		return this.omschrijving;
 	}
 
-	public void setOmschrijving(String omschrijving) {
+	public OmschrFactuurHeaderAdaptee setOmschrijving(String omschrijving) {
 		this.omschrijving = omschrijving;
+		return this;
+	}
+
+	public static OmschrFactuurHeaderAdaptee build(
+			Function<OmschrFactuurHeaderAdaptee, OmschrFactuurHeaderAdaptee> builder) {
+		return builder.apply(new OmschrFactuurHeaderAdaptee());
 	}
 }

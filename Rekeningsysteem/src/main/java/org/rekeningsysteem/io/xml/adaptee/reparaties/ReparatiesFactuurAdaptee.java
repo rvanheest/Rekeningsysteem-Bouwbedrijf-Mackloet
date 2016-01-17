@@ -1,6 +1,7 @@
 package org.rekeningsysteem.io.xml.adaptee.reparaties;
 
 import java.util.Currency;
+import java.util.function.Function;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
@@ -23,13 +24,17 @@ public class ReparatiesFactuurAdaptee extends RekeningAdapteeVisitable {
 	private Currency currency;
 	private ItemList<ReparatiesBon> list = new ItemList<>();
 
+	private ReparatiesFactuurAdaptee() {
+	}
+
 	@XmlJavaTypeAdapter(FactuurHeaderAdapter.class)
 	public FactuurHeader getFactuurHeader() {
 		return this.factuurHeader;
 	}
 
-	public void setFactuurHeader(FactuurHeader factuurHeader) {
+	public ReparatiesFactuurAdaptee setFactuurHeader(FactuurHeader factuurHeader) {
 		this.factuurHeader = factuurHeader;
+		return this;
 	}
 
 	@XmlJavaTypeAdapter(CurrencyAdapter.class)
@@ -37,8 +42,9 @@ public class ReparatiesFactuurAdaptee extends RekeningAdapteeVisitable {
 		return this.currency;
 	}
 
-	public void setCurrency(Currency currency) {
+	public ReparatiesFactuurAdaptee setCurrency(Currency currency) {
 		this.currency = currency;
+		return this;
 	}
 
 	@XmlJavaTypeAdapter(ItemListAdapter.class)
@@ -46,12 +52,18 @@ public class ReparatiesFactuurAdaptee extends RekeningAdapteeVisitable {
 		return this.list;
 	}
 
-	public void setList(ItemList<ReparatiesBon> list) {
+	public ReparatiesFactuurAdaptee setList(ItemList<ReparatiesBon> list) {
 		this.list = list;
+		return this;
 	}
 
 	@Override
 	public <T> T accept(RekeningAdapteeVisitor<T> visitor) {
 		return visitor.visit(this);
+	}
+
+	public static ReparatiesFactuurAdaptee build(
+			Function<ReparatiesFactuurAdaptee, ReparatiesFactuurAdaptee> builder) {
+		return builder.apply(new ReparatiesFactuurAdaptee());
 	}
 }

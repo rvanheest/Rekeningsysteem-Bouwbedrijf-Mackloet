@@ -1,5 +1,7 @@
 package org.rekeningsysteem.io.xml.adaptee.reparaties;
 
+import java.util.function.Function;
+
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
@@ -19,13 +21,17 @@ public class ReparatiesBonAdaptee extends ListItemAdapteeVisitable {
 	private Geld loon;
 	private Geld materiaal;
 
+	private ReparatiesBonAdaptee() {
+	}
+
 	@XmlElement
 	public String getOmschrijving() {
 		return this.omschrijving;
 	}
 
-	public void setOmschrijving(String omschrijving) {
+	public ReparatiesBonAdaptee setOmschrijving(String omschrijving) {
 		this.omschrijving = omschrijving;
+		return this;
 	}
 
 	@XmlElement
@@ -33,8 +39,9 @@ public class ReparatiesBonAdaptee extends ListItemAdapteeVisitable {
 		return this.bonnummer;
 	}
 
-	public void setBonnummer(String bonnummer) {
+	public ReparatiesBonAdaptee setBonnummer(String bonnummer) {
 		this.bonnummer = bonnummer;
+		return this;
 	}
 
 	@XmlJavaTypeAdapter(GeldAdapter.class)
@@ -42,8 +49,9 @@ public class ReparatiesBonAdaptee extends ListItemAdapteeVisitable {
 		return this.loon;
 	}
 
-	public void setLoon(Geld loon) {
+	public ReparatiesBonAdaptee setLoon(Geld loon) {
 		this.loon = loon;
+		return this;
 	}
 
 	@XmlJavaTypeAdapter(GeldAdapter.class)
@@ -51,12 +59,17 @@ public class ReparatiesBonAdaptee extends ListItemAdapteeVisitable {
 		return this.materiaal;
 	}
 
-	public void setMateriaal(Geld materiaal) {
+	public ReparatiesBonAdaptee setMateriaal(Geld materiaal) {
 		this.materiaal = materiaal;
+		return this;
 	}
 
 	@Override
 	public <T> T accept(ListItemAdapteeVisitor<T> visitor) {
 		return visitor.visit(this);
+	}
+
+	public static ReparatiesBonAdaptee build(Function<ReparatiesBonAdaptee, ReparatiesBonAdaptee> builder) {
+		return builder.apply(new ReparatiesBonAdaptee());
 	}
 }

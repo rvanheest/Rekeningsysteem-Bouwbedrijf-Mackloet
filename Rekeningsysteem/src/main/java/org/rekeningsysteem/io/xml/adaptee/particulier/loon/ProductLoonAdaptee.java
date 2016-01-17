@@ -1,5 +1,7 @@
 package org.rekeningsysteem.io.xml.adaptee.particulier.loon;
 
+import java.util.function.Function;
+
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
@@ -19,13 +21,17 @@ public class ProductLoonAdaptee extends ListItemAdapteeVisitable {
 	private Geld uurloon;
 	private double loonBtwPercentage;
 
+	private ProductLoonAdaptee() {
+	}
+
 	@XmlElement
 	public String getOmschrijving() {
 		return this.omschrijving;
 	}
 
-	public void setOmschrijving(String omschrijving) {
+	public ProductLoonAdaptee setOmschrijving(String omschrijving) {
 		this.omschrijving = omschrijving;
+		return this;
 	}
 
 	@XmlElement
@@ -33,8 +39,9 @@ public class ProductLoonAdaptee extends ListItemAdapteeVisitable {
 		return this.uren;
 	}
 
-	public void setUren(double uren) {
+	public ProductLoonAdaptee setUren(double uren) {
 		this.uren = uren;
+		return this;
 	}
 
 	@XmlJavaTypeAdapter(GeldAdapter.class)
@@ -42,8 +49,9 @@ public class ProductLoonAdaptee extends ListItemAdapteeVisitable {
 		return this.uurloon;
 	}
 
-	public void setUurloon(Geld uurloon) {
+	public ProductLoonAdaptee setUurloon(Geld uurloon) {
 		this.uurloon = uurloon;
+		return this;
 	}
 
 	@XmlElement
@@ -51,12 +59,17 @@ public class ProductLoonAdaptee extends ListItemAdapteeVisitable {
 		return this.loonBtwPercentage;
 	}
 
-	public void setLoonBtwPercentage(double loonBtwPercentage) {
+	public ProductLoonAdaptee setLoonBtwPercentage(double loonBtwPercentage) {
 		this.loonBtwPercentage = loonBtwPercentage;
+		return this;
 	}
 
 	@Override
 	public <T> T accept(ListItemAdapteeVisitor<T> visitor) {
 		return visitor.visit(this);
+	}
+
+	public static ProductLoonAdaptee build(Function<ProductLoonAdaptee, ProductLoonAdaptee> builder) {
+		return builder.apply(new ProductLoonAdaptee());
 	}
 }

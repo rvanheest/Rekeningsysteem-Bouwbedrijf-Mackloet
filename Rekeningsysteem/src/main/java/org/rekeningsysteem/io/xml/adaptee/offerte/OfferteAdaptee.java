@@ -1,5 +1,7 @@
 package org.rekeningsysteem.io.xml.adaptee.offerte;
 
+import java.util.function.Function;
+
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
@@ -18,13 +20,17 @@ public class OfferteAdaptee extends RekeningAdapteeVisitable {
 	private String tekst;
 	private boolean ondertekenen;
 
+	private OfferteAdaptee() {
+	}
+
 	@XmlJavaTypeAdapter(FactuurHeaderAdapter.class)
 	public FactuurHeader getFactuurHeader() {
 		return this.factuurHeader;
 	}
 
-	public void setFactuurHeader(FactuurHeader factuurHeader) {
+	public OfferteAdaptee setFactuurHeader(FactuurHeader factuurHeader) {
 		this.factuurHeader = factuurHeader;
+		return this;
 	}
 
 	@XmlElement
@@ -32,8 +38,9 @@ public class OfferteAdaptee extends RekeningAdapteeVisitable {
 		return this.tekst;
 	}
 
-	public void setTekst(String tekst) {
+	public OfferteAdaptee setTekst(String tekst) {
 		this.tekst = tekst;
+		return this;
 	}
 
 	@XmlElement
@@ -41,12 +48,17 @@ public class OfferteAdaptee extends RekeningAdapteeVisitable {
 		return this.ondertekenen;
 	}
 
-	public void setOndertekenen(boolean ondertekenen) {
+	public OfferteAdaptee setOndertekenen(boolean ondertekenen) {
 		this.ondertekenen = ondertekenen;
+		return this;
 	}
 
 	@Override
 	public <T> T accept(RekeningAdapteeVisitor<T> visitor) {
 		return visitor.visit(this);
+	}
+
+	public static OfferteAdaptee build(Function<OfferteAdaptee, OfferteAdaptee> builder) {
+		return builder.apply(new OfferteAdaptee());
 	}
 }

@@ -16,11 +16,19 @@ import org.rekeningsysteem.test.io.xml.adaptee.ListItemAdapteeVisitableTest;
 @RunWith(MockitoJUnitRunner.class)
 public class ReparatiesBonAdapteeTest extends ListItemAdapteeVisitableTest {
 
+	private final String omschrijving = "omschr";
+	private final String bonnummer = "bonnr";
+	private final Geld loon = new Geld(12.04);
+	private final Geld materiaal = new Geld(16.40);
 	@Mock private ListItemAdapteeVisitor<Object> visitor;
 
 	@Override
 	protected ReparatiesBonAdaptee makeInstance() {
-		return new ReparatiesBonAdaptee();
+		return ReparatiesBonAdaptee.build(a -> a
+				.setOmschrijving(this.omschrijving)
+				.setBonnummer(this.bonnummer)
+				.setLoon(this.loon)
+				.setMateriaal(this.materiaal));
 	}
 
 	@Override
@@ -30,28 +38,22 @@ public class ReparatiesBonAdapteeTest extends ListItemAdapteeVisitableTest {
 
 	@Test
 	public void testSetGetOmschrijving() {
-		this.getInstance().setOmschrijving("omschr");
-		assertEquals("omschr", this.getInstance().getOmschrijving());
+		assertEquals(this.omschrijving, this.getInstance().getOmschrijving());
 	}
 
 	@Test
 	public void testSetGetBonnummer() {
-		this.getInstance().setBonnummer("bonnr");
-		assertEquals("bonnr", this.getInstance().getBonnummer());
+		assertEquals(this.bonnummer, this.getInstance().getBonnummer());
 	}
 
 	@Test
 	public void testSetGetLoon() {
-		Geld loon = new Geld(12.04);
-		this.getInstance().setLoon(loon);
-		assertEquals(loon, this.getInstance().getLoon());
+		assertEquals(this.loon, this.getInstance().getLoon());
 	}
 
 	@Test
 	public void testSetGetMateriaal() {
-		Geld materiaal = new Geld(16.40);
-		this.getInstance().setMateriaal(materiaal);
-		assertEquals(materiaal, this.getInstance().getMateriaal());
+		assertEquals(this.materiaal, this.getInstance().getMateriaal());
 	}
 
 	@Test

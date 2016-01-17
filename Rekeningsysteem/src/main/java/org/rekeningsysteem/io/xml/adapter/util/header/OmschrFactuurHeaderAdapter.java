@@ -16,11 +16,10 @@ public class OmschrFactuurHeaderAdapter extends
 
 	@Override
 	public OmschrFactuurHeaderAdaptee marshal(OmschrFactuurHeader header) {
-		OmschrFactuurHeaderAdaptee adaptee = new OmschrFactuurHeaderAdaptee();
-		adaptee.setDebiteur(header.getDebiteur());
-		adaptee.setDatum(header.getDatum());
-		adaptee.setFactuurnummer(header.getFactuurnummer().orElse(null));
-		adaptee.setOmschrijving(header.getOmschrijving());
-		return adaptee;
+		return OmschrFactuurHeaderAdaptee.build(adaptee -> adaptee
+        		.setDebiteur(header.getDebiteur())
+        		.setDatum(header.getDatum())
+        		.setFactuurnummer(header.getFactuurnummer().orElse(null))
+        		.setOmschrijving(header.getOmschrijving()));
 	}
 }

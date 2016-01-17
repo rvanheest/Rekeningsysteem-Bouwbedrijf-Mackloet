@@ -1,5 +1,7 @@
 package org.rekeningsysteem.io.xml.adaptee.util.header;
 
+import java.util.function.Function;
+
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
@@ -15,13 +17,17 @@ public class DebiteurAdaptee {
 	private String plaats;
 	private String btwNummer;
 
+	private DebiteurAdaptee() {
+	}
+
 	@XmlElement
 	public String getNaam() {
 		return this.naam;
 	}
 
-	public void setNaam(String naam) {
+	public DebiteurAdaptee setNaam(String naam) {
 		this.naam = naam;
+		return this;
 	}
 
 	@XmlElement
@@ -29,8 +35,9 @@ public class DebiteurAdaptee {
 		return this.straat;
 	}
 
-	public void setStraat(String straat) {
+	public DebiteurAdaptee setStraat(String straat) {
 		this.straat = straat;
+		return this;
 	}
 
 	@XmlElement
@@ -38,8 +45,9 @@ public class DebiteurAdaptee {
 		return this.nummer;
 	}
 
-	public void setNummer(String nummer) {
+	public DebiteurAdaptee setNummer(String nummer) {
 		this.nummer = nummer;
+		return this;
 	}
 
 	@XmlElement
@@ -47,8 +55,9 @@ public class DebiteurAdaptee {
 		return this.postcode;
 	}
 
-	public void setPostcode(String postcode) {
+	public DebiteurAdaptee setPostcode(String postcode) {
 		this.postcode = postcode;
+		return this;
 	}
 
 	@XmlElement
@@ -56,8 +65,9 @@ public class DebiteurAdaptee {
 		return this.plaats;
 	}
 
-	public void setPlaats(String plaats) {
+	public DebiteurAdaptee setPlaats(String plaats) {
 		this.plaats = plaats;
+		return this;
 	}
 
 	@XmlElement
@@ -65,7 +75,12 @@ public class DebiteurAdaptee {
 		return this.btwNummer;
 	}
 
-	public void setBtwNummer(String btwNummer) {
+	public DebiteurAdaptee setBtwNummer(String btwNummer) {
 		this.btwNummer = btwNummer;
+		return this;
+	}
+
+	public static DebiteurAdaptee build(Function<DebiteurAdaptee, DebiteurAdaptee> builder) {
+		return builder.apply(new DebiteurAdaptee());
 	}
 }

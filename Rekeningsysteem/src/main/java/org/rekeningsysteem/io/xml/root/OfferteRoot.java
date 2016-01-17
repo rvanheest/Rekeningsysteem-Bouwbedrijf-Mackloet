@@ -1,5 +1,7 @@
 package org.rekeningsysteem.io.xml.root;
 
+import java.util.function.Function;
+
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -12,6 +14,9 @@ import org.rekeningsysteem.io.xml.adapter.RekeningAdapter;
 public class OfferteRoot implements Root<Offerte> {
 
 	private Offerte offerte;
+
+	private OfferteRoot() {
+	}
 
 	@Override
 	@XmlAttribute
@@ -33,7 +38,12 @@ public class OfferteRoot implements Root<Offerte> {
 	}
 
 	@Override
-	public void setRekening(Offerte offerte) {
+	public OfferteRoot setRekening(Offerte offerte) {
 		this.offerte = offerte;
+		return this;
+	}
+
+	public static OfferteRoot build(Function<OfferteRoot, OfferteRoot> builder) {
+		return builder.apply(new OfferteRoot());
 	}
 }

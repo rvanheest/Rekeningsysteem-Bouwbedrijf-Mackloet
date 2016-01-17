@@ -14,5 +14,5 @@ public interface Root<T extends AbstractRekening> {
 
 	T getRekening();
 
-	void setRekening(T rekening);
+	Root<T> setRekening(T rekening);
 }

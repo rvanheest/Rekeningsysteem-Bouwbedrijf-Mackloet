@@ -1,6 +1,7 @@
 package org.rekeningsysteem.io.xml.adaptee.particulier;
 
 import java.util.Currency;
+import java.util.function.Function;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
@@ -23,13 +24,17 @@ public class ParticulierFactuurAdaptee extends RekeningAdapteeVisitable {
 	private Currency currency;
 	private ItemList<ParticulierArtikel> list = new ItemList<>();
 
+	private ParticulierFactuurAdaptee() {
+	}
+
 	@XmlJavaTypeAdapter(OmschrFactuurHeaderAdapter.class)
 	public OmschrFactuurHeader getFactuurHeader() {
 		return this.factuurHeader;
 	}
 
-	public void setFactuurHeader(OmschrFactuurHeader factuurHeader) {
+	public ParticulierFactuurAdaptee setFactuurHeader(OmschrFactuurHeader factuurHeader) {
 		this.factuurHeader = factuurHeader;
+		return this;
 	}
 
 	@XmlJavaTypeAdapter(CurrencyAdapter.class)
@@ -37,8 +42,9 @@ public class ParticulierFactuurAdaptee extends RekeningAdapteeVisitable {
 		return this.currency;
 	}
 
-	public void setCurrency(Currency currency) {
+	public ParticulierFactuurAdaptee setCurrency(Currency currency) {
 		this.currency = currency;
+		return this;
 	}
 
 	@XmlJavaTypeAdapter(ItemListAdapter.class)
@@ -46,12 +52,18 @@ public class ParticulierFactuurAdaptee extends RekeningAdapteeVisitable {
 		return this.list;
 	}
 
-	public void setList(ItemList<ParticulierArtikel> list) {
+	public ParticulierFactuurAdaptee setList(ItemList<ParticulierArtikel> list) {
 		this.list = list;
+		return this;
 	}
 
 	@Override
 	public <T> T accept(RekeningAdapteeVisitor<T> visitor) {
 		return visitor.visit(this);
+	}
+
+	public static ParticulierFactuurAdaptee build(
+			Function<ParticulierFactuurAdaptee, ParticulierFactuurAdaptee> builder) {
+		return builder.apply(new ParticulierFactuurAdaptee());
 	}
 }

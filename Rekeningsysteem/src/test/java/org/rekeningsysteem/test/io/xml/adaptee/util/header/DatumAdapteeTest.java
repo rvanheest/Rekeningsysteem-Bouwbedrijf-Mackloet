@@ -8,28 +8,31 @@ import org.rekeningsysteem.io.xml.adaptee.util.header.DatumAdaptee;
 
 public class DatumAdapteeTest {
 
+	private final int dag = 30;
+	private final int maand = 7;
+	private final int jaar = 1992;
 	private DatumAdaptee adaptee;
 
 	@Before
 	public void setUp() {
-		this.adaptee = new DatumAdaptee();
+		this.adaptee = DatumAdaptee.build(adaptee -> adaptee
+				.setDag(this.dag)
+				.setMaand(this.maand)
+				.setJaar(this.jaar));
 	}
 
 	@Test
 	public void testSetGetDag() {
-		this.adaptee.setDag(30);
-		assertEquals(30, this.adaptee.getDag());
+		assertEquals(this.dag, this.adaptee.getDag());
 	}
 
 	@Test
 	public void testSetGetMaand() {
-		this.adaptee.setMaand(7);
-		assertEquals(7, this.adaptee.getMaand());
+		assertEquals(this.maand, this.adaptee.getMaand());
 	}
 
 	@Test
 	public void testSetGetJaar() {
-		this.adaptee.setJaar(1992);
-		assertEquals(1992, this.adaptee.getJaar());
+		assertEquals(this.jaar, this.adaptee.getJaar());
 	}
 }

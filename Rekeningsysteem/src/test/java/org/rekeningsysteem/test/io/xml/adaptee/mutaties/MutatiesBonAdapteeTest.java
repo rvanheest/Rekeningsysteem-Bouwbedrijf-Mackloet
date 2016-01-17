@@ -16,11 +16,17 @@ import org.rekeningsysteem.test.io.xml.adaptee.ListItemAdapteeVisitableTest;
 @RunWith(MockitoJUnitRunner.class)
 public class MutatiesBonAdapteeTest extends ListItemAdapteeVisitableTest {
 
+	private final String omschrijving = "omschr";
+	private final String bonnummer = "bonnr";
+	private final Geld prijs = new Geld(12.04);
 	@Mock private ListItemAdapteeVisitor<Object> visitor;
 
 	@Override
 	protected MutatiesBonAdaptee makeInstance() {
-		return new MutatiesBonAdaptee();
+		return MutatiesBonAdaptee.build(a -> a
+				.setOmschrijving(this.omschrijving)
+				.setBonnummer(this.bonnummer)
+				.setPrijs(this.prijs));
 	}
 
 	@Override
@@ -30,21 +36,17 @@ public class MutatiesBonAdapteeTest extends ListItemAdapteeVisitableTest {
 
 	@Test
 	public void testSetGetOmschrijving() {
-		this.getInstance().setOmschrijving("omschr");
-		assertEquals("omschr", this.getInstance().getOmschrijving());
+		assertEquals(this.omschrijving, this.getInstance().getOmschrijving());
 	}
 
 	@Test
 	public void testSetGetBonnummer() {
-		this.getInstance().setBonnummer("bonnr");
-		assertEquals("bonnr", this.getInstance().getBonnummer());
+		assertEquals(this.bonnummer, this.getInstance().getBonnummer());
 	}
 
 	@Test
 	public void testSetGetPrijs() {
-		Geld prijs = new Geld(12.04);
-		this.getInstance().setPrijs(prijs);
-		assertEquals(prijs, this.getInstance().getPrijs());
+		assertEquals(this.prijs, this.getInstance().getPrijs());
 	}
 
 	@Test

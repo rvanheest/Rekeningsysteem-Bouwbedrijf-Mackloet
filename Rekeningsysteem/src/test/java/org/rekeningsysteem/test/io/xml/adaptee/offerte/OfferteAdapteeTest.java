@@ -1,7 +1,6 @@
 package org.rekeningsysteem.test.io.xml.adaptee.offerte;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 
@@ -20,11 +19,18 @@ import org.rekeningsysteem.test.io.xml.adaptee.RekeningAdapteeVisitableTest;
 @RunWith(MockitoJUnitRunner.class)
 public class OfferteAdapteeTest extends RekeningAdapteeVisitableTest {
 
+	private final FactuurHeader header = new FactuurHeader(new Debiteur("", "", "", "", "", ""),
+			LocalDate.now(), "");
+	private final String text = "foobar";
+	private final boolean ondertekenen = true;
 	@Mock private RekeningAdapteeVisitor<Object> visitor;
 
 	@Override
 	protected OfferteAdaptee makeInstance() {
-		return new OfferteAdaptee();
+		return OfferteAdaptee.build(a -> a
+				.setFactuurHeader(this.header)
+				.setTekst(this.text)
+				.setOndertekenen(this.ondertekenen));
 	}
 
 	@Override
@@ -34,22 +40,17 @@ public class OfferteAdapteeTest extends RekeningAdapteeVisitableTest {
 
 	@Test
 	public void testSetGetFactuurHeader() {
-		FactuurHeader header = new FactuurHeader(new Debiteur("", "", "", "", "", ""),
-				LocalDate.now(), "");
-		this.getInstance().setFactuurHeader(header);
-		assertEquals(header, this.getInstance().getFactuurHeader());
+		assertEquals(this.header, this.getInstance().getFactuurHeader());
 	}
 
 	@Test
 	public void testSetGetTekst() {
-		this.getInstance().setTekst("foobar");
-		assertEquals("foobar", this.getInstance().getTekst());
+		assertEquals(this.text, this.getInstance().getTekst());
 	}
 
 	@Test
 	public void testSetGetOndertekenen() {
-		this.getInstance().setOndertekenen(true);
-		assertTrue(this.getInstance().getOndertekenen());
+		assertEquals(this.ondertekenen, this.getInstance().getOndertekenen());
 	}
 
 	@Test

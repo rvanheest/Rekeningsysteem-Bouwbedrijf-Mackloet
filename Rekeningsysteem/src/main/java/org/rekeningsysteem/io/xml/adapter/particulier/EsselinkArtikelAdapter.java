@@ -15,12 +15,11 @@ public class EsselinkArtikelAdapter extends XmlAdapter<EsselinkArtikelAdaptee, E
 
 	@Override
 	public EsselinkArtikelAdaptee marshal(EsselinkArtikel esselinkArtikel) {
-		EsselinkArtikelAdaptee adaptee = new EsselinkArtikelAdaptee();
-		adaptee.setArtikelNummer(esselinkArtikel.getArtikelNummer());
-		adaptee.setOmschrijving(esselinkArtikel.getOmschrijving());
-		adaptee.setPrijsPer(esselinkArtikel.getPrijsPer());
-		adaptee.setEenheid(esselinkArtikel.getEenheid());
-		adaptee.setVerkoopPrijs(esselinkArtikel.getVerkoopPrijs());
-		return adaptee;
+		return EsselinkArtikelAdaptee.build(a -> a
+        		.setArtikelNummer(esselinkArtikel.getArtikelNummer())
+        		.setOmschrijving(esselinkArtikel.getOmschrijving())
+        		.setPrijsPer(esselinkArtikel.getPrijsPer())
+        		.setEenheid(esselinkArtikel.getEenheid())
+        		.setVerkoopPrijs(esselinkArtikel.getVerkoopPrijs()));
 	}
 }

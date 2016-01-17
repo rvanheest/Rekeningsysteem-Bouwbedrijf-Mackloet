@@ -1,6 +1,7 @@
 package org.rekeningsysteem.io.xml.adaptee.mutaties;
 
 import java.util.Currency;
+import java.util.function.Function;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
@@ -23,13 +24,17 @@ public class MutatiesFactuurAdaptee extends RekeningAdapteeVisitable {
 	private Currency currency;
 	private ItemList<MutatiesBon> list = new ItemList<>();
 
+	private MutatiesFactuurAdaptee() {
+	}
+
 	@XmlJavaTypeAdapter(FactuurHeaderAdapter.class)
 	public FactuurHeader getFactuurHeader() {
 		return this.factuurHeader;
 	}
 
-	public void setFactuurHeader(FactuurHeader factuurHeader) {
+	public MutatiesFactuurAdaptee setFactuurHeader(FactuurHeader factuurHeader) {
 		this.factuurHeader = factuurHeader;
+		return this;
 	}
 
 	@XmlJavaTypeAdapter(CurrencyAdapter.class)
@@ -37,8 +42,9 @@ public class MutatiesFactuurAdaptee extends RekeningAdapteeVisitable {
 		return this.currency;
 	}
 
-	public void setCurrency(Currency currency) {
+	public MutatiesFactuurAdaptee setCurrency(Currency currency) {
 		this.currency = currency;
+		return this;
 	}
 
 	@XmlJavaTypeAdapter(ItemListAdapter.class)
@@ -46,12 +52,18 @@ public class MutatiesFactuurAdaptee extends RekeningAdapteeVisitable {
 		return this.list;
 	}
 
-	public void setList(ItemList<MutatiesBon> list) {
+	public MutatiesFactuurAdaptee setList(ItemList<MutatiesBon> list) {
 		this.list = list;
+		return this;
 	}
 
 	@Override
 	public <T> T accept(RekeningAdapteeVisitor<T> visitor) {
 		return visitor.visit(this);
+	}
+
+	public static MutatiesFactuurAdaptee build(
+			Function<MutatiesFactuurAdaptee, MutatiesFactuurAdaptee> builder) {
+		return builder.apply(new MutatiesFactuurAdaptee());
 	}
 }
