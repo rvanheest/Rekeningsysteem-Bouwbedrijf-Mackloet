@@ -20,7 +20,7 @@ import org.rekeningsysteem.data.util.header.Debiteur;
 import org.rekeningsysteem.data.util.header.FactuurHeader;
 import org.rekeningsysteem.data.util.header.OmschrFactuurHeader;
 import org.rekeningsysteem.data.util.visitor.ListItemVisitor;
-import org.rekeningsysteem.data.util.visitor.RekeningVisitor;
+import org.rekeningsysteem.data.util.visitor.RekeningVoidVisitor;
 import org.rekeningsysteem.exception.PdfException;
 import org.rekeningsysteem.properties.PropertiesWorker;
 import org.rekeningsysteem.properties.PropertyModelEnum;
@@ -28,7 +28,7 @@ import org.rekeningsysteem.properties.PropertyModelEnum;
 import de.nixosoft.jlr.JLRGenerator;
 import de.nixosoft.jlr.JLROpener;
 
-public class PdfExporterVisitor implements RekeningVisitor<Object> {
+public class PdfExporterVisitor implements RekeningVoidVisitor {
 
 	private final boolean autoOpen;
 	private final PropertiesWorker properties;
@@ -84,47 +84,43 @@ public class PdfExporterVisitor implements RekeningVisitor<Object> {
 	}
 
 	@Override
-	public Object visit(MutatiesFactuur factuur) throws Exception {
+	public void visit(MutatiesFactuur factuur) throws Exception {
 		Optional<File> templateTex = this.properties
 				.getProperty(PropertyModelEnum.PDF_MUTATIES_TEMPLATE)
 				.map(File::new);
 		if (templateTex.isPresent()) {
 			this.general(templateTex.get(), this.convert(factuur));
 		}
-		return new Object();
 	}
 
 	@Override
-	public Object visit(Offerte offerte) throws Exception {
+	public void visit(Offerte offerte) throws Exception {
 		Optional<File> templateTex = this.properties
 				.getProperty(PropertyModelEnum.PDF_OFFERTE_TEMPLATE)
 				.map(File::new);
 		if (templateTex.isPresent()) {
 			this.general(templateTex.get(), this.convert(offerte));
 		}
-		return new Object();
 	}
 
 	@Override
-	public Object visit(ParticulierFactuur factuur) throws Exception {
+	public void visit(ParticulierFactuur factuur) throws Exception {
 		Optional<File> templateTex = this.properties
 				.getProperty(PropertyModelEnum.PDF_PARTICULIER_TEMPLATE)
 				.map(File::new);
 		if (templateTex.isPresent()) {
 			this.general(templateTex.get(), this.convert(factuur));
 		}
-		return new Object();
 	}
 
 	@Override
-	public Object visit(ReparatiesFactuur factuur) throws Exception {
+	public void visit(ReparatiesFactuur factuur) throws Exception {
 		Optional<File> templateTex = this.properties
 				.getProperty(PropertyModelEnum.PDF_REPARATIES_TEMPLATE)
 				.map(File::new);
 		if (templateTex.isPresent()) {
 			this.general(templateTex.get(), this.convert(factuur));
 		}
-		return new Object();
 	}
 
 	private Consumer<PdfConverter> convertFactuurHeader(FactuurHeader header) {
