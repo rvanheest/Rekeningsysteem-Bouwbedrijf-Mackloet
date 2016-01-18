@@ -4,6 +4,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Optional;
 
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonBar.ButtonData;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Tab;
 
 import org.apache.log4j.Logger;
@@ -94,7 +98,18 @@ public class RekeningTab extends Tab {
 		else if (file.getName().endsWith(".xml")) {
 			PropertiesWorker properties = PropertiesWorker.getInstance();
 
-			return ioWorker.load(file).publish(f -> {
+			return ioWorker.load(file)
+					.doOnError(error -> {
+						// TODO move this to a separate class (as well as all other popup windows)
+						String alertText = "Deze factuur kon niet worden geopend. De file is "
+								+ "waarschijnlijk corrupt. Raadpleeg de programmeur om dit probleem "
+								+ "op te lossen.";
+						ButtonType close = new ButtonType("Sluit", ButtonData.CANCEL_CLOSE);
+						Alert alert = new Alert(AlertType.NONE, alertText, close);
+						alert.setHeaderText("Fout bij inladen factuur");
+						alert.show();
+					})
+					.publish(f -> {
 				Observable<MutatiesController> mutaties = f.ofType(MutatiesFactuur.class)
 						.map(fact -> new MutatiesController(fact, database));
 				Observable<OfferteController> offerte = f.ofType(Offerte.class)

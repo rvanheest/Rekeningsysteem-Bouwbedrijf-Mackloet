@@ -1,13 +1,17 @@
 package org.rekeningsysteem.test.io.xml;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 
 import java.io.File;
 import java.time.LocalDate;
 import java.util.Currency;
 
+import javax.management.modelmbean.XMLParseException;
+
 import org.apache.log4j.Logger;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -58,9 +62,16 @@ public class IOWorkerTest {
 				this.logger);
 	}
 
-	@After
-	public void tearDown() {
-		verifyZeroInteractions(this.logger);
+	@Test
+	public void testLoadEmptyFile() {
+		TestSubscriber<AbstractRekening> testObserver = new TestSubscriber<>();
+		this.loader.load(new File("src\\test\\resources\\ioWorker\\loadXML\\empty.xml"))
+				.subscribe(testObserver);
+
+		testObserver.assertNoValues();
+		testObserver.assertError(XMLParseException.class);
+		testObserver.assertNotCompleted();
+		verify(this.logger).error(anyString(), any(XMLParseException.class));
 	}
 
 	@Test
@@ -73,6 +84,7 @@ public class IOWorkerTest {
 		testObserver.assertValue(ParticulierFactuur.class);
 		testObserver.assertNoErrors();
 		testObserver.assertCompleted();
+		verifyZeroInteractions(this.logger);
 	}
 
 	@Test
@@ -81,10 +93,11 @@ public class IOWorkerTest {
 		this.loader.load(new File("src\\test\\resources\\ioWorker\\loadXML\\3Aangenomen.xml"))
 				.map(AbstractRekening::getClass)
 				.subscribe(testObserver);
-	
+
 		testObserver.assertValue(ParticulierFactuur.class);
 		testObserver.assertNoErrors();
 		testObserver.assertCompleted();
+		verifyZeroInteractions(this.logger);
 	}
 
 	@Test
@@ -97,6 +110,7 @@ public class IOWorkerTest {
 		testObserver.assertValue(MutatiesFactuur.class);
 		testObserver.assertNoErrors();
 		testObserver.assertCompleted();
+		verifyZeroInteractions(this.logger);
 	}
 
 	@Test
@@ -109,6 +123,7 @@ public class IOWorkerTest {
 		testObserver.assertValue(MutatiesFactuur.class);
 		testObserver.assertNoErrors();
 		testObserver.assertCompleted();
+		verifyZeroInteractions(this.logger);
 	}
 
 	@Test
@@ -117,10 +132,11 @@ public class IOWorkerTest {
 		this.loader.load(new File("src\\test\\resources\\ioWorker\\loadXML\\3Mutaties.xml"))
 				.map(AbstractRekening::getClass)
 				.subscribe(testObserver);
-	
+
 		testObserver.assertValue(MutatiesFactuur.class);
 		testObserver.assertNoErrors();
 		testObserver.assertCompleted();
+		verifyZeroInteractions(this.logger);
 	}
 
 	@Test
@@ -129,10 +145,11 @@ public class IOWorkerTest {
 		this.loader.load(new File("src\\test\\resources\\ioWorker\\loadXML\\4Mutaties.xml"))
 				.map(AbstractRekening::getClass)
 				.subscribe(testObserver);
-	
+
 		testObserver.assertValue(MutatiesFactuur.class);
 		testObserver.assertNoErrors();
 		testObserver.assertCompleted();
+		verifyZeroInteractions(this.logger);
 	}
 
 	@Test
@@ -141,13 +158,14 @@ public class IOWorkerTest {
 
 		MutatiesFactuur factuur = this.mutaties();
 		File file = new File("src\\test\\resources\\ioWorker\\saveXML\\Mutaties.xml");
-		
+
 		this.loader.save(factuur, file);
 		this.loader.load(file).subscribe(testObserver);
-		
+
 		testObserver.assertValue(factuur);
 		testObserver.assertNoErrors();
 		testObserver.assertCompleted();
+		verifyZeroInteractions(this.logger);
 	}
 
 	@Test
@@ -156,6 +174,7 @@ public class IOWorkerTest {
 		File file = new File("src\\test\\resources\\ioWorker\\savePDF\\Mutaties.pdf");
 
 		this.loader.export(factuur, file);
+		verifyZeroInteractions(this.logger);
 	}
 
 	@Test
@@ -168,6 +187,7 @@ public class IOWorkerTest {
 		testObserver.assertValue(Offerte.class);
 		testObserver.assertNoErrors();
 		testObserver.assertCompleted();
+		verifyZeroInteractions(this.logger);
 	}
 
 	@Test
@@ -176,10 +196,11 @@ public class IOWorkerTest {
 		this.loader.load(new File("src\\test\\resources\\ioWorker\\loadXML\\2Offerte.xml"))
 				.map(AbstractRekening::getClass)
 				.subscribe(testObserver);
-	
+
 		testObserver.assertValue(Offerte.class);
 		testObserver.assertNoErrors();
 		testObserver.assertCompleted();
+		verifyZeroInteractions(this.logger);
 	}
 
 	@Test
@@ -188,10 +209,11 @@ public class IOWorkerTest {
 		this.loader.load(new File("src\\test\\resources\\ioWorker\\loadXML\\3Offerte.xml"))
 				.map(AbstractRekening::getClass)
 				.subscribe(testObserver);
-	
+
 		testObserver.assertValue(Offerte.class);
 		testObserver.assertNoErrors();
 		testObserver.assertCompleted();
+		verifyZeroInteractions(this.logger);
 	}
 
 	@Test
@@ -200,10 +222,11 @@ public class IOWorkerTest {
 		this.loader.load(new File("src\\test\\resources\\ioWorker\\loadXML\\4Offerte.xml"))
 				.map(AbstractRekening::getClass)
 				.subscribe(testObserver);
-	
+
 		testObserver.assertValue(Offerte.class);
 		testObserver.assertNoErrors();
 		testObserver.assertCompleted();
+		verifyZeroInteractions(this.logger);
 	}
 
 	@Test
@@ -215,10 +238,11 @@ public class IOWorkerTest {
 
 		this.loader.save(offerte, file);
 		this.loader.load(file).subscribe(testObserver);
-		
+
 		testObserver.assertValue(offerte);
 		testObserver.assertNoErrors();
 		testObserver.assertCompleted();
+		verifyZeroInteractions(this.logger);
 	}
 
 	@Test
@@ -227,6 +251,7 @@ public class IOWorkerTest {
 		File file = new File("src\\test\\resources\\ioWorker\\savePDF\\Offerte.pdf");
 
 		this.loader.export(factuur, file);
+		verifyZeroInteractions(this.logger);
 	}
 
 	@Test
@@ -239,6 +264,7 @@ public class IOWorkerTest {
 		testObserver.assertValue(ParticulierFactuur.class);
 		testObserver.assertNoErrors();
 		testObserver.assertCompleted();
+		verifyZeroInteractions(this.logger);
 	}
 
 	@Test
@@ -251,6 +277,7 @@ public class IOWorkerTest {
 		testObserver.assertValue(ParticulierFactuur.class);
 		testObserver.assertNoErrors();
 		testObserver.assertCompleted();
+		verifyZeroInteractions(this.logger);
 	}
 
 	@Test
@@ -263,6 +290,7 @@ public class IOWorkerTest {
 		testObserver.assertValue(ParticulierFactuur.class);
 		testObserver.assertNoErrors();
 		testObserver.assertCompleted();
+		verifyZeroInteractions(this.logger);
 	}
 
 	@Test
@@ -271,10 +299,11 @@ public class IOWorkerTest {
 		this.loader.load(new File("src\\test\\resources\\ioWorker\\loadXML\\2Particulier.xml"))
 				.map(AbstractRekening::getClass)
 				.subscribe(testObserver);
-	
+
 		testObserver.assertValue(ParticulierFactuur.class);
 		testObserver.assertNoErrors();
 		testObserver.assertCompleted();
+		verifyZeroInteractions(this.logger);
 	}
 
 	@Test
@@ -284,10 +313,11 @@ public class IOWorkerTest {
 				.load(new File("src\\test\\resources\\ioWorker\\loadXML\\3Particulier.xml"))
 				.map(AbstractRekening::getClass)
 				.subscribe(testObserver);
-	
+
 		testObserver.assertValue(ParticulierFactuur.class);
 		testObserver.assertNoErrors();
 		testObserver.assertCompleted();
+		verifyZeroInteractions(this.logger);
 	}
 
 	@Test
@@ -296,10 +326,11 @@ public class IOWorkerTest {
 		this.loader.load(new File("src\\test\\resources\\ioWorker\\loadXML\\4Particulier.xml"))
 				.map(AbstractRekening::getClass)
 				.subscribe(testObserver);
-	
+
 		testObserver.assertValue(ParticulierFactuur.class);
 		testObserver.assertNoErrors();
 		testObserver.assertCompleted();
+		verifyZeroInteractions(this.logger);
 	}
 
 	@Test
@@ -311,10 +342,11 @@ public class IOWorkerTest {
 
 		this.loader.save(factuur, file);
 		this.loader.load(file).subscribe(testObserver);
-		
+
 		testObserver.assertValue(factuur);
 		testObserver.assertNoErrors();
 		testObserver.assertCompleted();
+		verifyZeroInteractions(this.logger);
 	}
 
 	@Test
@@ -323,6 +355,7 @@ public class IOWorkerTest {
 		File file = new File("src\\test\\resources\\ioWorker\\savePDF\\Particulier.pdf");
 
 		this.loader.export(factuur, file);
+		verifyZeroInteractions(this.logger);
 	}
 
 	@Test
@@ -335,6 +368,7 @@ public class IOWorkerTest {
 		testObserver.assertValue(ReparatiesFactuur.class);
 		testObserver.assertNoErrors();
 		testObserver.assertCompleted();
+		verifyZeroInteractions(this.logger);
 	}
 
 	@Test
@@ -347,6 +381,7 @@ public class IOWorkerTest {
 		testObserver.assertValue(ReparatiesFactuur.class);
 		testObserver.assertNoErrors();
 		testObserver.assertCompleted();
+		verifyZeroInteractions(this.logger);
 	}
 
 	@Test
@@ -359,6 +394,7 @@ public class IOWorkerTest {
 		testObserver.assertValue(ReparatiesFactuur.class);
 		testObserver.assertNoErrors();
 		testObserver.assertCompleted();
+		verifyZeroInteractions(this.logger);
 	}
 
 	@Test
@@ -371,6 +407,7 @@ public class IOWorkerTest {
 		testObserver.assertValue(ReparatiesFactuur.class);
 		testObserver.assertNoErrors();
 		testObserver.assertCompleted();
+		verifyZeroInteractions(this.logger);
 	}
 
 	@Test
@@ -382,10 +419,11 @@ public class IOWorkerTest {
 
 		this.loader.save(factuur, file);
 		this.loader.load(file).subscribe(testObserver);
-		
+
 		testObserver.assertValue(factuur);
 		testObserver.assertNoErrors();
 		testObserver.assertCompleted();
+		verifyZeroInteractions(this.logger);
 	}
 
 	@Test
@@ -394,6 +432,7 @@ public class IOWorkerTest {
 		File file = new File("src\\test\\resources\\ioWorker\\savePDF\\Reparaties.pdf");
 
 		this.loader.export(factuur, file);
+		verifyZeroInteractions(this.logger);
 	}
 
 	private MutatiesFactuur mutaties() {

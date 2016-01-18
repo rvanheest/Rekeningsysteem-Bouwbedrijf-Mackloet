@@ -20,6 +20,8 @@ public class IOWorker implements FactuurSaver, FactuurExporter, FactuurLoader {
 	private final FactuurLoader oldLoader2;
 	private final FactuurLoader oldLoader3;
 
+	private final Logger logger;
+
 	public IOWorker(Logger logger) {
 		this(new XmlMaker(logger), new PdfExporter(logger), new XmlReader(logger),
 				new XmlReader1(logger), new XmlReader2(logger), new XmlReader3(logger), logger);
@@ -34,6 +36,8 @@ public class IOWorker implements FactuurSaver, FactuurExporter, FactuurLoader {
 		this.oldLoader1 = oldLoader1;
 		this.oldLoader2 = oldLoader2;
 		this.oldLoader3 = oldLoader3;
+
+		this.logger = logger;
 	}
 
 	@Override
@@ -41,7 +45,10 @@ public class IOWorker implements FactuurSaver, FactuurExporter, FactuurLoader {
 		return this.loader.load(file)
 				.onErrorResumeNext(t -> this.oldLoader3.load(file))
 				.onErrorResumeNext(t -> this.oldLoader2.load(file))
-				.onErrorResumeNext(t -> this.oldLoader1.load(file));
+				.onErrorResumeNext(t -> this.oldLoader1.load(file))
+				.doOnError(error -> this.logger.error(error.getMessage()
+						+ "\nMislukt om factuur in te laden vanuit de volgende file: \""
+						+ file + "\"\n", error));
 	}
 
 	@Override
