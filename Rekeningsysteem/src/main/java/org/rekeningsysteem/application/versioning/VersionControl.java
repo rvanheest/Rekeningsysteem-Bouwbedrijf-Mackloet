@@ -30,6 +30,7 @@ public class VersionControl {
 
 	public Observable<Integer> checkDBVersioning() {
 		return this.getTableCount()
+				.cache()
 				.flatMap(count -> {
 					if (count <= 0) {
 						// table count == 0 => newly created
@@ -45,6 +46,7 @@ public class VersionControl {
 
 	private Observable<QueryEnumeration> v03AlphaOrHigher() {
 		return this.metadataExists()
+				.cache()
 				.flatMap(exists -> !exists
 						// no version table => v0.3-alpha
 						? Observable.just(getFromV03AlphaToV04AlphaQuery())

@@ -60,7 +60,7 @@ public class Database implements AutoCloseable {
 			catch (SQLException e) {
 				subscriber.onError(e);
 			}
-		}).cache();
+		});
 	}
 
 	public <A> Observable<A> query(QueryEnumeration query, ExFunc1<ResultSet, A> resultComposer) {
@@ -75,6 +75,6 @@ public class Database implements AutoCloseable {
 			catch (Exception e) {
 				subscriber.onError(e);
 			}
-		}).cache();
+		});
 	}
 }
