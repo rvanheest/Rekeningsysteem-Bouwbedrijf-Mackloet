@@ -2,11 +2,12 @@ package org.rekeningsysteem.application.settings;
 
 import org.apache.log4j.Logger;
 import org.rekeningsysteem.application.settings.debiteur.DebiteurSettingsTabController;
-import org.rekeningsysteem.application.settings.offerte.DefaultOfferteTextTabController;
+import org.rekeningsysteem.application.settings.offerte.DefaultOfferteTextPaneController;
 import org.rekeningsysteem.io.database.Database;
 import org.rekeningsysteem.logic.database.ArtikellijstDBInteraction;
 
 import javafx.scene.control.ButtonBase;
+import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.stage.Stage;
 
@@ -19,8 +20,10 @@ public class SettingsPane extends TabPane {
 		DebiteurSettingsTabController debiteurTab = new DebiteurSettingsTabController(database);
 		PrijslijstIO prijslijstTab = new PrijslijstIO(stage,
 				new ArtikellijstDBInteraction(database), closeButton, logger);
-		DefaultOfferteTextTabController offerteTab = new DefaultOfferteTextTabController(logger);
-
-		this.getTabs().addAll(debiteurTab.getUI(), prijslijstTab, offerteTab.getUI());
+		
+		DefaultOfferteTextPaneController offerteC = new DefaultOfferteTextPaneController(logger);
+		Tab offerteTab = new Tab("Offerte", offerteC.getUI());
+		
+		this.getTabs().addAll(debiteurTab.getUI(), prijslijstTab, offerteTab);
 	}
 }
