@@ -3,6 +3,7 @@ package org.rekeningsysteem.application.settings.debiteur;
 import org.rekeningsysteem.io.database.Database;
 import org.rekeningsysteem.logic.database.DebiteurDBInteraction;
 
+@Deprecated
 public class DebiteurTablePaneController {
 
 	private DebiteurTablePane ui;

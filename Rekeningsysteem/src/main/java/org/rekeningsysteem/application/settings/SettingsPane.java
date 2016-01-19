@@ -6,10 +6,11 @@ import javafx.scene.control.TabPane;
 import javafx.stage.Stage;
 
 import org.apache.log4j.Logger;
-import org.rekeningsysteem.application.settings.debiteur.DebiteurTablePaneController;
+import org.rekeningsysteem.application.settings.debiteur.DebiteurTableController;
 import org.rekeningsysteem.application.settings.offerte.DefaultOfferteTextPaneController;
 import org.rekeningsysteem.io.database.Database;
 import org.rekeningsysteem.logic.database.ArtikellijstDBInteraction;
+import org.rekeningsysteem.logic.database.DebiteurDBInteraction;
 
 public class SettingsPane extends TabPane {
 
@@ -17,8 +18,9 @@ public class SettingsPane extends TabPane {
 		this.setId("settings-tabs");
 		this.setTabClosingPolicy(TabClosingPolicy.UNAVAILABLE);
 
-		DebiteurTablePaneController debiteurC = new DebiteurTablePaneController(database);
-		Tab debiteurTab = new Tab("Debiteur beheer", debiteurC.getUI());
+		DebiteurDBInteraction dbInteraction = new DebiteurDBInteraction(database);
+		DebiteurTableController debC = new DebiteurTableController(dbInteraction);
+		Tab debiteurTab = new Tab("Debiteur beheer", debC.getUI());
 
 		PrijslijstIO prijslijstTab = new PrijslijstIO(stage,
 				new ArtikellijstDBInteraction(database), closeButton, logger);
