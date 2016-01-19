@@ -4,5 +4,6 @@
 /.idea
 
 /src/test/resources/pdf
+/src/test/resources/ioWorker/savePDF
 /jlrrepo
 LogFile.txt

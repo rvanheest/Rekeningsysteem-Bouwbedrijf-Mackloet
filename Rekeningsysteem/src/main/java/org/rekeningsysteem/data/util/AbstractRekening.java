@@ -4,9 +4,10 @@ import java.util.Objects;
 
 import org.rekeningsysteem.data.util.header.FactuurHeader;
 import org.rekeningsysteem.data.util.visitor.RekeningVisitable;
+import org.rekeningsysteem.data.util.visitor.RekeningVoidVisitable;
 import org.rekeningsysteem.logic.factuurnummer.FactuurnummerManager;
 
-public abstract class AbstractRekening implements RekeningVisitable {
+public abstract class AbstractRekening implements RekeningVisitable, RekeningVoidVisitable {
 
 	private final FactuurHeader header;
 

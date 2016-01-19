@@ -17,6 +17,7 @@ import org.rekeningsysteem.data.util.AbstractFactuur;
 import org.rekeningsysteem.data.util.ItemList;
 import org.rekeningsysteem.data.util.header.FactuurHeader;
 import org.rekeningsysteem.data.util.visitor.RekeningVisitor;
+import org.rekeningsysteem.data.util.visitor.RekeningVoidVisitor;
 import org.rekeningsysteem.test.data.util.AbstractFactuurTest;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -24,6 +25,7 @@ public class ReparatiesFactuurTest extends AbstractFactuurTest<ReparatiesBon> {
 
 	private ReparatiesFactuur factuur;
 	@Mock private RekeningVisitor<Object> visitor;
+	@Mock private RekeningVoidVisitor voidVisitor;
 
 	@Override
 	protected ReparatiesFactuur makeInstance() {
@@ -59,6 +61,13 @@ public class ReparatiesFactuurTest extends AbstractFactuurTest<ReparatiesBon> {
 		this.factuur.accept(this.visitor);
 
 		verify(this.visitor).visit(eq(this.factuur));
+	}
+
+	@Test
+	public void testAcceptVoid() throws Exception {
+		this.factuur.accept(this.voidVisitor);
+
+		verify(this.voidVisitor).visit(eq(this.factuur));
 	}
 
 	@Test
