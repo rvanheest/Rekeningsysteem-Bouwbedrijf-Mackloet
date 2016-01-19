@@ -9,6 +9,7 @@ import org.rekeningsysteem.application.settings.debiteur.DebiteurTable.DebiteurT
 import org.rekeningsysteem.data.util.header.Debiteur;
 import org.rekeningsysteem.logic.database.DebiteurDBInteraction;
 import org.rekeningsysteem.rxjavafx.JavaFxScheduler;
+import org.rekeningsysteem.util.OptionalUtils;
 
 import rx.Observable;
 import rx.schedulers.Schedulers;
@@ -30,7 +31,7 @@ public class DebiteurTableController {
 		this.ui.getAddButtonEvent()
 				.map(event -> new DebiteurItemPaneController())
 				.doOnNext(controller -> Main.getMain().showModalMessage(controller.getUI()))
-				.flatMap(controller -> controller.getModel())
+				.flatMap(DebiteurItemPaneController::getModel)
 				.doOnNext(optItem -> Main.getMain().hideModalMessage())
 				.filter(Optional::isPresent)
 				.map(Optional::get)
@@ -86,11 +87,8 @@ public class DebiteurTableController {
 	}
 
 	private static Debiteur uiToModel(DebiteurTableModel model) {
-		Integer id = model.getId();
-		Optional<Integer> debiteurID = Optional.ofNullable(id);
-		String btw = model.getBtwNummer();
-		Optional<String> btwNummer = "".equals(btw) ? Optional.empty() : Optional.ofNullable(btw);
-		return new Debiteur(debiteurID, model.getNaam(), model.getStraat(), model.getNummer(),
-				model.getPostcode(), model.getPlaats(), btwNummer);
+		return new Debiteur(Optional.ofNullable(model.getId()), model.getNaam(),
+				model.getStraat(), model.getNummer(), model.getPostcode(),
+				model.getPlaats(), OptionalUtils.fromString(model.getBtwNummer()));
 	}
 }
