@@ -1,4 +1,4 @@
-package org.rekeningsysteem.application.settings;
+package org.rekeningsysteem.application.settings.prijslijst;
 
 import static rx.observables.StringObservable.from;
 import static rx.observables.StringObservable.split;
@@ -8,14 +8,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.Objects;
 
-import javafx.event.ActionEvent;
-import javafx.geometry.Insets;
-import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBase;
-import javafx.scene.control.Label;
-import javafx.scene.control.Tab;
-import javafx.scene.layout.GridPane;
-import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
@@ -26,39 +19,31 @@ import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.exception.GeldParseException;
 import org.rekeningsysteem.logic.database.ArtikellijstDBInteraction;
 import org.rekeningsysteem.rxjavafx.JavaFxScheduler;
-import org.rekeningsysteem.rxjavafx.Observables;
 
 import rx.Observable;
 import rx.schedulers.Schedulers;
 
-@Deprecated
-public class PrijslijstIO extends Tab {
+public class PrijsLijstController {
 
-	private final ArtikellijstDBInteraction db;
+	private final PrijsLijstPane ui;
 
-	private final Label progressLabel = new Label("nog niet gestart");
-	private final Label warningLabel = new Label("Let op, de huidige data wordt verwijderd "
-			+ "wanneer nieuwe data wordt geimporteerd!");
-	private final Button startButton = new Button("Start");
-
-	public PrijslijstIO(Stage stage, ArtikellijstDBInteraction db, ButtonBase closeButton,
+	public PrijsLijstController(Stage stage, ButtonBase closeButton, ArtikellijstDBInteraction db,
 			Logger logger) {
-		super("Esselink artikel data");
+		this(stage, closeButton, db, logger, new PrijsLijstPane());
+	}
 
-		this.db = db;
+	public PrijsLijstController(Stage stage, ButtonBase closeButton, ArtikellijstDBInteraction db,
+			Logger logger, PrijsLijstPane ui) {
+		this.ui = ui;
 
-		this.progressLabel.getStyleClass().add("no-item-found");
-		this.warningLabel.setTextFill(Color.RED);
-		this.warningLabel.setWrapText(true);
-
-		Observables.fromNodeEvents(this.startButton, ActionEvent.ACTION)
+		this.ui.getStartButtonEvents()
 				.flatMap(e -> this.showOpenFileChooser(stage))
 				.doOnNext(f -> {
-					this.startButton.setDisable(true);
+					this.ui.setStartButtonDisable(true);
 					closeButton.setDisable(true);
 				})
 				.observeOn(Schedulers.io())
-				.flatMap(file -> this.db.clearData()
+				.flatMap(file -> db.clearData()
 						.flatMap(i -> this.readFile(file))
 						.window(100)
 						.flatMap(db::insertAll)
@@ -66,29 +51,19 @@ public class PrijslijstIO extends Tab {
 						.observeOn(JavaFxScheduler.getInstance())
 						.doOnCompleted(() -> {
 							closeButton.setDisable(false);
-							this.startButton.setDisable(false);
-							this.progressLabel.setText(this.progressLabel.getText()
+							this.ui.setStartButtonDisable(false);
+							this.ui.setProgressText(this.ui.getProgressText()
 									+ "\nArtikelen importeren is voltooid");
 						}))
 				.map(i -> "Voortgang: " + i + " items toegevoegd")
-				.subscribe(this.progressLabel::setText, e -> {
-					this.progressLabel.setText("Er is een fout opgetreden. Zie de log "
-							+ "voor info.");
-					logger.error("Error occurred in importing "
-							+ "new data", e);
+				.subscribe(this.ui::setProgressText, e -> {
+					this.ui.setProgressText("Er is een fout opgetreden. Zie de log voor info.");
+					logger.error("Error occurred in importing new data", e);
 				});
+	}
 
-		GridPane content = new GridPane();
-		content.getStyleClass().addAll("working-pane", "page");
-		content.setPadding(new Insets(8));
-		content.setHgap(10);
-		content.setVgap(5);
-
-		content.add(this.warningLabel, 0, 0, 2, 1);
-		content.add(this.startButton, 0, 1);
-		content.add(this.progressLabel, 1, 1);
-
-		this.setContent(content);
+	public PrijsLijstPane getUI() {
+		return this.ui;
 	}
 
 	private Observable<File> showOpenFileChooser(Stage stage) {
@@ -104,6 +79,7 @@ public class PrijslijstIO extends Tab {
 	private Observable<EsselinkArtikel> readFile(File csv) {
 		// TODO replace this implementation with the Apache Commons CSV parser
 		// http://commons.apache.org/proper/commons-csv/
+		// TODO move to separate class as this is an IO thing!
 		try {
 			String regex = ";(?=([^\"]*\"[^\"]*\")*[^\"]*$)";
 
