@@ -1,16 +1,13 @@
 package org.rekeningsysteem.application.settings.offerte;
 
-import javafx.event.ActionEvent;
 import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonBar.ButtonData;
+import javafx.scene.control.ButtonType;
 
 import org.apache.log4j.Logger;
 import org.rekeningsysteem.logic.offerte.DefaultOfferteTextHandler;
 import org.rekeningsysteem.rxjavafx.JavaFxScheduler;
-
-import rx.Observable;
 
 public class DefaultOfferteTextPaneController {
 
@@ -20,13 +17,10 @@ public class DefaultOfferteTextPaneController {
 	public DefaultOfferteTextPaneController(Logger logger) {
 		this.ui = new DefaultOfferteTextPane();
 
-		Observable<String> text = this.ui.getText();
-		Observable<ActionEvent> save = this.ui.getSaveButtonEvent();
-		Observable<ActionEvent> cancel = this.ui.getCancelButtonEvent();
-
 		this.handler.getDefaultText().subscribe(this.ui::setText);
 
-		text.sample(save)
+		this.ui.getText()
+				.sample(this.ui.getSaveButtonEvent())
 				.compose(this.handler::setDefaultText)
 				.observeOn(JavaFxScheduler.getInstance())
 				.doOnError(e -> {
@@ -40,7 +34,8 @@ public class DefaultOfferteTextPaneController {
 				})
 				.subscribe();
 
-		cancel.flatMap(e -> this.handler.getDefaultText())
+		this.ui.getCancelButtonEvent()
+				.flatMap(e -> this.handler.getDefaultText())
 				.subscribe(this.ui::setText);
 	}
 
