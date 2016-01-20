@@ -35,45 +35,26 @@ public class FileIO {
 		});
 	}
 
-	private Transformer<String, Void> writeToFile(Observable<Writer> writer) {
-		return strings -> writer.flatMap(wr -> {
-			return strings.flatMap(string -> Observable.<Void> create(subscriber -> {
-				try {
-					wr.write(string);
-					subscriber.onCompleted();
-				}
-				catch (Exception e) {
-					subscriber.onError(e);
-				}
-			})).doOnCompleted(() -> {
-				try {
-					wr.close();
-				}
-				catch (Exception e) {
-				}
-			}).doOnError(e -> {
-				try {
-					wr.close();
-				}
-				catch (Exception ex) {
-				}
-			});
-		});
-	}
-
 	public Transformer<String, Void> writeToFile(Writer writer) {
-		return this.writeToFile(Observable.just(writer));
-	}
-
-	public Transformer<String, Void> writeToFile(File file, boolean append) {
-		return this.writeToFile(Observable.create(subscriber -> {
+		return strings -> strings.flatMap(string -> Observable.<Void> create(subscriber -> {
 			try {
-				OutputStream out = new FileOutputStream(file, append);
-				Writer writer = new OutputStreamWriter(out);
-				subscriber.onNext(writer);
+				writer.write(string);
 				subscriber.onCompleted();
 			}
 			catch (Exception e) {
+				subscriber.onError(e);
+			}
+		}));
+	}
+
+	public Transformer<String, Void> writeToFile(File file, boolean append) {
+		return strings -> strings.flatMap(string -> Observable.create(subscriber -> {
+			try (OutputStream out = new FileOutputStream(file, append);
+					Writer writer = new OutputStreamWriter(out)) {
+				writer.write(string);
+				subscriber.onCompleted();
+			}
+			catch (IOException e) {
 				subscriber.onError(e);
 			}
 		}));
