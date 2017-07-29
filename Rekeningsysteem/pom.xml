@@ -91,6 +91,8 @@
 			<groupId>jlr</groupId>
 			<artifactId>jlr</artifactId>
 			<version>0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/jlr.jar</systemPath>
 		</dependency>
 
 		<!-- SQLite database connector -->

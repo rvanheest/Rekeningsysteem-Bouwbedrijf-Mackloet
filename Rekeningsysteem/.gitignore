@@ -2,6 +2,7 @@
 /target
 
 /.idea
+*.iml
 
 /src/test/resources/pdf
 /src/test/resources/ioWorker/savePDF
