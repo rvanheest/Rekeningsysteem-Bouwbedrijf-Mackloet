@@ -14,6 +14,7 @@ import org.rekeningsysteem.rxjavafx.Observables;
 import org.rekeningsysteem.ui.Page;
 import org.rekeningsysteem.ui.textfields.PostcodeTextField;
 import org.rekeningsysteem.ui.textfields.searchbox.AbstractSearchBox;
+import org.rekeningsysteem.util.OptionalUtils;
 
 import rx.Observable;
 
@@ -129,8 +130,7 @@ public class DebiteurPane extends Page {
 	}
 
 	public Observable<Optional<String>> getBtwnummer() {
-		return this.btw.map(Optional::ofNullable)
-				.map(opt -> opt.flatMap(s -> "".equals(s) ? Optional.empty() : opt));
+		return this.btw.map(OptionalUtils::fromString);
 	}
 
 	public void setBtwNummer(String btw) {

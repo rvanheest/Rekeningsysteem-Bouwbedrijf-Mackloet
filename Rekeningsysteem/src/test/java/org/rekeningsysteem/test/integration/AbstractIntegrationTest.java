@@ -17,6 +17,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.rekeningsysteem.data.util.AbstractRekening;
+import org.rekeningsysteem.data.util.visitor.RekeningVoidVisitor;
 import org.rekeningsysteem.io.FactuurExporter;
 import org.rekeningsysteem.io.FactuurLoader;
 import org.rekeningsysteem.io.FactuurSaver;
@@ -64,7 +65,7 @@ public abstract class AbstractIntegrationTest {
 	public void testExportWithError() throws Exception {
 		AbstractRekening rekening = mock(AbstractRekening.class);
 		File file = mock(File.class);
-		doThrow(Exception.class).when(rekening).accept(anyObject());
+		doThrow(Exception.class).when(rekening).accept((RekeningVoidVisitor) anyObject());
 
 		this.exporter.export(rekening, file);
 
@@ -88,7 +89,7 @@ public abstract class AbstractIntegrationTest {
 		AbstractRekening rekening = mock(AbstractRekening.class);
 		File file = mock(File.class);
 
-		doThrow(Exception.class).when(rekening).accept(anyObject());
+		doThrow(Exception.class).when(rekening).accept((RekeningVoidVisitor) anyObject());
 
 		this.saver.save(rekening, file);
 

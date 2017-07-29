@@ -1,4 +1,7 @@
-/.metadata
 /Prijslijst
 /Releases
-/.recommenders
+
+/.idea
+/*.iml
+
+/Rekeningsysteem/.settings/

@@ -3,6 +3,7 @@ package org.rekeningsysteem.logic.offerte;
 import java.io.File;
 import java.util.Optional;
 
+import org.rekeningsysteem.exception.NoSuchFileException;
 import org.rekeningsysteem.io.FileIO;
 import org.rekeningsysteem.properties.PropertiesWorker;
 import org.rekeningsysteem.properties.PropertyModelEnum;
@@ -30,7 +31,7 @@ public class DefaultOfferteTextHandler {
 	public Observable<String> getDefaultText() {
 		return this.file.map(file -> this.io.readFile(file)
 				.subscribeOn(Schedulers.io())
-				.reduce("\n\n", (cum, string) -> cum + string))
+				.reduce(String::concat))
 				.orElseGet(() -> Observable.empty());
 	}
 
@@ -38,6 +39,7 @@ public class DefaultOfferteTextHandler {
 		return this.file
 				.map(file -> text.observeOn(Schedulers.io())
 						.compose(this.io.writeToFile(file, false)))
-				.orElseGet(() -> Observable.empty());
+				.orElseGet(() -> Observable.error(new NoSuchFileException(
+						"Er bestaat geen file waarin deze tekst kan worden opgeslagen.")));
 	}
 }

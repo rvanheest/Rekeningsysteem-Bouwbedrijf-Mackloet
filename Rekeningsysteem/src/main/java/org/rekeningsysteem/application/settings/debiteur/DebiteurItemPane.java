@@ -10,6 +10,7 @@ import javafx.scene.layout.GridPane;
 import org.rekeningsysteem.rxjavafx.Observables;
 import org.rekeningsysteem.ui.list.ItemPane;
 import org.rekeningsysteem.ui.textfields.PostcodeTextField;
+import org.rekeningsysteem.util.OptionalUtils;
 
 import rx.Observable;
 
@@ -121,8 +122,7 @@ public class DebiteurItemPane extends ItemPane {
 	}
 
 	public Observable<Optional<String>> getBtwnummer() {
-		return this.btw.map(Optional::ofNullable)
-				.map(opt -> opt.flatMap(s -> "".equals(s) ? Optional.empty() : opt));
+		return this.btw.map(OptionalUtils::fromString);
 	}
 
 	public void setBtwNummer(String btw) {

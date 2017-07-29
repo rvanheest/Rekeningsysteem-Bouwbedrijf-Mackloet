@@ -42,10 +42,7 @@ public abstract class AbstractListPane<T> extends Page {
 		this.table.setSortPolicy(param -> false);
 		this.table.setTableMenuButtonVisible(false);
 
-		HBox hb = new HBox(this.table, this.initNavigationPane());
-		hb.setSpacing(20);
-
-		this.getChildren().add(hb);
+		this.getChildren().add(new HBox(20, this.table, this.initNavigationPane()));
 
 		Observables.fromProperty(this.heightProperty())
 				.map(Number::doubleValue)
@@ -73,11 +70,9 @@ public abstract class AbstractListPane<T> extends Page {
 	}
 
 	protected VBox initNavigationPane() {
-		VBox nav = new VBox();
+		VBox nav = new VBox(15, this.up, this.down, this.add);
 		nav.setId("nav-pane");
 		nav.setAlignment(Pos.CENTER);
-		nav.setSpacing(15);
-		nav.getChildren().addAll(this.up, this.down, this.add);
 
 		Observable<Integer> selectedRow = Observables.fromProperty(this.table.getSelectionModel()
 				.selectedIndexProperty())

@@ -7,6 +7,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+import org.rekeningsysteem.exception.NoSuchFileException;
 import org.rekeningsysteem.io.FileIO;
 import org.rekeningsysteem.logic.offerte.DefaultOfferteTextHandler;
 
@@ -49,8 +50,24 @@ public class DefaultOfferteTextHandlerTest {
 
 		observer.awaitTerminalEvent();
 
-		observer.assertValue("\n\nabcdef");
+		observer.assertValue("abcdef");
 		observer.assertNoErrors();
 		observer.assertCompleted();
+	}
+
+	@Test
+	public void testSetDefaultTextWithNoFile() {
+		this.file = null;
+		this.handler = new DefaultOfferteTextHandler(this.file, this.io);
+
+		TestSubscriber<Void> observer = new TestSubscriber<>();
+		this.handler.setDefaultText(Observable.just("abcdef"))
+				.subscribe(observer);
+
+		observer.awaitTerminalEvent();
+
+		observer.assertNoValues();
+		observer.assertError(NoSuchFileException.class);
+		observer.assertNotCompleted();
 	}
 }
