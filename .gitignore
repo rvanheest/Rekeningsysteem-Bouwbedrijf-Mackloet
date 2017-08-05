@@ -5,3 +5,5 @@
 /*.iml
 
 /Rekeningsysteem/.settings/
+src/main/resources/
+target/
