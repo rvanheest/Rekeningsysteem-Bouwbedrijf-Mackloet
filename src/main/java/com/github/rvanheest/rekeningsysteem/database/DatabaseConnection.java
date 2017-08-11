@@ -8,10 +8,8 @@ import org.slf4j.LoggerFactory;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.sql.Savepoint;
 import java.util.Optional;
-import java.util.function.Function;
 
 public class DatabaseConnection {
 

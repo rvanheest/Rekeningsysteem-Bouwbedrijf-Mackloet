@@ -8,9 +8,7 @@ import io.strati.functional.Optional;
 import io.strati.functional.Try;
 import org.junit.Test;
 
-import java.sql.SQLException;
 import java.time.LocalDate;
-import java.util.Date;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;

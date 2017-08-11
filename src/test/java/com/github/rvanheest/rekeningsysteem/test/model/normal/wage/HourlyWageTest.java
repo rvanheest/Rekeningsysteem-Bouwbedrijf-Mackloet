@@ -1,7 +1,5 @@
 package com.github.rvanheest.rekeningsysteem.test.model.normal.wage;
 
-import com.github.rvanheest.rekeningsysteem.model.normal.NormalListItem;
-import com.github.rvanheest.rekeningsysteem.model.normal.wage.AbstractWage;
 import com.github.rvanheest.rekeningsysteem.model.normal.wage.HourlyWage;
 import com.github.rvanheest.rekeningsysteem.model.visitor.ListItemVisitor;
 import org.javamoney.moneta.Money;

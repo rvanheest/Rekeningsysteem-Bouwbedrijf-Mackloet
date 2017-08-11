@@ -4,7 +4,6 @@ import com.github.rvanheest.rekeningsysteem.database.InvoiceNumberTable;
 import io.strati.functional.Try;
 
 import java.sql.Connection;
-import java.sql.SQLException;
 
 public class InvoiceNumberGenerator {
 

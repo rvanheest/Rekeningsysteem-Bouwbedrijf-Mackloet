@@ -1,24 +1,15 @@
 package com.github.rvanheest.rekeningsysteem.test.database;
 
-import com.github.rvanheest.rekeningsysteem.database.DatabaseConnection;
 import com.github.rvanheest.rekeningsysteem.test.DatabaseFixture;
-import com.github.rvanheest.rekeningsysteem.test.TestSupportFixture;
 import io.strati.functional.Try;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
-import java.io.IOException;
-import java.nio.file.Path;
-import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Stream;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
