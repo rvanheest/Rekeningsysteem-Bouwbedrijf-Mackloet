@@ -1,8 +1,23 @@
 package com.github.rvanheest.rekeningsysteem.test.integration;
 
+import com.github.rvanheest.rekeningsysteem.model.document.header.Header;
 import com.github.rvanheest.rekeningsysteem.model.offer.Offer;
+import com.github.rvanheest.rekeningsysteem.offerText.DefaultOfferTextHandler;
+import com.github.rvanheest.rekeningsysteem.test.offerText.DefaultOfferTextFixture;
+import org.junit.Before;
+import org.junit.Test;
+import rx.observers.TestSubscriber;
 
-public class OfferIntegrationTest extends AbstractDocumentIntegrationTest {
+public class OfferIntegrationTest extends AbstractDocumentIntegrationTest implements DefaultOfferTextFixture {
+
+  private DefaultOfferTextHandler handler;
+
+  @Before
+  @Override
+  public void setUp() throws Exception {
+    super.setUp();
+    this.handler = this.getDefaultOfferTextHandler();
+  }
 
   private String makeText() {
     return "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce quis quam tortor. "
@@ -30,7 +45,21 @@ public class OfferIntegrationTest extends AbstractDocumentIntegrationTest {
   }
 
   @Override
-  protected Offer makeDocument() {
-    return new Offer(this.getHeader(), this.makeText(), true);
+  protected Offer makeDocument(Header header) {
+    return new Offer(header, this.makeText(), true);
+  }
+
+  @Test
+  public void testOfferWithDefaultText() {
+    TestSubscriber<Offer> testSubscriber = new TestSubscriber<>();
+    this.handler.getDefaultText()
+        .map(t -> new Offer(this.getHeaderWithoutInvoiceNumber(), t, true))
+        .subscribe(testSubscriber);
+
+    testSubscriber.assertValue(new Offer(this.getHeaderWithoutInvoiceNumber(),
+        "This is a testing text! Here you can put your name, adres, etc.\r\n", true));
+    testSubscriber.assertNoErrors();
+    testSubscriber.assertCompleted();
+    testSubscriber.assertUnsubscribed();
   }
 }

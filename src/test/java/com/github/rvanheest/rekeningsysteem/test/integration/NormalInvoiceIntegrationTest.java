@@ -2,6 +2,7 @@ package com.github.rvanheest.rekeningsysteem.test.integration;
 
 import com.github.rvanheest.rekeningsysteem.exception.DifferentCurrencyException;
 import com.github.rvanheest.rekeningsysteem.model.document.ItemList;
+import com.github.rvanheest.rekeningsysteem.model.document.header.Header;
 import com.github.rvanheest.rekeningsysteem.model.normal.EsselinkItem;
 import com.github.rvanheest.rekeningsysteem.model.normal.EsselinkListItem;
 import com.github.rvanheest.rekeningsysteem.model.normal.NormalInvoice;
@@ -43,7 +44,7 @@ public class NormalInvoiceIntegrationTest extends AbstractDocumentIntegrationTes
   }
 
   @Override
-  protected NormalInvoice makeDocument() throws DifferentCurrencyException {
+  protected NormalInvoice makeDocument(Header header) throws DifferentCurrencyException {
     String description = "Voor u verrichte werkzaamheden betreffende renovatie badkamervloer i.v.m. lekkage";
 
     CurrencyUnit currency = Monetary.getCurrency("EUR");
@@ -51,6 +52,6 @@ public class NormalInvoiceIntegrationTest extends AbstractDocumentIntegrationTes
     this.addArtikels(itemList, currency);
     this.addLoon(itemList, currency);
 
-    return new NormalInvoice(this.getHeader(), description, itemList);
+    return new NormalInvoice(header, description, itemList);
   }
 }

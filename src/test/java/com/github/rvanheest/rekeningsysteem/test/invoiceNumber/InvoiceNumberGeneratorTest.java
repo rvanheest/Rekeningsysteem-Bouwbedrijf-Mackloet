@@ -3,9 +3,10 @@ package com.github.rvanheest.rekeningsysteem.test.invoiceNumber;
 import com.github.rvanheest.rekeningsysteem.database.InvoiceNumberTable;
 import com.github.rvanheest.rekeningsysteem.invoiceNumber.InvoiceNumber;
 import com.github.rvanheest.rekeningsysteem.invoiceNumber.InvoiceNumberGenerator;
-import com.github.rvanheest.rekeningsysteem.test.DatabaseFixture;
+import com.github.rvanheest.rekeningsysteem.test.database.DatabaseFixture;
 import io.strati.functional.Optional;
 import io.strati.functional.Try;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.time.LocalDate;
@@ -18,6 +19,12 @@ public class InvoiceNumberGeneratorTest extends DatabaseFixture {
   private final InvoiceNumberTable table = new InvoiceNumberTable();
   private final InvoiceNumberGenerator generator = new InvoiceNumberGenerator(table);
   private final int yearNow = LocalDate.now().getYear();
+
+  @Before
+  public void setUp() throws Exception {
+    this.resetTestDir();
+    super.setUp();
+  }
 
   @Test
   public void testGenerateFirstInvoiceNumber() {

@@ -1,6 +1,7 @@
-package com.github.rvanheest.rekeningsysteem.test;
+package com.github.rvanheest.rekeningsysteem.test.database;
 
 import com.github.rvanheest.rekeningsysteem.database.DatabaseConnection;
+import com.github.rvanheest.rekeningsysteem.test.TestSupportFixture;
 import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Before;
@@ -21,12 +22,10 @@ public abstract class DatabaseFixture implements TestSupportFixture {
   protected Connection connection;
 
   @Before
-  public void setUp() throws IOException {
-    Path testDir = this.resetTestDir();
-    Path databaseFile = testDir.resolve("database.db");
-    String dbDriverClassName = "org.sqlite.JDBC";
-    String dbUrl = "jdbc:sqlite:" + databaseFile;
-    this.databaseAccess = new DatabaseConnection(dbDriverClassName, dbUrl) {
+  public void setUp() throws Exception {
+    this.databaseAccess = new DatabaseConnection(
+        "org.sqlite.JDBC",
+        "jdbc:sqlite:" + this.getTestDir().resolve("database.db")) {
 
       @Override
       protected DatabaseConnection.ConnectionPool createConnectionPool() {

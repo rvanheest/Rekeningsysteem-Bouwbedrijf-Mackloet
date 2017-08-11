@@ -1,7 +1,7 @@
 package com.github.rvanheest.rekeningsysteem.test.database;
 
-import com.github.rvanheest.rekeningsysteem.test.DatabaseFixture;
 import io.strati.functional.Try;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.sql.ResultSet;
@@ -15,6 +15,12 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class DatabaseConnectionTest extends DatabaseFixture {
+
+  @Before
+  public void setUp() throws Exception {
+    this.resetTestDir();
+    super.setUp();
+  }
 
   @Test
   public void doTransactionReturnsFunctionResult() {

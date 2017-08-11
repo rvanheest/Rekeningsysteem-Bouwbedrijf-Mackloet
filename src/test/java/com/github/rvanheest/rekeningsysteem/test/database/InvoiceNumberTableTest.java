@@ -2,9 +2,9 @@ package com.github.rvanheest.rekeningsysteem.test.database;
 
 import com.github.rvanheest.rekeningsysteem.database.InvoiceNumberTable;
 import com.github.rvanheest.rekeningsysteem.invoiceNumber.InvoiceNumber;
-import com.github.rvanheest.rekeningsysteem.test.DatabaseFixture;
 import io.strati.functional.Optional;
 import io.strati.functional.Try;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.time.LocalDate;
@@ -15,6 +15,12 @@ import static org.junit.Assert.assertTrue;
 public class InvoiceNumberTableTest extends DatabaseFixture {
 
   private final InvoiceNumberTable table = new InvoiceNumberTable();
+
+  @Before
+  public void setUp() throws Exception {
+    this.resetTestDir();
+    super.setUp();
+  }
 
   @Test
   public void testGetInvoiceNumberNotExists() {

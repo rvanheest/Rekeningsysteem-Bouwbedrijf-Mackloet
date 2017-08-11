@@ -2,6 +2,7 @@ package com.github.rvanheest.rekeningsysteem.test.integration;
 
 import com.github.rvanheest.rekeningsysteem.exception.DifferentCurrencyException;
 import com.github.rvanheest.rekeningsysteem.model.document.ItemList;
+import com.github.rvanheest.rekeningsysteem.model.document.header.Header;
 import com.github.rvanheest.rekeningsysteem.model.repair.RepairInvoice;
 import com.github.rvanheest.rekeningsysteem.model.repair.RepairListItem;
 import org.javamoney.moneta.Money;
@@ -38,13 +39,13 @@ public class RepairInvoiceIntegrationTest extends AbstractDocumentIntegrationTes
   }
 
   @Override
-  protected RepairInvoice makeDocument() throws DifferentCurrencyException {
+  protected RepairInvoice makeDocument(Header header) throws DifferentCurrencyException {
     CurrencyUnit currency = Monetary.getCurrency("EUR");
     ItemList<RepairListItem> itemList = new ItemList<>(currency);
     this.addItems(itemList, currency);
     this.addItems(itemList, currency);
     this.addItems(itemList, currency);
 
-    return new RepairInvoice(this.getHeader(), itemList);
+    return new RepairInvoice(header, itemList);
   }
 }

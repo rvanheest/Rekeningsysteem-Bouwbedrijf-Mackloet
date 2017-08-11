@@ -10,20 +10,15 @@ import rx.observers.TestSubscriber;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
-public class DefaultOfferTextHandlerTest implements TestSupportFixture {
+public class DefaultOfferTextHandlerTest implements DefaultOfferTextFixture {
 
   private DefaultOfferTextHandler handler;
 
   @Before
   public void setUp() throws IOException, URISyntaxException {
-    Path testDir = this.resetTestDir();
-    Path textPath = Paths.get(getClass().getClassLoader().getResource("offerText/DefaultOfferText.txt").toURI());
-    Path defaultTextPath = Files.copy(textPath, testDir.resolve("DefaultOfferText.txt"));
-    this.handler = new DefaultOfferTextHandler(defaultTextPath);
+    this.resetTestDir();
+    this.handler = this.getDefaultOfferTextHandler();
   }
 
   @Test
