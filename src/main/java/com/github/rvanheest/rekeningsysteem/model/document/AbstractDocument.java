@@ -18,7 +18,11 @@ public abstract class AbstractDocument implements DocumentVisitable, DocumentVoi
     return header;
   }
 
-  // TODO initInvoiceNumber
+  public void initInvoiceNumber(String invoiceNumber) {
+    if (!this.header.getInvoiceNumber().isPresent()) {
+      this.header.setInvoiceNumber(invoiceNumber);
+    }
+  }
 
   @Override
   public boolean equals(Object other) {

@@ -10,15 +10,16 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public abstract class AbstractDocumentTest extends EqualsHashCodeTest implements TestSupportFixture {
 
   private AbstractDocument document;
   private final Header header = new Header(new Debtor("a", "b", "c", "d", "e"), LocalDate.of(1992, 7, 30));
-  // TODO FactuurnummerManager mock
 
   @Override
   protected AbstractDocument makeInstance() {
@@ -51,28 +52,28 @@ public abstract class AbstractDocumentTest extends EqualsHashCodeTest implements
     assertEquals(this.header, this.document.getHeader());
   }
 
-  //@Test
-  //public void testInitFactuurnummer() {
-  //  assertFalse(this.header.getInvoiceNumber().isPresent());
-  //
-  //  when(this.factuurnummerManager.getFactuurnummer()).thenReturn("12014");
-  //
-  //  this.rekening.initFactuurnummer(this.factuurnummerManager);
-  //
-  //  assertEquals(Optional.of("12014"), this.header.getFactuurnummer());
-  //  verify(this.factuurnummerManager).getFactuurnummer();
-  //}
+  @Test
+  public void testInitInvoiceNumber() {
+    assertFalse(this.header.getInvoiceNumber().isPresent());
+    String expectedInvoiceNumber = "122017";
+    this.document.initInvoiceNumber(expectedInvoiceNumber);
 
-  //@Test
-  //public void testSameFactuurnummer() {
-  //  this.header.setInvoiceNumber("12013");
-  //  assertTrue(this.header.getInvoiceNumber().isPresent());
-  //
-  //  this.rekening.initFactuurnummer(this.factuurnummerManager);
-  //
-  //  assertEquals(Optional.of("12013"), this.header.getInvoiceNumber());
-  //  verifyZeroInteractions(this.factuurnummerManager);
-  //}
+    Optional<String> invoiceNumber = this.header.getInvoiceNumber();
+    assertTrue(invoiceNumber.isPresent());
+    assertEquals(expectedInvoiceNumber, invoiceNumber.get());
+  }
+
+  @Test
+  public void testInitInvoiceNumberAlreadySet() {
+    this.testInitInvoiceNumber();
+
+    assertTrue(this.header.getInvoiceNumber().isPresent());
+    this.document.initInvoiceNumber("152017");
+
+    Optional<String> invoiceNumber = this.header.getInvoiceNumber();
+    assertTrue(invoiceNumber.isPresent());
+    assertEquals("122017", invoiceNumber.get());
+  }
 
   @Test
   public void testEqualsFalseOtherFactuurHeader() {
