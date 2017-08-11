@@ -19,9 +19,10 @@ public interface TestSupportFixture {
     return Paths.get("target/test/").resolve(this.getClass().getSimpleName()).toAbsolutePath();
   }
 
-  default void resetTestDir() throws IOException {
+  default Path resetTestDir() throws IOException {
     Path path = getTestDir();
     FileUtils.deleteQuietly(path.toFile());
     Files.createDirectories(path);
+    return path;
   }
 }
