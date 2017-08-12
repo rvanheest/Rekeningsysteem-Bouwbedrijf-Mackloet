@@ -1,5 +1,6 @@
 package com.github.rvanheest.rekeningsysteem.database;
 
+import io.reactivex.Completable;
 import io.reactivex.Maybe;
 import io.reactivex.Observable;
 import io.reactivex.Single;
@@ -59,6 +60,20 @@ public class DatabaseConnection {
     logger.info("Closing database connection ...");
     pool.close();
     logger.info("Database connection closed");
+  }
+
+  public Completable doTransactionCompletable(Function<Connection, Completable> actionFunc) {
+    return Completable.using(() -> pool.getConnection(), connection -> {
+      connection.setAutoCommit(false);
+      Savepoint savepoint = connection.setSavepoint();
+
+      return actionFunc.apply(connection)
+          .doOnComplete(() -> {
+            connection.commit();
+            connection.setAutoCommit(true);
+          })
+          .doOnError(e -> connection.rollback(savepoint));
+    }, Connection::close);
   }
 
   public <T> Observable<T> doTransactionObservable(Function<Connection, Observable<T>> actionFunc) {

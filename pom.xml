@@ -71,6 +71,11 @@
             <version>1.10</version>
         </dependency>
         <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-csv</artifactId>
+            <version>1.4</version>
+        </dependency>
+        <dependency>
             <groupId>io.strati</groupId>
             <artifactId>strati-functional</artifactId>
             <version>0.1.0</version>
