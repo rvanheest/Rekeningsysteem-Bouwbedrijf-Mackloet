@@ -8,7 +8,6 @@ import com.github.rvanheest.rekeningsysteem.model.document.header.Debtor;
 import com.github.rvanheest.rekeningsysteem.model.document.header.Header;
 import com.github.rvanheest.rekeningsysteem.test.TestSupportFixture;
 import com.github.rvanheest.rekeningsysteem.test.database.DatabaseFixture;
-import io.strati.functional.Try;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -58,15 +57,16 @@ public abstract class AbstractDocumentIntegrationTest extends DatabaseFixture {
 
     assertFalse(document.getHeader().getInvoiceNumber().isPresent());
 
-    Try<String> nextInvoiceNumber = databaseAccess.doTransaction(connection -> table.initInvoiceNumber(connection)
-        .ifSuccess(in -> assertEquals(new InvoiceNumber(1, currentYear), in))
-        .flatMap(in -> table.setInvoiceNumber(invoiceNumber, connection))
-        .ifSuccess(in -> assertEquals(invoiceNumber, in))
-        .flatMap(in -> generator.calculateAndPersist(connection))
-        .ifSuccess(in -> assertEquals(formattedNextInvoiceNumber, in))
-        .ifSuccess(document::initInvoiceNumber));
-    assertTrue(nextInvoiceNumber.isSuccess());
-    assertEquals(formattedNextInvoiceNumber, nextInvoiceNumber.get());
+    databaseAccess.doTransactionSingle(connection -> table.initInvoiceNumber().apply(connection)
+        .doOnSuccess(in -> assertEquals(new InvoiceNumber(1, currentYear), in))
+        .flatMap(in -> table.setInvoiceNumber(invoiceNumber).apply(connection))
+        .doOnSuccess(in -> assertEquals(invoiceNumber, in))
+        .flatMap(in -> generator.calculateAndPersist().apply(connection))
+        .doOnSuccess(document::initInvoiceNumber))
+        .test()
+        .assertValue(formattedNextInvoiceNumber)
+        .assertNoErrors()
+        .assertComplete();
 
     Optional<String> result = document.getHeader().getInvoiceNumber();
     assertTrue(result.isPresent());

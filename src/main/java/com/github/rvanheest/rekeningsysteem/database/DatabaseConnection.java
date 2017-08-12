@@ -1,7 +1,9 @@
 package com.github.rvanheest.rekeningsysteem.database;
 
-import io.strati.functional.Try;
-import io.strati.functional.function.TryFunction;
+import io.reactivex.Maybe;
+import io.reactivex.Observable;
+import io.reactivex.Single;
+import io.reactivex.functions.Function;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,17 +61,53 @@ public class DatabaseConnection {
     logger.info("Database connection closed");
   }
 
-  public <T> Try<T> doTransaction(TryFunction<Connection, Try<T>> actionFunc) {
-    return Try.ofFailable(() -> {
-      try (Connection connection = pool.getConnection()) {
-        connection.setAutoCommit(false);
-        Savepoint savepoint = connection.setSavepoint();
+  public <T> Observable<T> doTransactionObservable(Function<Connection, Observable<T>> actionFunc) {
+    return Observable.using(() -> pool.getConnection(), connection -> {
+      connection.setAutoCommit(false);
+      Savepoint savepoint = connection.setSavepoint();
 
-        return actionFunc.apply(connection)
-            .ifSuccess(connection::commit)
-            .ifSuccess(() -> connection.setAutoCommit(true))
-            .ifFailure(e -> connection.rollback(savepoint));
-      }
-    }).flatMap(x -> x);
+      return actionFunc.apply(connection)
+          .doOnError(e -> connection.rollback(savepoint))
+          .doOnComplete(() -> {
+            connection.commit();
+            connection.setAutoCommit(true);
+          });
+    }, Connection::close);
+  }
+
+  public <T> Maybe<T> doTransactionMaybe(Function<Connection, Maybe<T>> actionFunc) {
+    return Maybe.using(() -> pool.getConnection(), connection -> {
+      connection.setAutoCommit(false);
+      Savepoint savepoint = connection.setSavepoint();
+
+      return actionFunc.apply(connection)
+          .doOnEvent((t, e) -> {
+            if (t == null && e == null) {
+              connection.commit();
+              connection.setAutoCommit(true);
+            }
+            else if (t == null && e != null) {
+              connection.rollback(savepoint);
+            }
+          });
+    }, Connection::close);
+  }
+
+  public <T> Single<T> doTransactionSingle(Function<Connection, Single<T>> actionFunc) {
+    return Single.using(() -> pool.getConnection(), connection -> {
+      connection.setAutoCommit(false);
+      Savepoint savepoint = connection.setSavepoint();
+
+      return actionFunc.apply(connection)
+          .doOnEvent((t, e) -> {
+            if (t != null && e == null) {
+              connection.commit();
+              connection.setAutoCommit(true);
+            }
+            else if (t == null && e != null) {
+              connection.rollback(savepoint);
+            }
+          });
+    }, Connection::close);
   }
 }

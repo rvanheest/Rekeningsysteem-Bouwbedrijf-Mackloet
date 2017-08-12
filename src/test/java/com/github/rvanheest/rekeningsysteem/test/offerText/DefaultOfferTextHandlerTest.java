@@ -1,12 +1,10 @@
 package com.github.rvanheest.rekeningsysteem.test.offerText;
 
 import com.github.rvanheest.rekeningsysteem.offerText.DefaultOfferTextHandler;
-import com.github.rvanheest.rekeningsysteem.test.TestSupportFixture;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.junit.Before;
 import org.junit.Test;
-import rx.observers.TestSubscriber;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -32,31 +30,25 @@ public class DefaultOfferTextHandlerTest implements DefaultOfferTextFixture {
 
   @Test
   public void testGetDefaultText() {
-    TestSubscriber<String> testSubscriber = new TestSubscriber<>();
-    this.handler.getDefaultText().subscribe(testSubscriber);
-
-    testSubscriber.assertValue("This is a testing text! Here you can put your name, adres, etc.\r\n");
-    testSubscriber.assertNoErrors();
-    testSubscriber.assertCompleted();
-    testSubscriber.assertUnsubscribed();
+    this.handler.getDefaultText()
+        .test()
+        .assertValue("This is a testing text! Here you can put your name, adres, etc.\r\n")
+        .assertNoErrors()
+        .assertComplete();
   }
 
   @Test
   public void testSetDefaultText() {
-    TestSubscriber<Void> testSubscriber1 = new TestSubscriber<>();
-    this.handler.setDefaultText("hello world").subscribe(testSubscriber1);
+    this.handler.setDefaultText("hello world")
+        .test()
+        .assertNoValues()
+        .assertNoErrors()
+        .assertComplete();
 
-    testSubscriber1.assertNoValues();
-    testSubscriber1.assertNoErrors();
-    testSubscriber1.onCompleted();
-    testSubscriber1.assertUnsubscribed();
-
-    TestSubscriber<String> testSubscriber2 = new TestSubscriber<>();
-    this.handler.getDefaultText().subscribe(testSubscriber2);
-
-    testSubscriber2.assertValue("hello world");
-    testSubscriber2.assertNoErrors();
-    testSubscriber2.assertCompleted();
-    testSubscriber2.assertUnsubscribed();
+    this.handler.getDefaultText()
+        .test()
+        .assertValue("hello world")
+        .assertNoErrors()
+        .assertComplete();
   }
 }

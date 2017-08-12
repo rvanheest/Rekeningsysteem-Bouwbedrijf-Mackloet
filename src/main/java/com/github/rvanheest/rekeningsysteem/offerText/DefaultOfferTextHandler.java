@@ -1,9 +1,9 @@
 package com.github.rvanheest.rekeningsysteem.offerText;
 
+import io.reactivex.Completable;
+import io.reactivex.Single;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.io.FileUtils;
-import rx.Completable;
-import rx.Single;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -26,14 +26,6 @@ public class DefaultOfferTextHandler {
   }
 
   public Completable setDefaultText(String text) {
-    return Completable.create(subscriber -> {
-      try {
-        FileUtils.write(this.defaultOfferTextPath.toFile(), text, false);
-        subscriber.onCompleted();
-      }
-      catch (IOException e) {
-        subscriber.onError(e);
-      }
-    });
+    return Completable.fromAction(() -> FileUtils.write(this.defaultOfferTextPath.toFile(), text, false));
   }
 }

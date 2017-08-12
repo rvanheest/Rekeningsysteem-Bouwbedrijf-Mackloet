@@ -4,15 +4,14 @@ import com.github.rvanheest.rekeningsysteem.database.InvoiceNumberTable;
 import com.github.rvanheest.rekeningsysteem.invoiceNumber.InvoiceNumber;
 import com.github.rvanheest.rekeningsysteem.invoiceNumber.InvoiceNumberGenerator;
 import com.github.rvanheest.rekeningsysteem.test.database.DatabaseFixture;
-import io.strati.functional.Optional;
-import io.strati.functional.Try;
+import io.reactivex.Observable;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.time.LocalDate;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class InvoiceNumberGeneratorTest extends DatabaseFixture {
 
@@ -29,30 +28,72 @@ public class InvoiceNumberGeneratorTest extends DatabaseFixture {
   @Test
   public void testGenerateFirstInvoiceNumber() {
     // make sure table is empty
-    Try<Optional<InvoiceNumber>> result = this.table.getInvoiceNumber(this.connection);
-    assertTrue(result.isSuccess());
-    assertTrue(result.get().isEmpty());
+    this.databaseAccess.doTransactionMaybe(this.table.getInvoiceNumber())
+        .test()
+        .assertNoValues()
+        .assertNoErrors()
+        .assertComplete();
 
-    Try<String> invoiceNumber = this.generator.calculateAndPersist(this.connection);
-    assertTrue(invoiceNumber.isSuccess());
-    assertEquals("1" + this.yearNow, invoiceNumber.get());
+    this.databaseAccess.doTransactionSingle(this.generator.calculateAndPersist())
+        .test()
+        .assertValue("1" + this.yearNow)
+        .assertNoErrors()
+        .assertComplete();
+
+    this.databaseAccess.doTransactionMaybe(this.table.getInvoiceNumber())
+        .test()
+        .assertValue(new InvoiceNumber(1, this.yearNow))
+        .assertNoErrors()
+        .assertComplete();
   }
 
   @Test
   public void testGenerateNextInvoiceNumber() {
     this.testGenerateFirstInvoiceNumber();
 
-    Try<String> invoiceNumber = this.generator.calculateAndPersist(this.connection);
-    assertTrue(invoiceNumber.isSuccess());
-    assertEquals("2" + this.yearNow, invoiceNumber.get());
+    this.databaseAccess.doTransactionSingle(this.generator.calculateAndPersist())
+        .test()
+        .assertValue("2" + this.yearNow)
+        .assertNoErrors()
+        .assertComplete();
+
+    this.databaseAccess.doTransactionMaybe(this.table.getInvoiceNumber())
+        .test()
+        .assertValue(new InvoiceNumber(2, this.yearNow))
+        .assertNoErrors()
+        .assertComplete();
   }
 
   @Test
   public void testGenerateNextWithFormerYear() {
-    this.table.setInvoiceNumber(new InvoiceNumber(15, 2013), this.connection);
+    this.databaseAccess.doTransactionSingle(connection ->
+        this.table.setInvoiceNumber(new InvoiceNumber(15, 2013)).apply(connection)
+            .flatMap(in -> this.generator.calculateAndPersist().apply(connection)))
+        .test()
+        .assertValue("1" + this.yearNow)
+        .assertNoErrors()
+        .assertComplete();
 
-    Try<String> invoiceNumber = this.generator.calculateAndPersist(this.connection);
-    assertTrue(invoiceNumber.isSuccess());
-    assertEquals("1" + this.yearNow, invoiceNumber.get());
+    this.databaseAccess.doTransactionMaybe(this.table.getInvoiceNumber())
+        .test()
+        .assertValue(new InvoiceNumber(1, this.yearNow))
+        .assertNoErrors()
+        .assertComplete();
+  }
+
+  @Test
+  public void testGenerateMultipleValuesInSequence() {
+    List<String> expected = Stream.of(1, 2, 3).map(i -> i.toString() + this.yearNow).collect(Collectors.toList());
+
+    this.databaseAccess.doTransactionObservable(connection ->
+        this.generator.calculateAndPersist().apply(connection)
+            .flatMapObservable(s1 -> this.generator.calculateAndPersist().apply(connection)
+                .flatMapObservable(s2 -> this.generator.calculateAndPersist().apply(connection)
+                    .flatMapObservable(s3 -> Observable.just(s1, s2, s3))))
+    )
+        .test()
+        .assertValueSequence(expected)
+        .assertNoErrors()
+        .assertComplete();
   }
 }

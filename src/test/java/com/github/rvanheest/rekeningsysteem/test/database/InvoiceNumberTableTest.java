@@ -2,15 +2,10 @@ package com.github.rvanheest.rekeningsysteem.test.database;
 
 import com.github.rvanheest.rekeningsysteem.database.InvoiceNumberTable;
 import com.github.rvanheest.rekeningsysteem.invoiceNumber.InvoiceNumber;
-import io.strati.functional.Optional;
-import io.strati.functional.Try;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.time.LocalDate;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 public class InvoiceNumberTableTest extends DatabaseFixture {
 
@@ -24,26 +19,31 @@ public class InvoiceNumberTableTest extends DatabaseFixture {
 
   @Test
   public void testGetInvoiceNumberNotExists() {
-    Try<Optional<InvoiceNumber>> result = this.table.getInvoiceNumber(this.connection);
-    assertTrue(result.isSuccess());
-    assertTrue(result.get().isEmpty());
+    this.databaseAccess.doTransactionMaybe(this.table.getInvoiceNumber())
+        .test()
+        .assertNoValues()
+        .assertNoErrors()
+        .assertComplete();
   }
 
   @Test
   public void testGetInvoiceNumberAfterInit() {
     this.testInitInvoiceNumber();
 
-    Try<Optional<InvoiceNumber>> result = this.table.getInvoiceNumber(this.connection);
-    assertTrue(result.isSuccess());
-    assertTrue(result.get().isPresent());
-    assertEquals(new InvoiceNumber(1, LocalDate.now().getYear()), result.get().get());
+    this.databaseAccess.doTransactionMaybe(this.table.getInvoiceNumber())
+        .test()
+        .assertValue(new InvoiceNumber(1, LocalDate.now().getYear()))
+        .assertNoErrors()
+        .assertComplete();
   }
 
   @Test
   public void testInitInvoiceNumber() {
-    Try<InvoiceNumber> result = this.table.initInvoiceNumber(this.connection);
-    assertTrue(result.isSuccess());
-    assertEquals(new InvoiceNumber(1, LocalDate.now().getYear()), result.get());
+    this.databaseAccess.doTransactionSingle(this.table.initInvoiceNumber())
+        .test()
+        .assertValue(new InvoiceNumber(1, LocalDate.now().getYear()))
+        .assertNoErrors()
+        .assertComplete();
   }
 
   @Test
@@ -51,14 +51,16 @@ public class InvoiceNumberTableTest extends DatabaseFixture {
     this.testInitInvoiceNumber();
 
     InvoiceNumber invoiceNumber = new InvoiceNumber(16, 2017);
-    Try<InvoiceNumber> result = this.table.setInvoiceNumber(invoiceNumber, this.connection);
-    result.get();
-    assertTrue(result.isSuccess());
-    assertEquals(invoiceNumber, result.get());
+    this.databaseAccess.doTransactionSingle(this.table.setInvoiceNumber(invoiceNumber))
+        .test()
+        .assertValue(invoiceNumber)
+        .assertNoErrors()
+        .assertComplete();
 
-    Try<Optional<InvoiceNumber>> result2 = this.table.getInvoiceNumber(this.connection);
-    assertTrue(result2.isSuccess());
-    assertTrue(result2.get().isPresent());
-    assertEquals(invoiceNumber, result2.get().get());
+    this.databaseAccess.doTransactionMaybe(this.table.getInvoiceNumber())
+        .test()
+        .assertValue(invoiceNumber)
+        .assertNoErrors()
+        .assertComplete();
   }
 }

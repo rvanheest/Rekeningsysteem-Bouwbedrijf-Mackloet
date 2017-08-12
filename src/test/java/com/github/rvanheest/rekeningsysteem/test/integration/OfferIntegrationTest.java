@@ -6,7 +6,6 @@ import com.github.rvanheest.rekeningsysteem.offerText.DefaultOfferTextHandler;
 import com.github.rvanheest.rekeningsysteem.test.offerText.DefaultOfferTextFixture;
 import org.junit.Before;
 import org.junit.Test;
-import rx.observers.TestSubscriber;
 
 public class OfferIntegrationTest extends AbstractDocumentIntegrationTest implements DefaultOfferTextFixture {
 
@@ -51,15 +50,12 @@ public class OfferIntegrationTest extends AbstractDocumentIntegrationTest implem
 
   @Test
   public void testOfferWithDefaultText() {
-    TestSubscriber<Offer> testSubscriber = new TestSubscriber<>();
     this.handler.getDefaultText()
         .map(t -> new Offer(this.getHeaderWithoutInvoiceNumber(), t, true))
-        .subscribe(testSubscriber);
-
-    testSubscriber.assertValue(new Offer(this.getHeaderWithoutInvoiceNumber(),
-        "This is a testing text! Here you can put your name, adres, etc.\r\n", true));
-    testSubscriber.assertNoErrors();
-    testSubscriber.assertCompleted();
-    testSubscriber.assertUnsubscribed();
+        .test()
+        .assertValue(new Offer(this.getHeaderWithoutInvoiceNumber(),
+            "This is a testing text! Here you can put your name, adres, etc.\r\n", true))
+        .assertNoErrors()
+        .assertComplete();
   }
 }
