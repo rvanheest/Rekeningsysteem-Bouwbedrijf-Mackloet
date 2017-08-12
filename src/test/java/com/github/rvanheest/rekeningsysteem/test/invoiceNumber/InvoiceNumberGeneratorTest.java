@@ -16,7 +16,7 @@ import java.util.stream.Stream;
 public class InvoiceNumberGeneratorTest extends DatabaseFixture {
 
   private final InvoiceNumberTable table = new InvoiceNumberTable();
-  private final InvoiceNumberGenerator generator = new InvoiceNumberGenerator(table);
+  private final InvoiceNumberGenerator generator = new InvoiceNumberGenerator(this.table);
   private final int yearNow = LocalDate.now().getYear();
 
   @Before

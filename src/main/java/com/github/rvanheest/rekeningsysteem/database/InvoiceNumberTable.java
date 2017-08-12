@@ -5,7 +5,6 @@ import io.reactivex.Maybe;
 import io.reactivex.MaybeSource;
 import io.reactivex.Single;
 import io.reactivex.functions.Function;
-import io.strati.functional.Try;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -14,7 +13,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
 
-public final class InvoiceNumberTable {
+public class InvoiceNumberTable {
 
   public Function<Connection, Maybe<InvoiceNumber>> getInvoiceNumber() {
     String query = "SELECT number, year FROM invoice_number;";

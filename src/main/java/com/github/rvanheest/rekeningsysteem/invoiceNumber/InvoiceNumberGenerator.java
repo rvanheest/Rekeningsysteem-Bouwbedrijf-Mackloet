@@ -7,6 +7,7 @@ import io.reactivex.functions.Function;
 import io.strati.functional.Try;
 
 import java.sql.Connection;
+import java.util.Optional;
 
 public class InvoiceNumberGenerator {
 
@@ -20,12 +21,17 @@ public class InvoiceNumberGenerator {
     this.table = table;
   }
 
-  // TODO not sure if this works with Maybe and Single
   public Function<Connection, Single<String>> calculateAndPersist() {
     return connection -> this.table.getInvoiceNumber().apply(connection)
-        .flatMap(invoiceNumber -> this.table.setInvoiceNumber(invoiceNumber.next()).apply(connection).toMaybe())
-        .switchIfEmpty(this.table.initInvoiceNumber().apply(connection).toMaybe())
-        .map(InvoiceNumber::formatted)
-        .toSingle();
+        // only call initInvoiceNumber when the stream is really empty.
+        // because defaultIfEmpty or switchIfEmpty is not lazily evaluated,
+        // we require to do a trick with wrapping the value in a java.util.Optional.
+        .map(Optional::of)
+        .defaultIfEmpty(Optional.empty())
+        .flatMapSingle(optInvoiceNumber -> optInvoiceNumber
+            .map(invoiceNumber -> this.table.setInvoiceNumber(invoiceNumber.next()))
+            .orElseGet(this.table::initInvoiceNumber)
+            .apply(connection))
+        .map(InvoiceNumber::formatted);
   }
 }
