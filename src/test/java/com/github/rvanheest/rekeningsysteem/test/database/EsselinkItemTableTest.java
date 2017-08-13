@@ -12,9 +12,6 @@ import org.junit.Test;
 
 import java.sql.SQLException;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 public class EsselinkItemTableTest extends DatabaseFixture implements EsselinkItemFixture {
 
   private final EsselinkItemTable table = new EsselinkItemTable();
@@ -38,7 +35,11 @@ public class EsselinkItemTableTest extends DatabaseFixture implements EsselinkIt
         .assertNoErrors()
         .assertComplete();
 
-    assertEquals(this.getEsselinkItems(), this.getAllItemsFromTable(this.connection));
+    this.databaseAccess.doTransactionObservable(this.table.getAll())
+        .test()
+        .assertValueSequence(this.getEsselinkItems())
+        .assertNoErrors()
+        .assertComplete();
   }
 
   @Test
@@ -49,7 +50,11 @@ public class EsselinkItemTableTest extends DatabaseFixture implements EsselinkIt
         .assertNoErrors()
         .assertComplete();
 
-    assertTrue(this.getAllItemsFromTable(this.connection).isEmpty());
+    this.databaseAccess.doTransactionObservable(this.table.getAll())
+        .test()
+        .assertNoValues()
+        .assertNoErrors()
+        .assertComplete();
   }
 
   @Test
@@ -62,7 +67,11 @@ public class EsselinkItemTableTest extends DatabaseFixture implements EsselinkIt
         .assertNoErrors()
         .assertComplete();
 
-    assertTrue(this.getAllItemsFromTable(this.connection).isEmpty());
+    this.databaseAccess.doTransactionObservable(this.table.getAll())
+        .test()
+        .assertNoValues()
+        .assertNoErrors()
+        .assertComplete();
   }
 
   @Test

@@ -41,6 +41,10 @@ public class EsselinkItemTable {
         .flatMapSingle(i -> i);
   }
 
+  public Function<Connection, Observable<EsselinkItem>> getAll() {
+    return this.getWith("SELECT * FROM Artikellijst;");
+  }
+
   public Function<Connection, Observable<EsselinkItem>> getWithItemId(String text) {
     return this.getWith(String.format(
         "SELECT * FROM Artikellijst WHERE artikelnummer LIKE '%s%%';", text.replace("\'", "\'\'")));
@@ -59,17 +63,18 @@ public class EsselinkItemTable {
   }
 
   private ObservableSource<? extends EsselinkItem> fromResultSet(ResultSet resultSet) {
-    return Observable.create(subscriber -> {
-      while (resultSet.next()) {
+    return Observable.generate(() -> resultSet, (rs, emitter) -> {
+      if (rs.next()) {
         String itemId = resultSet.getString("artikelnummer");
         String description = resultSet.getString("omschrijving");
         int amountPer = resultSet.getInt("prijsPer");
         String unit = resultSet.getString("eenheid");
         MonetaryAmount pricePerUnit = Money.of(resultSet.getDouble("verkoopprijs"), "EUR");
 
-        subscriber.onNext(new EsselinkItem(itemId, description, amountPer, unit, pricePerUnit));
+        emitter.onNext(new EsselinkItem(itemId, description, amountPer, unit, pricePerUnit));
       }
-      subscriber.onComplete();
+      else
+        emitter.onComplete();
     });
   }
 }

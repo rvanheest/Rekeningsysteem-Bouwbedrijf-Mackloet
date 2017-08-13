@@ -4,7 +4,6 @@ import com.github.rvanheest.rekeningsysteem.database.EsselinkItemTable;
 import com.github.rvanheest.rekeningsysteem.esselinkItems.EsselinkItemHandler;
 import com.github.rvanheest.rekeningsysteem.test.TestSupportFixture;
 import com.github.rvanheest.rekeningsysteem.test.database.DatabaseFixture;
-import io.reactivex.Observable;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -48,7 +47,7 @@ public class EsselinkItemHandlerTest extends DatabaseFixture implements Esselink
   public void testRead() throws URISyntaxException {
     this.handler.read(csv)
         .test()
-        .assertValueSequence(getEsselinkItems())
+        .assertValueSequence(this.getEsselinkItems())
         .assertNoErrors()
         .assertComplete();
   }
@@ -88,7 +87,7 @@ public class EsselinkItemHandlerTest extends DatabaseFixture implements Esselink
         .assertNoErrors()
         .assertComplete();
 
-    this.databaseAccess.doTransactionObservable(connection -> Observable.fromIterable(this.getAllItemsFromTable(connection)))
+    this.databaseAccess.doTransactionObservable(this.table.getAll())
         .test()
         .assertValueSequence(this.getEsselinkItems())
         .assertNoErrors()
@@ -103,7 +102,7 @@ public class EsselinkItemHandlerTest extends DatabaseFixture implements Esselink
         .assertNoErrors()
         .assertComplete();
 
-    this.databaseAccess.doTransactionObservable(connection -> Observable.fromIterable(this.getAllItemsFromTable(connection)))
+    this.databaseAccess.doTransactionObservable(this.table.getAll())
         .test()
         .assertValueCount(256)
         .assertValueSequence(this.handler.read(this.csvLarge).blockingIterable())
