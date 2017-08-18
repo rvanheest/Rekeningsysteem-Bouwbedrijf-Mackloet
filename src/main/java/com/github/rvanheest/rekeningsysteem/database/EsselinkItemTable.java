@@ -3,7 +3,6 @@ package com.github.rvanheest.rekeningsysteem.database;
 import com.github.rvanheest.rekeningsysteem.model.normal.EsselinkItem;
 import io.reactivex.Completable;
 import io.reactivex.Observable;
-import io.reactivex.ObservableSource;
 import io.reactivex.Single;
 import io.reactivex.functions.Function;
 import org.javamoney.moneta.Money;
@@ -62,7 +61,7 @@ public class EsselinkItemTable {
         Statement::close);
   }
 
-  private ObservableSource<? extends EsselinkItem> fromResultSet(ResultSet resultSet) {
+  private Observable<EsselinkItem> fromResultSet(ResultSet resultSet) {
     return Observable.generate(() -> resultSet, (rs, emitter) -> {
       if (rs.next()) {
         String itemId = resultSet.getString("artikelnummer");
