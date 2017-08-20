@@ -18,7 +18,6 @@ import static org.junit.Assert.fail;
 public abstract class DatabaseFixture implements TestSupportFixture {
 
   protected DatabaseConnection databaseAccess;
-  protected Connection connection;
 
   @Before
   public void setUp() throws Exception {
@@ -35,8 +34,6 @@ public abstract class DatabaseFixture implements TestSupportFixture {
           String query = FileUtils.readFileToString(
               new File(getClass().getClassLoader().getResource("database/db-tables.sql").toURI()));
           statement.executeUpdate(query);
-
-          DatabaseFixture.this.connection = pool.getConnection();
         }
         catch (SQLException | URISyntaxException | IOException e) {
           fail(e.getMessage());
@@ -50,7 +47,6 @@ public abstract class DatabaseFixture implements TestSupportFixture {
 
   @After
   public void tearDown() throws Exception {
-    this.connection.close();
     this.databaseAccess.closeConnectionPool();
   }
 }

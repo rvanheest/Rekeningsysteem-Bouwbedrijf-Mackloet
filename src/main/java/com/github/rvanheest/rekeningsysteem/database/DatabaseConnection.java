@@ -4,7 +4,6 @@ import io.reactivex.Completable;
 import io.reactivex.Maybe;
 import io.reactivex.Observable;
 import io.reactivex.Single;
-import io.reactivex.functions.Function;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +12,7 @@ import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.Savepoint;
 import java.util.Optional;
+import java.util.function.Function;
 
 public class DatabaseConnection {
 

@@ -3,13 +3,13 @@ package com.github.rvanheest.rekeningsysteem.database;
 import com.github.rvanheest.rekeningsysteem.model.document.header.Debtor;
 import io.reactivex.Observable;
 import io.reactivex.Single;
-import io.reactivex.functions.Function;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.Optional;
+import java.util.function.Function;
 
 public class DebtorTable {
 

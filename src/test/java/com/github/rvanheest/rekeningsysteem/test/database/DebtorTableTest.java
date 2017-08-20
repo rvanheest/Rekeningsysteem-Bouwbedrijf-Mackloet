@@ -3,7 +3,6 @@ package com.github.rvanheest.rekeningsysteem.test.database;
 import com.github.rvanheest.rekeningsysteem.database.DebtorTable;
 import com.github.rvanheest.rekeningsysteem.model.document.header.Debtor;
 import io.reactivex.Observable;
-import io.reactivex.functions.Function;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -11,6 +10,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.Objects;
+import java.util.function.Function;
 
 public class DebtorTableTest extends DatabaseFixture {
 

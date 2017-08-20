@@ -3,7 +3,6 @@ package com.github.rvanheest.rekeningsysteem.esselinkItems;
 import com.github.rvanheest.rekeningsysteem.database.EsselinkItemTable;
 import com.github.rvanheest.rekeningsysteem.model.normal.EsselinkItem;
 import io.reactivex.Observable;
-import io.reactivex.functions.Function;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.io.Charsets;
@@ -13,10 +12,15 @@ import javax.money.format.MonetaryFormats;
 import java.nio.file.Path;
 import java.sql.Connection;
 import java.util.Locale;
+import java.util.function.Function;
 
 public class EsselinkItemHandler {
 
   private final EsselinkItemTable table;
+
+  public EsselinkItemHandler() {
+    this(new EsselinkItemTable());
+  }
 
   public EsselinkItemHandler(EsselinkItemTable table) {
     this.table = table;

@@ -4,13 +4,13 @@ import com.github.rvanheest.rekeningsysteem.model.normal.EsselinkItem;
 import io.reactivex.Completable;
 import io.reactivex.Observable;
 import io.reactivex.Single;
-import io.reactivex.functions.Function;
 import org.javamoney.moneta.Money;
 
 import javax.money.MonetaryAmount;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.function.Function;
 
 public class EsselinkItemTable {
 

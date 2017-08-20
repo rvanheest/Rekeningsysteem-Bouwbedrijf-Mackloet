@@ -6,7 +6,6 @@ import com.github.rvanheest.rekeningsysteem.invoiceNumber.InvoiceNumberGenerator
 import com.github.rvanheest.rekeningsysteem.test.database.DatabaseFixture;
 import io.reactivex.Maybe;
 import io.reactivex.Single;
-import io.reactivex.functions.Function;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,6 +14,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import java.sql.Connection;
 import java.time.LocalDate;
+import java.util.function.Function;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;

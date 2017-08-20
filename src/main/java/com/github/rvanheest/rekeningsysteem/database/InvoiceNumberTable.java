@@ -2,9 +2,7 @@ package com.github.rvanheest.rekeningsysteem.database;
 
 import com.github.rvanheest.rekeningsysteem.invoiceNumber.InvoiceNumber;
 import io.reactivex.Maybe;
-import io.reactivex.MaybeSource;
 import io.reactivex.Single;
-import io.reactivex.functions.Function;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -12,6 +10,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
+import java.util.function.Function;
 
 public class InvoiceNumberTable {
 
@@ -20,11 +19,11 @@ public class InvoiceNumberTable {
     return connection -> Maybe.using(() -> connection.prepareStatement(query), this::extract, Statement::close);
   }
 
-  private MaybeSource<? extends InvoiceNumber> extract(PreparedStatement prepStatement) {
+  private Maybe<? extends InvoiceNumber> extract(PreparedStatement prepStatement) {
     return Maybe.using(prepStatement::executeQuery, this::extract, ResultSet::close);
   }
 
-  private MaybeSource<? extends InvoiceNumber> extract(ResultSet resultSet) throws SQLException {
+  private Maybe<? extends InvoiceNumber> extract(ResultSet resultSet) throws SQLException {
     if (resultSet.next())
       return Maybe.just(new InvoiceNumber(resultSet.getInt("number"), resultSet.getInt("year")));
     else

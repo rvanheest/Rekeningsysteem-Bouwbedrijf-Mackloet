@@ -1,13 +1,11 @@
 package com.github.rvanheest.rekeningsysteem.invoiceNumber;
 
 import com.github.rvanheest.rekeningsysteem.database.InvoiceNumberTable;
-import io.reactivex.Maybe;
 import io.reactivex.Single;
-import io.reactivex.functions.Function;
-import io.strati.functional.Try;
 
 import java.sql.Connection;
 import java.util.Optional;
+import java.util.function.Function;
 
 public class InvoiceNumberGenerator {
 
