@@ -28,7 +28,7 @@ public class Header {
     return this.debtor;
   }
 
-  public LocalDate getDatum() {
+  public LocalDate getDate() {
     return this.date;
   }
 

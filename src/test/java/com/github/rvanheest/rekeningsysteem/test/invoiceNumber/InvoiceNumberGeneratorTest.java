@@ -19,12 +19,6 @@ public class InvoiceNumberGeneratorTest extends DatabaseFixture {
   private final InvoiceNumberGenerator generator = new InvoiceNumberGenerator(this.table);
   private final int yearNow = LocalDate.now().getYear();
 
-  @Before
-  public void setUp() throws Exception {
-    this.resetTestDir();
-    super.setUp();
-  }
-
   @Test
   public void testGenerateFirstInvoiceNumber() {
     // make sure table is empty

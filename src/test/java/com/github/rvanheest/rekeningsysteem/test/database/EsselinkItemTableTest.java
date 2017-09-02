@@ -21,12 +21,6 @@ public class EsselinkItemTableTest extends DatabaseFixture implements EsselinkIt
     TestSupportFixture.slfBridger();
   }
 
-  @Before
-  public void setUp() throws Exception {
-    this.resetTestDir();
-    super.setUp();
-  }
-
   @Test
   public void testInsertAll() throws SQLException {
     this.databaseAccess.doTransactionSingle(this.table.insertAll(Observable.fromIterable(this.getEsselinkItems())))

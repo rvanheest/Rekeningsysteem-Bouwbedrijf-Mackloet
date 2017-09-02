@@ -37,12 +37,6 @@ public class EsselinkItemHandlerTest extends DatabaseFixture implements Esselink
     TestSupportFixture.slfBridger();
   }
 
-  @Before
-  public void setUp() throws Exception {
-    this.resetTestDir();
-    super.setUp();
-  }
-
   @Test
   public void testRead() throws URISyntaxException {
     this.handler.read(csv)

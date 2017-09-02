@@ -11,12 +11,6 @@ public class InvoiceNumberTableTest extends DatabaseFixture {
 
   private final InvoiceNumberTable table = new InvoiceNumberTable();
 
-  @Before
-  public void setUp() throws Exception {
-    this.resetTestDir();
-    super.setUp();
-  }
-
   @Test
   public void testGetInvoiceNumberNotExists() {
     this.databaseAccess.doTransactionMaybe(this.table.getInvoiceNumber())

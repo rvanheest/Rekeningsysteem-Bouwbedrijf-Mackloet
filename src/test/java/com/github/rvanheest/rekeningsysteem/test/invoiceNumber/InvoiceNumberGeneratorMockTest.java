@@ -32,7 +32,6 @@ public class InvoiceNumberGeneratorMockTest extends DatabaseFixture {
 
   @Before
   public void setUp() throws Exception {
-    this.resetTestDir();
     super.setUp();
     this.generator = new InvoiceNumberGenerator(this.table);
   }

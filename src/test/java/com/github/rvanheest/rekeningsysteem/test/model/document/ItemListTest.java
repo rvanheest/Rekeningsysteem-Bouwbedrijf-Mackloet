@@ -35,7 +35,7 @@ import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ItemListTest extends EqualsHashCodeTest implements TestSupportFixture {
+public class ItemListTest extends EqualsHashCodeTest {
 
   private ItemList<ListItem> list;
 

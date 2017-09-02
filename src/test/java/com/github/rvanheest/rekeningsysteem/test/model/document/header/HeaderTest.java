@@ -17,16 +17,16 @@ public class HeaderTest extends EqualsHashCodeTest {
   private Header header;
   private final Debtor debtor = new Debtor("xxx", "yyy", "112", "1234AB", "zzz");
   private final LocalDate datum = LocalDate.now();
-  private final String factuurnummer = "32013";
+  private final String invoiceNumber = "32013";
 
   @Override
   protected Header makeInstance() {
-    return new Header(this.debtor, this.datum, this.factuurnummer);
+    return new Header(this.debtor, this.datum, this.invoiceNumber);
   }
 
   @Override
   protected Header makeNotInstance() {
-    return new Header(this.debtor, this.datum, this.factuurnummer + ".");
+    return new Header(this.debtor, this.datum, this.invoiceNumber + ".");
   }
 
   protected Header getInstance() {
@@ -42,7 +42,7 @@ public class HeaderTest extends EqualsHashCodeTest {
   }
 
   protected String getTestFatuurnummer() {
-    return this.factuurnummer;
+    return this.invoiceNumber;
   }
 
   @Override
@@ -58,17 +58,17 @@ public class HeaderTest extends EqualsHashCodeTest {
   }
 
   @Test
-  public void testGetDatum() {
-    assertEquals(this.datum, this.header.getDatum());
+  public void testGetDate() {
+    assertEquals(this.datum, this.header.getDate());
   }
 
   @Test
-  public void testGetFactuurnummer() {
-    assertEquals(Optional.of(this.factuurnummer), this.header.getInvoiceNumber());
+  public void testGetInvoiceNumber() {
+    assertEquals(Optional.of(this.invoiceNumber), this.header.getInvoiceNumber());
   }
 
   @Test
-  public void testSetFactuurnummer() {
+  public void testSetInvoiceNumber() {
     this.header.setInvoiceNumber("202020");
     assertEquals(Optional.of("202020"), this.header.getInvoiceNumber());
   }
@@ -78,25 +78,25 @@ public class HeaderTest extends EqualsHashCodeTest {
     this.header = new Header(this.debtor, this.datum);
 
     assertEquals(this.debtor, this.header.getDebtor());
-    assertEquals(this.datum, this.header.getDatum());
+    assertEquals(this.datum, this.header.getDate());
     assertEquals(Optional.empty(), this.header.getInvoiceNumber());
   }
 
   @Test
   public void testEqualsFalseOtherDebtor() {
-    Debtor debiteur2 = new Debtor("RvH", "PB", "116", "3241TA", "MH", "20");
-    assertFalse(this.header.equals(new Header(debiteur2, this.datum, this.factuurnummer)));
+    Debtor debtor2 = new Debtor("RvH", "PB", "116", "3241TA", "MH", "20");
+    assertFalse(this.header.equals(new Header(debtor2, this.datum, this.invoiceNumber)));
   }
 
   @Test
-  public void testEqualsFalseOtherDatum() {
-    LocalDate datum2 = LocalDate.of(1992, 7, 31);
-    assertFalse(this.header.equals(new Header(this.debtor, datum2, this.factuurnummer)));
+  public void testEqualsFalseOtherDate() {
+    LocalDate date2 = LocalDate.of(1992, 7, 31);
+    assertFalse(this.header.equals(new Header(this.debtor, date2, this.invoiceNumber)));
   }
 
   @Test
   public void testEqualsFalseOtherFactuurnummer() {
-    assertFalse(this.header.equals(new Header(this.debtor, this.datum, this.factuurnummer + ".")));
+    assertFalse(this.header.equals(new Header(this.debtor, this.datum, this.invoiceNumber + ".")));
   }
 
   @Test

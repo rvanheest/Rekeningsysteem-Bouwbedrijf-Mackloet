@@ -27,12 +27,6 @@ public class DebtorTableTest extends DatabaseFixture {
 
   private static Debtor complexPostDebtor2 = new Debtor(2, "name2", "street2", "number2", "zipcode2", "place2", "test2");
 
-  @Before
-  public void setUp() throws Exception {
-    this.resetTestDir();
-    super.setUp();
-  }
-
   private Function<Connection, Observable<Debiteur>> getDebiteursFromDatabase() {
     String query = "SELECT * FROM Debiteur;";
     return connection -> Observable.using(connection::createStatement,

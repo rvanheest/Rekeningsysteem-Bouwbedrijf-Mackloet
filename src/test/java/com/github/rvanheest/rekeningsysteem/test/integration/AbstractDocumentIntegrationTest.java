@@ -6,39 +6,37 @@ import com.github.rvanheest.rekeningsysteem.invoiceNumber.InvoiceNumberGenerator
 import com.github.rvanheest.rekeningsysteem.model.document.AbstractDocument;
 import com.github.rvanheest.rekeningsysteem.model.document.header.Debtor;
 import com.github.rvanheest.rekeningsysteem.model.document.header.Header;
+import com.github.rvanheest.rekeningsysteem.pdf.PdfExporter;
+import com.github.rvanheest.rekeningsysteem.test.ConfigurationFixture;
 import com.github.rvanheest.rekeningsysteem.test.TestSupportFixture;
 import com.github.rvanheest.rekeningsysteem.test.database.DatabaseFixture;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.LocalDate;
+import java.util.Locale;
 import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-public abstract class AbstractDocumentIntegrationTest extends DatabaseFixture {
+public abstract class AbstractDocumentIntegrationTest extends DatabaseFixture implements ConfigurationFixture {
 
   @BeforeClass
   public static void setUpClass() {
     TestSupportFixture.slfBridger();
   }
 
-  @Before
-  public void setUp () throws Exception {
-    this.resetTestDir();
-    super.setUp();
-  }
-
-  protected Header getHeaderWithoutInvoiceNumber() {
+  Header getHeaderWithoutInvoiceNumber() {
     Debtor debtor = new Debtor("Name", "Street", "Number", "Zipcode", "Place", "BtwNumber");
     LocalDate date = LocalDate.of(2017, 7, 31);
     return new Header(debtor, date);
   }
 
-  protected Header getHeaderWithInvoiceNumber() {
+  private Header getHeaderWithInvoiceNumber() {
     Debtor debtor = new Debtor("Name", "Street", "Number", "Zipcode", "Place", "BtwNumber");
     LocalDate date = LocalDate.of(2017, 7, 31);
     return new Header(debtor, date, "12017");
@@ -57,7 +55,8 @@ public abstract class AbstractDocumentIntegrationTest extends DatabaseFixture {
 
     assertFalse(document.getHeader().getInvoiceNumber().isPresent());
 
-    databaseAccess.doTransactionSingle(connection -> table.initInvoiceNumber().apply(connection)
+    databaseAccess.doTransactionSingle(connection -> table.initInvoiceNumber()
+        .apply(connection)
         .doOnSuccess(in -> assertEquals(new InvoiceNumber(1, currentYear), in))
         .flatMap(in -> table.setInvoiceNumber(invoiceNumber).apply(connection))
         .doOnSuccess(in -> assertEquals(invoiceNumber, in))
@@ -71,5 +70,18 @@ public abstract class AbstractDocumentIntegrationTest extends DatabaseFixture {
     Optional<String> result = document.getHeader().getInvoiceNumber();
     assertTrue(result.isPresent());
     assertEquals(formattedNextInvoiceNumber, result.get());
+  }
+
+  @Test
+  public void testExportPdf() throws Exception {
+    PdfExporter exporter = new PdfExporter(this.getConfiguration(), Locale.forLanguageTag("nl-NL"));
+    AbstractDocument document = this.makeDocument(this.getHeaderWithInvoiceNumber());
+    Path pdf = this.getTestDir().resolve("document.pdf");
+
+    assertFalse(Files.exists(pdf));
+
+    exporter.export(document, pdf);
+
+    assertTrue(Files.exists(pdf));
   }
 }

@@ -21,6 +21,7 @@ public abstract class DatabaseFixture implements TestSupportFixture {
 
   @Before
   public void setUp() throws Exception {
+    this.resetTestDir();
     this.databaseAccess = new DatabaseConnection(
         "org.sqlite.JDBC",
         "jdbc:sqlite:" + this.getTestDir().resolve("database.db")) {

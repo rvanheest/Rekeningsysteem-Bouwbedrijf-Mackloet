@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.github.rvanheest</groupId>
-    <artifactId>Rekeningsysteem Mackloet</artifactId>
+    <artifactId>Rekeningsysteem-Mackloet</artifactId>
     <version>0.5-SNAPSHOT</version>
     <packaging>jar</packaging>
 
@@ -103,14 +103,17 @@
             be downloaded from http://www.nixo-soft.de/en/category/Downloads/page/libs/JavaLatexReport.php
             After downloading, use mvn install:install-file -Dfile=<path-to-jar> -DgroupId="jlr"
             -DartifactId="jlr" -Dversion="0" -Dpackaging="jar" -DlocalRepositoryPath="${basedir}/jlrrepo"
+
+            mvn install:install-file -Dfile=lib/jlr.jar -DgroupId="jlr" -DartifactId="jlr" -Dversion="0" -Dpackaging="jar" -DlocalRepositoryPath="${basedir}/jlrrepo"
+
             to install this dependency. -->
-        <!--<dependency>-->
-            <!--<groupId>jlr</groupId>-->
-            <!--<artifactId>jlr</artifactId>-->
-            <!--<version>0</version>-->
-            <!--<scope>system</scope>-->
-            <!--<systemPath>${project.basedir}/lib/jlr.jar</systemPath>-->
-        <!--</dependency>-->
+        <dependency>
+            <groupId>jlr</groupId>
+            <artifactId>jlr</artifactId>
+            <version>0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/jlr.jar</systemPath>
+        </dependency>
 
         <!-- database -->
         <dependency>

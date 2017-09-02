@@ -1,6 +1,7 @@
 package com.github.rvanheest.rekeningsysteem.test.offerText;
 
 import com.github.rvanheest.rekeningsysteem.offerText.DefaultOfferTextHandler;
+import com.github.rvanheest.rekeningsysteem.test.TestSupportFixture;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.junit.Before;
@@ -14,7 +15,7 @@ public class DefaultOfferTextHandlerTest implements DefaultOfferTextFixture {
   private DefaultOfferTextHandler handler;
 
   @Before
-  public void setUp() throws IOException, URISyntaxException {
+  public void setUp() throws Exception {
     this.resetTestDir();
     this.handler = this.getDefaultOfferTextHandler();
   }

@@ -16,7 +16,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-public abstract class AbstractDocumentTest extends EqualsHashCodeTest implements TestSupportFixture {
+public abstract class AbstractDocumentTest extends EqualsHashCodeTest {
 
   private AbstractDocument document;
   private final Header header = new Header(new Debtor("a", "b", "c", "d", "e"), LocalDate.of(1992, 7, 30));

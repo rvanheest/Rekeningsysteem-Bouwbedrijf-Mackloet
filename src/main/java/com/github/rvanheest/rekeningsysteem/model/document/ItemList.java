@@ -52,6 +52,10 @@ public class ItemList<E extends ListItem> implements TotalsManager {
       throw new DifferentCurrencyException(this.currency, itemCurrency);
   }
 
+  public CurrencyUnit getCurrency() {
+    return this.currency;
+  }
+
   @Override
   public Totals getTotals() {
     return this.list.parallelStream()

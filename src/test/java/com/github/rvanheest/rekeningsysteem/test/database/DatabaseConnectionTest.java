@@ -18,12 +18,6 @@ import static org.junit.Assert.assertEquals;
 
 public class DatabaseConnectionTest extends DatabaseFixture {
 
-  @Before
-  public void setUp() throws Exception {
-    this.resetTestDir();
-    super.setUp();
-  }
-
   @Test
   public void testDoTransactionObservableReturnsFunctionResult() {
     this.databaseAccess.doTransactionObservable(conn -> Observable.just("foo", "bar"))
