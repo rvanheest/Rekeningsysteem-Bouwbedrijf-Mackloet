@@ -3,11 +3,10 @@ package com.github.rvanheest.rekeningsysteem.test.integration;
 import com.github.rvanheest.rekeningsysteem.model.document.header.Header;
 import com.github.rvanheest.rekeningsysteem.model.offer.Offer;
 import com.github.rvanheest.rekeningsysteem.offerText.DefaultOfferTextHandler;
-import com.github.rvanheest.rekeningsysteem.test.offerText.DefaultOfferTextFixture;
 import org.junit.Before;
 import org.junit.Test;
 
-public class OfferIntegrationTest extends AbstractDocumentIntegrationTest implements DefaultOfferTextFixture {
+public class OfferIntegrationTest extends AbstractDocumentIntegrationTest {
 
   private DefaultOfferTextHandler handler;
 
@@ -15,7 +14,7 @@ public class OfferIntegrationTest extends AbstractDocumentIntegrationTest implem
   @Override
   public void setUp() throws Exception {
     super.setUp();
-    this.handler = this.getDefaultOfferTextHandler();
+    this.handler = new DefaultOfferTextHandler(this.getConfiguration());
   }
 
   private String makeText() {

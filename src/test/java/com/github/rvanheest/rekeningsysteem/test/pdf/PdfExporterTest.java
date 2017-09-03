@@ -1,7 +1,5 @@
 package com.github.rvanheest.rekeningsysteem.test.pdf;
 
-import com.github.rvanheest.rekeningsysteem.model.document.header.Debtor;
-import com.github.rvanheest.rekeningsysteem.model.document.header.Header;
 import com.github.rvanheest.rekeningsysteem.model.offer.Offer;
 import com.github.rvanheest.rekeningsysteem.pdf.PdfDocumentVisitor;
 import com.github.rvanheest.rekeningsysteem.pdf.PdfExporter;
@@ -17,16 +15,23 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class PdfExporterTest implements TestSupportFixture {
+
+  static class MockedOffer extends Offer {
+
+    public MockedOffer() {
+      super(null, "", false);
+    }
+  }
 
   private PdfExporter exporter;
   @Mock private PdfDocumentVisitor documentVisitor;
@@ -41,13 +46,11 @@ public class PdfExporterTest implements TestSupportFixture {
 
   @Test
   public void testExport() throws Exception {
-    Debtor debtor = new Debtor(123, "name", "street", "number", "zipCode", "city");
-    Header header = new Header(debtor, LocalDate.of(2017, 7, 30), "invoiceNumber");
-    Offer offer = new Offer(header, "abc", true);
-
+    Offer offer = mock(MockedOffer.class);
     Path template = Files.write(this.getTestDir().resolve("template.tex"), this.content(), StandardCharsets.UTF_8);
-    when(this.templateVisitor.visit(eq(offer))).thenReturn(template);
-    when(this.documentVisitor.visit(eq(offer))).thenReturn(converter -> {});
+
+    when(offer.accept(eq(this.templateVisitor))).thenReturn(template);
+    when(offer.accept(eq(this.documentVisitor))).thenReturn(converter -> {});
 
     Path pdf = this.getTestDir().resolve("offer.pdf");
     this.exporter.export(offer, pdf);
@@ -56,13 +59,6 @@ public class PdfExporterTest implements TestSupportFixture {
   }
 
   private List<String> content() {
-    return Arrays.asList(
-        "\\documentclass{article}",
-        "\\begin{document}",
-        "",
-        "this is a test",
-        "",
-        "\\end{document}"
-    );
+    return Arrays.asList("\\documentclass{article}", "\\begin{document}", "", "this is a test", "", "\\end{document}");
   }
 }

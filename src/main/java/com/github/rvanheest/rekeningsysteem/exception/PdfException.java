@@ -7,4 +7,8 @@ public class PdfException extends Exception {
   public PdfException(String err) {
     super(err);
   }
+
+  public PdfException(String msg, Exception cause) {
+    super(msg, cause);
+  }
 }

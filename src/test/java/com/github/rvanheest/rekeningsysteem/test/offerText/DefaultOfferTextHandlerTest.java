@@ -1,7 +1,7 @@
 package com.github.rvanheest.rekeningsysteem.test.offerText;
 
 import com.github.rvanheest.rekeningsysteem.offerText.DefaultOfferTextHandler;
-import com.github.rvanheest.rekeningsysteem.test.TestSupportFixture;
+import com.github.rvanheest.rekeningsysteem.test.ConfigurationFixture;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.junit.Before;
@@ -10,22 +10,21 @@ import org.junit.Test;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
-public class DefaultOfferTextHandlerTest implements DefaultOfferTextFixture {
+public class DefaultOfferTextHandlerTest implements ConfigurationFixture {
 
   private DefaultOfferTextHandler handler;
+  private PropertiesConfiguration configuration;
 
   @Before
   public void setUp() throws Exception {
     this.resetTestDir();
-    this.handler = this.getDefaultOfferTextHandler();
+    this.configuration = this.getConfiguration();
+    this.handler = new DefaultOfferTextHandler(this.getTestDir().resolve("DefaultOfferText.txt"));
   }
 
   @Test
-  public void testSecondConstructor() throws ConfigurationException {
-    PropertiesConfiguration configuration = new PropertiesConfiguration();
-    configuration.addProperty("offer.defaulttext", this.getTestDir().resolve("SecondDefaultOfferText.txt").toString());
-
-    this.handler = new DefaultOfferTextHandler(configuration);
+  public void testSecondConstructor() throws ConfigurationException, IOException, URISyntaxException {
+    this.handler = new DefaultOfferTextHandler(this.configuration);
     this.testSetDefaultText();
   }
 

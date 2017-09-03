@@ -19,22 +19,22 @@ public class PdfTemplateVisitor implements DocumentVisitor<Path> {
   }
 
   @Override
-  public Path visit(MutationInvoice invoice) throws Exception {
+  public Path visit(MutationInvoice invoice) {
     return Paths.get(this.configuration.getString("pdf.template.mutation"));
   }
 
   @Override
-  public Path visit(Offer offer) throws Exception {
+  public Path visit(Offer offer) {
     return Paths.get(this.configuration.getString("pdf.template.offer"));
   }
 
   @Override
-  public Path visit(NormalInvoice invoice) throws Exception {
+  public Path visit(NormalInvoice invoice) {
     return Paths.get(this.configuration.getString("pdf.template.normal"));
   }
 
   @Override
-  public Path visit(RepairInvoice invoice) throws Exception {
+  public Path visit(RepairInvoice invoice) {
     return Paths.get(this.configuration.getString("pdf.template.repair"));
   }
 }

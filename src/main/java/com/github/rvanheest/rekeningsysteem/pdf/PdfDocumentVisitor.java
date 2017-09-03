@@ -74,7 +74,7 @@ public class PdfDocumentVisitor implements DocumentVisitor<Consumer<PdfConverter
   }
 
   @Override
-  public Consumer<PdfConverter> visit(MutationInvoice invoice) throws Exception {
+  public Consumer<PdfConverter> visit(MutationInvoice invoice) {
     return this.visitHeader(invoice.getHeader())
         .andThen(this.visitCurrency(invoice.getItemList().getCurrency()))
         .andThen(converter -> converter.replace("bonList", invoice.getItemList()
@@ -87,14 +87,14 @@ public class PdfDocumentVisitor implements DocumentVisitor<Consumer<PdfConverter
   }
 
   @Override
-  public Consumer<PdfConverter> visit(Offer offer) throws Exception {
+  public Consumer<PdfConverter> visit(Offer offer) {
     return this.visitHeader(offer.getHeader())
         .andThen(converter -> converter.replace("Tekst", offer.getText()))
         .andThen(converter -> converter.replace("Ondertekenen", String.valueOf(offer.isSign())));
   }
 
   @Override
-  public Consumer<PdfConverter> visit(NormalInvoice invoice) throws Exception {
+  public Consumer<PdfConverter> visit(NormalInvoice invoice) {
     return this.visitHeader(invoice.getHeader())
         .andThen(converter -> converter.replace("Omschrijving", invoice.getDescription()))
         .andThen(this.visitCurrency(invoice.getItemList().getCurrency()))
@@ -107,7 +107,7 @@ public class PdfDocumentVisitor implements DocumentVisitor<Consumer<PdfConverter
   }
 
   @Override
-  public Consumer<PdfConverter> visit(RepairInvoice invoice) throws Exception {
+  public Consumer<PdfConverter> visit(RepairInvoice invoice) {
     return this.visitHeader(invoice.getHeader())
         .andThen(this.visitCurrency(invoice.getItemList().getCurrency()))
         .andThen(converter -> converter.replace("bonList", invoice.getItemList()

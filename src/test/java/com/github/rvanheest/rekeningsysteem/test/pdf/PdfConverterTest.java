@@ -47,7 +47,7 @@ public class PdfConverterTest implements TestSupportFixture {
 
   @Test
   public void testReplacePlaceholders() throws IOException {
-    when(this.replacer.replace("tést")).thenReturn("t\'est");
+    when(this.replacer.replace("tést")).thenReturn("t\\'est");
     when(this.replacer.replace("foobar")).thenReturn("foobar");
 
     this.converter.replace("name", "tést");
