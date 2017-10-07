@@ -34,10 +34,10 @@ import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.util.Optional;
 
-import static com.github.rvanheest.rekeningsysteem.xml.XmlUtils.getAll;
-import static com.github.rvanheest.rekeningsysteem.xml.XmlUtils.getFirst;
-import static com.github.rvanheest.rekeningsysteem.xml.XmlUtils.getNodeValue;
-import static com.github.rvanheest.rekeningsysteem.xml.XmlUtils.iterate;
+import static com.github.rvanheest.rekeningsysteem.xml.XmlReaderUtils.getAll;
+import static com.github.rvanheest.rekeningsysteem.xml.XmlReaderUtils.getFirst;
+import static com.github.rvanheest.rekeningsysteem.xml.XmlReaderUtils.getNodeValue;
+import static com.github.rvanheest.rekeningsysteem.xml.XmlReaderUtils.iterate;
 
 public class XmlReader4 implements XmlLoader {
 
