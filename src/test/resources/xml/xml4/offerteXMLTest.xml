@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<bestand type="Offerte" version="4">
+    <offerte>
+        <factuurHeader>
+            <debiteur>
+                <naam>Dhr. M. Stolk</naam>
+                <straat>Ring</straat>
+                <nummer></nummer>
+                <postcode></postcode>
+                <plaats>Nieuwe-Tonge</plaats>
+            </debiteur>
+            <datum>
+                <dag>11</dag>
+                <maand>8</maand>
+                <jaar>2011</jaar>
+            </datum>
+            <factuurnummer>107</factuurnummer>
+        </factuurHeader>
+        <tekst>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce quis quam tortor.</tekst>
+        <ondertekenen>false</ondertekenen>
+    </offerte>
+</bestand>
