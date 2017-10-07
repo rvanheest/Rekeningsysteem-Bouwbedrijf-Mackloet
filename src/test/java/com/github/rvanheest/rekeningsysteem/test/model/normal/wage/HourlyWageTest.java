@@ -19,15 +19,15 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class) public class HourlyWageTest extends AbstractWageTest {
+@RunWith(MockitoJUnitRunner.class)
+public class HourlyWageTest extends AbstractWageTest {
 
   private HourlyWage item;
   private final double hours = 10;
   private final CurrencyUnit currency = Monetary.getCurrency("EUR");
   private final MonetaryAmount wagePerHour = Money.of(4, this.currency);
   private final double wageTaxPercentage = 10;
-  @Mock
-  private ListItemVisitor<Object> visitor;
+  @Mock private ListItemVisitor<Object> visitor;
 
   @Override
   protected HourlyWage makeInstance() {

@@ -20,14 +20,14 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class) public class DefaultWageTest extends AbstractWageTest {
+@RunWith(MockitoJUnitRunner.class)
+public class DefaultWageTest extends AbstractWageTest {
 
   private DefaultWage item;
   private final CurrencyUnit currency = Monetary.getCurrency("EUR");
   private final MonetaryAmount wage = Money.of(12, this.currency);
   private final double wageTaxPercentage = 10;
-  @Mock
-  private ListItemVisitor<Object> visitor;
+  @Mock private ListItemVisitor<Object> visitor;
 
   @Override
   protected DefaultWage makeInstance() {

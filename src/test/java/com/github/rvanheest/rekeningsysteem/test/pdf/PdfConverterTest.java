@@ -58,7 +58,7 @@ public class PdfConverterTest implements TestSupportFixture {
 
     List<String> lines = Files.readAllLines(resultPath);
     List<String> expected = Arrays.asList(
-        "Hello t\'est,",
+        "Hello t\\'est,",
         "",
         "How are you?",
         "",

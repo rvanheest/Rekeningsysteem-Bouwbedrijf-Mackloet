@@ -17,7 +17,7 @@ public class Totals {
     private final MonetaryAmount net;
     private final MonetaryAmount tax;
 
-    public NetTaxTuple(MonetaryAmount net, MonetaryAmount tax) {
+    private NetTaxTuple(MonetaryAmount net, MonetaryAmount tax) {
       this.net = net;
       this.tax = tax;
     }
