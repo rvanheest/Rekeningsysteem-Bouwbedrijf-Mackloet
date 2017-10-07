@@ -47,9 +47,19 @@ public class ItemList<E extends ListItem> implements TotalsManager {
   public void add(E item) throws DifferentCurrencyException {
     CurrencyUnit itemCurrency = item.getCurrency();
     if (itemCurrency.equals(this.currency))
-      list.add(item);
+      this.list.add(item);
     else
       throw new DifferentCurrencyException(this.currency, itemCurrency);
+  }
+
+  public static <E extends ListItem> ItemList<E> merge(ItemList<E> left, ItemList<E> right) throws DifferentCurrencyException {
+    if (left.currency.equals(right.currency)) {
+      List<E> list = new ArrayList<>(left.list);
+      list.addAll(right.list);
+      return new ItemList<>(left.currency, left.visitor, list);
+    }
+    else
+      throw new DifferentCurrencyException(left.currency, right.currency);
   }
 
   public CurrencyUnit getCurrency() {
@@ -75,5 +85,10 @@ public class ItemList<E extends ListItem> implements TotalsManager {
   @Override
   public int hashCode() {
     return Objects.hash(this.currency, this.list);
+  }
+
+  @Override
+  public String toString() {
+    return String.format("<ItemList[%s, %s]>", this.currency, this.list);
   }
 }

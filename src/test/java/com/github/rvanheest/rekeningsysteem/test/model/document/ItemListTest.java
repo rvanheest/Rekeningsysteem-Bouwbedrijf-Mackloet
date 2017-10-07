@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -79,6 +80,64 @@ public class ItemListTest extends EqualsHashCodeTest {
   @Test(expected = DifferentCurrencyException.class)
   public void testAddItemsWithOtherCurrency() throws DifferentCurrencyException {
     this.list.add(new MutationListItem("", "", Money.of(10, Monetary.getCurrency("USD"))));
+  }
+
+  @Test
+  public void testAddAllWithBothEmptyAndSameCurrency() throws DifferentCurrencyException {
+    ItemList<ListItem> list1 = new ItemList<>(this.currency);
+    ItemList<ListItem> list2 = new ItemList<>(this.currency);
+
+    ItemList<ListItem> result = ItemList.merge(list1, list2);
+    assertTrue(result.getList().isEmpty());
+  }
+
+  @Test
+  public void testAddAllWithLeftEmptyAndSameCurrency() throws DifferentCurrencyException {
+    ItemList<ListItem> list1 = new ItemList<>(this.currency);
+
+    ItemList<ListItem> list2 = new ItemList<>(this.currency);
+    list2.add(this.item3);
+    list2.add(this.item4);
+
+    ItemList<ListItem> result = ItemList.merge(list1, list2);
+    assertEquals(2, result.getList().size());
+    assertTrue(result.getList().containsAll(Arrays.asList(this.item3, this.item4)));
+  }
+
+  @Test
+  public void testAddAllWithRightEmptyAndSameCurrency() throws DifferentCurrencyException {
+    ItemList<ListItem> list1 = new ItemList<>(this.currency);
+    list1.add(this.item1);
+    list1.add(this.item2);
+
+    ItemList<ListItem> list2 = new ItemList<>(this.currency);
+
+    ItemList<ListItem> result = ItemList.merge(list1, list2);
+    assertEquals(2, result.getList().size());
+    assertTrue(result.getList().containsAll(Arrays.asList(this.item1, this.item2)));
+  }
+
+  @Test
+  public void testAddAllWithSameCurrency() throws DifferentCurrencyException {
+    ItemList<ListItem> list1 = new ItemList<>(this.currency);
+    list1.add(this.item1);
+    list1.add(this.item2);
+
+    ItemList<ListItem> list2 = new ItemList<>(this.currency);
+    list2.add(this.item3);
+    list2.add(this.item4);
+
+    ItemList<ListItem> result = ItemList.merge(list1, list2);
+    assertEquals(4, result.getList().size());
+    assertTrue(result.getList().containsAll(Arrays.asList(this.item1, this.item2, this.item3, this.item4)));
+  }
+
+  @Test(expected = DifferentCurrencyException.class)
+  public void testAddAllWithDifferentCurrency() throws DifferentCurrencyException {
+    ItemList<ListItem> list1 = new ItemList<>(Monetary.getCurrency("EUR"));
+    ItemList<ListItem> list2 = new ItemList<>(Monetary.getCurrency("USD"));
+
+    ItemList.merge(list1, list2);
   }
 
   @Test
