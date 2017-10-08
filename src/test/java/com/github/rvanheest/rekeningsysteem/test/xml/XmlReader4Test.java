@@ -60,7 +60,7 @@ public class XmlReader4Test {
     itemList.add(new MutationListItem("Bonnummer", "111477", Money.of(4820.96, this.currency)));
     itemList.add(new MutationListItem("Bonnummer", "112308", Money.of(5510.74, this.currency)));
 
-    this.reader.load(xml4Dir.resolve("mutatiesFactuurXMLTest.xml"))
+    this.reader.load(xml4Dir.resolve("MutatiesFactuur.xml"))
         .test()
         .assertValue(new MutationInvoice(factuurHeader, itemList))
         .assertNoErrors()
@@ -75,7 +75,7 @@ public class XmlReader4Test {
 
     String text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce quis quam tortor.";
 
-    this.reader.load(xml4Dir.resolve("offerteXMLTest.xml"))
+    this.reader.load(xml4Dir.resolve("Offerte.xml"))
         .test()
         .assertValue(new Offer(factuurHeader, text, false))
         .assertNoErrors()
@@ -103,7 +103,7 @@ public class XmlReader4Test {
     itemList.add(new HourlyWage("test123", 12.0, Money.of(12.5, this.currency), 6.0));
     itemList.add(new DefaultWage("foobar", Money.of(40.0, this.currency), 6.0));
 
-    this.reader.load(xml4Dir.resolve("particulierFactuurXMLTest.xml"))
+    this.reader.load(xml4Dir.resolve("ParticulierFactuur.xml"))
         .test()
         .assertValue(new NormalInvoice(header, description, itemList))
         .assertNoErrors()
@@ -141,7 +141,7 @@ public class XmlReader4Test {
     itemList.add(new RepairListItem("Bonnummer", "111272", Money.of(3630.66, this.currency), Money.of(2420.44, this.currency)));
     itemList.add(new RepairListItem("Bonnummer", "111148", Money.of(3878.2, this.currency), Money.of(2585.46, this.currency)));
 
-    this.reader.load(xml4Dir.resolve("reparatiesFactuurXMLTest.xml"))
+    this.reader.load(xml4Dir.resolve("ReparatiesFactuur.xml"))
         .test()
         .assertValue(new RepairInvoice(header, itemList))
         .assertNoErrors()

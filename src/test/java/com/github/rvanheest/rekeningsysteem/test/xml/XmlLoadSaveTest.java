@@ -117,7 +117,7 @@ public class XmlLoadSaveTest implements TestSupportFixture {
 
   @Test
   public void testXml2AangenomenFactuur() {
-    Path path1 = xml2Dir.resolve("aangenomenFactuurXMLTest.xml");
+    Path path1 = xml2Dir.resolve("AangenomenFactuur.xml");
     Path path2 = this.getTestDir().resolve("AangenomenFactuur2.xml");
 
     this.test(path1, path2);
@@ -125,7 +125,7 @@ public class XmlLoadSaveTest implements TestSupportFixture {
 
   @Test
   public void testXml2MutatiesFactuur() {
-    Path path1 = xml2Dir.resolve("mutatiesFactuurXMLTest.xml");
+    Path path1 = xml2Dir.resolve("MutatiesFactuur.xml");
     Path path2 = this.getTestDir().resolve("MutatiesFactuur2.xml");
 
     this.test(path1, path2);
@@ -133,7 +133,7 @@ public class XmlLoadSaveTest implements TestSupportFixture {
 
   @Test
   public void testXml2Offer() {
-    Path path1 = xml2Dir.resolve("offerteXMLTest.xml");
+    Path path1 = xml2Dir.resolve("Offerte.xml");
     Path path2 = this.getTestDir().resolve("Offerte2.xml");
 
     this.test(path1, path2);
@@ -141,7 +141,7 @@ public class XmlLoadSaveTest implements TestSupportFixture {
 
   @Test
   public void testXml2ParticulierFactuur() {
-    Path path1 = xml2Dir.resolve("particulierFactuurXMLTest.xml");
+    Path path1 = xml2Dir.resolve("ParticulierFactuur.xml");
     Path path2 = this.getTestDir().resolve("ParticulierFactuur2.xml");
 
     this.test(path1, path2);
@@ -149,7 +149,7 @@ public class XmlLoadSaveTest implements TestSupportFixture {
 
   @Test
   public void testXml2ReparatiesFactuur() {
-    Path path1 = xml2Dir.resolve("reparatiesFactuurXMLTest.xml");
+    Path path1 = xml2Dir.resolve("ReparatiesFactuur.xml");
     Path path2 = this.getTestDir().resolve("ReparatiesFactuur2.xml");
 
     this.test(path1, path2);
@@ -157,7 +157,7 @@ public class XmlLoadSaveTest implements TestSupportFixture {
 
   @Test
   public void testXml3AangenomenFactuur() {
-    Path path1 = xml3Dir.resolve("aangenomenFactuurXMLTest.xml");
+    Path path1 = xml3Dir.resolve("AangenomenFactuur.xml");
     Path path2 = this.getTestDir().resolve("AangenomenFactuur3.xml");
 
     this.test(path1, path2);
@@ -165,7 +165,7 @@ public class XmlLoadSaveTest implements TestSupportFixture {
 
   @Test
   public void testXml3MutatiesFactuur() {
-    Path path1 = xml3Dir.resolve("mutatiesFactuurXMLTest.xml");
+    Path path1 = xml3Dir.resolve("MutatiesFactuur.xml");
     Path path2 = this.getTestDir().resolve("MutatiesFactuur3.xml");
 
     this.test(path1, path2);
@@ -173,7 +173,7 @@ public class XmlLoadSaveTest implements TestSupportFixture {
 
   @Test
   public void testXml3Offer() {
-    Path path1 = xml3Dir.resolve("offerteXMLTest.xml");
+    Path path1 = xml3Dir.resolve("Offerte.xml");
     Path path2 = this.getTestDir().resolve("Offerte3.xml");
 
     this.test(path1, path2);
@@ -181,7 +181,7 @@ public class XmlLoadSaveTest implements TestSupportFixture {
 
   @Test
   public void testXml3ParticulierFactuur() {
-    Path path1 = xml3Dir.resolve("particulierFactuurXMLTest.xml");
+    Path path1 = xml3Dir.resolve("ParticulierFactuur.xml");
     Path path2 = this.getTestDir().resolve("ParticulierFactuur3.xml");
 
     this.test(path1, path2);
@@ -189,7 +189,7 @@ public class XmlLoadSaveTest implements TestSupportFixture {
 
   @Test
   public void testXml3ReparatiesFactuur() {
-    Path path1 = xml3Dir.resolve("reparatiesFactuurXMLTest.xml");
+    Path path1 = xml3Dir.resolve("ReparatiesFactuur.xml");
     Path path2 = this.getTestDir().resolve("ReparatiesFactuur3.xml");
 
     this.test(path1, path2);
@@ -197,7 +197,7 @@ public class XmlLoadSaveTest implements TestSupportFixture {
 
   @Test
   public void testXml4MutatiesFactuur() {
-    Path path1 = xml4Dir.resolve("mutatiesFactuurXMLTest.xml");
+    Path path1 = xml4Dir.resolve("MutatiesFactuur.xml");
     Path path2 = this.getTestDir().resolve("MutatiesFactuur4.xml");
 
     this.test(path1, path2);
@@ -205,7 +205,7 @@ public class XmlLoadSaveTest implements TestSupportFixture {
 
   @Test
   public void testXml4Offer() {
-    Path path1 = xml4Dir.resolve("offerteXMLTest.xml");
+    Path path1 = xml4Dir.resolve("Offerte.xml");
     Path path2 = this.getTestDir().resolve("Offerte4.xml");
 
     this.test(path1, path2);
@@ -213,7 +213,7 @@ public class XmlLoadSaveTest implements TestSupportFixture {
 
   @Test
   public void testXml4ParticulierFactuur() {
-    Path path1 = xml4Dir.resolve("particulierFactuurXMLTest.xml");
+    Path path1 = xml4Dir.resolve("ParticulierFactuur.xml");
     Path path2 = this.getTestDir().resolve("ParticulierFactuur4.xml");
 
     this.test(path1, path2);
@@ -221,7 +221,7 @@ public class XmlLoadSaveTest implements TestSupportFixture {
 
   @Test
   public void testXml4ReparatiesFactuur() {
-    Path path1 = xml4Dir.resolve("reparatiesFactuurXMLTest.xml");
+    Path path1 = xml4Dir.resolve("ReparatiesFactuur.xml");
     Path path2 = this.getTestDir().resolve("ReparatiesFactuur4.xml");
 
     this.test(path1, path2);

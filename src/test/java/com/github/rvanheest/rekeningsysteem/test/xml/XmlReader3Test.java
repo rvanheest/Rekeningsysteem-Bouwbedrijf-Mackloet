@@ -66,7 +66,7 @@ public class XmlReader3Test {
     itemList.add(new SimpleListItem("omschr4", Money.zero(this.currency), 21));
     itemList.add(new DefaultWage("omschr4", Money.of(-800.0, this.currency), 6));
 
-    this.reader.load(xml3Dir.resolve("aangenomenFactuurXMLTest.xml"))
+    this.reader.load(xml3Dir.resolve("AangenomenFactuur.xml"))
         .test()
         .assertValue(new NormalInvoice(factuurHeader, description, itemList))
         .assertNoErrors()
@@ -86,7 +86,7 @@ public class XmlReader3Test {
 
     MutationInvoice expected = new MutationInvoice(factuurHeader, itemList);
 
-    this.reader.load(xml3Dir.resolve("mutatiesFactuurXMLTest.xml"))
+    this.reader.load(xml3Dir.resolve("MutatiesFactuur.xml"))
         .test()
         .assertValue(expected)
         .assertNoErrors()
@@ -101,7 +101,7 @@ public class XmlReader3Test {
 
     String text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce quis quam tortor.";
 
-    this.reader.load(xml3Dir.resolve("offerteXMLTest.xml"))
+    this.reader.load(xml3Dir.resolve("Offerte.xml"))
         .test()
         .assertValue(new Offer(factuurHeader, text, false))
         .assertNoErrors()
@@ -129,7 +129,7 @@ public class XmlReader3Test {
     itemList.add(new HourlyWage("test123", 12.0, Money.of(12.5, this.currency), 6.0));
     itemList.add(new DefaultWage("foobar", Money.of(40.0, this.currency), 6.0));
 
-    this.reader.load(xml3Dir.resolve("particulierFactuurXMLTest.xml"))
+    this.reader.load(xml3Dir.resolve("ParticulierFactuur.xml"))
         .test()
         .assertValue(new NormalInvoice(header, description, itemList))
         .assertNoErrors()
@@ -167,7 +167,7 @@ public class XmlReader3Test {
     itemList.add(new RepairListItem("Bonnummer", "111272", Money.of(3630.66, this.currency), Money.of(2420.44, this.currency)));
     itemList.add(new RepairListItem("Bonnummer", "111148", Money.of(3878.2, this.currency), Money.of(2585.46, this.currency)));
 
-    this.reader.load(xml3Dir.resolve("reparatiesFactuurXMLTest.xml"))
+    this.reader.load(xml3Dir.resolve("ReparatiesFactuur.xml"))
         .test()
         .assertValue(new RepairInvoice(factuurHeader, itemList))
         .assertNoErrors()

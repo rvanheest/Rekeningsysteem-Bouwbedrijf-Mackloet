@@ -68,7 +68,7 @@ public class XmlReader2Test {
 
     NormalInvoice invoice = new NormalInvoice(header, description, itemList);
 
-    this.reader.load(xml2Dir.resolve("aangenomenFactuurXMLTest.xml"))
+    this.reader.load(xml2Dir.resolve("AangenomenFactuur.xml"))
         .test()
         .assertValue(invoice)
         .assertNoErrors()
@@ -88,7 +88,7 @@ public class XmlReader2Test {
 
     MutationInvoice invoice = new MutationInvoice(header, itemList);
 
-    this.reader.load(xml2Dir.resolve("mutatiesFactuurXMLTest.xml"))
+    this.reader.load(xml2Dir.resolve("MutatiesFactuur.xml"))
         .test()
         .assertValue(invoice)
         .assertNoErrors()
@@ -103,7 +103,7 @@ public class XmlReader2Test {
 
     String text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce quis quam tortor.";
 
-    this.reader.load(xml2Dir.resolve("offerteXMLTest.xml"))
+    this.reader.load(xml2Dir.resolve("Offerte.xml"))
         .test()
         .assertValue(new Offer(header, text, false))
         .assertNoErrors()
@@ -117,7 +117,6 @@ public class XmlReader2Test {
     Header header = new Header(debtor, date, "22011");
     String description = "Voor u verrichte werkzaamheden betreffende renovatie badkamervloer i.v.m. lekkage";
 
-    CurrencyUnit currency = Monetary.getCurrency("EUR");
     ItemList<NormalListItem> itemList = new ItemList<>(this.currency);
     itemList.add(new EsselinkListItem(new EsselinkItem("2018021117", "Product 1", 1, "Zak", Money.of(5.16, this.currency)), 8.0, 21.0));
     itemList.add(new EsselinkListItem(new EsselinkItem("2003131360", "Product 2", 1, "zak", Money.of(129.53, this.currency)), 1.0, 21.0));
@@ -132,7 +131,7 @@ public class XmlReader2Test {
     itemList.add(new HourlyWage("test123", 12.0, Money.of(12.5, this.currency), 6.0));
     itemList.add(new DefaultWage("foobar", Money.of(40.0, this.currency), 6.0));
 
-    this.reader.load(xml2Dir.resolve("particulierFactuurXMLTest.xml"))
+    this.reader.load(xml2Dir.resolve("ParticulierFactuur.xml"))
         .test()
         .assertValue(new NormalInvoice(header, description, itemList))
         .assertNoErrors()
@@ -145,7 +144,6 @@ public class XmlReader2Test {
     LocalDate date = LocalDate.of(2011, 4, 5);
     Header header = new Header(debtor, date, "232011");
 
-    CurrencyUnit currency = Monetary.getCurrency("EUR");
     ItemList<RepairListItem> itemList = new ItemList<>(this.currency);
     itemList.add(new RepairListItem("Bonnummer", "110543", Money.of(77, this.currency), Money.of(6.5, this.currency)));
     itemList.add(new RepairListItem("Bonnummer", "111558", Money.of(77, this.currency), Money.of(9, this.currency)));
@@ -171,7 +169,7 @@ public class XmlReader2Test {
     itemList.add(new RepairListItem("Bonnummer", "111272", Money.of(3630.66, this.currency), Money.of(2420.44, this.currency)));
     itemList.add(new RepairListItem("Bonnummer", "111148", Money.of(3878.2, this.currency), Money.of(2585.46, this.currency)));
 
-    this.reader.load(xml2Dir.resolve("reparatiesFactuurXMLTest.xml"))
+    this.reader.load(xml2Dir.resolve("ReparatiesFactuur.xml"))
         .test()
         .assertValue(new RepairInvoice(header, itemList))
         .assertNoErrors()
