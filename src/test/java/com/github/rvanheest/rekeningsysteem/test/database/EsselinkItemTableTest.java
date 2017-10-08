@@ -6,7 +6,6 @@ import com.github.rvanheest.rekeningsysteem.test.TestSupportFixture;
 import com.github.rvanheest.rekeningsysteem.test.esselinkItems.EsselinkItemFixture;
 import io.reactivex.Observable;
 import org.javamoney.moneta.Money;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 

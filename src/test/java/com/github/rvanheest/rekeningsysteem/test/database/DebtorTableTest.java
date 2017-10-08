@@ -3,7 +3,6 @@ package com.github.rvanheest.rekeningsysteem.test.database;
 import com.github.rvanheest.rekeningsysteem.database.DebtorTable;
 import com.github.rvanheest.rekeningsysteem.model.document.header.Debtor;
 import io.reactivex.Observable;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.sql.Connection;

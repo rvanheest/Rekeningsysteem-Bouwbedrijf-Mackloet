@@ -2,7 +2,6 @@ package com.github.rvanheest.rekeningsysteem.test.database;
 
 import com.github.rvanheest.rekeningsysteem.database.InvoiceNumberTable;
 import com.github.rvanheest.rekeningsysteem.invoiceNumber.InvoiceNumber;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.time.LocalDate;

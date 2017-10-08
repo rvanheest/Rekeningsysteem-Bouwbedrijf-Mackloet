@@ -48,7 +48,7 @@ public class NormalInvoiceIntegrationTest extends AbstractDocumentIntegrationTes
     String description = "Voor u verrichte werkzaamheden betreffende renovatie badkamervloer i.v.m. lekkage";
 
     CurrencyUnit currency = Monetary.getCurrency("EUR");
-    ItemList<NormalListItem> itemList = new ItemList<NormalListItem>(currency);
+    ItemList<NormalListItem> itemList = new ItemList<>(currency);
     this.addArtikels(itemList, currency);
     this.addLoon(itemList, currency);
 

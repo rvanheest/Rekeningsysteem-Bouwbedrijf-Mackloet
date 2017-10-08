@@ -2,9 +2,7 @@ package com.github.rvanheest.rekeningsysteem.test;
 
 import com.github.rvanheest.rekeningsysteem.model.MyMonetaryFormatter;
 import org.javamoney.moneta.Money;
-import org.javamoney.moneta.ToStringMonetaryAmountFormat;
 import org.javamoney.moneta.format.CurrencyStyle;
-import org.javamoney.moneta.format.MonetaryAmountDecimalFormatBuilder;
 import org.junit.Test;
 
 import javax.money.CurrencyUnit;
@@ -22,7 +20,7 @@ import static org.junit.Assert.assertEquals;
 
 public class MoneyDemo {
 
-  //@Test
+  @Test
   public void testMoney() {
     CurrencyUnit euro = Monetary.getCurrency("EUR");
     MonetaryAmount money = Money.of(1234567.346, euro);
@@ -50,5 +48,12 @@ public class MoneyDemo {
     System.out.println(amountFormat3.format(Money.of(-3.1415, euro)));
 
     System.out.println(Currency.getInstance(euro.getCurrencyCode()).getSymbol(locale));
+
+    MonetaryAmount parsed = amountFormat3.parse("-0,13");
+    System.out.println(parsed);
+    MonetaryAmount dollars = parsed.with(m -> Money.of(m.getNumber(), Monetary.getCurrency("EUR")));
+    System.out.println(dollars);
+
+    System.out.println(amountFormat2.parse("€ 12,13"));
   }
 }

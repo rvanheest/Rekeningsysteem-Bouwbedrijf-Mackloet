@@ -4,7 +4,6 @@ import com.github.rvanheest.rekeningsysteem.database.EsselinkItemTable;
 import com.github.rvanheest.rekeningsysteem.esselinkItems.EsselinkItemHandler;
 import com.github.rvanheest.rekeningsysteem.test.TestSupportFixture;
 import com.github.rvanheest.rekeningsysteem.test.database.DatabaseFixture;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 

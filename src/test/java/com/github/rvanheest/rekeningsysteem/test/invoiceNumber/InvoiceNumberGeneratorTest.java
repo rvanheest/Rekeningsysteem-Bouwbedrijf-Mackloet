@@ -5,7 +5,6 @@ import com.github.rvanheest.rekeningsysteem.invoiceNumber.InvoiceNumber;
 import com.github.rvanheest.rekeningsysteem.invoiceNumber.InvoiceNumberGenerator;
 import com.github.rvanheest.rekeningsysteem.test.database.DatabaseFixture;
 import io.reactivex.Observable;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.time.LocalDate;

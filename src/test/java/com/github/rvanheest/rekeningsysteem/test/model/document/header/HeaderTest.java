@@ -29,22 +29,6 @@ public class HeaderTest extends EqualsHashCodeTest {
     return new Header(this.debtor, this.datum, this.invoiceNumber + ".");
   }
 
-  protected Header getInstance() {
-    return this.header;
-  }
-
-  protected Debtor getTestDebtor() {
-    return this.debtor;
-  }
-
-  protected LocalDate getTestDatum() {
-    return this.datum;
-  }
-
-  protected String getTestFatuurnummer() {
-    return this.invoiceNumber;
-  }
-
   @Override
   @Before
   public void setUp() throws Exception {

@@ -1,11 +1,9 @@
 package com.github.rvanheest.rekeningsysteem.test;
 
 import org.apache.commons.io.FileUtils;
-import org.junit.Before;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
