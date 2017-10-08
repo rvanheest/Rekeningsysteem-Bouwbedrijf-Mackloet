@@ -13,6 +13,8 @@ import com.github.rvanheest.rekeningsysteem.model.normal.NormalListItem;
 import com.github.rvanheest.rekeningsysteem.model.normal.SimpleListItem;
 import com.github.rvanheest.rekeningsysteem.model.normal.wage.HourlyWage;
 import com.github.rvanheest.rekeningsysteem.model.offer.Offer;
+import com.github.rvanheest.rekeningsysteem.model.repair.RepairInvoice;
+import com.github.rvanheest.rekeningsysteem.model.repair.RepairListItem;
 import com.github.rvanheest.rekeningsysteem.test.TestSupportFixture;
 import com.github.rvanheest.rekeningsysteem.xml.XmlReader1;
 import org.javamoney.moneta.Money;
@@ -131,6 +133,22 @@ public class XmlReader1Test {
     this.reader.load(xml1Dir.resolve("ParticulierFactuur2.xml"))
         .test()
         .assertValue(new NormalInvoice(header, "test123", itemList))
+        .assertNoErrors()
+        .assertComplete();
+  }
+
+  @Test
+  public void testReadRepairInvoice() throws DifferentCurrencyException {
+    Debtor debtor = new Debtor("testnaam", "teststraat", "testnummer", "testpostcode", "testplaats", "testbtwnr");
+    LocalDate date = LocalDate.of(2012, 1, 3);
+    Header header = new Header(debtor, date, "22012");
+
+    ItemList<RepairListItem> itemList = new ItemList<>(this.currency);
+    itemList.add(new RepairListItem("Bonnummer", "35343134", Money.of(50, this.currency), Money.of(60, this.currency)));
+
+    this.reader.load(xml1Dir.resolve("ReparatiesFactuur.xml"))
+        .test()
+        .assertValue(new RepairInvoice(header, itemList))
         .assertNoErrors()
         .assertComplete();
   }
