@@ -18,7 +18,7 @@ import static com.github.rvanheest.rekeningsysteem.xml.XmlWriterUtils.appendNode
 import static com.github.rvanheest.rekeningsysteem.xml.XmlWriterUtils.createElement;
 import static com.github.rvanheest.rekeningsysteem.xml.XmlWriterUtils.stringNode;
 
-public class XmlWriterItemVisitor implements ListItemVisitor<Function<Document, Node>> {
+class XmlWriterItemVisitor implements ListItemVisitor<Function<Document, Node>> {
 
   private Function<String, Function<Document, Node>> visit(MonetaryAmount amount) {
     return elementName -> createElement(elementName,

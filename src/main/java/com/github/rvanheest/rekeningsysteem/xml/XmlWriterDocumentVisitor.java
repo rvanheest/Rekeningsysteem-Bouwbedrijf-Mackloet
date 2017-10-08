@@ -1,7 +1,6 @@
 package com.github.rvanheest.rekeningsysteem.xml;
 
 import com.github.rvanheest.rekeningsysteem.function.Consumer;
-import com.github.rvanheest.rekeningsysteem.model.document.ItemList;
 import com.github.rvanheest.rekeningsysteem.model.document.ListItem;
 import com.github.rvanheest.rekeningsysteem.model.document.header.Debtor;
 import com.github.rvanheest.rekeningsysteem.model.document.header.Header;
@@ -13,7 +12,6 @@ import com.github.rvanheest.rekeningsysteem.model.visitor.DocumentVisitor;
 import com.github.rvanheest.rekeningsysteem.model.visitor.ListItemVisitor;
 import io.reactivex.functions.Function;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 import javax.money.CurrencyUnit;
@@ -25,11 +23,11 @@ import static com.github.rvanheest.rekeningsysteem.xml.XmlWriterUtils.createElem
 import static com.github.rvanheest.rekeningsysteem.xml.XmlWriterUtils.optionalStringNode;
 import static com.github.rvanheest.rekeningsysteem.xml.XmlWriterUtils.stringNode;
 
-public class XmlWriterDocumentVisitor implements DocumentVisitor<Function<Document, Node>> {
+class XmlWriterDocumentVisitor implements DocumentVisitor<Function<Document, Node>> {
 
   private final ListItemVisitor<Function<Document, Node>> itemVisitor;
 
-  public XmlWriterDocumentVisitor(ListItemVisitor<Function<Document, Node>> itemVisitor) {
+  XmlWriterDocumentVisitor(ListItemVisitor<Function<Document, Node>> itemVisitor) {
     this.itemVisitor = itemVisitor;
   }
 

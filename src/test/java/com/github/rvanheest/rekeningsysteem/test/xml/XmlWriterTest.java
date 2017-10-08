@@ -20,7 +20,6 @@ import com.github.rvanheest.rekeningsysteem.model.repair.RepairInvoice;
 import com.github.rvanheest.rekeningsysteem.model.repair.RepairListItem;
 import com.github.rvanheest.rekeningsysteem.test.TestSupportFixture;
 import com.github.rvanheest.rekeningsysteem.xml.XmlWriter;
-import org.apache.commons.io.FileUtils;
 import org.javamoney.moneta.Money;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -58,13 +57,11 @@ public class XmlWriterTest implements TestSupportFixture {
     this.writer = new XmlWriter(builder, transformerFactory);
   }
 
-  private Path write(AbstractDocument document, String filename) throws XmlWriteException {
+  private void write(AbstractDocument document, String filename) throws XmlWriteException {
     Path path = this.getTestDir().resolve(filename);
     assertFalse(Files.exists(path));
     this.writer.save(document, path);
     assertTrue(Files.exists(path));
-
-    return path;
   }
 
   @Test
@@ -80,8 +77,7 @@ public class XmlWriterTest implements TestSupportFixture {
 
     MutationInvoice invoice = new MutationInvoice(factuurHeader, itemList);
 
-    Path path = this.write(invoice, "MutationInvoice.xml");
-    System.out.println(FileUtils.readFileToString(path.toFile()));
+    this.write(invoice, "MutationInvoice.xml");
   }
 
   @Test
@@ -91,8 +87,7 @@ public class XmlWriterTest implements TestSupportFixture {
     Header header = new Header(debtor, date, "272011");
     Offer offer = new Offer(header, "text", true);
 
-    Path path = this.write(offer, "Offer.xml");
-    System.out.println(FileUtils.readFileToString(path.toFile()));
+    this.write(offer, "Offer.xml");
   }
 
   @Test
@@ -117,8 +112,7 @@ public class XmlWriterTest implements TestSupportFixture {
     itemList.add(new DefaultWage("foobar", Money.of(40.0, this.currency), 6.0));
 
     NormalInvoice invoice = new NormalInvoice(header, description, itemList);
-    Path path = this.write(invoice, "NormalInvoice.xml");
-    System.out.println(FileUtils.readFileToString(path.toFile()));
+    this.write(invoice, "NormalInvoice.xml");
   }
 
   @Test
@@ -153,7 +147,6 @@ public class XmlWriterTest implements TestSupportFixture {
     itemList.add(new RepairListItem("Bonnummer", "111148", Money.of(3878.2, this.currency), Money.of(2585.46, this.currency)));
 
     RepairInvoice invoice = new RepairInvoice(header, itemList);
-    Path path = this.write(invoice, "RepairsInvoice.xml");
-    System.out.println(FileUtils.readFileToString(path.toFile()));
+    this.write(invoice, "RepairsInvoice.xml");
   }
 }
