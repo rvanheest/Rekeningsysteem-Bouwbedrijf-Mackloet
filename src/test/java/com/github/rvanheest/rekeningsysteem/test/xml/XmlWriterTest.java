@@ -1,6 +1,8 @@
 package com.github.rvanheest.rekeningsysteem.test.xml;
 
 import com.github.rvanheest.rekeningsysteem.exception.DifferentCurrencyException;
+import com.github.rvanheest.rekeningsysteem.exception.XmlWriteException;
+import com.github.rvanheest.rekeningsysteem.model.document.AbstractDocument;
 import com.github.rvanheest.rekeningsysteem.model.document.ItemList;
 import com.github.rvanheest.rekeningsysteem.model.document.header.Debtor;
 import com.github.rvanheest.rekeningsysteem.model.document.header.Header;
@@ -17,7 +19,8 @@ import com.github.rvanheest.rekeningsysteem.model.offer.Offer;
 import com.github.rvanheest.rekeningsysteem.model.repair.RepairInvoice;
 import com.github.rvanheest.rekeningsysteem.model.repair.RepairListItem;
 import com.github.rvanheest.rekeningsysteem.test.TestSupportFixture;
-import com.github.rvanheest.rekeningsysteem.xml.XmlReader4;
+import com.github.rvanheest.rekeningsysteem.xml.XmlWriter;
+import org.apache.commons.io.FileUtils;
 import org.javamoney.moneta.Money;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -25,34 +28,49 @@ import org.junit.Test;
 
 import javax.money.CurrencyUnit;
 import javax.money.Monetary;
+import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import java.net.URISyntaxException;
+import javax.xml.transform.TransformerFactory;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.LocalDate;
 
-public class XmlReader4Test {
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
-  private XmlReader4 reader;
+public class XmlWriterTest implements TestSupportFixture {
+
+  private XmlWriter writer;
   private final CurrencyUnit currency = Monetary.getCurrency("EUR");
-  private static Path xml4Dir;
 
   @BeforeClass
-  public static void setUpClass() throws URISyntaxException {
+  public static void setUpClass() {
     TestSupportFixture.slfBridger();
-    xml4Dir = Paths.get(XmlReader4Test.class.getClassLoader().getResource("xml/xml4").toURI());
   }
 
   @Before
-  public void setUp() throws ParserConfigurationException {
-    this.reader = new XmlReader4(DocumentBuilderFactory.newInstance().newDocumentBuilder());
+  public void setUp() throws IOException, ParserConfigurationException {
+    this.resetTestDir();
+    DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+    TransformerFactory transformerFactory = TransformerFactory.newInstance();
+    this.writer = new XmlWriter(builder, transformerFactory);
+  }
+
+  private Path write(AbstractDocument document, String filename) throws XmlWriteException {
+    Path path = this.getTestDir().resolve(filename);
+    assertFalse(Files.exists(path));
+    this.writer.save(document, path);
+    assertTrue(Files.exists(path));
+
+    return path;
   }
 
   @Test
-  public void testReadMutationInvoice() throws DifferentCurrencyException {
-    Debtor debtor = new Debtor("Name", "Street", "Number", "ZipCode", "Place", "btw");
-    LocalDate date = LocalDate.of(2011, 5, 9);
+  public void testWriteMutationInvoiceToXml() throws DifferentCurrencyException, XmlWriteException, IOException {
+    Debtor debtor = new Debtor("name", "street", "number", "zipcode", "city", "vatNumber");
+    LocalDate date = LocalDate.of(2017, 7, 30);
     Header factuurHeader = new Header(debtor, date, "272011");
 
     ItemList<MutationListItem> itemList = new ItemList<>(this.currency);
@@ -60,33 +78,28 @@ public class XmlReader4Test {
     itemList.add(new MutationListItem("Bonnummer", "111477", Money.of(4820.96, this.currency)));
     itemList.add(new MutationListItem("Bonnummer", "112308", Money.of(5510.74, this.currency)));
 
-    this.reader.load(xml4Dir.resolve("mutatiesFactuurXMLTest.xml"))
-        .test()
-        .assertValue(new MutationInvoice(factuurHeader, itemList))
-        .assertNoErrors()
-        .assertComplete();
+    MutationInvoice invoice = new MutationInvoice(factuurHeader, itemList);
+
+    Path path = this.write(invoice, "MutationInvoice.xml");
+    System.out.println(FileUtils.readFileToString(path.toFile()));
   }
 
   @Test
-  public void testReadOffer() {
-    Debtor debtor = new Debtor("Dhr. M. Stolk", "Ring", "", "", "Nieuwe-Tonge");
-    LocalDate date = LocalDate.of(2011, 8, 11);
-    Header factuurHeader = new Header(debtor, date, "107");
+  public void testWriteOfferToXml() throws XmlWriteException, IOException {
+    Debtor debtor = new Debtor("name", "street", "number", "zipcode", "city", "vatNumber");
+    LocalDate date = LocalDate.of(2017, 7, 30);
+    Header header = new Header(debtor, date, "272011");
+    Offer offer = new Offer(header, "text", true);
 
-    String text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce quis quam tortor.";
-
-    this.reader.load(xml4Dir.resolve("offerteXMLTest.xml"))
-        .test()
-        .assertValue(new Offer(factuurHeader, text, false))
-        .assertNoErrors()
-        .assertComplete();
+    Path path = this.write(offer, "Offer.xml");
+    System.out.println(FileUtils.readFileToString(path.toFile()));
   }
 
   @Test
-  public void testReadNormalInvoice() throws DifferentCurrencyException {
-    Debtor debtor = new Debtor("Name", "Street", "Number", "Zipcode", "Place");
-    LocalDate date = LocalDate.of(2011, 4, 2);
-    Header header = new Header(debtor, date, "22011");
+  public void testWriteNormalInvoice() throws DifferentCurrencyException, XmlWriteException, IOException {
+    Debtor debtor = new Debtor("name", "street", "number", "zipcode", "city", "vatNumber");
+    LocalDate date = LocalDate.of(2017, 7, 30);
+    Header header = new Header(debtor, date, "272011");
     String description = "Voor u verrichte werkzaamheden betreffende renovatie badkamervloer i.v.m. lekkage";
 
     ItemList<NormalListItem> itemList = new ItemList<>(this.currency);
@@ -103,18 +116,16 @@ public class XmlReader4Test {
     itemList.add(new HourlyWage("test123", 12.0, Money.of(12.5, this.currency), 6.0));
     itemList.add(new DefaultWage("foobar", Money.of(40.0, this.currency), 6.0));
 
-    this.reader.load(xml4Dir.resolve("particulierFactuurXMLTest.xml"))
-        .test()
-        .assertValue(new NormalInvoice(header, description, itemList))
-        .assertNoErrors()
-        .assertComplete();
+    NormalInvoice invoice = new NormalInvoice(header, description, itemList);
+    Path path = this.write(invoice, "NormalInvoice.xml");
+    System.out.println(FileUtils.readFileToString(path.toFile()));
   }
 
   @Test
-  public void testReadRepairsInvoice() throws DifferentCurrencyException {
-    Debtor debtor = new Debtor("Name", "Street", "Number", "Zipcode", "Place", "BtwNumber");
-    LocalDate date = LocalDate.of(2011, 4, 5);
-    Header header = new Header(debtor, date, "232011");
+  public void testWriteRepairsInvoice() throws DifferentCurrencyException, XmlWriteException, IOException {
+    Debtor debtor = new Debtor("name", "street", "number", "zipcode", "city", "vatNumber");
+    LocalDate date = LocalDate.of(2017, 7, 30);
+    Header header = new Header(debtor, date, "272011");
 
     ItemList<RepairListItem> itemList = new ItemList<>(this.currency);
     itemList.add(new RepairListItem("Bonnummer", "110543", Money.of(77, this.currency), Money.of(6.5, this.currency)));
@@ -141,10 +152,8 @@ public class XmlReader4Test {
     itemList.add(new RepairListItem("Bonnummer", "111272", Money.of(3630.66, this.currency), Money.of(2420.44, this.currency)));
     itemList.add(new RepairListItem("Bonnummer", "111148", Money.of(3878.2, this.currency), Money.of(2585.46, this.currency)));
 
-    this.reader.load(xml4Dir.resolve("reparatiesFactuurXMLTest.xml"))
-        .test()
-        .assertValue(new RepairInvoice(header, itemList))
-        .assertNoErrors()
-        .assertComplete();
+    RepairInvoice invoice = new RepairInvoice(header, itemList);
+    Path path = this.write(invoice, "RepairsInvoice.xml");
+    System.out.println(FileUtils.readFileToString(path.toFile()));
   }
 }

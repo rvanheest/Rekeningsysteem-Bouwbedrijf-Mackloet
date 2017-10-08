@@ -10,9 +10,21 @@ import com.github.rvanheest.rekeningsysteem.pdf.PdfExporter;
 import com.github.rvanheest.rekeningsysteem.test.ConfigurationFixture;
 import com.github.rvanheest.rekeningsysteem.test.TestSupportFixture;
 import com.github.rvanheest.rekeningsysteem.test.database.DatabaseFixture;
+import com.github.rvanheest.rekeningsysteem.xml.XmlLoader;
+import com.github.rvanheest.rekeningsysteem.xml.XmlReader;
+import com.github.rvanheest.rekeningsysteem.xml.XmlReader1;
+import com.github.rvanheest.rekeningsysteem.xml.XmlReader2;
+import com.github.rvanheest.rekeningsysteem.xml.XmlReader3;
+import com.github.rvanheest.rekeningsysteem.xml.XmlReader4;
+import com.github.rvanheest.rekeningsysteem.xml.XmlSaver;
+import com.github.rvanheest.rekeningsysteem.xml.XmlWriter;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import javax.money.Monetary;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.TransformerFactory;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDate;
@@ -55,7 +67,7 @@ public abstract class AbstractDocumentIntegrationTest extends DatabaseFixture im
 
     assertFalse(document.getHeader().getInvoiceNumber().isPresent());
 
-    databaseAccess.doTransactionSingle(connection -> table.initInvoiceNumber()
+    this.databaseAccess.doTransactionSingle(connection -> table.initInvoiceNumber()
         .apply(connection)
         .doOnSuccess(in -> assertEquals(new InvoiceNumber(1, currentYear), in))
         .flatMap(in -> table.setInvoiceNumber(invoiceNumber).apply(connection))
@@ -83,5 +95,28 @@ public abstract class AbstractDocumentIntegrationTest extends DatabaseFixture im
     exporter.export(document, pdf);
 
     assertTrue(Files.exists(pdf));
+  }
+
+  @Test
+  public void testSaveXml() throws Exception {
+    DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+    TransformerFactory transformerFactory = TransformerFactory.newInstance();
+    XmlSaver saver = new XmlWriter(builder, transformerFactory);
+    XmlLoader reader = new XmlReader(builder,
+        new XmlReader4(builder),
+        new XmlReader3(builder),
+        new XmlReader2(builder),
+        new XmlReader1(builder, Locale.forLanguageTag("nl-NL"), Monetary.getCurrency("EUR")));
+
+    AbstractDocument document = this.makeDocument(this.getHeaderWithInvoiceNumber());
+    Path xml = this.getTestDir().resolve("document.xml");
+
+    assertFalse(Files.exists(xml));
+    saver.save(document, xml);
+    assertTrue(Files.exists(xml));
+    reader.load(xml).test()
+        .assertValue(document)
+        .assertNoErrors()
+        .assertComplete();
   }
 }
