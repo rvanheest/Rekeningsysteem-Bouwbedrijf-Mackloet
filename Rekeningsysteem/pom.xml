@@ -15,8 +15,8 @@
 
 	<repositories>
 		<repository>
-			<id>jlrrepo</id>
-			<url>file://${basedir}/jlrrepo</url>
+			<id>lib</id>
+			<url>file://${project.basedir}/lib</url>
 		</repository>
 	</repositories>
 
@@ -84,15 +84,15 @@
 		<!-- PDF generator via LaTeX -->
 		<!-- Note that this is from the local repository defined above. It can 
 			be downloaded from http://www.nixo-soft.de/en/category/Downloads/page/libs/JavaLatexReport.php 
-			After downloading, use mvn install:install-file -Dfile=<path-to-jar> -DgroupId="jlr" 
-			-DartifactId="jlr" -Dversion="0" -Dpackaging="jar" -DlocalRepositoryPath="${basedir}/jlrrepo" 
-			to install this dependency. -->
+			After downloading, use mvn install:install-file -Dfile=lib/jlr.jar -DgroupId=jlr
+			-DartifactId=jlr -Dversion=0 -Dpackaging=jar -DlocalRepositoryPath=lib/
+			to install this dependency.
+			See also http://randomizedsort.blogspot.nl/2011/10/configuring-maven-to-use-local-library.html
+			-->
 		<dependency>
 			<groupId>jlr</groupId>
 			<artifactId>jlr</artifactId>
 			<version>0</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/lib/jlr.jar</systemPath>
 		</dependency>
 
 		<!-- SQLite database connector -->
