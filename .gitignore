@@ -2,6 +2,7 @@
 /Releases
 
 /.idea
-/*.iml
+*.iml
 
 /Rekeningsysteem/.settings/
+target/
