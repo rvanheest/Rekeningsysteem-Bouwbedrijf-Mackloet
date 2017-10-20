@@ -19,31 +19,31 @@ public class MutatiesListPane extends AbstractListPane<MutatiesModel> {
 	@Override
 	protected List<TableColumn<MutatiesModel, ?>> initTableColumns() {
 		TableColumn<MutatiesModel, String> omschrCol = new TableColumn<>("Omschrijving");
-		TableColumn<MutatiesModel, String> bonnrCol = new TableColumn<>("Bonnummer");
+		TableColumn<MutatiesModel, String> ordernrCol = new TableColumn<>("Ordernummer");
 		TableColumn<MutatiesModel, Double> prijsCol = new TableColumn<>("Prijs");
 
 		omschrCol.setMinWidth(300);
-		bonnrCol.setMinWidth(100);
+		ordernrCol.setMinWidth(100);
 		prijsCol.setMinWidth(100);
 
 		omschrCol.setCellValueFactory(new PropertyValueFactory<>("omschrijving"));
-		bonnrCol.setCellValueFactory(new PropertyValueFactory<>("bonnummer"));
+		ordernrCol.setCellValueFactory(new PropertyValueFactory<>("ordernummer"));
 		prijsCol.setCellValueFactory(new PropertyValueFactory<>("prijs"));
 
 		prijsCol.setCellFactory(param -> new MoneyCell<>());
 
-		return Arrays.asList(omschrCol, bonnrCol, prijsCol, this.getDeleteCol());
+		return Arrays.asList(omschrCol, ordernrCol, prijsCol, this.getDeleteCol());
 	}
 
 	public static class MutatiesModel {
 
 		private String omschrijving;
-		private String bonnummer;
+		private String ordernummer;
 		private double prijs;
 
-		public MutatiesModel(String omschrijving, String bonnummer, double prijs) {
+		public MutatiesModel(String omschrijving, String ordernummer, double prijs) {
 			this.omschrijving = omschrijving;
-			this.bonnummer = bonnummer;
+			this.ordernummer = ordernummer;
 			this.prijs = prijs;
 		}
 
@@ -55,12 +55,12 @@ public class MutatiesListPane extends AbstractListPane<MutatiesModel> {
 			this.omschrijving = omschrijving;
 		}
 
-		public String getBonnummer() {
-			return this.bonnummer;
+		public String getOrdernummer() {
+			return this.ordernummer;
 		}
 
-		public void setBonnummer(String bonnummer) {
-			this.bonnummer = bonnummer;
+		public void setOrdernummer(String ordernummer) {
+			this.ordernummer = ordernummer;
 		}
 
 		public double getPrijs() {

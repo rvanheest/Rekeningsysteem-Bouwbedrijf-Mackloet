@@ -21,7 +21,7 @@
         <list>
             <list-item>
                 <omschrijving>Bonnummer</omschrijving>
-                <bonnummer>1</bonnummer>
+                <ordernummer>1</ordernummer>
                 <loon>
                     <bedrag>12.0</bedrag>
                 </loon>
@@ -31,7 +31,7 @@
             </list-item>
             <list-item>
                 <omschrijving>Bonnummer</omschrijving>
-                <bonnummer>2</bonnummer>
+                <ordernummer>2</ordernummer>
                 <loon>
                     <bedrag>14.0</bedrag>
                 </loon>
@@ -41,7 +41,7 @@
             </list-item>
             <list-item>
                 <omschrijving>Bonnummer</omschrijving>
-                <bonnummer>3</bonnummer>
+                <ordernummer>3</ordernummer>
                 <loon>
                     <bedrag>16.0</bedrag>
                 </loon>
@@ -51,7 +51,7 @@
             </list-item>
             <list-item>
                 <omschrijving>Bonnummer</omschrijving>
-                <bonnummer>4</bonnummer>
+                <ordernummer>4</ordernummer>
                 <loon>
                     <bedrag>18.0</bedrag>
                 </loon>

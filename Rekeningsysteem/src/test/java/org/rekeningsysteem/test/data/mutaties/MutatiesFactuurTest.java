@@ -11,7 +11,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.rekeningsysteem.data.mutaties.MutatiesBon;
+import org.rekeningsysteem.data.mutaties.MutatiesInkoopOrder;
 import org.rekeningsysteem.data.mutaties.MutatiesFactuur;
 import org.rekeningsysteem.data.util.AbstractFactuur;
 import org.rekeningsysteem.data.util.ItemList;
@@ -21,7 +21,7 @@ import org.rekeningsysteem.data.util.visitor.RekeningVoidVisitor;
 import org.rekeningsysteem.test.data.util.AbstractFactuurTest;
 
 @RunWith(MockitoJUnitRunner.class)
-public class MutatiesFactuurTest extends AbstractFactuurTest<MutatiesBon> {
+public class MutatiesFactuurTest extends AbstractFactuurTest<MutatiesInkoopOrder> {
 
 	private MutatiesFactuur factuur;
 	@Mock private RekeningVisitor<Object> visitor;
@@ -34,7 +34,7 @@ public class MutatiesFactuurTest extends AbstractFactuurTest<MutatiesBon> {
 
 	@Override
 	protected MutatiesFactuur makeInstance(FactuurHeader header, Currency currency,
-			ItemList<MutatiesBon> itemList) {
+			ItemList<MutatiesInkoopOrder> itemList) {
 		return new MutatiesFactuur(header, currency, itemList);
 	}
 
@@ -44,8 +44,8 @@ public class MutatiesFactuurTest extends AbstractFactuurTest<MutatiesBon> {
 	}
 
 	@Override
-	protected AbstractFactuur<MutatiesBon> makeNotInstance(FactuurHeader otherHeader,
-			Currency currency, ItemList<MutatiesBon> itemList) {
+	protected AbstractFactuur<MutatiesInkoopOrder> makeNotInstance(FactuurHeader otherHeader,
+			Currency currency, ItemList<MutatiesInkoopOrder> itemList) {
 		return new MutatiesFactuur(otherHeader, currency, itemList);
 	}
 

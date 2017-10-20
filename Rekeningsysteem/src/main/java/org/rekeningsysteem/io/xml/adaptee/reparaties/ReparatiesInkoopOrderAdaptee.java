@@ -14,14 +14,14 @@ import org.rekeningsysteem.io.xml.adapter.util.GeldAdapter;
 
 @XmlRootElement(name = "reparaties-bon")
 @XmlType(propOrder = { "omschrijving", "bonnummer", "loon", "materiaal" })
-public class ReparatiesBonAdaptee extends ListItemAdapteeVisitable {
+public class ReparatiesInkoopOrderAdaptee extends ListItemAdapteeVisitable {
 
 	private String omschrijving;
 	private String bonnummer;
 	private Geld loon;
 	private Geld materiaal;
 
-	private ReparatiesBonAdaptee() {
+	private ReparatiesInkoopOrderAdaptee() {
 	}
 
 	@XmlElement
@@ -29,7 +29,7 @@ public class ReparatiesBonAdaptee extends ListItemAdapteeVisitable {
 		return this.omschrijving;
 	}
 
-	public ReparatiesBonAdaptee setOmschrijving(String omschrijving) {
+	public ReparatiesInkoopOrderAdaptee setOmschrijving(String omschrijving) {
 		this.omschrijving = omschrijving;
 		return this;
 	}
@@ -39,7 +39,7 @@ public class ReparatiesBonAdaptee extends ListItemAdapteeVisitable {
 		return this.bonnummer;
 	}
 
-	public ReparatiesBonAdaptee setBonnummer(String bonnummer) {
+	public ReparatiesInkoopOrderAdaptee setBonnummer(String bonnummer) {
 		this.bonnummer = bonnummer;
 		return this;
 	}
@@ -49,7 +49,7 @@ public class ReparatiesBonAdaptee extends ListItemAdapteeVisitable {
 		return this.loon;
 	}
 
-	public ReparatiesBonAdaptee setLoon(Geld loon) {
+	public ReparatiesInkoopOrderAdaptee setLoon(Geld loon) {
 		this.loon = loon;
 		return this;
 	}
@@ -59,7 +59,7 @@ public class ReparatiesBonAdaptee extends ListItemAdapteeVisitable {
 		return this.materiaal;
 	}
 
-	public ReparatiesBonAdaptee setMateriaal(Geld materiaal) {
+	public ReparatiesInkoopOrderAdaptee setMateriaal(Geld materiaal) {
 		this.materiaal = materiaal;
 		return this;
 	}
@@ -69,7 +69,7 @@ public class ReparatiesBonAdaptee extends ListItemAdapteeVisitable {
 		return visitor.visit(this);
 	}
 
-	public static ReparatiesBonAdaptee build(Function<ReparatiesBonAdaptee, ReparatiesBonAdaptee> builder) {
-		return builder.apply(new ReparatiesBonAdaptee());
+	public static ReparatiesInkoopOrderAdaptee build(Function<ReparatiesInkoopOrderAdaptee, ReparatiesInkoopOrderAdaptee> builder) {
+		return builder.apply(new ReparatiesInkoopOrderAdaptee());
 	}
 }

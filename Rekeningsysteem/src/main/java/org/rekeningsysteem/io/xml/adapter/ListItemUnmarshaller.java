@@ -1,25 +1,25 @@
 package org.rekeningsysteem.io.xml.adapter;
 
-import org.rekeningsysteem.data.mutaties.MutatiesBon;
+import org.rekeningsysteem.data.mutaties.MutatiesInkoopOrder;
 import org.rekeningsysteem.data.particulier.AnderArtikel;
 import org.rekeningsysteem.data.particulier.GebruiktEsselinkArtikel;
 import org.rekeningsysteem.data.particulier.loon.InstantLoon;
 import org.rekeningsysteem.data.particulier.loon.ProductLoon;
-import org.rekeningsysteem.data.reparaties.ReparatiesBon;
+import org.rekeningsysteem.data.reparaties.ReparatiesInkoopOrder;
 import org.rekeningsysteem.data.util.ListItem;
 import org.rekeningsysteem.io.xml.adaptee.ListItemAdapteeVisitor;
-import org.rekeningsysteem.io.xml.adaptee.mutaties.MutatiesBonAdaptee;
+import org.rekeningsysteem.io.xml.adaptee.mutaties.MutatiesInkoopOrderAdaptee;
 import org.rekeningsysteem.io.xml.adaptee.particulier.AnderArtikelAdaptee;
 import org.rekeningsysteem.io.xml.adaptee.particulier.GebruiktEsselinkArtikelAdaptee;
 import org.rekeningsysteem.io.xml.adaptee.particulier.loon.InstantLoonAdaptee;
 import org.rekeningsysteem.io.xml.adaptee.particulier.loon.ProductLoonAdaptee;
-import org.rekeningsysteem.io.xml.adaptee.reparaties.ReparatiesBonAdaptee;
+import org.rekeningsysteem.io.xml.adaptee.reparaties.ReparatiesInkoopOrderAdaptee;
 
 public class ListItemUnmarshaller implements ListItemAdapteeVisitor<ListItem> {
 
 	@Override
-	public ListItem visit(MutatiesBonAdaptee adaptee) {
-		return new MutatiesBon(adaptee.getOmschrijving(), adaptee.getBonnummer(),
+	public ListItem visit(MutatiesInkoopOrderAdaptee adaptee) {
+		return new MutatiesInkoopOrder(adaptee.getOmschrijving(), adaptee.getBonnummer(),
 				adaptee.getPrijs());
 	}
 
@@ -36,8 +36,8 @@ public class ListItemUnmarshaller implements ListItemAdapteeVisitor<ListItem> {
 	}
 
 	@Override
-	public ListItem visit(ReparatiesBonAdaptee adaptee) {
-		return new ReparatiesBon(adaptee.getOmschrijving(), adaptee.getBonnummer(),
+	public ListItem visit(ReparatiesInkoopOrderAdaptee adaptee) {
+		return new ReparatiesInkoopOrder(adaptee.getOmschrijving(), adaptee.getBonnummer(),
 				adaptee.getLoon(), adaptee.getMateriaal());
 	}
 

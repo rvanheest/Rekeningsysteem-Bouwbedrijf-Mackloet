@@ -4,40 +4,40 @@ import java.util.Currency;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.rekeningsysteem.data.mutaties.MutatiesBon;
+import org.rekeningsysteem.data.mutaties.MutatiesInkoopOrder;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.data.util.ItemList;
 import org.rekeningsysteem.ui.list.AbstractListController;
 import org.rekeningsysteem.ui.mutaties.MutatiesListPane.MutatiesModel;
 
-public class MutatiesListController extends AbstractListController<MutatiesBon, MutatiesModel> {
+public class MutatiesListController extends AbstractListController<MutatiesInkoopOrder, MutatiesModel> {
 
 	public MutatiesListController(Currency currency) {
 		this(currency, new MutatiesListPane());
 	}
 
-	public MutatiesListController(Currency currency, List<MutatiesBon> input) {
+	public MutatiesListController(Currency currency, List<MutatiesInkoopOrder> input) {
 		this(currency);
 		this.getUI().setData(modelToUI(input));
 	}
 
 	public MutatiesListController(Currency currency, MutatiesListPane ui) {
-		super(currency, ui, MutatiesBonController::new);
+		super(currency, ui, MutatiesInkoopOrderController::new);
 	}
 
 	@Override
-	protected List<MutatiesModel> modelToUI(List<MutatiesBon> list) {
+	protected List<MutatiesModel> modelToUI(List<MutatiesInkoopOrder> list) {
 		return list.stream()
 				.map(item -> new MutatiesModel(item.getOmschrijving(),
-						item.getBonnummer(), item.getMateriaal().getBedrag()))
+						item.getInkoopOrderNummer(), item.getMateriaal().getBedrag()))
 				.collect(Collectors.toList());
 	}
 
 	@Override
-	protected ItemList<MutatiesBon> uiToModel(List<? extends MutatiesModel> list) {
+	protected ItemList<MutatiesInkoopOrder> uiToModel(List<? extends MutatiesModel> list) {
 		return list.stream()
-				.map(item -> new MutatiesBon(item.getOmschrijving(),
-						item.getBonnummer(), new Geld(item.getPrijs())))
+				.map(item -> new MutatiesInkoopOrder(item.getOmschrijving(),
+						item.getOrdernummer(), new Geld(item.getPrijs())))
 				.collect(Collectors.toCollection(ItemList::new));
 	}
 }

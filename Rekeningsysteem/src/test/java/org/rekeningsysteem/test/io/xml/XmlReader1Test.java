@@ -12,7 +12,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.rekeningsysteem.data.mutaties.MutatiesBon;
+import org.rekeningsysteem.data.mutaties.MutatiesInkoopOrder;
 import org.rekeningsysteem.data.mutaties.MutatiesFactuur;
 import org.rekeningsysteem.data.offerte.Offerte;
 import org.rekeningsysteem.data.particulier.EsselinkArtikel;
@@ -21,7 +21,7 @@ import org.rekeningsysteem.data.particulier.ParticulierArtikel;
 import org.rekeningsysteem.data.particulier.AnderArtikel;
 import org.rekeningsysteem.data.particulier.ParticulierFactuur;
 import org.rekeningsysteem.data.particulier.loon.ProductLoon;
-import org.rekeningsysteem.data.reparaties.ReparatiesBon;
+import org.rekeningsysteem.data.reparaties.ReparatiesInkoopOrder;
 import org.rekeningsysteem.data.reparaties.ReparatiesFactuur;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.data.util.ItemList;
@@ -116,8 +116,8 @@ public class XmlReader1Test {
 				"teststraat", "testnummer", "testpostcode", "testplaats", "testbtwnr"),
 				LocalDate.of(2012, 2, 7), "72012");
 
-		ItemList<MutatiesBon> itemList = new ItemList<>();
-		itemList.add(new MutatiesBon("Bonnummer", "13151", new Geld(2135131.00)));
+		ItemList<MutatiesInkoopOrder> itemList = new ItemList<>();
+		itemList.add(new MutatiesInkoopOrder("Ordernummer", "13151", new Geld(2135131.00)));
 
 		MutatiesFactuur expected = new MutatiesFactuur(factuurHeader,
 				Currency.getInstance("EUR"), itemList);
@@ -133,8 +133,8 @@ public class XmlReader1Test {
 				"teststraat", "testnummer", "testpostcode", "testplaats", "testbtwnr"),
 				LocalDate.of(2012, 1, 3), "22012");
 
-		ItemList<ReparatiesBon> itemList = new ItemList<>();
-		itemList.add(new ReparatiesBon("Bonnummer", "35343134", new Geld(50), new Geld(60)));
+		ItemList<ReparatiesInkoopOrder> itemList = new ItemList<>();
+		itemList.add(new ReparatiesInkoopOrder("Ordernummer", "35343134", new Geld(50), new Geld(60)));
 
 		ReparatiesFactuur expected = new ReparatiesFactuur(factuurHeader,
 				Currency.getInstance("EUR"), itemList);

@@ -4,13 +4,13 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.rekeningsysteem.data.mutaties.MutatiesBon;
+import org.rekeningsysteem.data.mutaties.MutatiesInkoopOrder;
 import org.rekeningsysteem.data.particulier.AnderArtikel;
 import org.rekeningsysteem.data.particulier.EsselinkArtikel;
 import org.rekeningsysteem.data.particulier.GebruiktEsselinkArtikel;
 import org.rekeningsysteem.data.particulier.loon.InstantLoon;
 import org.rekeningsysteem.data.particulier.loon.ProductLoon;
-import org.rekeningsysteem.data.reparaties.ReparatiesBon;
+import org.rekeningsysteem.data.reparaties.ReparatiesInkoopOrder;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.io.xml.adapter.ListItemAdapter;
 
@@ -49,14 +49,14 @@ public class ListItemAdapterTest {
 	}
 
 	@Test
-	public void testMarshalUnmarshalMutatiesBon() {
-		MutatiesBon expected = new MutatiesBon("omschr", "nr", new Geld(1));
+	public void testMarshalUnmarshalMutatiesInkoopOrder() {
+		MutatiesInkoopOrder expected = new MutatiesInkoopOrder("omschr", "nr", new Geld(1));
 		assertEquals(expected, this.adapter.unmarshal(this.adapter.marshal(expected)));
 	}
 
 	@Test
-	public void testMarshalUnmarshalReparatiesBon() {
-		ReparatiesBon expected = new ReparatiesBon("omschr", "bonnummer", new Geld(1), new Geld(3));
+	public void testMarshalUnmarshalReparatiesInkoopOrder() {
+		ReparatiesInkoopOrder expected = new ReparatiesInkoopOrder("omschr", "ordernummer", new Geld(1), new Geld(3));
 		assertEquals(expected, this.adapter.unmarshal(this.adapter.marshal(expected)));
 	}
 }

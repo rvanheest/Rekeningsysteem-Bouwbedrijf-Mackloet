@@ -14,13 +14,13 @@ import org.rekeningsysteem.io.xml.adapter.util.GeldAdapter;
 
 @XmlRootElement(name = "mutaties-bon")
 @XmlType(propOrder = { "omschrijving", "bonnummer", "prijs" })
-public class MutatiesBonAdaptee extends ListItemAdapteeVisitable {
+public class MutatiesInkoopOrderAdaptee extends ListItemAdapteeVisitable {
 
 	private String omschrijving;
 	private String bonnummer;
 	private Geld prijs;
 
-	private MutatiesBonAdaptee() {
+	private MutatiesInkoopOrderAdaptee() {
 	}
 
 	@XmlElement
@@ -28,7 +28,7 @@ public class MutatiesBonAdaptee extends ListItemAdapteeVisitable {
 		return this.omschrijving;
 	}
 
-	public MutatiesBonAdaptee setOmschrijving(String omschrijving) {
+	public MutatiesInkoopOrderAdaptee setOmschrijving(String omschrijving) {
 		this.omschrijving = omschrijving;
 		return this;
 	}
@@ -38,7 +38,7 @@ public class MutatiesBonAdaptee extends ListItemAdapteeVisitable {
 		return this.bonnummer;
 	}
 
-	public MutatiesBonAdaptee setBonnummer(String bonnummer) {
+	public MutatiesInkoopOrderAdaptee setBonnummer(String bonnummer) {
 		this.bonnummer = bonnummer;
 		return this;
 	}
@@ -48,7 +48,7 @@ public class MutatiesBonAdaptee extends ListItemAdapteeVisitable {
 		return this.prijs;
 	}
 
-	public MutatiesBonAdaptee setPrijs(Geld prijs) {
+	public MutatiesInkoopOrderAdaptee setPrijs(Geld prijs) {
 		this.prijs = prijs;
 		return this;
 	}
@@ -58,7 +58,7 @@ public class MutatiesBonAdaptee extends ListItemAdapteeVisitable {
 		return visitor.visit(this);
 	}
 
-	public static MutatiesBonAdaptee build(Function<MutatiesBonAdaptee, MutatiesBonAdaptee> builder) {
-		return builder.apply(new MutatiesBonAdaptee());
+	public static MutatiesInkoopOrderAdaptee build(Function<MutatiesInkoopOrderAdaptee, MutatiesInkoopOrderAdaptee> builder) {
+		return builder.apply(new MutatiesInkoopOrderAdaptee());
 	}
 }

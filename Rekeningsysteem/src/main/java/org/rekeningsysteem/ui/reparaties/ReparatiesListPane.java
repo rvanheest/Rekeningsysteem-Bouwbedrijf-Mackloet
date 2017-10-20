@@ -19,36 +19,36 @@ public class ReparatiesListPane extends AbstractListPane<ReparatiesModel> {
 	@Override
 	protected List<TableColumn<ReparatiesModel, ?>> initTableColumns() {
 		TableColumn<ReparatiesModel, String> omschrCol = new TableColumn<>("Omschrijving");
-		TableColumn<ReparatiesModel, String> bonnrCol = new TableColumn<>("Bonnummer");
+		TableColumn<ReparatiesModel, String> ordernrCol = new TableColumn<>("Ordernummer");
 		TableColumn<ReparatiesModel, Double> loonCol = new TableColumn<>("Arbeid");
 		TableColumn<ReparatiesModel, Double> materiaalCol = new TableColumn<>("Materiaal");
 
 		omschrCol.setMinWidth(300);
-		bonnrCol.setMinWidth(100);
+		ordernrCol.setMinWidth(100);
 		loonCol.setMinWidth(100);
 		materiaalCol.setMinWidth(100);
 
 		omschrCol.setCellValueFactory(new PropertyValueFactory<>("omschrijving"));
-		bonnrCol.setCellValueFactory(new PropertyValueFactory<>("bonnummer"));
+		ordernrCol.setCellValueFactory(new PropertyValueFactory<>("ordernummer"));
 		loonCol.setCellValueFactory(new PropertyValueFactory<>("loon"));
 		materiaalCol.setCellValueFactory(new PropertyValueFactory<>("materiaal"));
 
 		loonCol.setCellFactory(param -> new MoneyCell<>());
 		materiaalCol.setCellFactory(param -> new MoneyCell<>());
 
-		return Arrays.asList(omschrCol, bonnrCol, loonCol, materiaalCol, this.getDeleteCol());
+		return Arrays.asList(omschrCol, ordernrCol, loonCol, materiaalCol, this.getDeleteCol());
 	}
 
 	public static class ReparatiesModel {
 
 		private String omschrijving;
-		private String bonnummer;
+		private String ordernummer;
 		private double loon;
 		private double materiaal;
 
-		public ReparatiesModel(String omschrijving, String bonnummer, double loon, double materiaal) {
+		public ReparatiesModel(String omschrijving, String ordernummer, double loon, double materiaal) {
 			this.omschrijving = omschrijving;
-			this.bonnummer = bonnummer;
+			this.ordernummer = ordernummer;
 			this.loon = loon;
 			this.materiaal = materiaal;
 		}
@@ -61,12 +61,12 @@ public class ReparatiesListPane extends AbstractListPane<ReparatiesModel> {
 			this.omschrijving = omschrijving;
 		}
 
-		public String getBonnummer() {
-			return this.bonnummer;
+		public String getOrdernummer() {
+			return this.ordernummer;
 		}
 
-		public void setBonnummer(String bonnummer) {
-			this.bonnummer = bonnummer;
+		public void setOrdernummer(String ordernummer) {
+			this.ordernummer = ordernummer;
 		}
 
 		public double getLoon() {

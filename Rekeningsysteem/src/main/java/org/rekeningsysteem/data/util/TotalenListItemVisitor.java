@@ -2,18 +2,18 @@ package org.rekeningsysteem.data.util;
 
 import java.util.function.Function;
 
-import org.rekeningsysteem.data.mutaties.MutatiesBon;
+import org.rekeningsysteem.data.mutaties.MutatiesInkoopOrder;
 import org.rekeningsysteem.data.particulier.AnderArtikel;
 import org.rekeningsysteem.data.particulier.GebruiktEsselinkArtikel;
 import org.rekeningsysteem.data.particulier.loon.InstantLoon;
 import org.rekeningsysteem.data.particulier.loon.ProductLoon;
-import org.rekeningsysteem.data.reparaties.ReparatiesBon;
+import org.rekeningsysteem.data.reparaties.ReparatiesInkoopOrder;
 import org.rekeningsysteem.data.util.visitor.ListItemVisitor;
 
 public class TotalenListItemVisitor implements ListItemVisitor<Function<Totalen, Totalen>> {
 
 	@Override
-	public Function<Totalen, Totalen> visit(MutatiesBon item) {
+	public Function<Totalen, Totalen> visit(MutatiesInkoopOrder item) {
 		return t -> t.add(item.getMateriaal());
 	}
 
@@ -30,7 +30,7 @@ public class TotalenListItemVisitor implements ListItemVisitor<Function<Totalen,
 	}
 
 	@Override
-	public Function<Totalen, Totalen> visit(ReparatiesBon item) {
+	public Function<Totalen, Totalen> visit(ReparatiesInkoopOrder item) {
 		return t -> t.add(item.getMateriaal());
 	}
 
