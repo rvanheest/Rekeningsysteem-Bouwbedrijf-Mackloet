@@ -10,28 +10,28 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.io.xml.adaptee.ListItemAdapteeVisitor;
-import org.rekeningsysteem.io.xml.adaptee.mutaties.MutatiesBonAdaptee;
+import org.rekeningsysteem.io.xml.adaptee.mutaties.MutatiesInkoopOrderAdaptee;
 import org.rekeningsysteem.test.io.xml.adaptee.ListItemAdapteeVisitableTest;
 
 @RunWith(MockitoJUnitRunner.class)
-public class MutatiesBonAdapteeTest extends ListItemAdapteeVisitableTest {
+public class MutatiesInkoopOrderNummerAdapteeTest extends ListItemAdapteeVisitableTest {
 
 	private final String omschrijving = "omschr";
-	private final String bonnummer = "bonnr";
+	private final String ordernummer = "ordernrnr";
 	private final Geld prijs = new Geld(12.04);
 	@Mock private ListItemAdapteeVisitor<Object> visitor;
 
 	@Override
-	protected MutatiesBonAdaptee makeInstance() {
-		return MutatiesBonAdaptee.build(a -> a
+	protected MutatiesInkoopOrderAdaptee makeInstance() {
+		return MutatiesInkoopOrderAdaptee.build(a -> a
 				.setOmschrijving(this.omschrijving)
-				.setBonnummer(this.bonnummer)
+				.setBonnummer(this.ordernummer)
 				.setPrijs(this.prijs));
 	}
 
 	@Override
-	protected MutatiesBonAdaptee getInstance() {
-		return (MutatiesBonAdaptee) super.getInstance();
+	protected MutatiesInkoopOrderAdaptee getInstance() {
+		return (MutatiesInkoopOrderAdaptee) super.getInstance();
 	}
 
 	@Test
@@ -40,8 +40,8 @@ public class MutatiesBonAdapteeTest extends ListItemAdapteeVisitableTest {
 	}
 
 	@Test
-	public void testSetGetBonnummer() {
-		assertEquals(this.bonnummer, this.getInstance().getBonnummer());
+	public void testSetGetOrderNummer() {
+		assertEquals(this.ordernummer, this.getInstance().getBonnummer());
 	}
 
 	@Test

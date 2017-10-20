@@ -8,13 +8,13 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.rekeningsysteem.data.mutaties.MutatiesBon;
+import org.rekeningsysteem.data.mutaties.MutatiesInkoopOrder;
 import org.rekeningsysteem.data.particulier.AnderArtikel;
 import org.rekeningsysteem.data.particulier.EsselinkArtikel;
 import org.rekeningsysteem.data.particulier.GebruiktEsselinkArtikel;
 import org.rekeningsysteem.data.particulier.loon.InstantLoon;
 import org.rekeningsysteem.data.particulier.loon.ProductLoon;
-import org.rekeningsysteem.data.reparaties.ReparatiesBon;
+import org.rekeningsysteem.data.reparaties.ReparatiesInkoopOrder;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.io.pdf.PdfListItemVisitor;
 
@@ -28,16 +28,16 @@ public class PdfListItemVisitorTest {
 	}
 
 	@Test
-	public void testVisitMutatiesBon() {
-		MutatiesBon item = new MutatiesBon("omschr", "bonn", new Geld(12.34));
-		List<String> expected = Arrays.asList("omschr", "bonn", "12,34");
+	public void testVisitMutatiesInkoopOrder() {
+		MutatiesInkoopOrder item = new MutatiesInkoopOrder("omschr", "ordernr", new Geld(12.34));
+		List<String> expected = Arrays.asList("omschr", "ordernr", "12,34");
 
 		assertEquals(expected, this.visitor.visit(item));
 	}
 
 	@Test
-	public void testVisitMutatiesBonZero() {
-		MutatiesBon item = new MutatiesBon("omschr", "bonn", new Geld(0.0));
+	public void testVisitMutatiesInkoopOrderZero() {
+		MutatiesInkoopOrder item = new MutatiesInkoopOrder("omschr", "ordernr", new Geld(0.0));
 		List<String> expected = Collections.emptyList();
 
 		assertEquals(expected, this.visitor.visit(item));
@@ -96,16 +96,16 @@ public class PdfListItemVisitorTest {
 	}
 
 	@Test
-	public void testVisitReparatiesBon() {
-		ReparatiesBon item = new ReparatiesBon("omschr", "bonn", new Geld(12.34), new Geld(56.78));
-		List<String> expected = Arrays.asList("omschr", "bonn", "12,34", "56,78", "69,12");
+	public void testVisitReparatiesInkoopOrder() {
+		ReparatiesInkoopOrder item = new ReparatiesInkoopOrder("omschr", "ordernr", new Geld(12.34), new Geld(56.78));
+		List<String> expected = Arrays.asList("omschr", "ordernr", "12,34", "56,78", "69,12");
 
 		assertEquals(expected, this.visitor.visit(item));
 	}
 
 	@Test
-	public void testVisitReparatiesBonZero() {
-		ReparatiesBon item = new ReparatiesBon("omschr", "bonn", new Geld(0.0), new Geld(0.0));
+	public void testVisitReparatiesInkoopOrderZero() {
+		ReparatiesInkoopOrder item = new ReparatiesInkoopOrder("omschr", "ordernr", new Geld(0.0), new Geld(0.0));
 		List<String> expected = Collections.emptyList();
 
 		assertEquals(expected, this.visitor.visit(item));

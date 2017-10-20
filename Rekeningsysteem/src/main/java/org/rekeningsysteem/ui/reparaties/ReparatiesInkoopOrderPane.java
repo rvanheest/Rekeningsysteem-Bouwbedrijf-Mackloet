@@ -17,25 +17,25 @@ import org.rekeningsysteem.ui.textfields.MoneyField;
 
 import rx.Observable;
 
-public class ReparatiesBonPane extends ItemPane {
+public class ReparatiesInkoopOrderPane extends ItemPane {
 
 	private final TextField omschrTF = new TextField();
-	private final TextField bonnrTF = new TextField();
+	private final TextField ordernrTF = new TextField();
 	private final MoneyField loonTF;
 	private final MoneyField materiaalTF;
 
 	private final Observable<String> omschrijving;
-	private final Observable<String> bonnummer;
+	private final Observable<String> ordernummer;
 	private final Observable<Double> loon;
 	private final Observable<Double> materiaal;
 
-	public ReparatiesBonPane(Currency currency) {
-		super("Nieuwe reparaties bon");
+	public ReparatiesInkoopOrderPane(Currency currency) {
+		super("Nieuwe reparaties inkooporder");
 		this.loonTF = new MoneyField(currency);
 		this.materiaalTF = new MoneyField(currency);
 
 		this.omschrijving = Observables.fromProperty(this.omschrTF.textProperty());
-		this.bonnummer = Observables.fromProperty(this.bonnrTF.textProperty());
+		this.ordernummer = Observables.fromProperty(this.ordernrTF.textProperty());
 		this.loon = Observables.fromProperty(this.loonTF.valueProperty())
 				.filter(Objects::nonNull)
 				.map(BigDecimal::doubleValue);
@@ -56,17 +56,17 @@ public class ReparatiesBonPane extends ItemPane {
 		content.setAlignment(Pos.CENTER);
 
 		Label omschrL = new Label("Omschrijving");
-		Label bonnrL = new Label("Bonnummer");
+		Label ordernrL = new Label("Ordernummer");
 		Label loonL = new Label("Arbeid");
 		Label materiaalL = new Label("Materiaal");
 
 		content.add(omschrL, 0, 0);
-		content.add(bonnrL, 0, 1);
+		content.add(ordernrL, 0, 1);
 		content.add(loonL, 0, 2);
 		content.add(materiaalL, 0, 3);
 
 		content.add(this.omschrTF, 1, 0);
-		content.add(this.bonnrTF, 1, 1);
+		content.add(this.ordernrTF, 1, 1);
 		content.add(this.loonTF, 1, 2);
 		content.add(this.materiaalTF, 1, 3);
 
@@ -81,12 +81,12 @@ public class ReparatiesBonPane extends ItemPane {
 		this.omschrTF.setText(omschrijving);
 	}
 
-	public Observable<String> getBonnummer() {
-		return this.bonnummer;
+	public Observable<String> getOrdernummer() {
+		return this.ordernummer;
 	}
 
-	public void setBonnummer(String bonnummer) {
-		this.bonnrTF.setText(bonnummer);
+	public void setOrdernummer(String ordernummer) {
+		this.ordernrTF.setText(ordernummer);
 	}
 
 	public Observable<Double> getLoon() {

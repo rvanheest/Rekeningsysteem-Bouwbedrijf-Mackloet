@@ -11,7 +11,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.rekeningsysteem.data.mutaties.MutatiesBon;
+import org.rekeningsysteem.data.mutaties.MutatiesInkoopOrder;
 import org.rekeningsysteem.data.util.ItemList;
 import org.rekeningsysteem.data.util.header.Debiteur;
 import org.rekeningsysteem.data.util.header.FactuurHeader;
@@ -25,7 +25,7 @@ public class MutatiesFactuurAdapteeTest extends RekeningAdapteeVisitableTest {
 	private final FactuurHeader header = new FactuurHeader(new Debiteur("", "", "", "", "", ""),
 			LocalDate.now(), "");
 	private final Currency currency = Currency.getInstance("EUR");
-	private final ItemList<MutatiesBon> list = new ItemList<>();
+	private final ItemList<MutatiesInkoopOrder> list = new ItemList<>();
 	@Mock private RekeningAdapteeVisitor<Object> visitor;
 
 	@Override

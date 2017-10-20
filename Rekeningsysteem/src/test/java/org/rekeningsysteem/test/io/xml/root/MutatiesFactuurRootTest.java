@@ -7,7 +7,7 @@ import java.util.Currency;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.rekeningsysteem.data.mutaties.MutatiesBon;
+import org.rekeningsysteem.data.mutaties.MutatiesInkoopOrder;
 import org.rekeningsysteem.data.mutaties.MutatiesFactuur;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.data.util.ItemList;
@@ -22,8 +22,8 @@ public class MutatiesFactuurRootTest {
 
 	@Before
 	public void setUp() {
-		ItemList<MutatiesBon> itemList = new ItemList<>();
-		itemList.add(new MutatiesBon("omschr", "nr", new Geld(1)));
+		ItemList<MutatiesInkoopOrder> itemList = new ItemList<>();
+		itemList.add(new MutatiesInkoopOrder("omschr", "nr", new Geld(1)));
 		this.expected = new MutatiesFactuur(new FactuurHeader(new Debiteur("a", "b",
 				"c", "d", "e", "f"), LocalDate.now(), "g"), Currency.getInstance("EUR"), itemList);
 

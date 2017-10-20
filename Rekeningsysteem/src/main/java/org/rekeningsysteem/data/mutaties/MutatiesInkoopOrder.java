@@ -6,15 +6,15 @@ import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.data.util.ListItem;
 import org.rekeningsysteem.data.util.visitor.ListItemVisitor;
 
-public final class MutatiesBon implements ListItem {
+public final class MutatiesInkoopOrder implements ListItem {
 
 	private final String omschrijving;
-	private final String bonnummer;
+	private final String inkoopOrderNummer;
 	private final Geld prijs;
 
-	public MutatiesBon(String omschrijving, String bonnummer, Geld prijs) {
+	public MutatiesInkoopOrder(String omschrijving, String inkoopOrderNummer, Geld prijs) {
 		this.omschrijving = omschrijving;
-		this.bonnummer = bonnummer;
+		this.inkoopOrderNummer = inkoopOrderNummer;
 		this.prijs = prijs;
 	}
 
@@ -22,8 +22,8 @@ public final class MutatiesBon implements ListItem {
 		return this.omschrijving;
 	}
 
-	public String getBonnummer() {
-		return this.bonnummer;
+	public String getInkoopOrderNummer() {
+		return this.inkoopOrderNummer;
 	}
 
 	@Override
@@ -47,10 +47,10 @@ public final class MutatiesBon implements ListItem {
 
 	@Override
 	public boolean equals(Object other) {
-		if (other instanceof MutatiesBon) {
-			MutatiesBon that = (MutatiesBon) other;
+		if (other instanceof MutatiesInkoopOrder) {
+			MutatiesInkoopOrder that = (MutatiesInkoopOrder) other;
 			return Objects.equals(this.omschrijving, that.omschrijving)
-					&& Objects.equals(this.bonnummer, that.bonnummer)
+					&& Objects.equals(this.inkoopOrderNummer, that.inkoopOrderNummer)
 					&& Objects.equals(this.prijs, that.prijs);
 		}
 		return false;
@@ -58,13 +58,13 @@ public final class MutatiesBon implements ListItem {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(this.omschrijving, this.bonnummer, this.prijs);
+		return Objects.hash(this.omschrijving, this.inkoopOrderNummer, this.prijs);
 	}
 
 	@Override
 	public String toString() {
-		return "<MutatiesBon[" + String.valueOf(this.omschrijving) + ", "
-				+ String.valueOf(this.bonnummer) + ", "
+		return "<MutatiesInkoopOrder[" + String.valueOf(this.omschrijving) + ", "
+				+ String.valueOf(this.inkoopOrderNummer) + ", "
 				+ String.valueOf(this.prijs) + "]>";
 	}
 }

@@ -7,7 +7,7 @@ import java.util.Currency;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.rekeningsysteem.data.mutaties.MutatiesBon;
+import org.rekeningsysteem.data.mutaties.MutatiesInkoopOrder;
 import org.rekeningsysteem.data.mutaties.MutatiesFactuur;
 import org.rekeningsysteem.data.offerte.Offerte;
 import org.rekeningsysteem.data.particulier.AnderArtikel;
@@ -16,7 +16,7 @@ import org.rekeningsysteem.data.particulier.GebruiktEsselinkArtikel;
 import org.rekeningsysteem.data.particulier.ParticulierArtikel;
 import org.rekeningsysteem.data.particulier.ParticulierFactuur;
 import org.rekeningsysteem.data.particulier.loon.ProductLoon;
-import org.rekeningsysteem.data.reparaties.ReparatiesBon;
+import org.rekeningsysteem.data.reparaties.ReparatiesInkoopOrder;
 import org.rekeningsysteem.data.reparaties.ReparatiesFactuur;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.data.util.ItemList;
@@ -43,8 +43,8 @@ public class RekeningUnmarshallerTest {
 		FactuurHeader header = new FactuurHeader(new Debiteur("a", "b", "c", "d", "e", "f"),
 				LocalDate.now(), "g");
 		Currency currency = Currency.getInstance("EUR");
-		ItemList<MutatiesBon> itemList = new ItemList<>();
-		itemList.add(new MutatiesBon("omschr", "nr", new Geld(1)));
+		ItemList<MutatiesInkoopOrder> itemList = new ItemList<>();
+		itemList.add(new MutatiesInkoopOrder("omschr", "nr", new Geld(1)));
 		MutatiesFactuur factuur = new MutatiesFactuur(header, currency, itemList);
 
 		MutatiesFactuurAdaptee adaptee = MutatiesFactuurAdaptee.build(a -> a
@@ -94,8 +94,8 @@ public class RekeningUnmarshallerTest {
 		FactuurHeader header = new FactuurHeader(new Debiteur("a", "b", "c", "d", "e", "f"),
 				LocalDate.now(), "g");
 		Currency currency = Currency.getInstance("EUR");
-		ItemList<ReparatiesBon> itemList = new ItemList<>();
-		itemList.add(new ReparatiesBon("omschr", "bonnummer", new Geld(1), new Geld(3)));
+		ItemList<ReparatiesInkoopOrder> itemList = new ItemList<>();
+		itemList.add(new ReparatiesInkoopOrder("omschr", "ordernummer", new Geld(1), new Geld(3)));
 		ReparatiesFactuur factuur = new ReparatiesFactuur(header, currency, itemList);
 
 		ReparatiesFactuurAdaptee adaptee = ReparatiesFactuurAdaptee.build(a -> a

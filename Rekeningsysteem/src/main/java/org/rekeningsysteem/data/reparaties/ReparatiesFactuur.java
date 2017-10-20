@@ -8,10 +8,10 @@ import org.rekeningsysteem.data.util.header.FactuurHeader;
 import org.rekeningsysteem.data.util.visitor.RekeningVisitor;
 import org.rekeningsysteem.data.util.visitor.RekeningVoidVisitor;
 
-public class ReparatiesFactuur extends AbstractFactuur<ReparatiesBon> {
+public class ReparatiesFactuur extends AbstractFactuur<ReparatiesInkoopOrder> {
 
 	public ReparatiesFactuur(FactuurHeader header, Currency currency,
-			ItemList<ReparatiesBon> itemList) {
+			ItemList<ReparatiesInkoopOrder> itemList) {
 		super(header, currency, itemList);
 	}
 

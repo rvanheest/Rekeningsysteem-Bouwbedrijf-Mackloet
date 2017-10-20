@@ -20,17 +20,17 @@
         <currency>EUR</currency>
         <list>
             <mutaties-bon>
-                <omschrijving>Bonnummer</omschrijving>
+                <omschrijving>Inkooporder</omschrijving>
                 <bonnummer>111390</bonnummer>
                 <prijs>4.971,96</prijs>
             </mutaties-bon>
             <mutaties-bon>
-                <omschrijving>Bonnummer</omschrijving>
+                <omschrijving>Inkooporder</omschrijving>
                 <bonnummer>111477</bonnummer>
                 <prijs>4.820,96</prijs>
             </mutaties-bon>
             <mutaties-bon>
-                <omschrijving>Bonnummer</omschrijving>
+                <omschrijving>Inkooporder</omschrijving>
                 <bonnummer>112308</bonnummer>
                 <prijs>5.510,74</prijs>
             </mutaties-bon>

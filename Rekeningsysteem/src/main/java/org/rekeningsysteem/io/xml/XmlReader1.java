@@ -14,7 +14,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.log4j.Logger;
-import org.rekeningsysteem.data.mutaties.MutatiesBon;
+import org.rekeningsysteem.data.mutaties.MutatiesInkoopOrder;
 import org.rekeningsysteem.data.mutaties.MutatiesFactuur;
 import org.rekeningsysteem.data.offerte.Offerte;
 import org.rekeningsysteem.data.particulier.AnderArtikel;
@@ -24,7 +24,7 @@ import org.rekeningsysteem.data.particulier.ParticulierArtikel;
 import org.rekeningsysteem.data.particulier.ParticulierFactuur;
 import org.rekeningsysteem.data.particulier.loon.AbstractLoon;
 import org.rekeningsysteem.data.particulier.loon.ProductLoon;
-import org.rekeningsysteem.data.reparaties.ReparatiesBon;
+import org.rekeningsysteem.data.reparaties.ReparatiesInkoopOrder;
 import org.rekeningsysteem.data.reparaties.ReparatiesFactuur;
 import org.rekeningsysteem.data.util.AbstractRekening;
 import org.rekeningsysteem.data.util.Geld;
@@ -350,45 +350,45 @@ public class XmlReader1 implements FactuurLoader {
 		});
 	}
 
-	private Observable<MutatiesBon> makeMutatiesBon(Node node) {
+	private Observable<MutatiesInkoopOrder> makeMutatiesInkoopOrder(Node node) {
 		Observable<String> omschrijving = this.getNodeValue(node, "omschrijving");
-		Observable<String> bonnummer = this.getNodeValue(node, "bonnummer");
+		Observable<String> inkoopOrderNummer = this.getNodeValue(node, "bonnummer");
 		Observable<Geld> prijs = this.getNodeValue(node, "prijs").flatMap(this::makeGeld);
 
-		return Observable.zip(omschrijving, bonnummer, prijs, MutatiesBon::new);
+		return Observable.zip(omschrijving, inkoopOrderNummer, prijs, MutatiesInkoopOrder::new);
 	}
 
 	private Observable<MutatiesFactuur> makeMutatiesFactuur(Node node) {
 		Observable<FactuurHeader> header = this.makeFactuurHeaderWithoutOmschrijving(node);
 
 		Node mbl = ((Element) node).getElementsByTagName("mutatiesbonlijst").item(0);
-		NodeList bonnen = ((Element) mbl).getElementsByTagName("mutatiesbon");
-		Observable<ItemList<MutatiesBon>> itemList = Observable.range(0, bonnen.getLength())
-				.map(bonnen::item)
-				.flatMap(this::makeMutatiesBon)
+		NodeList orders = ((Element) mbl).getElementsByTagName("mutatiesbon");
+		Observable<ItemList<MutatiesInkoopOrder>> itemList = Observable.range(0, orders.getLength())
+				.map(orders::item)
+				.flatMap(this::makeMutatiesInkoopOrder)
 				.collect(ItemList::new, Collection::add);
 
 		return Observable.zip(header, itemList, (h, il) -> new MutatiesFactuur(h, this.currency,
 				il));
 	}
 
-	private Observable<ReparatiesBon> makeReparatiesBon(Node node) {
+	private Observable<ReparatiesInkoopOrder> makeReparatiesInkoopOrder(Node node) {
 		Observable<String> omschrijving = this.getNodeValue(node, "omschrijving");
-		Observable<String> bonnummer = this.getNodeValue(node, "bonnummer");
+		Observable<String> inkoopOrderNummer = this.getNodeValue(node, "bonnummer");
 		Observable<Geld> uurloon = this.getNodeValue(node, "uurloon").flatMap(this::makeGeld);
 		Observable<Geld> materiaal = this.getNodeValue(node, "materiaal").flatMap(this::makeGeld);
 
-		return Observable.zip(omschrijving, bonnummer, uurloon, materiaal, ReparatiesBon::new);
+		return Observable.zip(omschrijving, inkoopOrderNummer, uurloon, materiaal, ReparatiesInkoopOrder::new);
 	}
 
 	private Observable<ReparatiesFactuur> makeReparatiesFactuur(Node node) {
 		Observable<FactuurHeader> header = this.makeFactuurHeaderWithoutOmschrijving(node);
 
 		Node rbl = ((Element) node).getElementsByTagName("reparatiesbonlijst").item(0);
-		NodeList bonnen = ((Element) rbl).getElementsByTagName("reparatiesbon");
-		Observable<ItemList<ReparatiesBon>> itemList = Observable.range(0, bonnen.getLength())
-				.map(bonnen::item)
-				.flatMap(this::makeReparatiesBon)
+		NodeList orders = ((Element) rbl).getElementsByTagName("reparatiesbon");
+		Observable<ItemList<ReparatiesInkoopOrder>> itemList = Observable.range(0, orders.getLength())
+				.map(orders::item)
+				.flatMap(this::makeReparatiesInkoopOrder)
 				.collect(ItemList::new, Collection::add);
 
 		return Observable.zip(header, itemList, (h, il) -> new ReparatiesFactuur(h, this.currency,

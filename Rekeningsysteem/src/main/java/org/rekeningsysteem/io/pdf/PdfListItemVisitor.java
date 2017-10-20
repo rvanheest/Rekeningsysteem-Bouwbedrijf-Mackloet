@@ -4,26 +4,26 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.rekeningsysteem.data.mutaties.MutatiesBon;
+import org.rekeningsysteem.data.mutaties.MutatiesInkoopOrder;
 import org.rekeningsysteem.data.particulier.EsselinkArtikel;
 import org.rekeningsysteem.data.particulier.GebruiktEsselinkArtikel;
 import org.rekeningsysteem.data.particulier.AnderArtikel;
 import org.rekeningsysteem.data.particulier.loon.InstantLoon;
 import org.rekeningsysteem.data.particulier.loon.ProductLoon;
-import org.rekeningsysteem.data.reparaties.ReparatiesBon;
+import org.rekeningsysteem.data.reparaties.ReparatiesInkoopOrder;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.data.util.visitor.ListItemVisitor;
 
 public class PdfListItemVisitor implements ListItemVisitor<List<String>> {
 
 	@Override
-	public List<String> visit(MutatiesBon item) {
+	public List<String> visit(MutatiesInkoopOrder item) {
 		Geld totaal = item.getTotaal();
 
 		if (!totaal.isZero()) {
 			return Arrays.asList(
 					item.getOmschrijving(),
-					item.getBonnummer(),
+					item.getInkoopOrderNummer(),
 					totaal.formattedString());
 		}
 		return Collections.emptyList();
@@ -62,13 +62,13 @@ public class PdfListItemVisitor implements ListItemVisitor<List<String>> {
 	}
 
 	@Override
-	public List<String> visit(ReparatiesBon item) {
+	public List<String> visit(ReparatiesInkoopOrder item) {
 		Geld totaal = item.getTotaal();
 
 		if (!totaal.isZero()) {
 			return Arrays.asList(
 					item.getOmschrijving(),
-					item.getBonnummer(),
+					item.getInkoopOrderNummer(),
 					item.getLoon().formattedString(),
 					item.getMateriaal().formattedString(),
 					totaal.formattedString());

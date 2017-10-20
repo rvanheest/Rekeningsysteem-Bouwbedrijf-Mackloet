@@ -16,7 +16,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.log4j.Logger;
-import org.rekeningsysteem.data.mutaties.MutatiesBon;
+import org.rekeningsysteem.data.mutaties.MutatiesInkoopOrder;
 import org.rekeningsysteem.data.mutaties.MutatiesFactuur;
 import org.rekeningsysteem.data.offerte.Offerte;
 import org.rekeningsysteem.data.particulier.AnderArtikel;
@@ -27,7 +27,7 @@ import org.rekeningsysteem.data.particulier.ParticulierFactuur;
 import org.rekeningsysteem.data.particulier.loon.AbstractLoon;
 import org.rekeningsysteem.data.particulier.loon.InstantLoon;
 import org.rekeningsysteem.data.particulier.loon.ProductLoon;
-import org.rekeningsysteem.data.reparaties.ReparatiesBon;
+import org.rekeningsysteem.data.reparaties.ReparatiesInkoopOrder;
 import org.rekeningsysteem.data.reparaties.ReparatiesFactuur;
 import org.rekeningsysteem.data.util.AbstractRekening;
 import org.rekeningsysteem.data.util.Geld;
@@ -280,18 +280,18 @@ public class XmlReader2 implements FactuurLoader {
 		return Observable.zip(header, currency, list, ParticulierFactuur::new);
 	}
 
-	private Observable<MutatiesBon> makeMutatiesBon(Node node) {
+	private Observable<MutatiesInkoopOrder> makeMutatiesInkoopOrder(Node node) {
 		Observable<String> omschrijving = this.getNodeValue(node, "omschrijving");
-		Observable<String> bonnummer = this.getNodeValue(node, "bonnummer");
+		Observable<String> inkoopOrderNummer = this.getNodeValue(node, "bonnummer");
 		Observable<Geld> prijs = this.makeGeld(((Element) node).getElementsByTagName("prijs")
 				.item(0));
 
-		return Observable.zip(omschrijving, bonnummer, prijs, MutatiesBon::new);
+		return Observable.zip(omschrijving, inkoopOrderNummer, prijs, MutatiesInkoopOrder::new);
 	}
 
-	private Observable<ItemList<MutatiesBon>> makeMutatiesList(Node node) {
+	private Observable<ItemList<MutatiesInkoopOrder>> makeMutatiesList(Node node) {
 		return this.nodeListOrError(() -> ((Element) node).getElementsByTagName("list-item"))
-				.flatMap(this::makeMutatiesBon)
+				.flatMap(this::makeMutatiesInkoopOrder)
 				.collect(ItemList::new, Collection::add);
 	}
 
@@ -302,7 +302,7 @@ public class XmlReader2 implements FactuurLoader {
 				.map(s -> Currency.getAvailableCurrencies().parallelStream()
 						.filter(cur -> s.equals(cur.getCurrencyCode()))
 						.findFirst().get());
-		Observable<ItemList<MutatiesBon>> list = this.makeMutatiesList(
+		Observable<ItemList<MutatiesInkoopOrder>> list = this.makeMutatiesList(
 				((Element) node).getElementsByTagName("list").item(0));
 
 		return Observable.zip(header, currency, list, MutatiesFactuur::new);
@@ -386,7 +386,7 @@ public class XmlReader2 implements FactuurLoader {
 	}
 
 	private Func1<Double, Observable<ItemList<AbstractLoon>>> makeLoonList(Node node) {
-		return btw -> this.nodeListOrError(() -> node.getChildNodes())
+		return btw -> this.nodeListOrError(node::getChildNodes)
 				.filter(n -> !"#text".equals(n.getNodeName()))
 				.flatMap(item -> {
 					switch (item.getNodeName()) {
@@ -431,20 +431,20 @@ public class XmlReader2 implements FactuurLoader {
 		});
 	}
 
-	private Observable<ReparatiesBon> makeReparatiesBon(Node node) {
+	private Observable<ReparatiesInkoopOrder> makeReparatiesInkoopOrder(Node node) {
 		Observable<String> omschrijving = this.getNodeValue(node, "omschrijving");
-		Observable<String> bonnummer = this.getNodeValue(node, "bonnummer");
+		Observable<String> inkoopOrderNummer = this.getNodeValue(node, "bonnummer");
 		Observable<Geld> loon = this.makeGeld(((Element) node)
 				.getElementsByTagName("loon").item(0));
 		Observable<Geld> materiaal = this.makeGeld(((Element) node)
 				.getElementsByTagName("materiaal").item(0));
 
-		return Observable.zip(omschrijving, bonnummer, loon, materiaal, ReparatiesBon::new);
+		return Observable.zip(omschrijving, inkoopOrderNummer, loon, materiaal, ReparatiesInkoopOrder::new);
 	}
 
-	private Observable<ItemList<ReparatiesBon>> makeReparatiesList(Node node) {
+	private Observable<ItemList<ReparatiesInkoopOrder>> makeReparatiesList(Node node) {
 		return this.nodeListOrError(() -> ((Element) node).getElementsByTagName("list-item"))
-				.flatMap(this::makeReparatiesBon)
+				.flatMap(this::makeReparatiesInkoopOrder)
 				.collect(ItemList::new, Collection::add);
 	}
 
@@ -455,7 +455,7 @@ public class XmlReader2 implements FactuurLoader {
 				.map(s -> Currency.getAvailableCurrencies().parallelStream()
 						.filter(cur -> s.equals(cur.getCurrencyCode()))
 						.findFirst().get());
-		Observable<ItemList<ReparatiesBon>> list = this.makeReparatiesList(
+		Observable<ItemList<ReparatiesInkoopOrder>> list = this.makeReparatiesList(
 				((Element) node).getElementsByTagName("list").item(0));
 
 		return Observable.zip(header, currency, list, ReparatiesFactuur::new);

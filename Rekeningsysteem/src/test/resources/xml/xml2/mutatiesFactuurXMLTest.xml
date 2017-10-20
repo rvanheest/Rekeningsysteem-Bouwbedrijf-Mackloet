@@ -20,21 +20,21 @@
         <currency>EUR</currency>
         <list>
             <list-item>
-                <omschrijving>Bonnummer</omschrijving>
+                <omschrijving>Ordernummer</omschrijving>
                 <bonnummer>111390</bonnummer>
                 <prijs>
                     <bedrag>4971.96</bedrag>
                 </prijs>
             </list-item>
             <list-item>
-                <omschrijving>Bonnummer</omschrijving>
+                <omschrijving>Ordernummer</omschrijving>
                 <bonnummer>111477</bonnummer>
                 <prijs>
                     <bedrag>4820.96</bedrag>
                 </prijs>
             </list-item>
             <list-item>
-                <omschrijving>Bonnummer</omschrijving>
+                <omschrijving>Ordernummer</omschrijving>
                 <bonnummer>112308</bonnummer>
                 <prijs>
                     <bedrag>5510.74</bedrag>
