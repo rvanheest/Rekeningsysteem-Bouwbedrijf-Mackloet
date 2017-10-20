@@ -59,8 +59,8 @@
 %----------------------------------------------------------------------------------------
 
 \begin{reparatiesTable}[$Valuta]
-	#foreach( $bon in $bonList )
-		\reparatiesRow{$bon[0]}{$bon[1]}{$bon[2]}{$bon[3]}{$bon[4]}
+	#foreach( $order in $orderList )
+		\reparatiesRow{$order[0]}{$order[1]}{$order[2]}{$order[3]}{$order[4]}
 	#end
 	\totalRow{$TotaalBedrag}
 \end{reparatiesTable}

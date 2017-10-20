@@ -59,8 +59,8 @@
 %----------------------------------------------------------------------------------------
 
 \begin{mutatiesTable}[$Valuta]
-	#foreach( $bon in $bonList )
-		\mutatiesRow{$bon[0]}{$bon[1]}{$bon[2]}
+	#foreach( $order in $orderList )
+		\mutatiesRow{$order[0]}{$order[1]}{$order[2]}
 	#end
 	\totalRow{$TotaalBedrag}
 \end{mutatiesTable}
