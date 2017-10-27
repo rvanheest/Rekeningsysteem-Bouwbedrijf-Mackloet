@@ -12,7 +12,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.rekeningsysteem.data.mutaties.MutatiesBon;
+import org.rekeningsysteem.data.mutaties.MutatiesInkoopOrder;
 import org.rekeningsysteem.data.particulier.AnderArtikel;
 import org.rekeningsysteem.data.particulier.loon.InstantLoon;
 import org.rekeningsysteem.data.util.Geld;
@@ -28,7 +28,7 @@ public class ItemListTest extends EqualsHashCodeTest {
 	private ItemList<ListItem> list;
 	@Mock private TotalenListItemVisitor visitor;
 
-	private final MutatiesBon mutaties = new MutatiesBon("", "", new Geld(1));
+	private final MutatiesInkoopOrder mutaties = new MutatiesInkoopOrder("", "", new Geld(1));
 	private final AnderArtikel ander1 = new AnderArtikel("", new Geld(2), 0.0);
 	private final InstantLoon loon = new InstantLoon("", new Geld(4), 50.0);
 	private final AnderArtikel ander2 = new AnderArtikel("", new Geld(5), 25.0);

@@ -6,7 +6,7 @@ import java.util.Currency;
 
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.rekeningsysteem.data.mutaties.MutatiesBon;
+import org.rekeningsysteem.data.mutaties.MutatiesInkoopOrder;
 import org.rekeningsysteem.data.mutaties.MutatiesFactuur;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.data.util.ItemList;
@@ -24,10 +24,10 @@ public class MutationFactuurIntegrationTest extends AbstractIntegrationTest {
 		String factuurnummer = "272011";
 		FactuurHeader header = new FactuurHeader(debiteur, datum, factuurnummer);
 
-		ItemList<MutatiesBon> itemList = new ItemList<>();
-		itemList.add(new MutatiesBon("Bonnummer", "111390", new Geld(4971.96)));
-		itemList.add(new MutatiesBon("Bonnummer", "111477", new Geld(4820.96)));
-		itemList.add(new MutatiesBon("Bonnummer", "112308", new Geld(5510.74)));
+		ItemList<MutatiesInkoopOrder> itemList = new ItemList<>();
+		itemList.add(new MutatiesInkoopOrder("Inkooporder", "111390", new Geld(4971.96)));
+		itemList.add(new MutatiesInkoopOrder("Inkooporder", "111477", new Geld(4820.96)));
+		itemList.add(new MutatiesInkoopOrder("Inkooporder", "112308", new Geld(5510.74)));
 
 		return new MutatiesFactuur(header, Currency.getInstance("EUR"), itemList);
 	}

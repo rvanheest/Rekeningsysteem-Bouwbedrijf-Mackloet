@@ -106,7 +106,7 @@ public class MainPane extends BorderPane {
 				.mergeWith(this.initReparatiesObservable())
 				.mergeWith(this.initParticulierObservable())
 				.mergeWith(this.initOfferteObservable(logger))
-				.mergeWith(this.initOpenObservable(stage, logger))
+				.mergeWith(this.initOpenObservable(stage))
 				.retry()
 				.subscribe(tab -> {
 					this.tabpane.addTab(tab);
@@ -288,11 +288,11 @@ public class MainPane extends BorderPane {
 				.map(event -> new RekeningTab("Offerte", new OfferteController(this.database, logger), this.database));
 	}
 
-	private Observable<RekeningTab> initOpenObservable(Stage stage, Logger logger) {
+	private Observable<RekeningTab> initOpenObservable(Stage stage) {
 		return Observables.fromNodeEvents(this.open, ActionEvent.ACTION)
 				.flatMap(event -> this.showOpenFileChooser(stage))
 				.doOnNext(this::saveLastSaveLocationProperty)
-				.flatMap(file -> RekeningTab.openFile(file, this.database, logger));
+				.flatMap(file -> RekeningTab.openFile(file, this.database));
 	}
 
 	private Observable<RekeningTab> initSaveObservable() {

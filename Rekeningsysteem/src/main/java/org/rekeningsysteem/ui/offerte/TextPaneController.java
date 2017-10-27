@@ -18,28 +18,25 @@ public class TextPaneController extends WorkingPaneController {
 	private final TextPane ui;
 	private final Observable<String> model;
 
-	public TextPaneController(Logger logger) {
-		this(new TextPane(), logger);
+	private TextPaneController() {
+		this(new TextPane());
 	}
 
-	public TextPaneController(String input, Logger logger) {
-		this(logger);
-		this.ui.setText(input);
-	}
-
-	public TextPaneController(TextPane ui, Logger logger) {
-		super(new WorkingPane(ui) {
-
-			@Override
-			public String getTitle() {
-				return "Offerte tekst";
-			}
-		});
+	private TextPaneController(TextPane ui) {
+		super(new WorkingPane("Offerte tekst", ui));
 
 		this.ui = ui;
 		this.model = this.ui.getText();
+	}
 
+	public TextPaneController(Logger logger) {
+		this();
 		this.initDefaultText(logger);
+	}
+
+	public TextPaneController(String input) {
+		this();
+		this.ui.setText(input);
 	}
 
 	private void initDefaultText(Logger logger) {

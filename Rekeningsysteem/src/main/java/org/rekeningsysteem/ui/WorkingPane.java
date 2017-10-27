@@ -2,12 +2,17 @@ package org.rekeningsysteem.ui;
 
 import javafx.scene.layout.VBox;
 
-public abstract class WorkingPane extends VBox {
+public class WorkingPane extends VBox {
 
-	protected WorkingPane(Page... nodes) {
+	private final String title;
+
+	public WorkingPane(String title, Page... nodes) {
 		super(nodes);
 		this.getStyleClass().add("working-pane");
+		this.title = title;
 	}
 
-	public abstract String getTitle();
+	public final String getTitle() {
+		return this.title;
+	}
 }

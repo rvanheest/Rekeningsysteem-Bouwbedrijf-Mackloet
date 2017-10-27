@@ -7,7 +7,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import org.rekeningsysteem.data.reparaties.ReparatiesBon;
+import org.rekeningsysteem.data.reparaties.ReparatiesInkoopOrder;
 import org.rekeningsysteem.data.util.ItemList;
 import org.rekeningsysteem.data.util.header.FactuurHeader;
 import org.rekeningsysteem.io.xml.adaptee.RekeningAdapteeVisitable;
@@ -22,7 +22,7 @@ public class ReparatiesFactuurAdaptee extends RekeningAdapteeVisitable {
 
 	private FactuurHeader factuurHeader;
 	private Currency currency;
-	private ItemList<ReparatiesBon> list = new ItemList<>();
+	private ItemList<ReparatiesInkoopOrder> list = new ItemList<>();
 
 	private ReparatiesFactuurAdaptee() {
 	}
@@ -48,11 +48,11 @@ public class ReparatiesFactuurAdaptee extends RekeningAdapteeVisitable {
 	}
 
 	@XmlJavaTypeAdapter(ItemListAdapter.class)
-	public ItemList<ReparatiesBon> getList() {
+	public ItemList<ReparatiesInkoopOrder> getList() {
 		return this.list;
 	}
 
-	public ReparatiesFactuurAdaptee setList(ItemList<ReparatiesBon> list) {
+	public ReparatiesFactuurAdaptee setList(ItemList<ReparatiesInkoopOrder> list) {
 		this.list = list;
 		return this;
 	}

@@ -32,7 +32,7 @@ public class DefaultOfferteTextHandler {
 		return this.file.map(file -> this.io.readFile(file)
 				.subscribeOn(Schedulers.io())
 				.reduce(String::concat))
-				.orElseGet(() -> Observable.empty());
+				.orElseGet(Observable::empty);
 	}
 
 	public Observable<Void> setDefaultText(Observable<String> text) {

@@ -11,7 +11,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.rekeningsysteem.data.reparaties.ReparatiesBon;
+import org.rekeningsysteem.data.reparaties.ReparatiesInkoopOrder;
 import org.rekeningsysteem.data.reparaties.ReparatiesFactuur;
 import org.rekeningsysteem.data.util.AbstractFactuur;
 import org.rekeningsysteem.data.util.ItemList;
@@ -21,7 +21,7 @@ import org.rekeningsysteem.data.util.visitor.RekeningVoidVisitor;
 import org.rekeningsysteem.test.data.util.AbstractFactuurTest;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ReparatiesFactuurTest extends AbstractFactuurTest<ReparatiesBon> {
+public class ReparatiesFactuurTest extends AbstractFactuurTest<ReparatiesInkoopOrder> {
 
 	private ReparatiesFactuur factuur;
 	@Mock private RekeningVisitor<Object> visitor;
@@ -33,8 +33,8 @@ public class ReparatiesFactuurTest extends AbstractFactuurTest<ReparatiesBon> {
 	}
 
 	@Override
-	protected AbstractFactuur<ReparatiesBon> makeInstance(FactuurHeader header, Currency currency,
-			ItemList<ReparatiesBon> itemList) {
+	protected AbstractFactuur<ReparatiesInkoopOrder> makeInstance(FactuurHeader header, Currency currency,
+			ItemList<ReparatiesInkoopOrder> itemList) {
 		return new ReparatiesFactuur(header, currency, itemList);
 	}
 
@@ -44,8 +44,8 @@ public class ReparatiesFactuurTest extends AbstractFactuurTest<ReparatiesBon> {
 	}
 
 	@Override
-	protected AbstractFactuur<ReparatiesBon> makeNotInstance(FactuurHeader otherHeader,
-			Currency currency, ItemList<ReparatiesBon> itemList) {
+	protected AbstractFactuur<ReparatiesInkoopOrder> makeNotInstance(FactuurHeader otherHeader,
+			Currency currency, ItemList<ReparatiesInkoopOrder> itemList) {
 		return new ReparatiesFactuur(otherHeader, currency, itemList);
 	}
 

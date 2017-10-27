@@ -1,28 +1,28 @@
 package org.rekeningsysteem.io.xml.adapter; 
 
-import org.rekeningsysteem.data.mutaties.MutatiesBon;
+import org.rekeningsysteem.data.mutaties.MutatiesInkoopOrder;
 import org.rekeningsysteem.data.particulier.AnderArtikel;
 import org.rekeningsysteem.data.particulier.GebruiktEsselinkArtikel;
 import org.rekeningsysteem.data.particulier.loon.InstantLoon;
 import org.rekeningsysteem.data.particulier.loon.ProductLoon;
-import org.rekeningsysteem.data.reparaties.ReparatiesBon;
+import org.rekeningsysteem.data.reparaties.ReparatiesInkoopOrder;
 import org.rekeningsysteem.data.util.visitor.ListItemVisitor;
 import org.rekeningsysteem.io.xml.adaptee.ListItemAdapteeVisitable;
-import org.rekeningsysteem.io.xml.adaptee.mutaties.MutatiesBonAdaptee;
+import org.rekeningsysteem.io.xml.adaptee.mutaties.MutatiesInkoopOrderAdaptee;
 import org.rekeningsysteem.io.xml.adaptee.particulier.AnderArtikelAdaptee;
 import org.rekeningsysteem.io.xml.adaptee.particulier.GebruiktEsselinkArtikelAdaptee;
 import org.rekeningsysteem.io.xml.adaptee.particulier.loon.InstantLoonAdaptee;
 import org.rekeningsysteem.io.xml.adaptee.particulier.loon.ProductLoonAdaptee;
-import org.rekeningsysteem.io.xml.adaptee.reparaties.ReparatiesBonAdaptee;
+import org.rekeningsysteem.io.xml.adaptee.reparaties.ReparatiesInkoopOrderAdaptee;
 
 public final class ListItemMarshaller implements ListItemVisitor<ListItemAdapteeVisitable> {
 
 	@Override
-	public MutatiesBonAdaptee visit(MutatiesBon bon) {
-		return MutatiesBonAdaptee.build(a -> a
-        		.setOmschrijving(bon.getOmschrijving())
-        		.setBonnummer(bon.getBonnummer())
-        		.setPrijs(bon.getMateriaal()));
+	public MutatiesInkoopOrderAdaptee visit(MutatiesInkoopOrder order) {
+		return MutatiesInkoopOrderAdaptee.build(a -> a
+        		.setOmschrijving(order.getOmschrijving())
+        		.setBonnummer(order.getInkoopOrderNummer())
+        		.setPrijs(order.getMateriaal()));
 	}
 
 	@Override
@@ -43,12 +43,12 @@ public final class ListItemMarshaller implements ListItemVisitor<ListItemAdaptee
 	}
 
 	@Override
-	public ReparatiesBonAdaptee visit(ReparatiesBon bon) {
-		return ReparatiesBonAdaptee.build(a -> a
-        		.setOmschrijving(bon.getOmschrijving())
-        		.setBonnummer(bon.getBonnummer())
-        		.setLoon(bon.getLoon())
-        		.setMateriaal(bon.getMateriaal()));
+	public ReparatiesInkoopOrderAdaptee visit(ReparatiesInkoopOrder order) {
+		return ReparatiesInkoopOrderAdaptee.build(a -> a
+        		.setOmschrijving(order.getOmschrijving())
+        		.setBonnummer(order.getInkoopOrderNummer())
+        		.setLoon(order.getLoon())
+        		.setMateriaal(order.getMateriaal()));
 	}
 
 	@Override

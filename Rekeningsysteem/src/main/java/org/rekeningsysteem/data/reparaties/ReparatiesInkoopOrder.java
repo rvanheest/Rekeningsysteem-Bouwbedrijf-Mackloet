@@ -6,17 +6,17 @@ import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.data.util.ListItem;
 import org.rekeningsysteem.data.util.visitor.ListItemVisitor;
 
-public class ReparatiesBon implements ListItem {
+public class ReparatiesInkoopOrder implements ListItem {
 
 	private final String omschrijving;
-	private final String bonnummer;
+	private final String inkoopOrderNummer;
 	private final Geld loon;
 	private final Geld materiaal;
 	private final Geld totaal;
 
-	public ReparatiesBon(String omschrijving, String bonnummer, Geld loon, Geld materiaal) {
+	public ReparatiesInkoopOrder(String omschrijving, String inkoopOrderNummer, Geld loon, Geld materiaal) {
 		this.omschrijving = omschrijving;
-		this.bonnummer = bonnummer;
+		this.inkoopOrderNummer = inkoopOrderNummer;
 		this.loon = loon;
 		this.materiaal = materiaal;
 		this.totaal = this.loon.add(this.materiaal);
@@ -26,8 +26,8 @@ public class ReparatiesBon implements ListItem {
 		return this.omschrijving;
 	}
 
-	public String getBonnummer() {
-		return this.bonnummer;
+	public String getInkoopOrderNummer() {
+		return this.inkoopOrderNummer;
 	}
 
 	@Override
@@ -51,10 +51,10 @@ public class ReparatiesBon implements ListItem {
 
 	@Override
 	public boolean equals(Object other) {
-		if (other instanceof ReparatiesBon) {
-			ReparatiesBon that = (ReparatiesBon) other;
+		if (other instanceof ReparatiesInkoopOrder) {
+			ReparatiesInkoopOrder that = (ReparatiesInkoopOrder) other;
 			return Objects.equals(this.omschrijving, that.omschrijving)
-					&& Objects.equals(this.bonnummer, that.bonnummer)
+					&& Objects.equals(this.inkoopOrderNummer, that.inkoopOrderNummer)
 					&& Objects.equals(this.loon, that.loon)
 					&& Objects.equals(this.materiaal, that.materiaal);
 		}
@@ -63,13 +63,13 @@ public class ReparatiesBon implements ListItem {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(this.omschrijving, this.bonnummer, this.loon, this.materiaal);
+		return Objects.hash(this.omschrijving, this.inkoopOrderNummer, this.loon, this.materiaal);
 	}
 
 	@Override
 	public String toString() {
-		return "<ReparatiesBon[" + String.valueOf(this.omschrijving) + ", "
-				+ String.valueOf(this.bonnummer) + ", "
+		return "<ReparatiesInkoopOrder[" + String.valueOf(this.omschrijving) + ", "
+				+ String.valueOf(this.inkoopOrderNummer) + ", "
 				+ String.valueOf(this.loon) + ", "
 				+ String.valueOf(this.materiaal) + "]>";
 	}
