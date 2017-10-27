@@ -32,9 +32,9 @@ public class OfferteController extends AbstractRekeningController<Offerte> {
 		this(new OfferteHeaderController(database), new TextPaneController(logger));
 	}
 
-	public OfferteController(Offerte input, Database database, Logger logger) {
+	public OfferteController(Offerte input, Database database) {
 		this(new OfferteHeaderController(input.getFactuurHeader(), input.isOndertekenen(), database),
-				new TextPaneController(input.getTekst(), logger));
+				new TextPaneController(input.getTekst()));
 	}
 
 	public OfferteController(OfferteHeaderController header, TextPaneController textPane) {
