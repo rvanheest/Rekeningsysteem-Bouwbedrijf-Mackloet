@@ -1,18 +1,21 @@
 package com.github.rvanheest.rekeningsysteem.test.database;
 
+import com.github.rvanheest.rekeningsysteem.database.DatabaseConnection;
 import com.github.rvanheest.rekeningsysteem.database.EsselinkItemTable;
 import com.github.rvanheest.rekeningsysteem.model.normal.EsselinkItem;
+import com.github.rvanheest.rekeningsysteem.test.DatabaseFixture;
 import com.github.rvanheest.rekeningsysteem.test.TestSupportFixture;
 import com.github.rvanheest.rekeningsysteem.test.esselinkItems.EsselinkItemFixture;
 import io.reactivex.Observable;
 import org.javamoney.moneta.Money;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import java.sql.SQLException;
+public class EsselinkItemTableTest implements DatabaseFixture, EsselinkItemFixture {
 
-public class EsselinkItemTableTest extends DatabaseFixture implements EsselinkItemFixture {
-
+  private DatabaseConnection databaseAccess;
   private final EsselinkItemTable table = new EsselinkItemTable();
 
   @BeforeClass
@@ -20,8 +23,18 @@ public class EsselinkItemTableTest extends DatabaseFixture implements EsselinkIt
     TestSupportFixture.slfBridger();
   }
 
+  @Before
+  public void setUp() throws Exception {
+    this.databaseAccess = this.initDatabaseConnection();
+  }
+
+  @After
+  public void tearDown() throws Exception {
+    this.databaseAccess.closeConnectionPool();
+  }
+
   @Test
-  public void testInsertAll() throws SQLException {
+  public void testInsertAll() {
     this.databaseAccess.doTransactionSingle(this.table.insertAll(Observable.fromIterable(this.getEsselinkItems())))
         .test()
         .assertValue(8)
@@ -36,7 +49,7 @@ public class EsselinkItemTableTest extends DatabaseFixture implements EsselinkIt
   }
 
   @Test
-  public void testInsertAllEmpty() throws SQLException {
+  public void testInsertAllEmpty() {
     this.databaseAccess.doTransactionSingle(this.table.insertAll(Observable.empty()))
         .test()
         .assertValue(0)
@@ -51,7 +64,7 @@ public class EsselinkItemTableTest extends DatabaseFixture implements EsselinkIt
   }
 
   @Test
-  public void testClearData() throws SQLException {
+  public void testClearData() {
     this.testInsertAll();
 
     this.databaseAccess.doTransactionCompletable(this.table.clearData())
@@ -68,7 +81,7 @@ public class EsselinkItemTableTest extends DatabaseFixture implements EsselinkIt
   }
 
   @Test
-  public void testGetWithItemIdNotFound() throws SQLException {
+  public void testGetWithItemIdNotFound() {
     this.testInsertAll();
 
     this.databaseAccess.doTransactionObservable(this.table.getWithItemId("34"))
@@ -79,7 +92,7 @@ public class EsselinkItemTableTest extends DatabaseFixture implements EsselinkIt
   }
 
   @Test
-  public void testGetWithItemIdOne() throws SQLException {
+  public void testGetWithItemIdOne() {
     this.testInsertAll();
 
     this.databaseAccess.doTransactionObservable(this.table.getWithItemId("456"))
@@ -90,7 +103,7 @@ public class EsselinkItemTableTest extends DatabaseFixture implements EsselinkIt
   }
 
   @Test
-  public void testGetWithItemIdMultiple() throws SQLException {
+  public void testGetWithItemIdMultiple() {
     this.testInsertAll();
 
     this.databaseAccess.doTransactionObservable(this.table.getWithItemId("1"))
@@ -105,7 +118,7 @@ public class EsselinkItemTableTest extends DatabaseFixture implements EsselinkIt
   }
 
   @Test
-  public void testGetWithDescriptionNotFound() throws SQLException {
+  public void testGetWithDescriptionNotFound() {
     this.testInsertAll();
 
     this.databaseAccess.doTransactionObservable(this.table.getWithDescription("esx"))
@@ -116,7 +129,7 @@ public class EsselinkItemTableTest extends DatabaseFixture implements EsselinkIt
   }
 
   @Test
-  public void testGetWithDescriptionOne() throws SQLException {
+  public void testGetWithDescriptionOne() {
     this.testInsertAll();
 
     this.databaseAccess.doTransactionObservable(this.table.getWithDescription("est2"))
@@ -127,7 +140,7 @@ public class EsselinkItemTableTest extends DatabaseFixture implements EsselinkIt
   }
 
   @Test
-  public void testGetWithDescriptionMultiple() throws SQLException {
+  public void testGetWithDescriptionMultiple() {
     this.testInsertAll();
 
     this.databaseAccess.doTransactionObservable(this.table.getWithDescription("est"))

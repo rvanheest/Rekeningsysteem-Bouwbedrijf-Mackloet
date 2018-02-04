@@ -1,30 +1,31 @@
-package com.github.rvanheest.rekeningsysteem.test.database;
+package com.github.rvanheest.rekeningsysteem.test;
 
 import com.github.rvanheest.rekeningsysteem.database.DatabaseConnection;
 import com.github.rvanheest.rekeningsysteem.test.TestSupportFixture;
 import org.apache.commons.io.FileUtils;
-import org.junit.After;
-import org.junit.Before;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 
 import static org.junit.Assert.fail;
 
-public abstract class DatabaseFixture implements TestSupportFixture {
+public interface DatabaseFixture extends TestSupportFixture {
 
-  protected DatabaseConnection databaseAccess;
+  default Path databaseFile() {
+    return this.getTestDir().resolve("database.db");
+  }
 
-  @Before
-  public void setUp() throws Exception {
+  default DatabaseConnection initDatabaseConnection() throws Exception {
     this.resetTestDir();
-    this.databaseAccess = new DatabaseConnection(
+
+    DatabaseConnection databaseAccess = new DatabaseConnection(
         "org.sqlite.JDBC",
-        "jdbc:sqlite:" + this.getTestDir().resolve("database.db")) {
+        String.format("jdbc:sqlite:%s", this.databaseFile())) {
 
       @Override
       protected DatabaseConnection.ConnectionPool createConnectionPool() {
@@ -43,11 +44,9 @@ public abstract class DatabaseFixture implements TestSupportFixture {
         return pool;
       }
     };
-    this.databaseAccess.initConnectionPool();
-  }
 
-  @After
-  public void tearDown() throws Exception {
-    this.databaseAccess.closeConnectionPool();
+    databaseAccess.initConnectionPool();
+
+    return databaseAccess;
   }
 }

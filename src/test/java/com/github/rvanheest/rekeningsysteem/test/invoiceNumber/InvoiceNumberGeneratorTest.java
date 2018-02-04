@@ -1,10 +1,13 @@
 package com.github.rvanheest.rekeningsysteem.test.invoiceNumber;
 
+import com.github.rvanheest.rekeningsysteem.database.DatabaseConnection;
 import com.github.rvanheest.rekeningsysteem.database.InvoiceNumberTable;
 import com.github.rvanheest.rekeningsysteem.invoiceNumber.InvoiceNumber;
 import com.github.rvanheest.rekeningsysteem.invoiceNumber.InvoiceNumberGenerator;
-import com.github.rvanheest.rekeningsysteem.test.database.DatabaseFixture;
+import com.github.rvanheest.rekeningsysteem.test.DatabaseFixture;
 import io.reactivex.Observable;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.time.LocalDate;
@@ -12,11 +15,22 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class InvoiceNumberGeneratorTest extends DatabaseFixture {
+public class InvoiceNumberGeneratorTest implements DatabaseFixture {
 
+  private DatabaseConnection databaseAccess;
   private final InvoiceNumberTable table = new InvoiceNumberTable();
   private final InvoiceNumberGenerator generator = new InvoiceNumberGenerator(this.table);
   private final int yearNow = LocalDate.now().getYear();
+
+  @Before
+  public void setUp() throws Exception {
+    this.databaseAccess = this.initDatabaseConnection();
+  }
+
+  @After
+  public void tearDown() throws Exception {
+    this.databaseAccess.closeConnectionPool();
+  }
 
   @Test
   public void testGenerateFirstInvoiceNumber() {

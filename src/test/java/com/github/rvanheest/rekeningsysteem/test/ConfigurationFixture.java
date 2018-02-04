@@ -12,6 +12,7 @@ import java.nio.file.Paths;
 public interface ConfigurationFixture extends TestSupportFixture {
 
   default PropertiesConfiguration getConfiguration() throws Exception {
+    // TODO make private method in Java 9
     BiFunction<Path, Path, Path> copyIfNotExists = (source, target) -> {
       if (!Files.exists(target)) {
         if (Files.isRegularFile(source))

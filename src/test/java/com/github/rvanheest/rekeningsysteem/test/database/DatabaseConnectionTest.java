@@ -1,9 +1,13 @@
 package com.github.rvanheest.rekeningsysteem.test.database;
 
+import com.github.rvanheest.rekeningsysteem.database.DatabaseConnection;
+import com.github.rvanheest.rekeningsysteem.test.DatabaseFixture;
 import io.reactivex.Completable;
 import io.reactivex.Maybe;
 import io.reactivex.Observable;
 import io.reactivex.Single;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.sql.ResultSet;
@@ -15,7 +19,19 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
-public class DatabaseConnectionTest extends DatabaseFixture {
+public class DatabaseConnectionTest implements DatabaseFixture {
+
+  private DatabaseConnection databaseAccess;
+
+  @Before
+  public void setUp() throws Exception {
+    this.databaseAccess = this.initDatabaseConnection();
+  }
+
+  @After
+  public void tearDown() throws Exception {
+    this.databaseAccess.closeConnectionPool();
+  }
 
   @Test
   public void testDoTransactionObservableReturnsFunctionResult() {
@@ -47,7 +63,7 @@ public class DatabaseConnectionTest extends DatabaseFixture {
   }
 
   @Test
-  public void testDoTransactionObservableRollsBackChangesWhenErrorOccurs() throws SQLException {
+  public void testDoTransactionObservableRollsBackChangesWhenErrorOccurs() {
     this.databaseAccess.doTransactionCompletable(connection -> {
       String query = "CREATE TABLE test_table (col1 INTEGER);";
       return Completable.using(connection::createStatement,
@@ -130,7 +146,7 @@ public class DatabaseConnectionTest extends DatabaseFixture {
   }
 
   @Test
-  public void testDoTransactionSingleRollsBackChangesWhenErrorOccurs() throws SQLException {
+  public void testDoTransactionSingleRollsBackChangesWhenErrorOccurs() {
     this.databaseAccess.doTransactionCompletable(connection -> {
       String query = "CREATE TABLE test_table (col1 INTEGER);";
       return Completable.using(connection::createStatement,
@@ -222,7 +238,7 @@ public class DatabaseConnectionTest extends DatabaseFixture {
   }
 
   @Test
-  public void testDoTransactionMaybeRollsBackChangesWhenErrorOccurs() throws SQLException {
+  public void testDoTransactionMaybeRollsBackChangesWhenErrorOccurs() {
     this.databaseAccess.doTransactionCompletable(connection -> {
       String query = "CREATE TABLE test_table (col1 INTEGER);";
       return Completable.using(connection::createStatement,

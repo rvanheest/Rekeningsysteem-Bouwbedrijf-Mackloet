@@ -1,8 +1,12 @@
 package com.github.rvanheest.rekeningsysteem.test.database;
 
+import com.github.rvanheest.rekeningsysteem.database.DatabaseConnection;
 import com.github.rvanheest.rekeningsysteem.database.DebtorTable;
 import com.github.rvanheest.rekeningsysteem.model.document.header.Debtor;
+import com.github.rvanheest.rekeningsysteem.test.DatabaseFixture;
 import io.reactivex.Observable;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.sql.Connection;
@@ -11,8 +15,9 @@ import java.sql.Statement;
 import java.util.Objects;
 import java.util.function.Function;
 
-public class DebtorTableTest extends DatabaseFixture {
+public class DebtorTableTest implements DatabaseFixture {
 
+  private DatabaseConnection databaseAccess;
   private final DebtorTable table = new DebtorTable();
 
   private static Debtor simplePreDebtor = new Debtor("name1", "street1", "number1", "zipcode1", "place1");
@@ -58,6 +63,16 @@ public class DebtorTableTest extends DatabaseFixture {
           else
             emitter.onComplete();
         }, ResultSet::close), Statement::close);
+  }
+
+  @Before
+  public void setUp() throws Exception {
+    this.databaseAccess = this.initDatabaseConnection();
+  }
+
+  @After
+  public void tearDown() throws Exception {
+    this.databaseAccess.closeConnectionPool();
   }
 
   @Test

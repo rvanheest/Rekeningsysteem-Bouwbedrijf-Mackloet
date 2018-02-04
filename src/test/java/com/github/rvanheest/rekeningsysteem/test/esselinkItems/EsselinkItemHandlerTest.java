@@ -1,9 +1,12 @@
 package com.github.rvanheest.rekeningsysteem.test.esselinkItems;
 
+import com.github.rvanheest.rekeningsysteem.database.DatabaseConnection;
 import com.github.rvanheest.rekeningsysteem.database.EsselinkItemTable;
 import com.github.rvanheest.rekeningsysteem.esselinkItems.EsselinkItemHandler;
+import com.github.rvanheest.rekeningsysteem.test.DatabaseFixture;
 import com.github.rvanheest.rekeningsysteem.test.TestSupportFixture;
-import com.github.rvanheest.rekeningsysteem.test.database.DatabaseFixture;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -12,8 +15,9 @@ import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-public class EsselinkItemHandlerTest extends DatabaseFixture implements EsselinkItemFixture {
+public class EsselinkItemHandlerTest implements DatabaseFixture, EsselinkItemFixture {
 
+  private DatabaseConnection databaseAccess;
   private final EsselinkItemTable table = new EsselinkItemTable();
   private final EsselinkItemHandler handler = new EsselinkItemHandler(this.table);
 
@@ -28,6 +32,7 @@ public class EsselinkItemHandlerTest extends DatabaseFixture implements Esselink
   private final Path csvLarge = Paths.get(getClass()
       .getResource("/esselink/example-data-large.csv").toURI());
 
+  // TODO why this constructor
   public EsselinkItemHandlerTest() throws URISyntaxException {
   }
 
@@ -36,8 +41,18 @@ public class EsselinkItemHandlerTest extends DatabaseFixture implements Esselink
     TestSupportFixture.slfBridger();
   }
 
+  @Before
+  public void setUp() throws Exception {
+    this.databaseAccess = this.initDatabaseConnection();
+  }
+
+  @After
+  public void tearDown() throws Exception {
+    this.databaseAccess.closeConnectionPool();
+  }
+
   @Test
-  public void testRead() throws URISyntaxException {
+  public void testRead() {
     this.handler.read(csv)
         .test()
         .assertValueSequence(this.getEsselinkItems())
@@ -46,7 +61,7 @@ public class EsselinkItemHandlerTest extends DatabaseFixture implements Esselink
   }
 
   @Test
-  public void testReadHeaderOnly() throws URISyntaxException {
+  public void testReadHeaderOnly() {
     this.handler.read(headerOnlyCsv)
         .test()
         .assertNoValues()
@@ -55,7 +70,7 @@ public class EsselinkItemHandlerTest extends DatabaseFixture implements Esselink
   }
 
   @Test
-  public void testReadAmountPerParserFail() throws URISyntaxException {
+  public void testReadAmountPerParserFail() {
     this.handler.read(this.amountPerFailCsv)
         .test()
         .assertNoValues()
@@ -64,7 +79,7 @@ public class EsselinkItemHandlerTest extends DatabaseFixture implements Esselink
   }
 
   @Test
-  public void testReadPricePerUnitParserFail() throws URISyntaxException {
+  public void testReadPricePerUnitParserFail() {
     this.handler.read(this.pricePerUnitFailCsv)
         .test()
         .assertNoValues()

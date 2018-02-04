@@ -1,11 +1,13 @@
 package com.github.rvanheest.rekeningsysteem.test.invoiceNumber;
 
+import com.github.rvanheest.rekeningsysteem.database.DatabaseConnection;
 import com.github.rvanheest.rekeningsysteem.database.InvoiceNumberTable;
 import com.github.rvanheest.rekeningsysteem.invoiceNumber.InvoiceNumber;
 import com.github.rvanheest.rekeningsysteem.invoiceNumber.InvoiceNumberGenerator;
-import com.github.rvanheest.rekeningsysteem.test.database.DatabaseFixture;
+import com.github.rvanheest.rekeningsysteem.test.DatabaseFixture;
 import io.reactivex.Maybe;
 import io.reactivex.Single;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,16 +26,22 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class InvoiceNumberGeneratorMockTest extends DatabaseFixture {
+public class InvoiceNumberGeneratorMockTest implements DatabaseFixture {
 
+  private DatabaseConnection databaseAccess;
   @Mock private InvoiceNumberTable table;
   private InvoiceNumberGenerator generator;
   private final int yearNow = LocalDate.now().getYear();
 
   @Before
   public void setUp() throws Exception {
-    super.setUp();
+    this.databaseAccess = this.initDatabaseConnection();
     this.generator = new InvoiceNumberGenerator(this.table);
+  }
+
+  @After
+  public void tearDown() throws Exception {
+    this.databaseAccess.closeConnectionPool();
   }
 
   @Test

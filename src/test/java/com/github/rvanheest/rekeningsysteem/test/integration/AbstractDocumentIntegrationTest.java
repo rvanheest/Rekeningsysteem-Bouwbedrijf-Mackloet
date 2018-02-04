@@ -1,5 +1,6 @@
 package com.github.rvanheest.rekeningsysteem.test.integration;
 
+import com.github.rvanheest.rekeningsysteem.database.DatabaseConnection;
 import com.github.rvanheest.rekeningsysteem.database.InvoiceNumberTable;
 import com.github.rvanheest.rekeningsysteem.invoiceNumber.InvoiceNumber;
 import com.github.rvanheest.rekeningsysteem.invoiceNumber.InvoiceNumberGenerator;
@@ -8,8 +9,8 @@ import com.github.rvanheest.rekeningsysteem.model.document.header.Debtor;
 import com.github.rvanheest.rekeningsysteem.model.document.header.Header;
 import com.github.rvanheest.rekeningsysteem.pdf.PdfExporter;
 import com.github.rvanheest.rekeningsysteem.test.ConfigurationFixture;
+import com.github.rvanheest.rekeningsysteem.test.DatabaseFixture;
 import com.github.rvanheest.rekeningsysteem.test.TestSupportFixture;
-import com.github.rvanheest.rekeningsysteem.test.database.DatabaseFixture;
 import com.github.rvanheest.rekeningsysteem.xml.XmlLoader;
 import com.github.rvanheest.rekeningsysteem.xml.XmlReader;
 import com.github.rvanheest.rekeningsysteem.xml.XmlReader1;
@@ -18,6 +19,8 @@ import com.github.rvanheest.rekeningsysteem.xml.XmlReader3;
 import com.github.rvanheest.rekeningsysteem.xml.XmlReader4;
 import com.github.rvanheest.rekeningsysteem.xml.XmlSaver;
 import com.github.rvanheest.rekeningsysteem.xml.XmlWriter;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -35,11 +38,23 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-public abstract class AbstractDocumentIntegrationTest extends DatabaseFixture implements ConfigurationFixture {
+public abstract class AbstractDocumentIntegrationTest implements DatabaseFixture, ConfigurationFixture {
+
+  private DatabaseConnection databaseAccess;
 
   @BeforeClass
   public static void setUpClass() {
     TestSupportFixture.slfBridger();
+  }
+
+  @Before
+  public void setUp() throws Exception {
+    this.databaseAccess = this.initDatabaseConnection();
+  }
+
+  @After
+  public void tearDown() throws Exception {
+    this.databaseAccess.closeConnectionPool();
   }
 
   Header getHeaderWithoutInvoiceNumber() {
