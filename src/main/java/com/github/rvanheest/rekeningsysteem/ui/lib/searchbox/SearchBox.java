@@ -30,7 +30,7 @@ public abstract class SearchBox<T> extends Region implements SearchBoxView<T>, D
   private final Button clearButton = new Button();
   private final ContextMenu contextMenu = new ContextMenu();
   private final Popup infoPopup = new Popup();
-  private final InfoBox<T> infoBox;
+  private final SearchInfoBox<T> infoBox;
 
   private final PublishSubject<T> selectedItem = PublishSubject.create();
 
@@ -141,7 +141,7 @@ public abstract class SearchBox<T> extends Region implements SearchBoxView<T>, D
 
   protected abstract Node displaySuggestion(T suggestion);
 
-  protected abstract InfoBox<T> createInfoBox();
+  protected abstract SearchInfoBox<T> createInfoBox();
 
   @Override
   public boolean isDisposed() {

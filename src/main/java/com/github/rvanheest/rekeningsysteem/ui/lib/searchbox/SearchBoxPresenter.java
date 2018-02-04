@@ -21,7 +21,7 @@ public class SearchBoxPresenter<T> extends BasePresenter<SearchBoxView<T>, List<
     Observable<List<T>> viewState = intent(SearchBoxView::textTypedIntent)
         .throttleWithTimeout(250, TimeUnit.MILLISECONDS)
         .distinctUntilChanged()
-        .switchMap(searchEngine::suggest)
+        .switchMap(this.searchEngine::suggest)
         .observeOn(JavaFxScheduler.platform());
 
     // TODO selectedItemIntent subscribe to InvoiceManager

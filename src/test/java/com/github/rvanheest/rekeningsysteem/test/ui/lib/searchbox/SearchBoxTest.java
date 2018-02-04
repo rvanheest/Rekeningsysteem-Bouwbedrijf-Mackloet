@@ -2,9 +2,9 @@ package com.github.rvanheest.rekeningsysteem.test.ui.lib.searchbox;
 
 import com.github.rvanheest.rekeningsysteem.businesslogic.SearchEngine;
 import com.github.rvanheest.rekeningsysteem.test.UITest;
-import com.github.rvanheest.rekeningsysteem.ui.lib.searchbox.InfoBox;
 import com.github.rvanheest.rekeningsysteem.ui.lib.searchbox.SearchBox;
 import com.github.rvanheest.rekeningsysteem.ui.lib.searchbox.SearchBoxPresenter;
+import com.github.rvanheest.rekeningsysteem.ui.lib.searchbox.SearchInfoBox;
 import io.reactivex.Observable;
 import io.reactivex.observers.TestObserver;
 import javafx.scene.Node;
@@ -40,7 +40,7 @@ public class SearchBoxTest extends ApplicationTest {
   private Node textfield;
   private Node clearButton;
 
-  protected SearchBox<String> createUI() {
+  private SearchBox<String> createUI() {
     return new SearchBox<String>("default text") {
 
       @Override
@@ -65,7 +65,7 @@ public class SearchBoxTest extends ApplicationTest {
       }
 
       @Override
-      protected InfoBox<String> createInfoBox() {
+      protected SearchInfoBox<String> createInfoBox() {
         return new TestInfoBox();
       }
     };

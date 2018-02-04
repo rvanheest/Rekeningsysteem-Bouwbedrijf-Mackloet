@@ -1,10 +1,10 @@
 package com.github.rvanheest.rekeningsysteem.test.ui.lib.searchbox;
 
-import com.github.rvanheest.rekeningsysteem.ui.lib.searchbox.InfoBox;
+import com.github.rvanheest.rekeningsysteem.ui.lib.searchbox.SearchInfoBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Region;
 
-class TestInfoBox extends InfoBox<String> {
+class TestInfoBox extends SearchInfoBox<String> {
 
   private final Label infoName = new Label("my name");
 
