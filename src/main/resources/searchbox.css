@@ -1,0 +1,53 @@
+#searchbox {
+  -fx-min-height: 24;
+  -fx-pref-width: 250;
+  -fx-pref-height: 24;
+  -fx-max-height: 24;
+}
+
+#searchbox .text-field {
+    -fx-padding: -9 5 -10 0;
+    -fx-border-image-source: url("images/searchbox/box.png");
+    -fx-border-image-slice: 12 12 12 22 fill;
+    -fx-border-image-width: 12 12 12 22;
+    -fx-border-image-repeat: stretch;
+}
+
+#searchbox .button {
+    -fx-background-color: null;
+    -fx-background-image: url("images/searchbox/clear.png");
+}
+
+#searchbox .button:hover {
+    -fx-background-image: url("images/searchbox/clear-hover.png");
+}
+
+.search-menu-item:hover .search-menu-item-popup-region,
+.search-menu-item:focused .search-menu-item-popup-region {
+    -fx-opacity: 100%;
+}
+
+.search-menu-item-popup-region {
+	-fx-opacity: 0;
+	-fx-pref-width: 10;
+	-fx-pref-height: 10;
+}
+
+#search-info-box {
+    -fx-fill-width: true;
+    -fx-padding: -30 -6 -8 -2;
+    -fx-border-image-source: url("images/searchbox/info-tooltip.png");
+    -fx-border-image-slice: 34 20 12 12 fill;
+    -fx-border-image-width: 34 20 12 12;
+    -fx-border-image-repeat: stretch;
+}
+
+#search-info-name {
+    -fx-text-fill: white;
+    -fx-wrap-text: true;
+}
+#search-info-description {
+    -fx-padding: 5 0 5 0;
+    -fx-text-fill: white;
+    -fx-wrap-text: true;
+}
