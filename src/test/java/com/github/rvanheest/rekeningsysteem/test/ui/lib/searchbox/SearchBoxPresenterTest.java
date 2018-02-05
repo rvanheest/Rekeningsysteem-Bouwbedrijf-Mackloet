@@ -1,7 +1,6 @@
 package com.github.rvanheest.rekeningsysteem.test.ui.lib.searchbox;
 
 import com.github.rvanheest.rekeningsysteem.businesslogic.SearchEngine;
-import com.github.rvanheest.rekeningsysteem.ui.lib.searchbox.SearchBoxPresenter;
 import com.github.rvanheest.rekeningsysteem.ui.lib.searchbox.SearchBoxView;
 import io.reactivex.Observable;
 import io.reactivex.observers.TestObserver;
@@ -13,11 +12,15 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.testfx.framework.junit.ApplicationTest;
 
-import static org.mockito.Mockito.*;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.matches;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SearchBoxPresenterTest extends ApplicationTest {
