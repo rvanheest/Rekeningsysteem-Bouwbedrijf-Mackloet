@@ -1,5 +1,6 @@
 package com.github.rvanheest.rekeningsysteem.test;
 
+import com.github.rvanheest.rekeningsysteem.businesslogic.DependencyInjection;
 import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Function;
 import org.apache.commons.configuration.PropertiesConfiguration;
@@ -44,6 +45,8 @@ public interface ConfigurationFixture extends TestSupportFixture {
       setProperty("pdf.template.normal", pdfTemplate.resolve("ParticulierFactuur.tex").toString());
       setProperty("pdf.template.repair", pdfTemplate.resolve("ReparatiesFactuur.tex").toString());
       setProperty("pdf.staging", pdfStagingDir.toString());
+      setProperty("database.driverclassname", "org.sqlite.JDBC");
+      setProperty("database.url", "jdbc:sqlite:database.db");
     }};
   }
 }
