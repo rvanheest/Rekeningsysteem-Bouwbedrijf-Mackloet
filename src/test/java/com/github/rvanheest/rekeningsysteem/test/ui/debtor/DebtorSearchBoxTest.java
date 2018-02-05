@@ -1,4 +1,4 @@
-package com.github.rvanheest.rekeningsysteem.test.ui.lib.searchbox;
+package com.github.rvanheest.rekeningsysteem.test.ui.debtor;
 
 import com.github.rvanheest.rekeningsysteem.businesslogic.DependencyInjection;
 import com.github.rvanheest.rekeningsysteem.businesslogic.SearchEngine;

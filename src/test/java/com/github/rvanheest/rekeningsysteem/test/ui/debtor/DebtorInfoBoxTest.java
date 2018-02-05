@@ -1,4 +1,4 @@
-package com.github.rvanheest.rekeningsysteem.test.ui.lib.searchbox;
+package com.github.rvanheest.rekeningsysteem.test.ui.debtor;
 
 import com.github.rvanheest.rekeningsysteem.model.document.header.Debtor;
 import com.github.rvanheest.rekeningsysteem.ui.debtor.DebtorInfoBox;
