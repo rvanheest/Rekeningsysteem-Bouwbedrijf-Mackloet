@@ -42,6 +42,7 @@ public abstract class SearchBox<T> extends Region implements SearchBoxView<T>, D
   public SearchBox(String promptText) {
     this.setId("searchbox");
     this.textfield.setPromptText(promptText);
+    this.clearButton.setVisible(false); // TODO move initial state and button/escape/text intents to presenter
     this.getChildren().addAll(this.textfield, this.clearButton);
 
     this.infoBox = this.createInfoBox();
@@ -87,7 +88,7 @@ public abstract class SearchBox<T> extends Region implements SearchBoxView<T>, D
 
   @Override
   public Observable<String> textTypedIntent() {
-    return JavaFxObservable.valuesOf(this.textfield.textProperty());
+    return JavaFxObservable.valuesOf(this.textfield.textProperty()).skip(1);
   }
 
   @Override

@@ -5,6 +5,7 @@ import com.github.rvanheest.rekeningsysteem.database.DebtorTable;
 import com.github.rvanheest.rekeningsysteem.model.document.header.Debtor;
 import io.reactivex.Observable;
 
+import java.util.Collections;
 import java.util.List;
 
 public class DebtorSearchEngine implements SearchEngine<Debtor> {
@@ -19,8 +20,11 @@ public class DebtorSearchEngine implements SearchEngine<Debtor> {
 
   @Override
   public Observable<List<Debtor>> suggest(String text) {
-    return this.dbConnection.doTransactionObservable(this.table.getWithName(text))
-        .toList()
-        .toObservable();
+    if (text.length() <= 2)
+      return Observable.just(Collections.emptyList());
+    else
+      return this.dbConnection.doTransactionObservable(this.table.getWithName(text))
+          .toList()
+          .toObservable();
   }
 }

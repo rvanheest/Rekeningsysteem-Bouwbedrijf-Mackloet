@@ -20,6 +20,7 @@ import org.testfx.robot.Motion;
 import org.testfx.service.query.NodeQuery;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -28,6 +29,8 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.matches;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.testfx.api.FxAssert.verifyThat;
@@ -107,16 +110,27 @@ public class DebtorSearchBoxTest extends ApplicationTest {
 
   @Test
   public void testTypeTooLess() {
+    when(searchEngine.suggest(matches(""))).thenReturn(Observable.just(Collections.emptyList()));
+    when(searchEngine.suggest(matches("t"))).thenReturn(Observable.just(Collections.emptyList()));
+    when(searchEngine.suggest(matches("te"))).thenReturn(Observable.just(Collections.emptyList()));
+
     clickOn(this.textfield)
         .write("te")
         .sleep(500, TimeUnit.MILLISECONDS);
 
+    verify(searchEngine, never()).suggest(matches(""));
+    verify(searchEngine, never()).suggest(matches("t"));
+    verify(searchEngine, times(1)).suggest(matches("te"));
     assertTrue(searchMenuItemsQuery().queryAll().isEmpty());
   }
 
   @Test
   public void testPerformSearch() {
     List<Debtor> debtors = this.testDebtors();
+    when(searchEngine.suggest(matches(""))).thenReturn(Observable.just(Collections.emptyList()));
+    when(searchEngine.suggest(matches("t"))).thenReturn(Observable.just(Collections.emptyList()));
+    when(searchEngine.suggest(matches("te"))).thenReturn(Observable.just(Collections.emptyList()));
+    when(searchEngine.suggest(matches("tes"))).thenReturn(Observable.just(debtors.subList(0, 2)));
     when(searchEngine.suggest(matches("test"))).thenReturn(Observable.just(debtors));
 
     clickOn(this.textfield)
@@ -128,7 +142,11 @@ public class DebtorSearchBoxTest extends ApplicationTest {
       verifyThat(searchMenuItemQuery(i).lookup(".label"), hasText(names.get(i)));
     }
 
-    verify(searchEngine).suggest(any());
+    verify(searchEngine, never()).suggest(matches(""));
+    verify(searchEngine, never()).suggest(matches("t"));
+    verify(searchEngine, never()).suggest(matches("te"));
+    verify(searchEngine, never()).suggest(matches("tes"));
+    verify(searchEngine, times(1)).suggest(matches("test"));
 
     // clean up tooltip
     type(KeyCode.ESCAPE);
@@ -175,7 +193,7 @@ public class DebtorSearchBoxTest extends ApplicationTest {
     moveTo(this.searchMenuItem(2), Motion.DIRECT);
     verifyThat(searchInfoBoxDescriptionQuery(2), hasText("BTW nummer: " + debtors.get(2).getVatNumber().get()));
 
-    verify(searchEngine).suggest(any());
+    verify(searchEngine).suggest(matches("test"));
 
     // clean up tooltip
     type(KeyCode.ESCAPE);

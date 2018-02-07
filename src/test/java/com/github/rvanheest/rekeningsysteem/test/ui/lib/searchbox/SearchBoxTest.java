@@ -135,7 +135,7 @@ public class SearchBoxTest extends ApplicationTest {
     clickOn(this.textfield)
         .write("test");
 
-    output.assertValues("", "t", "te", "tes", "test")
+    output.assertValues("t", "te", "tes", "test")
         .assertNoErrors()
         .assertNotComplete();
   }

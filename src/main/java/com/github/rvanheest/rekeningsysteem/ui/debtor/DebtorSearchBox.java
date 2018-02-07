@@ -16,11 +16,6 @@ public class DebtorSearchBox extends SearchBox<Debtor> {
   }
 
   @Override
-  public Observable<String> textTypedIntent() {
-    return super.textTypedIntent().filter(s -> s.length() > 2);
-  }
-
-  @Override
   protected SearchBoxPresenter<Debtor> createPresenter() {
     return DependencyInjection.getInstance().newDebtorSearchBoxPresenter();
   }
