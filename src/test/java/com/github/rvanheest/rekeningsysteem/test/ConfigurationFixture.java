@@ -1,6 +1,7 @@
 package com.github.rvanheest.rekeningsysteem.test;
 
 import com.github.rvanheest.rekeningsysteem.businesslogic.DependencyInjection;
+import com.github.rvanheest.rekeningsysteem.database.DatabaseConnection;
 import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Function;
 import org.apache.commons.configuration.PropertiesConfiguration;
@@ -48,5 +49,13 @@ public interface ConfigurationFixture extends TestSupportFixture {
       setProperty("database.driverclassname", "org.sqlite.JDBC");
       setProperty("database.url", "jdbc:sqlite:database.db");
     }};
+  }
+
+  default void initDependencyInjection() throws Exception {
+    DependencyInjection.setInstance(new DependencyInjection(this.getConfiguration()));
+  }
+
+  default void initDependencyInjection(DatabaseConnection connection) {
+    DependencyInjection.setInstance(new DependencyInjection(connection));
   }
 }
