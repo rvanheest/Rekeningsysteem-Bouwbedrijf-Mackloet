@@ -2,9 +2,8 @@ package com.github.rvanheest.rekeningsysteem.test.ui.lib.searchbox;
 
 import com.github.rvanheest.rekeningsysteem.businesslogic.SearchEngine;
 import com.github.rvanheest.rekeningsysteem.ui.lib.searchbox.SearchBoxPresenter;
+import com.github.rvanheest.rekeningsysteem.ui.lib.searchbox.SearchBoxViewState;
 import io.reactivex.Observable;
-
-import java.util.List;
 
 class TestSearchBoxPresenter extends SearchBoxPresenter<String> {
 
@@ -13,7 +12,7 @@ class TestSearchBoxPresenter extends SearchBoxPresenter<String> {
   }
 
   @Override
-  public Observable<List<String>> viewStateObservable() {
+  public Observable<SearchBoxViewState<String>> viewStateObservable() {
     return super.viewStateObservable();
   }
 }

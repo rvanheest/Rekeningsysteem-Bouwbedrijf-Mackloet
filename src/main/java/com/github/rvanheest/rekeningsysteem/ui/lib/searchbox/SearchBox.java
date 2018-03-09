@@ -20,7 +20,6 @@ import javafx.scene.layout.Region;
 import javafx.stage.Popup;
 import javafx.stage.WindowEvent;
 
-import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 
@@ -42,7 +41,7 @@ public abstract class SearchBox<T> extends Region implements SearchBoxView<T>, D
   public SearchBox(String promptText) {
     this.setId("searchbox");
     this.textfield.setPromptText(promptText);
-    this.clearButton.setVisible(false); // TODO move initial state and button/escape/text intents to presenter
+    this.clearButton.setVisible(false);
     this.getChildren().addAll(this.textfield, this.clearButton);
 
     this.infoBox = this.createInfoBox();
@@ -70,16 +69,6 @@ public abstract class SearchBox<T> extends Region implements SearchBoxView<T>, D
     this.clearButton.resizeRelocate(this.getWidth() - 18, 6, 12, 13);
   }
 
-  private Observable<Boolean> clearButtonIntent() {
-    return JavaFxObservable.actionEventsOf(this.clearButton).map(ignore -> true);
-  }
-
-  private Observable<Boolean> escapeTypedIntent() {
-    return JavaFxObservable.eventsOf(this, KeyEvent.KEY_PRESSED)
-        .filter(event -> event.getCode() == KeyCode.ESCAPE && !this.textfield.getText().isEmpty())
-        .map(ignore -> true);
-  }
-
   private void clearText() {
     this.contextMenu.hide();
     this.textfield.clear();
@@ -88,7 +77,21 @@ public abstract class SearchBox<T> extends Region implements SearchBoxView<T>, D
 
   @Override
   public Observable<String> textTypedIntent() {
-    return JavaFxObservable.valuesOf(this.textfield.textProperty()).skip(1);
+    return JavaFxObservable.valuesOf(this.textfield.textProperty())
+        .skip(1)
+        .distinctUntilChanged();
+  }
+
+  @Override
+  public Observable<Boolean> clearButtonIntent() {
+    return JavaFxObservable.actionEventsOf(this.clearButton).map(ignore -> true);
+  }
+
+  @Override
+  public Observable<Boolean> escapeTypedIntent() {
+    return JavaFxObservable.eventsOf(this, KeyEvent.KEY_PRESSED)
+        .filter(event -> event.getCode() == KeyCode.ESCAPE && !this.textfield.getText().isEmpty())
+        .map(ignore -> true);
   }
 
   @Override
@@ -97,7 +100,7 @@ public abstract class SearchBox<T> extends Region implements SearchBoxView<T>, D
   }
 
   @Override
-  public void render(List<T> suggestions) {
+  public void render(SearchBoxViewState<T> viewState) {
     if (this.suggestionsDisposables != null && !this.suggestionsDisposables.isDisposed())
       this.suggestionsDisposables.dispose();
     this.suggestionsDisposables = null;
@@ -105,7 +108,7 @@ public abstract class SearchBox<T> extends Region implements SearchBoxView<T>, D
     ObservableList<MenuItem> items = this.contextMenu.getItems();
     items.clear();
 
-    for (T suggestion : suggestions) {
+    for (T suggestion : viewState.getSearchSuggestions()) {
       if (this.suggestionsDisposables == null)
         this.suggestionsDisposables = new CompositeDisposable();
 
@@ -132,7 +135,8 @@ public abstract class SearchBox<T> extends Region implements SearchBoxView<T>, D
 
     Scene contextMenuScene = this.contextMenu.getScene();
     Point2D infoBoxPosition = item.getContent().localToScene(0, 0)
-        .add(contextMenuScene.getX() + this.contextMenu.getX(), contextMenuScene.getY() + this.contextMenu.getY())
+        .add(contextMenuScene.getX(), contextMenuScene.getY())
+        .add(this.contextMenu.getX(), this.contextMenu.getY())
         .subtract(this.infoBox.getPrefWidth() + 10, 10);
 
     this.infoPopup.show(this.getScene().getWindow(), infoBoxPosition.getX(), infoBoxPosition.getY());

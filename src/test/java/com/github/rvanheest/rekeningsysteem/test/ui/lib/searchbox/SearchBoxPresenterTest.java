@@ -2,6 +2,7 @@ package com.github.rvanheest.rekeningsysteem.test.ui.lib.searchbox;
 
 import com.github.rvanheest.rekeningsysteem.businesslogic.SearchEngine;
 import com.github.rvanheest.rekeningsysteem.ui.lib.searchbox.SearchBoxView;
+import com.github.rvanheest.rekeningsysteem.ui.lib.searchbox.SearchBoxViewState;
 import io.reactivex.Observable;
 import io.reactivex.observers.TestObserver;
 import org.junit.After;
@@ -41,7 +42,7 @@ public class SearchBoxPresenterTest extends ApplicationTest {
 
   @Test
   public void testTypeIntentOnce() throws InterruptedException {
-    TestObserver<List<String>> testObserver = this.presenter.viewStateObservable().test();
+    TestObserver<SearchBoxViewState<String>> testObserver = this.presenter.viewStateObservable().test();
     List<String> searchResults = Arrays.asList("foo", "bar", "baz");
 
     when(this.view.textTypedIntent()).thenReturn(Observable.just("abc"));
@@ -50,7 +51,7 @@ public class SearchBoxPresenterTest extends ApplicationTest {
     this.presenter.attachView(this.view);
 
     testObserver.await(500, TimeUnit.MILLISECONDS);
-    testObserver.assertValue(searchResults)
+    testObserver.assertValue(new SearchBoxViewState<>(searchResults))
         .assertNoErrors()
         .assertNotComplete();
 
@@ -59,7 +60,7 @@ public class SearchBoxPresenterTest extends ApplicationTest {
 
   @Test
   public void testTypeIntentFastTyping() throws InterruptedException {
-    TestObserver<List<String>> testObserver = this.presenter.viewStateObservable().test();
+    TestObserver<SearchBoxViewState<String>> testObserver = this.presenter.viewStateObservable().test();
     List<String> searchResults = Arrays.asList("foo", "bar", "baz");
 
     when(this.view.textTypedIntent()).thenReturn(Observable.just("a", "ab", "abc"));
@@ -68,7 +69,7 @@ public class SearchBoxPresenterTest extends ApplicationTest {
     this.presenter.attachView(this.view);
 
     testObserver.await(500, TimeUnit.MILLISECONDS);
-    testObserver.assertValue(searchResults)
+    testObserver.assertValue(new SearchBoxViewState<>(searchResults))
         .assertNoErrors()
         .assertNotComplete();
 
@@ -77,7 +78,7 @@ public class SearchBoxPresenterTest extends ApplicationTest {
 
   @Test
   public void testTypeIntentSlowTyping() throws InterruptedException {
-    TestObserver<List<String>> testObserver = this.presenter.viewStateObservable().test();
+    TestObserver<SearchBoxViewState<String>> testObserver = this.presenter.viewStateObservable().test();
     List<String> searchResults1 = Arrays.asList("foo1", "bar1", "baz1");
     List<String> searchResults2 = Arrays.asList("foo2", "bar2", "baz2");
     List<String> searchResults3 = Arrays.asList("foo3", "bar3", "baz3");
@@ -94,7 +95,10 @@ public class SearchBoxPresenterTest extends ApplicationTest {
     this.presenter.attachView(this.view);
 
     testObserver.await(2000, TimeUnit.MILLISECONDS);
-    testObserver.assertValueSequence(Arrays.asList(searchResults1, searchResults2, searchResults3))
+    testObserver.assertValueSequence(Arrays.asList(
+        new SearchBoxViewState<>(searchResults1),
+        new SearchBoxViewState<>(searchResults2),
+        new SearchBoxViewState<>(searchResults3)))
         .assertNoErrors()
         .assertNotComplete();
 
