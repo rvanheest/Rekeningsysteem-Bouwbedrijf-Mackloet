@@ -6,6 +6,6 @@ import com.github.rvanheest.rekeningsysteem.database.DatabaseConnection;
 public class TestDependencyInjection extends DependencyInjection {
 
   public TestDependencyInjection() {
-    super((DatabaseConnection) null);
+    super(null);
   }
 }

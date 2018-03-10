@@ -4,6 +4,7 @@ import io.reactivex.Completable;
 import io.reactivex.Maybe;
 import io.reactivex.Observable;
 import io.reactivex.Single;
+import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,6 +39,10 @@ public class DatabaseConnection {
     this.dbUrl = dbUrl;
     this.dbUsername = Optional.ofNullable(dbUsername);
     this.dbPassword = Optional.ofNullable(dbPassword);
+  }
+
+  public DatabaseConnection(PropertiesConfiguration configuration) {
+    this(configuration.getString("database.driverclassname"), configuration.getString("database.url"));
   }
 
   protected ConnectionPool createConnectionPool() {

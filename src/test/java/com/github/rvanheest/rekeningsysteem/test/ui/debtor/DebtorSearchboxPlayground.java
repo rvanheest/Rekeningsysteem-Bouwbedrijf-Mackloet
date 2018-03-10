@@ -3,19 +3,17 @@ package com.github.rvanheest.rekeningsysteem.test.ui.debtor;
 import com.github.rvanheest.rekeningsysteem.database.DatabaseConnection;
 import com.github.rvanheest.rekeningsysteem.database.DebtorTable;
 import com.github.rvanheest.rekeningsysteem.model.document.header.Debtor;
-import com.github.rvanheest.rekeningsysteem.test.ConfigurationFixture;
-import com.github.rvanheest.rekeningsysteem.test.DatabaseFixture;
+import com.github.rvanheest.rekeningsysteem.test.DependencyInjectionFixture;
 import com.github.rvanheest.rekeningsysteem.test.ui.Playground;
 import com.github.rvanheest.rekeningsysteem.ui.debtor.DebtorSearchBox;
 import io.reactivex.Observable;
 import javafx.application.Application;
+import org.apache.commons.configuration.PropertiesConfiguration;
 
 import java.sql.Connection;
 import java.util.function.Function;
 
-public class DebtorSearchboxPlayground extends Playground implements ConfigurationFixture, DatabaseFixture {
-
-  private DatabaseConnection connection;
+public class DebtorSearchboxPlayground extends Playground implements DependencyInjectionFixture {
 
   @Override
   protected void setUp() {
@@ -23,11 +21,13 @@ public class DebtorSearchboxPlayground extends Playground implements Configurati
       System.out.println("setup test dir");
       this.resetTestDir();
 
-      this.connection = this.initDatabaseConnection();
-      this.setUpDatabase(connection);
-
       System.out.println("setup dependency injection");
-      this.initDependencyInjection(connection);
+      PropertiesConfiguration configuration = this.initDependencyInjection();
+
+      DatabaseConnection connection = new DatabaseConnection(configuration);
+      connection.initConnectionPool();
+      this.setUpDatabase(connection);
+      connection.closeConnectionPool();
     }
     catch (Exception e) {
       e.printStackTrace();
@@ -53,7 +53,7 @@ public class DebtorSearchboxPlayground extends Playground implements Configurati
   protected void tearDown() {
     try {
       System.out.println("tear down");
-      this.connection.closeConnectionPool();
+      this.destroyDependencyInjection();
     }
     catch (Exception e) {
       e.printStackTrace();

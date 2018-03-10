@@ -1,7 +1,6 @@
 package com.github.rvanheest.rekeningsysteem.test;
 
 import com.github.rvanheest.rekeningsysteem.database.DatabaseConnection;
-import com.github.rvanheest.rekeningsysteem.test.TestSupportFixture;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
