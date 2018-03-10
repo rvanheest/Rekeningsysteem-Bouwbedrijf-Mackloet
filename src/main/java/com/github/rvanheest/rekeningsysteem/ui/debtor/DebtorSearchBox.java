@@ -2,10 +2,9 @@ package com.github.rvanheest.rekeningsysteem.ui.debtor;
 
 import com.github.rvanheest.rekeningsysteem.businesslogic.DependencyInjection;
 import com.github.rvanheest.rekeningsysteem.model.document.header.Debtor;
-import com.github.rvanheest.rekeningsysteem.ui.lib.searchbox.SearchInfoBox;
 import com.github.rvanheest.rekeningsysteem.ui.lib.searchbox.SearchBox;
 import com.github.rvanheest.rekeningsysteem.ui.lib.searchbox.SearchBoxPresenter;
-import io.reactivex.Observable;
+import com.github.rvanheest.rekeningsysteem.ui.lib.searchbox.SearchInfoBox;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 
