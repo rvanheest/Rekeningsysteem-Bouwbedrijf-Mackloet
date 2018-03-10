@@ -40,6 +40,21 @@ public class ItemList<E extends ListItem> implements TotalsManager {
     }
   }
 
+  /**
+   * Create a clone of this ItemList
+   *
+   * @throws RuntimeException when the cloning fails
+   */
+  @Override
+  public ItemList<E> clone() {
+    try {
+      return new ItemList<>(this.currency, this.visitor, this.list);
+    }
+    catch (DifferentCurrencyException e) {
+      throw new RuntimeException("Unexpected currency error while cloning an ItemList", e);
+    }
+  }
+
   public List<E> getList() {
     return Collections.unmodifiableList(this.list);
   }
@@ -50,6 +65,14 @@ public class ItemList<E extends ListItem> implements TotalsManager {
       this.list.add(item);
     else
       throw new DifferentCurrencyException(this.currency, itemCurrency);
+  }
+
+  public void remove(E item) {
+    this.list.remove(item);
+  }
+
+  public void clear() {
+    this.list.clear();
   }
 
   public static <E extends ListItem> ItemList<E> merge(ItemList<E> left, ItemList<E> right) throws DifferentCurrencyException {

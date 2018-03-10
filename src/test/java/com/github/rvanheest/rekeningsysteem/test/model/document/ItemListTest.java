@@ -83,6 +83,40 @@ public class ItemListTest extends EqualsHashCodeTest {
   }
 
   @Test
+  public void testRemoveItem() throws DifferentCurrencyException {
+    this.testAddItemsWithSameCurrencyAndGetList();
+
+    this.list.remove(this.item1);
+    assertEquals(Arrays.asList(this.item2, this.item3, this.item4), this.list.getList());
+  }
+
+  @Test
+  public void testRemoveItemThatIsNotInTheList() throws DifferentCurrencyException {
+    this.testRemoveItem();
+
+    this.list.remove(this.item1);
+    // nothing changed, item1 was already removed
+    assertEquals(Arrays.asList(this.item2, this.item3, this.item4), this.list.getList());
+  }
+
+  @Test
+  public void testClearList() throws DifferentCurrencyException {
+    this.testAddItemsWithSameCurrencyAndGetList();
+
+    this.list.clear();
+    assertTrue(this.list.getList().isEmpty());
+  }
+
+  @Test
+  public void testClearAnEmptyList() throws DifferentCurrencyException {
+    this.testClearList();
+
+    this.list.clear();
+    // nothing changed, the list was already cleared
+    assertTrue(this.list.getList().isEmpty());
+  }
+
+  @Test
   public void testAddAllWithBothEmptyAndSameCurrency() throws DifferentCurrencyException {
     ItemList<ListItem> list1 = new ItemList<>(this.currency);
     ItemList<ListItem> list2 = new ItemList<>(this.currency);
