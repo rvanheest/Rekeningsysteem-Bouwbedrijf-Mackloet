@@ -44,8 +44,8 @@ public class DebtorSearchboxPlayground extends Playground implements DependencyI
         new Debtor("name2", "street2", "number2", "zipcode2", "place2", "test2")
     )
         .map(table::addDebtor)
-        .scan(empty, (f, g) -> conn -> f.apply(conn).concatWith(g.apply(conn).toObservable()))
-        .flatMap(connection::doTransactionObservable)
+        .reduce(empty, (f, g) -> conn -> f.apply(conn).concatWith(g.apply(conn).toObservable()))
+        .flatMapObservable(connection::doTransactionObservable)
         .subscribe();
   }
 
