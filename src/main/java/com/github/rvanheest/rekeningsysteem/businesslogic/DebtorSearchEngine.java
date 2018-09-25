@@ -1,7 +1,6 @@
 package com.github.rvanheest.rekeningsysteem.businesslogic;
 
-import com.github.rvanheest.rekeningsysteem.database.DatabaseConnection;
-import com.github.rvanheest.rekeningsysteem.database.DebtorTable;
+import com.github.rvanheest.rekeningsysteem.database.Database;
 import com.github.rvanheest.rekeningsysteem.model.document.header.Debtor;
 import io.reactivex.Observable;
 
@@ -10,12 +9,10 @@ import java.util.List;
 
 public class DebtorSearchEngine implements SearchEngine<Debtor> {
 
-  private final DatabaseConnection dbConnection;
-  private final DebtorTable table;
+  private final Database database;
 
-  public DebtorSearchEngine(DatabaseConnection dbConnection, DebtorTable table) {
-    this.dbConnection = dbConnection;
-    this.table = table;
+  public DebtorSearchEngine(Database database) {
+    this.database = database;
   }
 
   @Override
@@ -23,7 +20,7 @@ public class DebtorSearchEngine implements SearchEngine<Debtor> {
     if (text.length() <= 2)
       return Observable.just(Collections.emptyList());
     else
-      return this.dbConnection.doTransactionObservable(this.table.getWithName(text))
+      return this.database.getDebtorWithName(text)
           .toList()
           .toObservable();
   }

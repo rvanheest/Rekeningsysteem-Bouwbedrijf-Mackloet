@@ -1,5 +1,6 @@
 package com.github.rvanheest.rekeningsysteem.businesslogic;
 
+import com.github.rvanheest.rekeningsysteem.database.Database;
 import com.github.rvanheest.rekeningsysteem.database.DatabaseConnection;
 import com.github.rvanheest.rekeningsysteem.database.DebtorTable;
 import com.github.rvanheest.rekeningsysteem.database.EsselinkItemTable;
@@ -45,34 +46,34 @@ public class DependencyInjection implements AutoCloseable {
 
   public DependencyInjection(PropertiesConfiguration props) {
     this.configuration = props;
-    this.dbConnection = this.newDatabaseConnection();
+    this.database = this.newDatabase();
   }
 
   private final PropertiesConfiguration configuration;
 
-  private final DatabaseConnection dbConnection;
+  private final Database database;
   private final DebtorTable debtorTable = new DebtorTable();
   private final EsselinkItemTable esselinkTable = new EsselinkItemTable();
   private final InvoiceNumberTable invoiceNumberTable= new InvoiceNumberTable();
 
   @Override
   public void close() throws Exception {
-    this.dbConnection.closeConnectionPool();
+    this.database.close();
   }
 
-  private DatabaseConnection newDatabaseConnection() {
+  private Database newDatabase() {
     DatabaseConnection connection = new DatabaseConnection(this.configuration);
     connection.initConnectionPool();
 
-    return connection;
+    return new Database(connection);
   }
 
   protected SearchEngine<Debtor> newDebtorSearchEngine() {
-    return new DebtorSearchEngine(this.dbConnection, this.debtorTable);
+    return new DebtorSearchEngine(this.database);
   }
 
   protected EsselinkItemSearchEngine newEsselinkItemSearchEngine() {
-    return new EsselinkItemSearchEngine(this.dbConnection, this.esselinkTable);
+    return new EsselinkItemSearchEngine(this.database);
   }
 
   protected EsselinkItemHandler newEsselinkItemHandler() {
