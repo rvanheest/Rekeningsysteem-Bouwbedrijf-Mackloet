@@ -15,8 +15,10 @@ public interface TestSupportFixture {
     SLF4JBridgeHandler.install();
   }
 
+  Path getTestRootDir = Paths.get("target/test/");
+
   default Path getTestDir() {
-    return Paths.get("target/test/").resolve(this.getClass().getSimpleName()).toAbsolutePath();
+    return TestSupportFixture.getTestRootDir.resolve(this.getClass().getSimpleName()).toAbsolutePath();
   }
 
   default Path resetTestDir() throws IOException {
