@@ -1,6 +1,6 @@
 package com.github.rvanheest.rekeningsysteem.esselinkItems;
 
-import com.github.rvanheest.rekeningsysteem.database.EsselinkItemTable;
+import com.github.rvanheest.rekeningsysteem.database.Database;
 import com.github.rvanheest.rekeningsysteem.model.normal.EsselinkItem;
 import io.reactivex.Observable;
 import org.apache.commons.csv.CSVFormat;
@@ -10,20 +10,14 @@ import org.javamoney.moneta.Money;
 
 import javax.money.format.MonetaryFormats;
 import java.nio.file.Path;
-import java.sql.Connection;
 import java.util.Locale;
-import java.util.function.Function;
 
 public class EsselinkItemHandler {
 
-  private final EsselinkItemTable table;
+  private final Database database;
 
-  public EsselinkItemHandler() {
-    this(new EsselinkItemTable());
-  }
-
-  public EsselinkItemHandler(EsselinkItemTable table) {
-    this.table = table;
+  public EsselinkItemHandler(Database database) {
+    this.database = database;
   }
 
   public Observable<EsselinkItem> read(Path csv) {
@@ -40,11 +34,7 @@ public class EsselinkItemHandler {
         CSVParser::close);
   }
 
-  public Function<Connection, Observable<Integer>> load(Path csv) {
-    return connection -> this.table.clearData().apply(connection)
-        .andThen(this.read(csv))
-        .window(100)
-        .flatMapSingle(items -> this.table.insertAll(items).apply(connection))
-        .scan(0, Math::addExact);
+  public Observable<Integer> load(Path csv) {
+    return this.database.loadEsselinkItems(this.read(csv));
   }
 }

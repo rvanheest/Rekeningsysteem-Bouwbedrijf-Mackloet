@@ -1,5 +1,6 @@
 package com.github.rvanheest.rekeningsysteem.test.integration;
 
+import com.github.rvanheest.rekeningsysteem.database.Database;
 import com.github.rvanheest.rekeningsysteem.database.DatabaseConnection;
 import com.github.rvanheest.rekeningsysteem.database.InvoiceNumberTable;
 import com.github.rvanheest.rekeningsysteem.invoiceNumber.InvoiceNumber;
@@ -73,8 +74,9 @@ public abstract class AbstractDocumentIntegrationTest implements DatabaseFixture
 
   @Test
   public void testInitializeInvoiceNumber() throws Exception {
+    Database database = new Database(this.databaseAccess);
     InvoiceNumberTable table = new InvoiceNumberTable();
-    InvoiceNumberGenerator generator = new InvoiceNumberGenerator(table);
+    InvoiceNumberGenerator generator = new InvoiceNumberGenerator(database);
     int currentYear = LocalDate.now().getYear();
     InvoiceNumber invoiceNumber = new InvoiceNumber(12, currentYear);
     String formattedNextInvoiceNumber = new InvoiceNumber(13, currentYear).formatted();
@@ -82,13 +84,14 @@ public abstract class AbstractDocumentIntegrationTest implements DatabaseFixture
 
     assertFalse(document.getHeader().getInvoiceNumber().isPresent());
 
-    this.databaseAccess.doTransactionSingle(connection -> table.initInvoiceNumber()
-        .apply(connection)
-        .doOnSuccess(in -> assertEquals(new InvoiceNumber(1, currentYear), in))
-        .flatMap(in -> table.setInvoiceNumber(invoiceNumber).apply(connection))
-        .doOnSuccess(in -> assertEquals(invoiceNumber, in))
-        .flatMap(in -> generator.calculateAndPersist().apply(connection))
-        .doOnSuccess(document::initInvoiceNumber))
+    this.databaseAccess.doTransactionSingle(connection ->
+        table.initInvoiceNumber()
+            .apply(connection)
+            .doOnSuccess(in -> assertEquals(new InvoiceNumber(1, currentYear), in))
+            .flatMap(in -> table.setInvoiceNumber(invoiceNumber).apply(connection))
+            .doOnSuccess(in -> assertEquals(invoiceNumber, in)))
+        .flatMap(in -> generator.calculateAndPersist())
+        .doOnSuccess(document::initInvoiceNumber)
         .test()
         .assertValue(formattedNextInvoiceNumber)
         .assertNoErrors()

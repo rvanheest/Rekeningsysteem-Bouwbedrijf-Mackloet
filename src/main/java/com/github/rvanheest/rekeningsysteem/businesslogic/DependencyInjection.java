@@ -2,12 +2,10 @@ package com.github.rvanheest.rekeningsysteem.businesslogic;
 
 import com.github.rvanheest.rekeningsysteem.database.Database;
 import com.github.rvanheest.rekeningsysteem.database.DatabaseConnection;
-import com.github.rvanheest.rekeningsysteem.database.DebtorTable;
-import com.github.rvanheest.rekeningsysteem.database.EsselinkItemTable;
-import com.github.rvanheest.rekeningsysteem.database.InvoiceNumberTable;
 import com.github.rvanheest.rekeningsysteem.esselinkItems.EsselinkItemHandler;
 import com.github.rvanheest.rekeningsysteem.invoiceNumber.InvoiceNumberGenerator;
 import com.github.rvanheest.rekeningsysteem.model.document.header.Debtor;
+import com.github.rvanheest.rekeningsysteem.model.normal.EsselinkItem;
 import com.github.rvanheest.rekeningsysteem.offerText.DefaultOfferTextHandler;
 import com.github.rvanheest.rekeningsysteem.pdf.PdfExporter;
 import com.github.rvanheest.rekeningsysteem.ui.lib.searchbox.SearchBoxPresenter;
@@ -50,11 +48,7 @@ public class DependencyInjection implements AutoCloseable {
   }
 
   private final PropertiesConfiguration configuration;
-
   private final Database database;
-  private final DebtorTable debtorTable = new DebtorTable();
-  private final EsselinkItemTable esselinkTable = new EsselinkItemTable();
-  private final InvoiceNumberTable invoiceNumberTable= new InvoiceNumberTable();
 
   @Override
   public void close() throws Exception {
@@ -72,16 +66,16 @@ public class DependencyInjection implements AutoCloseable {
     return new DebtorSearchEngine(this.database);
   }
 
-  protected EsselinkItemSearchEngine newEsselinkItemSearchEngine() {
+  protected SearchEngine<EsselinkItem> newEsselinkItemSearchEngine() {
     return new EsselinkItemSearchEngine(this.database);
   }
 
   protected EsselinkItemHandler newEsselinkItemHandler() {
-    return new EsselinkItemHandler(this.esselinkTable);
+    return new EsselinkItemHandler(this.database);
   }
 
   protected InvoiceNumberGenerator newInvoiceNumberGenerator() {
-    return new InvoiceNumberGenerator(this.invoiceNumberTable);
+    return new InvoiceNumberGenerator(this.database);
   }
 
   protected DefaultOfferTextHandler newDefaultOfferTextHandler() {

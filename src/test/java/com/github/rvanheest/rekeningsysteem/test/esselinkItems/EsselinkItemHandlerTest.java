@@ -1,7 +1,7 @@
 package com.github.rvanheest.rekeningsysteem.test.esselinkItems;
 
+import com.github.rvanheest.rekeningsysteem.database.Database;
 import com.github.rvanheest.rekeningsysteem.database.DatabaseConnection;
-import com.github.rvanheest.rekeningsysteem.database.EsselinkItemTable;
 import com.github.rvanheest.rekeningsysteem.esselinkItems.EsselinkItemHandler;
 import com.github.rvanheest.rekeningsysteem.test.DatabaseFixture;
 import com.github.rvanheest.rekeningsysteem.test.TestSupportFixture;
@@ -18,21 +18,17 @@ import java.nio.file.Paths;
 public class EsselinkItemHandlerTest implements DatabaseFixture, EsselinkItemFixture {
 
   private DatabaseConnection databaseAccess;
-  private final EsselinkItemTable table = new EsselinkItemTable();
-  private final EsselinkItemHandler handler = new EsselinkItemHandler(this.table);
+  private Database database;
+  private EsselinkItemHandler handler;
 
-  private final Path csv = Paths.get(getClass()
-      .getResource("/esselink/example-data.csv").toURI());
-  private final Path headerOnlyCsv = Paths.get(getClass()
-      .getResource("/esselink/example-data-header-only.csv").toURI());
-  private final Path amountPerFailCsv = Paths.get(getClass()
-      .getResource("/esselink/example-data-amountPer-fail.csv").toURI());
-  private final Path pricePerUnitFailCsv = Paths.get(getClass()
-      .getResource("/esselink/example-data-pricePerUnit-fail.csv").toURI());
-  private final Path csvLarge = Paths.get(getClass()
-      .getResource("/esselink/example-data-large.csv").toURI());
+  // @formatter:off
+  private final Path csv = Paths.get(getClass().getResource("/esselink/example-data.csv").toURI());
+  private final Path headerOnlyCsv = Paths.get(getClass().getResource("/esselink/example-data-header-only.csv").toURI());
+  private final Path amountPerFailCsv = Paths.get(getClass().getResource("/esselink/example-data-amountPer-fail.csv").toURI());
+  private final Path pricePerUnitFailCsv = Paths.get(getClass().getResource("/esselink/example-data-pricePerUnit-fail.csv").toURI());
+  private final Path csvLarge = Paths.get(getClass().getResource("/esselink/example-data-large.csv").toURI());
+  // @formatter:on
 
-  // TODO why this constructor
   public EsselinkItemHandlerTest() throws URISyntaxException {
   }
 
@@ -44,6 +40,8 @@ public class EsselinkItemHandlerTest implements DatabaseFixture, EsselinkItemFix
   @Before
   public void setUp() throws Exception {
     this.databaseAccess = this.initDatabaseConnection();
+    this.database = new Database(this.databaseAccess);
+    this.handler = new EsselinkItemHandler(this.database);
   }
 
   @After
@@ -89,13 +87,13 @@ public class EsselinkItemHandlerTest implements DatabaseFixture, EsselinkItemFix
 
   @Test
   public void testLoad() {
-    this.databaseAccess.doTransactionObservable(this.handler.load(this.csv))
+    this.handler.load(this.csv)
         .test()
         .assertValues(0, 8)
         .assertNoErrors()
         .assertComplete();
 
-    this.databaseAccess.doTransactionObservable(this.table.getAll())
+    this.database.getAllEsselinkItems()
         .test()
         .assertValueSequence(this.getEsselinkItems())
         .assertNoErrors()
@@ -104,13 +102,13 @@ public class EsselinkItemHandlerTest implements DatabaseFixture, EsselinkItemFix
 
   @Test
   public void testLoadLarge() {
-    this.databaseAccess.doTransactionObservable(this.handler.load(this.csvLarge))
+    this.handler.load(this.csvLarge)
         .test()
         .assertValues(0, 100, 200, 256)
         .assertNoErrors()
         .assertComplete();
 
-    this.databaseAccess.doTransactionObservable(this.table.getAll())
+    this.database.getAllEsselinkItems()
         .test()
         .assertValueCount(256)
         .assertValueSequence(this.handler.read(this.csvLarge).blockingIterable())
