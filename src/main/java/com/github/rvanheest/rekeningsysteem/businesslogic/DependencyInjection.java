@@ -22,6 +22,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerFactory;
 import java.util.Locale;
 
+@Deprecated
 public class DependencyInjection implements AutoCloseable {
 
   private static DependencyInjection __instance;

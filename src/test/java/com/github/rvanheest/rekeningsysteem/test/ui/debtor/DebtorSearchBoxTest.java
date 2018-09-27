@@ -1,9 +1,8 @@
 package com.github.rvanheest.rekeningsysteem.test.ui.debtor;
 
-import com.github.rvanheest.rekeningsysteem.businesslogic.DependencyInjection;
 import com.github.rvanheest.rekeningsysteem.businesslogic.SearchEngine;
+import com.github.rvanheest.rekeningsysteem.businesslogic.model.HeaderManager;
 import com.github.rvanheest.rekeningsysteem.model.document.header.Debtor;
-import com.github.rvanheest.rekeningsysteem.test.DependencyInjectionFixture;
 import com.github.rvanheest.rekeningsysteem.ui.debtor.DebtorSearchBox;
 import io.reactivex.Observable;
 import javafx.scene.Node;
@@ -37,20 +36,12 @@ import static org.testfx.api.FxAssert.verifyThat;
 import static org.testfx.matcher.control.LabeledMatchers.hasText;
 
 @RunWith(MockitoJUnitRunner.class)
-public class DebtorSearchBoxTest extends ApplicationTest implements DependencyInjectionFixture {
+public class DebtorSearchBoxTest extends ApplicationTest {
 
   @Mock private SearchEngine<Debtor> searchEngine;
+  @Mock private HeaderManager headerManager;
   private DebtorSearchBox searchBox;
   private Node textfield;
-
-  private void setDependencyInjection() throws Exception {
-    this.initDependencyInjection(configuration -> new DependencyInjection(configuration) {
-      @Override
-      protected SearchEngine<Debtor> newDebtorSearchEngine() {
-        return searchEngine;
-      }
-    });
-  }
 
   private List<Debtor> testDebtors() {
     return Arrays.asList(
@@ -85,9 +76,8 @@ public class DebtorSearchBoxTest extends ApplicationTest implements DependencyIn
   }
 
   @Override
-  public void start(Stage stage) throws Exception {
-    this.setDependencyInjection();
-    this.searchBox = new DebtorSearchBox();
+  public void start(Stage stage) {
+    this.searchBox = new DebtorSearchBox(this.searchEngine, this.headerManager);
 
     Scene scene = new Scene(this.searchBox);
     scene.getStylesheets().add("searchbox.css");
@@ -98,14 +88,12 @@ public class DebtorSearchBoxTest extends ApplicationTest implements DependencyIn
   }
 
   @Override
-  public void stop() throws Exception {
+  public void stop() {
     this.textfield = null;
 
     if (!this.searchBox.isDisposed())
       this.searchBox.dispose();
     this.searchBox = null;
-
-    this.destroyDependencyInjection();
   }
 
   @Test

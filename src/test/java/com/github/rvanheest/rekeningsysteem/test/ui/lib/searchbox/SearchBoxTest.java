@@ -1,6 +1,5 @@
 package com.github.rvanheest.rekeningsysteem.test.ui.lib.searchbox;
 
-import com.github.rvanheest.rekeningsysteem.businesslogic.SearchEngine;
 import com.github.rvanheest.rekeningsysteem.test.UITest;
 import com.github.rvanheest.rekeningsysteem.ui.lib.searchbox.SearchBox;
 import com.github.rvanheest.rekeningsysteem.ui.lib.searchbox.SearchBoxPresenter;
@@ -41,23 +40,15 @@ public class SearchBoxTest extends ApplicationTest {
   private Node clearButton;
 
   private SearchBox<String> createUI() {
-    return new SearchBox<String>("default text") {
-
-      @Override
-      protected SearchBoxPresenter<String> createPresenter() {
-        return new SearchBoxPresenter<>(new SearchEngine<String>() {
-
-          @Override
-          public Observable<List<String>> suggest(String text) {
-            if (text.length() <= 2)
-              return Observable.just(Collections.emptyList());
-            return Observable.range(1, 3)
-                .map(i -> String.format("%d. %s", i, text))
-                .toList()
-                .toObservable();
-          }
-        });
-      }
+    SearchBoxPresenter<String> presenter = new SearchBoxPresenter<>(text -> {
+      if (text.length() <= 2)
+        return Observable.just(Collections.emptyList());
+      return Observable.range(1, 3)
+          .map(i -> String.format("%d. %s", i, text))
+          .toList()
+          .toObservable();
+    });
+    return new SearchBox<String>("default text", presenter) {
 
       @Override
       protected Node displaySuggestion(String suggestion) {

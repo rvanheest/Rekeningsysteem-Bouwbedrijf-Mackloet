@@ -14,20 +14,16 @@ import java.util.Collections;
 public class SearchboxPlayground extends Playground {
 
   public SearchBox<String> uiElement() {
-    SearchBox<String> searchBox = new SearchBox<String>("default text") {
-
-      @Override
-      protected SearchBoxPresenter<String> createPresenter() {
-        return new SearchBoxPresenter<>(text -> {
-          if (text.length() <= 2)
-            return Observable.just(Collections.emptyList());
-          else
-            return Observable.range(1, 3)
-                .map(i -> String.format("%d. %s", i, text))
-                .toList()
-                .toObservable();
-        });
-      }
+    SearchBoxPresenter<String> presenter = new SearchBoxPresenter<>(text -> {
+      if (text.length() <= 2)
+        return Observable.just(Collections.emptyList());
+      else
+        return Observable.range(1, 3)
+            .map(i -> String.format("%d. %s", i, text))
+            .toList()
+            .toObservable();
+    });
+    SearchBox<String> searchBox = new SearchBox<String>("default text", presenter) {
 
       @Override
       protected Node displaySuggestion(String suggestion) {

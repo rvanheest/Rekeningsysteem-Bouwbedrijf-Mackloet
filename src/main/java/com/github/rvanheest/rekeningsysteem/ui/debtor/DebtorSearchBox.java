@@ -1,22 +1,17 @@
 package com.github.rvanheest.rekeningsysteem.ui.debtor;
 
-import com.github.rvanheest.rekeningsysteem.businesslogic.DependencyInjection;
+import com.github.rvanheest.rekeningsysteem.businesslogic.SearchEngine;
+import com.github.rvanheest.rekeningsysteem.businesslogic.model.HeaderManager;
 import com.github.rvanheest.rekeningsysteem.model.document.header.Debtor;
 import com.github.rvanheest.rekeningsysteem.ui.lib.searchbox.SearchBox;
-import com.github.rvanheest.rekeningsysteem.ui.lib.searchbox.SearchBoxPresenter;
 import com.github.rvanheest.rekeningsysteem.ui.lib.searchbox.SearchInfoBox;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 
 public class DebtorSearchBox extends SearchBox<Debtor> {
 
-  public DebtorSearchBox() {
-    super("Zoek debiteur...");
-  }
-
-  @Override
-  protected SearchBoxPresenter<Debtor> createPresenter() {
-    return DependencyInjection.getInstance().newDebtorSearchBoxPresenter();
+  public DebtorSearchBox(SearchEngine<Debtor> searchEngine, HeaderManager headerManager) {
+    super("Zoek debiteur...", new DebtorSearchBoxPresenter(searchEngine, headerManager));
   }
 
   @Override

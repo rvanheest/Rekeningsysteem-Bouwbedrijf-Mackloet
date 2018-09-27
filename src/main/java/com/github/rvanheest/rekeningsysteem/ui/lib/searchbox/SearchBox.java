@@ -38,7 +38,7 @@ public abstract class SearchBox<T> extends Region implements SearchBoxView<T>, D
 
   private final SearchBoxPresenter<T> presenter;
 
-  public SearchBox(String promptText) {
+  public SearchBox(String promptText, SearchBoxPresenter<T> presenter) {
     this.setId("searchbox");
     this.textfield.setPromptText(promptText);
     this.clearButton.setVisible(false);
@@ -59,7 +59,7 @@ public abstract class SearchBox<T> extends Region implements SearchBoxView<T>, D
 
     this.uiDisposables.addAll(clearTextDisposable, clearButtonVisible, contextMenuHiddenDisposable);
 
-    this.presenter = createPresenter();
+    this.presenter = presenter;
     this.presenter.attachView(this);
   }
 
@@ -141,8 +141,6 @@ public abstract class SearchBox<T> extends Region implements SearchBoxView<T>, D
 
     this.infoPopup.show(this.getScene().getWindow(), infoBoxPosition.getX(), infoBoxPosition.getY());
   }
-
-  protected abstract SearchBoxPresenter<T> createPresenter();
 
   protected abstract Node displaySuggestion(T suggestion);
 

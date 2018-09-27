@@ -1,9 +1,17 @@
 package com.github.rvanheest.rekeningsysteem.test.ui.debtor;
 
+import com.github.rvanheest.rekeningsysteem.businesslogic.DebtorSearchEngine;
+import com.github.rvanheest.rekeningsysteem.businesslogic.SearchEngine;
+import com.github.rvanheest.rekeningsysteem.businesslogic.model.HeaderManager;
+import com.github.rvanheest.rekeningsysteem.businesslogic.model.OfferManager;
+import com.github.rvanheest.rekeningsysteem.database.Database;
 import com.github.rvanheest.rekeningsysteem.database.DatabaseConnection;
 import com.github.rvanheest.rekeningsysteem.database.DebtorTable;
 import com.github.rvanheest.rekeningsysteem.model.document.header.Debtor;
-import com.github.rvanheest.rekeningsysteem.test.DependencyInjectionFixture;
+import com.github.rvanheest.rekeningsysteem.model.document.header.Header;
+import com.github.rvanheest.rekeningsysteem.model.offer.Offer;
+import com.github.rvanheest.rekeningsysteem.test.ConfigurationFixture;
+import com.github.rvanheest.rekeningsysteem.test.DatabaseFixture;
 import com.github.rvanheest.rekeningsysteem.test.ui.Playground;
 import com.github.rvanheest.rekeningsysteem.ui.debtor.DebtorSearchBox;
 import io.reactivex.Observable;
@@ -11,9 +19,12 @@ import javafx.application.Application;
 import org.apache.commons.configuration.PropertiesConfiguration;
 
 import java.sql.Connection;
+import java.time.LocalDate;
 import java.util.function.Function;
 
-public class DebtorSearchboxPlayground extends Playground implements DependencyInjectionFixture {
+public class DebtorSearchboxPlayground extends Playground implements ConfigurationFixture, DatabaseFixture {
+
+  private DatabaseConnection databaseAccess;
 
   @Override
   protected void setUp() {
@@ -21,13 +32,14 @@ public class DebtorSearchboxPlayground extends Playground implements DependencyI
       System.out.println("setup test dir");
       this.resetTestDir();
 
-      System.out.println("setup dependency injection");
-      PropertiesConfiguration configuration = this.initDependencyInjection();
+      System.out.println("configure app");
+      this.initDatabaseConnection().closeConnectionPool();
+      PropertiesConfiguration configuration = this.getConfiguration();
+      configuration.setProperty("database.url", String.format("jdbc:sqlite:%s", databaseFile()));
 
-      DatabaseConnection connection = new DatabaseConnection(configuration);
-      connection.initConnectionPool();
-      this.setUpDatabase(connection);
-      connection.closeConnectionPool();
+      this.databaseAccess = new DatabaseConnection(configuration);
+      this.databaseAccess.initConnectionPool();
+      this.setUpDatabase();
     }
     catch (Exception e) {
       e.printStackTrace();
@@ -35,7 +47,7 @@ public class DebtorSearchboxPlayground extends Playground implements DependencyI
     }
   }
 
-  private void setUpDatabase(DatabaseConnection connection) {
+  private void setUpDatabase() {
     System.out.println("fill debtor table");
     DebtorTable table = new DebtorTable();
     Function<Connection, Observable<Boolean>> empty = (Connection conn) -> Observable.empty();
@@ -45,7 +57,7 @@ public class DebtorSearchboxPlayground extends Playground implements DependencyI
     )
         .map(table::addDebtor)
         .reduce(empty, (f, g) -> conn -> f.apply(conn).concatWith(g.apply(conn).toObservable()))
-        .flatMapObservable(connection::doTransactionObservable)
+        .flatMapObservable(this.databaseAccess::doTransactionObservable)
         .subscribe();
   }
 
@@ -53,7 +65,7 @@ public class DebtorSearchboxPlayground extends Playground implements DependencyI
   protected void tearDown() {
     try {
       System.out.println("tear down");
-      this.destroyDependencyInjection();
+      this.databaseAccess.closeConnectionPool();
     }
     catch (Exception e) {
       e.printStackTrace();
@@ -62,7 +74,18 @@ public class DebtorSearchboxPlayground extends Playground implements DependencyI
   }
 
   public DebtorSearchBox uiElement() {
-    DebtorSearchBox searchBox = new DebtorSearchBox();
+    Database database = new Database(this.databaseAccess);
+    SearchEngine<Debtor> searchEngine = new DebtorSearchEngine(database);
+    Offer emptyOffer = new Offer(
+        new Header(
+            new Debtor("", "", "", "", "", ""),
+            LocalDate.of(2018, 7, 30)
+        ),
+        "",
+        false
+    );
+    HeaderManager headerManager = new OfferManager(emptyOffer);
+    DebtorSearchBox searchBox = new DebtorSearchBox(searchEngine, headerManager);
 
     searchBox.selectedItemIntent()
         .subscribe(
