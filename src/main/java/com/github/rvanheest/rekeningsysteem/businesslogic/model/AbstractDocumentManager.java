@@ -8,7 +8,7 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.subjects.BehaviorSubject;
 
 public abstract class AbstractDocumentManager<Doc extends AbstractDocument>
-    implements DocumentManager<Doc>, HeaderManager, DebtorManager, Disposable {
+    implements DocumentManager<Doc>, Disposable {
 
   private final BehaviorSubject<Debtor> debtor = BehaviorSubject.create();
   private final BehaviorSubject<Header> header = BehaviorSubject.create();
@@ -25,12 +25,6 @@ public abstract class AbstractDocumentManager<Doc extends AbstractDocument>
   @Override
   public BehaviorSubject<Header> header() {
     return this.header;
-  }
-
-  @Override
-  public Completable withDebtor(Debtor debtor) {
-    return HeaderManager.super.withDebtor(debtor)
-        .doOnComplete(() -> this.debtor.onNext(debtor));
   }
 
   @Override

@@ -8,18 +8,19 @@ import io.reactivex.subjects.BehaviorSubject;
 
 import java.time.LocalDate;
 
-public interface HeaderManager {
+public interface HeaderManager extends DebtorManager {
 
   // TODO make this method protected in Java 9
   BehaviorSubject<Header> header();
 
   default Completable withDebtor(Debtor debtor) {
     BehaviorSubject<Header> header = this.header();
+    BehaviorSubject<Debtor> debtorSubject = this.debtor();
     Header oldHeader = header.getValue();
     Header newHeader = new Header(debtor, oldHeader.getDate(), oldHeader.getInvoiceNumber());
 
     header.onNext(newHeader);
-    return Completable.complete();
+    return Completable.complete().doOnComplete(() -> debtorSubject.onNext(debtor));
   }
 
   default Completable withDate(LocalDate date) {
