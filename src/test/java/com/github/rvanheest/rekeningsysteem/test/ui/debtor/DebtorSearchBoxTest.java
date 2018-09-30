@@ -33,8 +33,9 @@ import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.matches;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -115,28 +116,28 @@ public class DebtorSearchBoxTest extends ApplicationTest {
 
   @Test
   public void testTypeTooLess() {
-    when(this.searchEngine.suggest(matches(""))).thenReturn(Observable.just(Collections.emptyList()));
-    when(this.searchEngine.suggest(matches("t"))).thenReturn(Observable.just(Collections.emptyList()));
-    when(this.searchEngine.suggest(matches("te"))).thenReturn(Observable.just(Collections.emptyList()));
+    when(this.searchEngine.suggest(eq(""))).thenReturn(Observable.just(Collections.emptyList()));
+    when(this.searchEngine.suggest(eq("t"))).thenReturn(Observable.just(Collections.emptyList()));
+    when(this.searchEngine.suggest(eq("te"))).thenReturn(Observable.just(Collections.emptyList()));
 
     clickOn(this.textfield)
         .write("te")
         .sleep(500, TimeUnit.MILLISECONDS);
 
-    verify(this.searchEngine, never()).suggest(matches(""));
-    verify(this.searchEngine, never()).suggest(matches("t"));
-    verify(this.searchEngine, times(1)).suggest(matches("te"));
+    verify(this.searchEngine, never()).suggest(eq(""));
+    verify(this.searchEngine, never()).suggest(eq("t"));
+    verify(this.searchEngine, times(1)).suggest(eq("te"));
     assertTrue(searchMenuItemsQuery().queryAll().isEmpty());
   }
 
   @Test
   public void testPerformSearch() {
     List<Debtor> debtors = this.testDebtors();
-    when(this.searchEngine.suggest(matches(""))).thenReturn(Observable.just(Collections.emptyList()));
-    when(this.searchEngine.suggest(matches("t"))).thenReturn(Observable.just(Collections.emptyList()));
-    when(this.searchEngine.suggest(matches("te"))).thenReturn(Observable.just(Collections.emptyList()));
-    when(this.searchEngine.suggest(matches("tes"))).thenReturn(Observable.just(debtors.subList(0, 2)));
-    when(this.searchEngine.suggest(matches("test"))).thenReturn(Observable.just(debtors));
+    when(this.searchEngine.suggest(eq(""))).thenReturn(Observable.just(Collections.emptyList()));
+    when(this.searchEngine.suggest(eq("t"))).thenReturn(Observable.just(Collections.emptyList()));
+    when(this.searchEngine.suggest(eq("te"))).thenReturn(Observable.just(Collections.emptyList()));
+    when(this.searchEngine.suggest(eq("tes"))).thenReturn(Observable.just(debtors.subList(0, 2)));
+    when(this.searchEngine.suggest(eq("test"))).thenReturn(Observable.just(debtors));
 
     clickOn(this.textfield)
         .write("test")
@@ -147,11 +148,11 @@ public class DebtorSearchBoxTest extends ApplicationTest {
       verifyThat(searchMenuItemQuery(i).lookup(".label"), hasText(names.get(i)));
     }
 
-    verify(this.searchEngine, never()).suggest(matches(""));
-    verify(this.searchEngine, never()).suggest(matches("t"));
-    verify(this.searchEngine, never()).suggest(matches("te"));
-    verify(this.searchEngine, never()).suggest(matches("tes"));
-    verify(this.searchEngine, times(1)).suggest(matches("test"));
+    verify(this.searchEngine, never()).suggest(eq(""));
+    verify(this.searchEngine, never()).suggest(eq("t"));
+    verify(this.searchEngine, never()).suggest(eq("te"));
+    verify(this.searchEngine, never()).suggest(eq("tes"));
+    verify(this.searchEngine, times(1)).suggest(eq("test"));
 
     // clean up tooltip
     type(KeyCode.ESCAPE);
@@ -160,7 +161,7 @@ public class DebtorSearchBoxTest extends ApplicationTest {
   @Test
   public void testShowInfoBox() {
     List<Debtor> debtors = this.testDebtors();
-    when(this.searchEngine.suggest(matches("test"))).thenReturn(Observable.just(debtors));
+    when(this.searchEngine.suggest(eq("test"))).thenReturn(Observable.just(debtors));
 
     clickOn(this.textfield)
         .write("test")
@@ -183,7 +184,7 @@ public class DebtorSearchBoxTest extends ApplicationTest {
   @Test
   public void testMoveOverItemsShowTooltips() {
     List<Debtor> debtors = this.testDebtors();
-    when(this.searchEngine.suggest(matches("test"))).thenReturn(Observable.just(debtors));
+    when(this.searchEngine.suggest(eq("test"))).thenReturn(Observable.just(debtors));
 
     clickOn(this.textfield)
         .write("test")
@@ -193,12 +194,22 @@ public class DebtorSearchBoxTest extends ApplicationTest {
     assertNull(searchInfoBoxDescriptionQuery(2).query());
 
     moveTo(this.searchMenuItem(1), Motion.DIRECT);
-    verifyThat(searchInfoBoxDescriptionQuery(2), hasText("BTW nummer: " + debtors.get(1).getVatNumber().get()));
+    Debtor debtor1 = debtors.get(1);
+    Optional<String> vatNumber1 = debtor1.getVatNumber();
+    if (vatNumber1.isPresent())
+      verifyThat(searchInfoBoxDescriptionQuery(2), hasText("BTW nummer: " + vatNumber1.get()));
+    else
+      fail(String.format("No VatNumber in debtor1: %s", debtor1));
 
     moveTo(this.searchMenuItem(2), Motion.DIRECT);
-    verifyThat(searchInfoBoxDescriptionQuery(2), hasText("BTW nummer: " + debtors.get(2).getVatNumber().get()));
+    Debtor debtor2 = debtors.get(2);
+    Optional<String> vatNumber2 = debtor2.getVatNumber();
+    if (vatNumber2.isPresent())
+      verifyThat(searchInfoBoxDescriptionQuery(2), hasText("BTW nummer: " + vatNumber2.get()));
+    else
+      fail(String.format("No VatNumber in debtor2: %s", debtor2));
 
-    verify(this.searchEngine).suggest(matches("test"));
+    verify(this.searchEngine).suggest(eq("test"));
 
     // clean up tooltip
     type(KeyCode.ESCAPE);
@@ -207,7 +218,7 @@ public class DebtorSearchBoxTest extends ApplicationTest {
   @Test
   public void testClickOnSearchResult() {
     List<Debtor> debtors = this.testDebtors();
-    when(this.searchEngine.suggest(matches("test"))).thenReturn(Observable.just(debtors));
+    when(this.searchEngine.suggest(eq("test"))).thenReturn(Observable.just(debtors));
 
     TestObserver<Debtor> debtorTestObserver = this.headerManager.getDebtor().skip(1L).test();
 
