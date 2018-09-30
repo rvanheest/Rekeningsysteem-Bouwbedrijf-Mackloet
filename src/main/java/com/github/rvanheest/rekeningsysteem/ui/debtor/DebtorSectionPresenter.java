@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
 
 public class DebtorSectionPresenter extends BasePresenter<DebtorSection, Debtor> {
 
-  private DebtorManager debtorManager;
+  private final DebtorManager debtorManager;
   private final CompositeDisposable disposables = new CompositeDisposable();
 
   public DebtorSectionPresenter(DebtorManager debtorManager) {
