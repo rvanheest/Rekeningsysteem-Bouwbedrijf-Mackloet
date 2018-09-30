@@ -13,16 +13,15 @@ import com.github.rvanheest.rekeningsysteem.model.offer.Offer;
 import com.github.rvanheest.rekeningsysteem.test.ConfigurationFixture;
 import com.github.rvanheest.rekeningsysteem.test.DatabaseFixture;
 import com.github.rvanheest.rekeningsysteem.test.ui.Playground;
-import com.github.rvanheest.rekeningsysteem.ui.debtor.DebtorSearchBox;
+import com.github.rvanheest.rekeningsysteem.ui.debtor.DebtorSection;
 import io.reactivex.Observable;
-import javafx.application.Application;
 import org.apache.commons.configuration.PropertiesConfiguration;
 
 import java.sql.Connection;
 import java.time.LocalDate;
 import java.util.function.Function;
 
-public class DebtorSearchBoxPlayground extends Playground implements ConfigurationFixture, DatabaseFixture {
+public class DebtorSectionPlayground extends Playground implements ConfigurationFixture, DatabaseFixture {
 
   private DatabaseConnection databaseAccess;
 
@@ -73,31 +72,28 @@ public class DebtorSearchBoxPlayground extends Playground implements Configurati
     }
   }
 
-  public DebtorSearchBox uiElement() {
+  @Override
+  protected DebtorSection uiElement() {
     Database database = new Database(this.databaseAccess);
     SearchEngine<Debtor> searchEngine = new DebtorSearchEngine(database);
     Offer emptyOffer = new Offer(
         new Header(
-            new Debtor("", "", "", "", "", ""),
+            new Debtor("", "", "", "", ""),
             LocalDate.of(2018, 7, 30)
         ),
         "",
         false
     );
     HeaderManager headerManager = new OfferManager(emptyOffer);
-    DebtorSearchBox searchBox = new DebtorSearchBox(searchEngine, headerManager);
+    DebtorSection ui = new DebtorSection(searchEngine, headerManager);
 
-    searchBox.selectedItemIntent()
+    headerManager.getDebtor()
         .subscribe(
             System.out::println,
             System.err::println,
             () -> System.out.println("COMPLETED IS NOT EXPECTED TO EVER HAPPEN!!!")
         );
 
-    return searchBox;
-  }
-
-  public static void main(String[] args) {
-    Application.launch(DebtorSearchBoxPlayground.class);
+    return ui;
   }
 }

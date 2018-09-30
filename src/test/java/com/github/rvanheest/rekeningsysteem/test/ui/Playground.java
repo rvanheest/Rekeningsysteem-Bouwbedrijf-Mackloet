@@ -20,7 +20,10 @@ public abstract class Playground extends Application {
     Parent content = this.uiElement();
 
     Scene scene = new Scene(content);
-    scene.getStylesheets().add("searchbox.css");
+    scene.getStylesheets().addAll(
+        "searchbox.css",
+        "section.css"
+    );
     stage.setScene(scene);
     stage.initStyle(StageStyle.UNDECORATED);
     stage.addEventHandler(WindowEvent.WINDOW_HIDDEN, event -> this.tearDown());

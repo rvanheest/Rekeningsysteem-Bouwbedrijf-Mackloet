@@ -1,0 +1,14 @@
+.section {
+    -fx-alignment: top-center;
+    -fx-padding: 10px 0px 10px 0px;
+}
+
+.section #title {
+    -fx-alignment: top-center;
+    -fx-border-color: transparent transparent #AAAAAA transparent;
+    -fx-border-insets: 0 0 8px 0;
+    -fx-font-size: 1.3em;
+    -fx-font-weight: bold;
+    -fx-padding: 0 0 2px 0;
+    -fx-text-fill: #0072aa;
+}
