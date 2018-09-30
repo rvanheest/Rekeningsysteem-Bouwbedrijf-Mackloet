@@ -55,13 +55,11 @@ public class DateSection extends AbstractSection implements View, Disposable {
 
     @Override
     public String toString(LocalDate date) {
-      System.out.println(String.format("toString %s", date));
       return DateStringConverter.formatter.format(date);
     }
 
     @Override
     public LocalDate fromString(String string) {
-      System.out.println(String.format("fromString %s", string));
       return LocalDate.parse(string, DateStringConverter.formatter);
     }
   }

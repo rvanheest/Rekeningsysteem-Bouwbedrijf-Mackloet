@@ -8,23 +8,19 @@ import com.github.rvanheest.rekeningsysteem.model.offer.Offer;
 import com.github.rvanheest.rekeningsysteem.test.UITest;
 import com.github.rvanheest.rekeningsysteem.ui.header.DateSection;
 import io.reactivex.observers.TestObserver;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.DateCell;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.testfx.framework.junit.ApplicationTest;
-import org.testfx.service.query.NodeQuery;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Stream;
 
 import static org.junit.Assert.assertEquals;
 
