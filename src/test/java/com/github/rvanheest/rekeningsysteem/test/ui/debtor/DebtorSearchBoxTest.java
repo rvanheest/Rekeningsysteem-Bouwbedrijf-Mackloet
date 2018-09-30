@@ -2,9 +2,13 @@ package com.github.rvanheest.rekeningsysteem.test.ui.debtor;
 
 import com.github.rvanheest.rekeningsysteem.businesslogic.SearchEngine;
 import com.github.rvanheest.rekeningsysteem.businesslogic.model.HeaderManager;
+import com.github.rvanheest.rekeningsysteem.businesslogic.model.OfferManager;
 import com.github.rvanheest.rekeningsysteem.model.document.header.Debtor;
+import com.github.rvanheest.rekeningsysteem.model.document.header.Header;
+import com.github.rvanheest.rekeningsysteem.model.offer.Offer;
 import com.github.rvanheest.rekeningsysteem.ui.debtor.DebtorSearchBox;
 import io.reactivex.Observable;
+import io.reactivex.observers.TestObserver;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
@@ -18,9 +22,12 @@ import org.testfx.matcher.base.NodeMatchers;
 import org.testfx.robot.Motion;
 import org.testfx.service.query.NodeQuery;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -39,7 +46,7 @@ import static org.testfx.matcher.control.LabeledMatchers.hasText;
 public class DebtorSearchBoxTest extends ApplicationTest {
 
   @Mock private SearchEngine<Debtor> searchEngine;
-  @Mock private HeaderManager headerManager;
+  private HeaderManager headerManager;
   private DebtorSearchBox searchBox;
   private Node textfield;
 
@@ -77,6 +84,16 @@ public class DebtorSearchBoxTest extends ApplicationTest {
 
   @Override
   public void start(Stage stage) {
+    Offer offer = new Offer(
+        new Header(
+            new Debtor(Optional.empty(), "", "", "", "", "", Optional.empty()),
+            LocalDate.parse("2018-07-30", DateTimeFormatter.ISO_DATE),
+            "12018"
+        ),
+        "",
+        false
+    );
+    this.headerManager = new OfferManager(offer);
     this.searchBox = new DebtorSearchBox(this.searchEngine, this.headerManager);
 
     Scene scene = new Scene(this.searchBox);
@@ -98,28 +115,28 @@ public class DebtorSearchBoxTest extends ApplicationTest {
 
   @Test
   public void testTypeTooLess() {
-    when(searchEngine.suggest(matches(""))).thenReturn(Observable.just(Collections.emptyList()));
-    when(searchEngine.suggest(matches("t"))).thenReturn(Observable.just(Collections.emptyList()));
-    when(searchEngine.suggest(matches("te"))).thenReturn(Observable.just(Collections.emptyList()));
+    when(this.searchEngine.suggest(matches(""))).thenReturn(Observable.just(Collections.emptyList()));
+    when(this.searchEngine.suggest(matches("t"))).thenReturn(Observable.just(Collections.emptyList()));
+    when(this.searchEngine.suggest(matches("te"))).thenReturn(Observable.just(Collections.emptyList()));
 
     clickOn(this.textfield)
         .write("te")
         .sleep(500, TimeUnit.MILLISECONDS);
 
-    verify(searchEngine, never()).suggest(matches(""));
-    verify(searchEngine, never()).suggest(matches("t"));
-    verify(searchEngine, times(1)).suggest(matches("te"));
+    verify(this.searchEngine, never()).suggest(matches(""));
+    verify(this.searchEngine, never()).suggest(matches("t"));
+    verify(this.searchEngine, times(1)).suggest(matches("te"));
     assertTrue(searchMenuItemsQuery().queryAll().isEmpty());
   }
 
   @Test
   public void testPerformSearch() {
     List<Debtor> debtors = this.testDebtors();
-    when(searchEngine.suggest(matches(""))).thenReturn(Observable.just(Collections.emptyList()));
-    when(searchEngine.suggest(matches("t"))).thenReturn(Observable.just(Collections.emptyList()));
-    when(searchEngine.suggest(matches("te"))).thenReturn(Observable.just(Collections.emptyList()));
-    when(searchEngine.suggest(matches("tes"))).thenReturn(Observable.just(debtors.subList(0, 2)));
-    when(searchEngine.suggest(matches("test"))).thenReturn(Observable.just(debtors));
+    when(this.searchEngine.suggest(matches(""))).thenReturn(Observable.just(Collections.emptyList()));
+    when(this.searchEngine.suggest(matches("t"))).thenReturn(Observable.just(Collections.emptyList()));
+    when(this.searchEngine.suggest(matches("te"))).thenReturn(Observable.just(Collections.emptyList()));
+    when(this.searchEngine.suggest(matches("tes"))).thenReturn(Observable.just(debtors.subList(0, 2)));
+    when(this.searchEngine.suggest(matches("test"))).thenReturn(Observable.just(debtors));
 
     clickOn(this.textfield)
         .write("test")
@@ -130,11 +147,11 @@ public class DebtorSearchBoxTest extends ApplicationTest {
       verifyThat(searchMenuItemQuery(i).lookup(".label"), hasText(names.get(i)));
     }
 
-    verify(searchEngine, never()).suggest(matches(""));
-    verify(searchEngine, never()).suggest(matches("t"));
-    verify(searchEngine, never()).suggest(matches("te"));
-    verify(searchEngine, never()).suggest(matches("tes"));
-    verify(searchEngine, times(1)).suggest(matches("test"));
+    verify(this.searchEngine, never()).suggest(matches(""));
+    verify(this.searchEngine, never()).suggest(matches("t"));
+    verify(this.searchEngine, never()).suggest(matches("te"));
+    verify(this.searchEngine, never()).suggest(matches("tes"));
+    verify(this.searchEngine, times(1)).suggest(matches("test"));
 
     // clean up tooltip
     type(KeyCode.ESCAPE);
@@ -143,7 +160,7 @@ public class DebtorSearchBoxTest extends ApplicationTest {
   @Test
   public void testShowInfoBox() {
     List<Debtor> debtors = this.testDebtors();
-    when(searchEngine.suggest(matches("test"))).thenReturn(Observable.just(debtors));
+    when(this.searchEngine.suggest(matches("test"))).thenReturn(Observable.just(debtors));
 
     clickOn(this.textfield)
         .write("test")
@@ -157,7 +174,7 @@ public class DebtorSearchBoxTest extends ApplicationTest {
     verifyThat(searchInfoBoxDescriptionQuery(1), hasText(debtor.getZipcode() + "  " + debtor.getCity().toUpperCase()));
     assertNull(searchInfoBoxDescriptionQuery(2).query());
 
-    verify(searchEngine).suggest(any());
+    verify(this.searchEngine).suggest(any());
 
     // clean up tooltip
     type(KeyCode.ESCAPE);
@@ -166,7 +183,7 @@ public class DebtorSearchBoxTest extends ApplicationTest {
   @Test
   public void testMoveOverItemsShowTooltips() {
     List<Debtor> debtors = this.testDebtors();
-    when(searchEngine.suggest(matches("test"))).thenReturn(Observable.just(debtors));
+    when(this.searchEngine.suggest(matches("test"))).thenReturn(Observable.just(debtors));
 
     clickOn(this.textfield)
         .write("test")
@@ -181,9 +198,28 @@ public class DebtorSearchBoxTest extends ApplicationTest {
     moveTo(this.searchMenuItem(2), Motion.DIRECT);
     verifyThat(searchInfoBoxDescriptionQuery(2), hasText("BTW nummer: " + debtors.get(2).getVatNumber().get()));
 
-    verify(searchEngine).suggest(matches("test"));
+    verify(this.searchEngine).suggest(matches("test"));
 
     // clean up tooltip
     type(KeyCode.ESCAPE);
+  }
+
+  @Test
+  public void testClickOnSearchResult() {
+    List<Debtor> debtors = this.testDebtors();
+    when(this.searchEngine.suggest(matches("test"))).thenReturn(Observable.just(debtors));
+
+    TestObserver<Debtor> debtorTestObserver = this.headerManager.getDebtor().skip(1L).test();
+
+    clickOn(this.textfield)
+        .write("test")
+        .sleep(500, TimeUnit.MILLISECONDS)
+        .moveTo(this.searchMenuItem(2), Motion.DIRECT)
+        .clickOn();
+
+    debtorTestObserver
+        .assertValue(debtors.get(2))
+        .assertNoErrors()
+        .assertNotComplete();
   }
 }
