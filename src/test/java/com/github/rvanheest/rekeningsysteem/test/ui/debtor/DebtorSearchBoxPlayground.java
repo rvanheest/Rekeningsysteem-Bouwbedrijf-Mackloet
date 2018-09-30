@@ -22,7 +22,7 @@ import java.sql.Connection;
 import java.time.LocalDate;
 import java.util.function.Function;
 
-public class DebtorSearchboxPlayground extends Playground implements ConfigurationFixture, DatabaseFixture {
+public class DebtorSearchBoxPlayground extends Playground implements ConfigurationFixture, DatabaseFixture {
 
   private DatabaseConnection databaseAccess;
 
@@ -98,6 +98,6 @@ public class DebtorSearchboxPlayground extends Playground implements Configurati
   }
 
   public static void main(String[] args) {
-    Application.launch(DebtorSearchboxPlayground.class);
+    Application.launch(DebtorSearchBoxPlayground.class);
   }
 }
