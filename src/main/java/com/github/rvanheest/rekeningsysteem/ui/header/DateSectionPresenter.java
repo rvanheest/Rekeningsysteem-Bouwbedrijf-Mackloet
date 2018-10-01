@@ -30,4 +30,10 @@ public class DateSectionPresenter extends BasePresenter<DateSection, LocalDate> 
 
     subscribeViewState(this.headerManager.getHeader().map(Header::getDate), DateSection::render);
   }
+
+  @Override
+  protected void unbindIntents() {
+    if (!this.disposables.isDisposed())
+      this.disposables.dispose();
+  }
 }
