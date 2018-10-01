@@ -7,7 +7,7 @@ import com.github.rvanheest.rekeningsysteem.model.document.header.Header;
 import com.github.rvanheest.rekeningsysteem.model.offer.Offer;
 import com.github.rvanheest.rekeningsysteem.test.ui.Playground;
 import com.github.rvanheest.rekeningsysteem.ui.header.InvoiceNumberSection;
-import io.reactivex.rxjavafx.observables.JavaFxObservable;
+import javafx.event.ActionEvent;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
@@ -37,7 +37,7 @@ public class InvoiceNumberSectionPlayground extends Playground {
         );
 
     Button button = new Button("set invoice number");
-    JavaFxObservable.actionEventsOf(button).subscribe(e -> headerManager.withInvoiceNumber("hello"));
+    button.addEventHandler(ActionEvent.ACTION, e -> headerManager.withInvoiceNumber("hello"));
 
     return new VBox(ui, button);
   }

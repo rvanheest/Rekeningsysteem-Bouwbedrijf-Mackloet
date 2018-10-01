@@ -10,7 +10,6 @@ import com.github.rvanheest.rekeningsysteem.ui.header.InvoiceNumberSection;
 import javafx.event.ActionEvent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.junit.Test;
