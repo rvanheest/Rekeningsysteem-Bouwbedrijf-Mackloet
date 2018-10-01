@@ -8,7 +8,7 @@ import io.reactivex.Observable;
 import io.reactivex.subjects.BehaviorSubject;
 
 public class NormalInvoiceManager extends AbstractDocumentManager<NormalInvoice>
-    implements ItemListManager<NormalListItem> {
+    implements DescriptionManager, ItemListManager<NormalListItem> {
 
   private final BehaviorSubject<String> description = BehaviorSubject.create();
   private final BehaviorSubject<ItemList<NormalListItem>> itemList = BehaviorSubject.create();
@@ -25,16 +25,8 @@ public class NormalInvoiceManager extends AbstractDocumentManager<NormalInvoice>
         .distinctUntilChanged();
   }
 
+  @Override
   public BehaviorSubject<String> description() {
-    return this.description;
-  }
-
-  public Completable withDescription(String description) {
-    this.description.onNext(description);
-    return Completable.complete();
-  }
-
-  public Observable<String> getDescription() {
     return this.description;
   }
 
