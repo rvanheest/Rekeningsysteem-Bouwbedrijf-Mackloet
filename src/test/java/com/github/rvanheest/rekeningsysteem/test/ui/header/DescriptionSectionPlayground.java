@@ -1,6 +1,6 @@
 package com.github.rvanheest.rekeningsysteem.test.ui.header;
 
-import com.github.rvanheest.rekeningsysteem.businesslogic.model.DescriptionManager;
+import com.github.rvanheest.rekeningsysteem.businesslogic.model.HeaderWithDescriptionManager;
 import com.github.rvanheest.rekeningsysteem.businesslogic.model.NormalInvoiceManager;
 import com.github.rvanheest.rekeningsysteem.model.document.ItemList;
 import com.github.rvanheest.rekeningsysteem.model.document.header.Debtor;
@@ -24,10 +24,10 @@ public class DescriptionSectionPlayground extends Playground {
         "",
         new ItemList<>(Monetary.getCurrency("EUR"))
     );
-    DescriptionManager descriptionManager = new NormalInvoiceManager(emptyInvoice);
-    DescriptionSection ui = new DescriptionSection(descriptionManager);
+    HeaderWithDescriptionManager headerWithDescriptionManager = new NormalInvoiceManager(emptyInvoice);
+    DescriptionSection ui = new DescriptionSection(headerWithDescriptionManager);
 
-    descriptionManager.getDescription()
+    headerWithDescriptionManager.getDescription()
         .subscribe(
             System.out::println,
             System.err::println,

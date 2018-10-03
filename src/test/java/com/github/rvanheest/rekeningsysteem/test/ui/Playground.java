@@ -22,7 +22,8 @@ public abstract class Playground extends Application {
     Scene scene = new Scene(content);
     scene.getStylesheets().addAll(
         "searchbox.css",
-        "section.css"
+        "section.css",
+        "page.css"
     );
     stage.setScene(scene);
     stage.initStyle(StageStyle.UNDECORATED);

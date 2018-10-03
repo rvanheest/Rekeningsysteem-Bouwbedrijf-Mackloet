@@ -1,6 +1,6 @@
 package com.github.rvanheest.rekeningsysteem.test.ui.header;
 
-import com.github.rvanheest.rekeningsysteem.businesslogic.model.DescriptionManager;
+import com.github.rvanheest.rekeningsysteem.businesslogic.model.HeaderWithDescriptionManager;
 import com.github.rvanheest.rekeningsysteem.businesslogic.model.NormalInvoiceManager;
 import com.github.rvanheest.rekeningsysteem.model.document.ItemList;
 import com.github.rvanheest.rekeningsysteem.model.document.header.Debtor;
@@ -23,7 +23,7 @@ import java.util.concurrent.TimeUnit;
 @Category(UITest.class)
 public class DescriptionSectionTest extends ApplicationTest {
 
-  private DescriptionManager descriptionManager;
+  private HeaderWithDescriptionManager headerWithDescriptionManager;
   private DescriptionSection ui;
 
   @Override
@@ -36,8 +36,8 @@ public class DescriptionSectionTest extends ApplicationTest {
         "",
         new ItemList<>(Monetary.getCurrency("EUR"))
     );
-    this.descriptionManager = new NormalInvoiceManager(emptyInvoice);
-    this.ui = new DescriptionSection(this.descriptionManager);
+    this.headerWithDescriptionManager = new NormalInvoiceManager(emptyInvoice);
+    this.ui = new DescriptionSection(this.headerWithDescriptionManager);
 
     Scene scene = new Scene(this.ui);
     scene.getStylesheets().add("section.css");
@@ -53,7 +53,7 @@ public class DescriptionSectionTest extends ApplicationTest {
   @Test
   public void testWriteDescription() {
     TestObserver<String> descriptionIntentObserver = this.ui.descriptionIntent().test();
-    TestObserver<String> descriptionTestObserver = this.descriptionManager.getDescription().skip(1L).test();
+    TestObserver<String> descriptionTestObserver = this.headerWithDescriptionManager.getDescription().skip(1L).test();
 
     clickOn(lookup(".text-area").<TextArea> query())
         .write("my-description")

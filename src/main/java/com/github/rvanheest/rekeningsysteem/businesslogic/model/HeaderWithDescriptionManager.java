@@ -4,7 +4,7 @@ import io.reactivex.Completable;
 import io.reactivex.Observable;
 import io.reactivex.subjects.BehaviorSubject;
 
-public interface DescriptionManager {
+public interface HeaderWithDescriptionManager extends HeaderManager {
 
   // TODO make this method protected in Java 9
   BehaviorSubject<String> description();

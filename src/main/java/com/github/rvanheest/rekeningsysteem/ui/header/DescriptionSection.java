@@ -1,6 +1,6 @@
 package com.github.rvanheest.rekeningsysteem.ui.header;
 
-import com.github.rvanheest.rekeningsysteem.businesslogic.model.DescriptionManager;
+import com.github.rvanheest.rekeningsysteem.businesslogic.model.HeaderWithDescriptionManager;
 import com.github.rvanheest.rekeningsysteem.ui.lib.AbstractSection;
 import com.github.rvanheest.rekeningsysteem.ui.lib.mvi.View;
 import io.reactivex.Observable;
@@ -16,13 +16,13 @@ public class DescriptionSection extends AbstractSection implements View, Disposa
 
   private final DescriptionSectionPresenter presenter;
 
-  public DescriptionSection(DescriptionManager descriptionManager) {
+  public DescriptionSection(HeaderWithDescriptionManager headerWithDescriptionManager) {
     super("Omschrijving");
 
     this.descriptionTA.setPrefColumnCount(50);
     this.descriptionTA.setPrefRowCount(5);
 
-    this.presenter = new DescriptionSectionPresenter(descriptionManager);
+    this.presenter = new DescriptionSectionPresenter(headerWithDescriptionManager);
     this.presenter.attachView(this);
 
     this.getChildren().add(this.descriptionTA);

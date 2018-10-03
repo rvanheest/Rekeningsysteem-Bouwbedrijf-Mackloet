@@ -1,6 +1,6 @@
 package com.github.rvanheest.rekeningsysteem.ui.header;
 
-import com.github.rvanheest.rekeningsysteem.businesslogic.model.DescriptionManager;
+import com.github.rvanheest.rekeningsysteem.businesslogic.model.HeaderWithDescriptionManager;
 import com.github.rvanheest.rekeningsysteem.ui.lib.mvi.BasePresenter;
 import io.reactivex.Completable;
 import io.reactivex.disposables.CompositeDisposable;
@@ -9,11 +9,11 @@ import java.util.concurrent.TimeUnit;
 
 public class DescriptionSectionPresenter extends BasePresenter<DescriptionSection, String> {
 
-  private final DescriptionManager descriptionManager;
+  private final HeaderWithDescriptionManager headerWithDescriptionManager;
   private final CompositeDisposable disposables = new CompositeDisposable();
 
-  public DescriptionSectionPresenter(DescriptionManager descriptionManager) {
-    this.descriptionManager = descriptionManager;
+  public DescriptionSectionPresenter(HeaderWithDescriptionManager headerWithDescriptionManager) {
+    this.headerWithDescriptionManager = headerWithDescriptionManager;
   }
 
   @Override
@@ -22,11 +22,11 @@ public class DescriptionSectionPresenter extends BasePresenter<DescriptionSectio
         .skip(1L)
         .throttleWithTimeout(250, TimeUnit.MILLISECONDS)
         .distinctUntilChanged()
-        .flatMapCompletable(this.descriptionManager::withDescription);
+        .flatMapCompletable(this.headerWithDescriptionManager::withDescription);
 
     this.disposables.add(descriptionIntent.subscribe());
 
-    subscribeViewState(this.descriptionManager.getDescription(), DescriptionSection::render);
+    subscribeViewState(this.headerWithDescriptionManager.getDescription(), DescriptionSection::render);
   }
 
   @Override
