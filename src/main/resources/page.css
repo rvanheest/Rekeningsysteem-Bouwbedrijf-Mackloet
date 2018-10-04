@@ -1,0 +1,9 @@
+.page {
+    -fx-background-color: #EEEEEE;
+    -fx-text-fill: black;
+    -fx-border-color: transparent transparent transparent black;
+    -fx-border-width: 1px;
+    -fx-spacing: 20px;
+    -fx-fill-width: false;
+    -fx-alignment: top-center;
+}
