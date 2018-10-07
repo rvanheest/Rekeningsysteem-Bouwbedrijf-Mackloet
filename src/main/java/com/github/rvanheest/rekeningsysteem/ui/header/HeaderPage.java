@@ -1,7 +1,7 @@
 package com.github.rvanheest.rekeningsysteem.ui.header;
 
 import com.github.rvanheest.rekeningsysteem.businesslogic.SearchEngine;
-import com.github.rvanheest.rekeningsysteem.businesslogic.model.HeaderWithDescriptionManager;
+import com.github.rvanheest.rekeningsysteem.businesslogic.model.NormalInvoiceManager;
 import com.github.rvanheest.rekeningsysteem.businesslogic.model.HeaderManager;
 import com.github.rvanheest.rekeningsysteem.businesslogic.model.OfferManager;
 import com.github.rvanheest.rekeningsysteem.model.document.header.Debtor;
@@ -26,12 +26,12 @@ public final class HeaderPage extends AbstractPage {
   }
 
   public static HeaderPage createNormalInvoiceHeaderPage(SearchEngine<Debtor> searchEngine,
-      HeaderWithDescriptionManager headerManager) {
+      NormalInvoiceManager invoiceManager) {
     return new HeaderPage(
-        new DebtorSection(searchEngine, headerManager),
-        new DateSection(headerManager),
-        new InvoiceNumberSection(headerManager, InvoiceNumberSection.InvoiceNumberType.INVOICE),
-        new DescriptionSection(headerManager)
+        new DebtorSection(searchEngine, invoiceManager),
+        new DateSection(invoiceManager),
+        new InvoiceNumberSection(invoiceManager, InvoiceNumberSection.InvoiceNumberType.INVOICE),
+        new DescriptionSection(invoiceManager)
     );
   }
 

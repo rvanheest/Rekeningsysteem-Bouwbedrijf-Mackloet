@@ -1,6 +1,5 @@
 package com.github.rvanheest.rekeningsysteem.test.ui.header;
 
-import com.github.rvanheest.rekeningsysteem.businesslogic.model.HeaderWithDescriptionManager;
 import com.github.rvanheest.rekeningsysteem.businesslogic.model.NormalInvoiceManager;
 import com.github.rvanheest.rekeningsysteem.model.document.ItemList;
 import com.github.rvanheest.rekeningsysteem.model.document.header.Debtor;
@@ -23,7 +22,7 @@ import java.util.concurrent.TimeUnit;
 @Category(UITest.class)
 public class DescriptionSectionTest extends ApplicationTest {
 
-  private HeaderWithDescriptionManager headerWithDescriptionManager;
+  private NormalInvoiceManager headerWithDescriptionManager;
   private DescriptionSection ui;
 
   @Override

@@ -3,7 +3,6 @@ package com.github.rvanheest.rekeningsysteem.test.ui.header;
 import com.github.rvanheest.rekeningsysteem.businesslogic.DebtorSearchEngine;
 import com.github.rvanheest.rekeningsysteem.businesslogic.SearchEngine;
 import com.github.rvanheest.rekeningsysteem.businesslogic.model.HeaderManager;
-import com.github.rvanheest.rekeningsysteem.businesslogic.model.HeaderWithDescriptionManager;
 import com.github.rvanheest.rekeningsysteem.businesslogic.model.MutationInvoiceManager;
 import com.github.rvanheest.rekeningsysteem.businesslogic.model.NormalInvoiceManager;
 import com.github.rvanheest.rekeningsysteem.businesslogic.model.OfferManager;
@@ -160,7 +159,7 @@ public class HeaderPagePlayground extends Playground implements ConfigurationFix
         "",
         new ItemList<>(Monetary.getCurrency("EUR"))
     );
-    HeaderWithDescriptionManager headerWithDescriptionManager = new NormalInvoiceManager(emptyInvoice);
+    NormalInvoiceManager headerWithDescriptionManager = new NormalInvoiceManager(emptyInvoice);
     HeaderPage ui = HeaderPage.createNormalInvoiceHeaderPage(searchEngine, headerWithDescriptionManager);
 
     headerWithDescriptionManager.getHeader()
