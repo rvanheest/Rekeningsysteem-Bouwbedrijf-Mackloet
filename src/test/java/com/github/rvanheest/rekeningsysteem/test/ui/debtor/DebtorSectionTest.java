@@ -12,6 +12,7 @@ import io.reactivex.Observable;
 import io.reactivex.observers.TestObserver;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.CheckBox;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
@@ -69,7 +70,7 @@ public class DebtorSectionTest extends ApplicationTest {
   public void stop() {
     this.ui.dispose();
   }
-  
+
   @Test
   public void testSelectDebtorFromSearchBox() {
     Debtor debtor = new Debtor("my-name", "my-street", "my-number", "1239AT", "my-city", "my-vatnumber");
@@ -89,7 +90,7 @@ public class DebtorSectionTest extends ApplicationTest {
     clickOn(searchBox)
         .write("my-name")
         .sleep(500, TimeUnit.MILLISECONDS)
-        .moveTo(lookup(".search-menu-item").<Node>query(), Motion.DIRECT)
+        .moveTo(lookup(".search-menu-item").<Node> query(), Motion.DIRECT)
         .clickOn();
 
     debtorTestObserver
@@ -99,6 +100,38 @@ public class DebtorSectionTest extends ApplicationTest {
 
     verify(this.searchEngine).suggest(eq("my-name"));
     verifyNoMoreInteractions(this.searchEngine);
+  }
+
+  @Test
+  public void testUnsetSaveDebtorAfterSelectDebtorFromSearchBox() {
+    Debtor debtor = new Debtor("my-name", "my-street", "my-number", "1239AT", "my-city", "my-vatnumber");
+
+    when(this.searchEngine.suggest(eq(""))).thenReturn(Observable.just(Collections.emptyList()));
+    when(this.searchEngine.suggest(eq("m"))).thenReturn(Observable.just(Collections.emptyList()));
+    when(this.searchEngine.suggest(eq("my"))).thenReturn(Observable.just(Collections.emptyList()));
+    when(this.searchEngine.suggest(eq("my-"))).thenReturn(Observable.just(Collections.emptyList()));
+    when(this.searchEngine.suggest(eq("my-n"))).thenReturn(Observable.just(Collections.emptyList()));
+    when(this.searchEngine.suggest(eq("my-na"))).thenReturn(Observable.just(Collections.singletonList(debtor)));
+    when(this.searchEngine.suggest(eq("my-nam"))).thenReturn(Observable.just(Collections.singletonList(debtor)));
+    when(this.searchEngine.suggest(eq("my-name"))).thenReturn(Observable.just(Collections.singletonList(debtor)));
+
+    TestObserver<Boolean> saveDebtorTestObserver = this.headerManager.storeDebtorOnSave().skip(1L).test();
+    Node searchBox = lookup(".text-field").query();
+    Node checkBox = lookup(".check-box").query();
+
+    clickOn(checkBox)
+        .sleep(500, TimeUnit.MILLISECONDS)
+        .clickOn(searchBox)
+        .write("my-name")
+        .sleep(500, TimeUnit.MILLISECONDS)
+        .moveTo(lookup(".search-menu-item").<Node> query(), Motion.DIRECT)
+        .clickOn()
+        .sleep(500, TimeUnit.MILLISECONDS);
+
+    saveDebtorTestObserver
+        .assertValues(true, false)
+        .assertNoErrors()
+        .assertNotComplete();
   }
 
   @Test
@@ -347,6 +380,28 @@ public class DebtorSectionTest extends ApplicationTest {
         .assertNotComplete();
 
     verifyZeroInteractions(this.searchEngine);
+  }
+
+  @Test
+  public void testPressSaveToggle() {
+    TestObserver<Boolean> storeDebtorOnSaveTestObserver = this.headerManager.storeDebtorOnSave().skip(1L).test();
+
+    moveTo(lookup(".check-box").<CheckBox> query())
+        .clickOn()
+        .sleep(100, TimeUnit.MILLISECONDS)
+        .clickOn()
+        .sleep(100, TimeUnit.MILLISECONDS)
+        .clickOn()
+        .sleep(100, TimeUnit.MILLISECONDS);
+
+    storeDebtorOnSaveTestObserver
+        .assertValues(
+            true,
+            false,
+            true
+        )
+        .assertNoErrors()
+        .assertNotComplete();
   }
 
   @Test

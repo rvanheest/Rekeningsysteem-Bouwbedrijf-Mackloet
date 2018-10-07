@@ -118,7 +118,10 @@ public class DebtorSection extends AbstractSection implements View, Disposable {
     return JavaFxObservable.valuesOf(this.saveDebtorCB.selectedProperty());
   }
 
-  public void render(Debtor debtor) {
+  public void render(DebtorSectionViewState viewState) {
+    Debtor debtor = viewState.getDebtor();
+    boolean saveDebtor = viewState.isStoreDebtorOnSave();
+
     if (!Objects.equals(debtor.getName(), this.nameTF.getText()))
       this.nameTF.setText(debtor.getName());
 
@@ -138,6 +141,9 @@ public class DebtorSection extends AbstractSection implements View, Disposable {
         .map(vatNumber -> Objects.equals(vatNumber, this.vatNumberTF.getText()))
         .orElseGet(() -> this.vatNumberTF.getText().isEmpty()))
       this.vatNumberTF.setText(debtor.getVatNumber().orElse(""));
+
+    if (saveDebtor != this.saveDebtorCB.isSelected())
+      this.saveDebtorCB.setSelected(saveDebtor);
   }
 
   @Override

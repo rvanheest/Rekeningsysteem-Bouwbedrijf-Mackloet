@@ -12,6 +12,8 @@ public interface DebtorManager {
   // TODO make this method protected in Java 9
   BehaviorSubject<Debtor> debtor();
 
+  BehaviorSubject<Boolean> storeDebtor();
+
   default Completable withDebtorName(String name) {
     BehaviorSubject<Debtor> debtor = this.debtor();
     Debtor oldDebtor = debtor.getValue();
@@ -74,5 +76,15 @@ public interface DebtorManager {
 
   default Observable<Debtor> getDebtor() {
     return this.debtor().distinctUntilChanged();
+  }
+
+  default Completable withStoreDebtorOnSave(Boolean storeDebtor) {
+    BehaviorSubject<Boolean> doStore = this.storeDebtor();
+    doStore.onNext(storeDebtor);
+    return Completable.complete();
+  }
+
+  default Observable<Boolean> storeDebtorOnSave() {
+    return this.storeDebtor().distinctUntilChanged();
   }
 }

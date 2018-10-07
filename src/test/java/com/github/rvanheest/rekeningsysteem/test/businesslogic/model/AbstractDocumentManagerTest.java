@@ -54,7 +54,7 @@ public abstract class AbstractDocumentManagerTest<Doc extends AbstractDocument> 
   public void testWithDebtorName() {
     TestObserver<Debtor> debtorTestObserver = this.docManager.getDebtor().skip(1L).test();
     TestObserver<Header> headerTestObserver = this.docManager.getHeader().skip(1L).test();
-    TestObserver<Doc> offerTestObserver = this.docManager.getDocument().skip(1L).test();
+    TestObserver<Doc> docTestObserver = this.docManager.getDocument().skip(1L).test();
 
     Debtor expectedDebtor = new Debtor(Optional.empty(), "my-name", "", "", "", "", Optional.empty());
     Header expectedHeader = new Header(
@@ -80,7 +80,7 @@ public abstract class AbstractDocumentManagerTest<Doc extends AbstractDocument> 
         .assertNoErrors()
         .assertNotComplete();
 
-    offerTestObserver
+    docTestObserver
         .assertValue(expectedDoc)
         .assertNoErrors()
         .assertNotComplete();
@@ -90,7 +90,7 @@ public abstract class AbstractDocumentManagerTest<Doc extends AbstractDocument> 
   public void testWithDebtorStreet() {
     TestObserver<Debtor> debtorTestObserver = this.docManager.getDebtor().skip(1L).test();
     TestObserver<Header> headerTestObserver = this.docManager.getHeader().skip(1L).test();
-    TestObserver<Doc> offerTestObserver = this.docManager.getDocument().skip(1L).test();
+    TestObserver<Doc> docTestObserver = this.docManager.getDocument().skip(1L).test();
 
     Debtor expectedDebtor = new Debtor(Optional.empty(), "", "my-street", "", "", "", Optional.empty());
     Header expectedHeader = new Header(
@@ -116,7 +116,7 @@ public abstract class AbstractDocumentManagerTest<Doc extends AbstractDocument> 
         .assertNoErrors()
         .assertNotComplete();
 
-    offerTestObserver
+    docTestObserver
         .assertValue(expectedDoc)
         .assertNoErrors()
         .assertNotComplete();
@@ -126,7 +126,7 @@ public abstract class AbstractDocumentManagerTest<Doc extends AbstractDocument> 
   public void testWithDebtorNumber() {
     TestObserver<Debtor> debtorTestObserver = this.docManager.getDebtor().skip(1L).test();
     TestObserver<Header> headerTestObserver = this.docManager.getHeader().skip(1L).test();
-    TestObserver<Doc> offerTestObserver = this.docManager.getDocument().skip(1L).test();
+    TestObserver<Doc> docTestObserver = this.docManager.getDocument().skip(1L).test();
 
     Debtor expectedDebtor = new Debtor(Optional.empty(), "", "", "my-number", "", "", Optional.empty());
     Header expectedHeader = new Header(
@@ -152,7 +152,7 @@ public abstract class AbstractDocumentManagerTest<Doc extends AbstractDocument> 
         .assertNoErrors()
         .assertNotComplete();
 
-    offerTestObserver
+    docTestObserver
         .assertValue(expectedDoc)
         .assertNoErrors()
         .assertNotComplete();
@@ -162,7 +162,7 @@ public abstract class AbstractDocumentManagerTest<Doc extends AbstractDocument> 
   public void testWithDebtorZipcode() {
     TestObserver<Debtor> debtorTestObserver = this.docManager.getDebtor().skip(1L).test();
     TestObserver<Header> headerTestObserver = this.docManager.getHeader().skip(1L).test();
-    TestObserver<Doc> offerTestObserver = this.docManager.getDocument().skip(1L).test();
+    TestObserver<Doc> docTestObserver = this.docManager.getDocument().skip(1L).test();
 
     Debtor expectedDebtor = new Debtor(Optional.empty(), "", "", "", "my-zipcode", "", Optional.empty());
     Header expectedHeader = new Header(
@@ -188,7 +188,7 @@ public abstract class AbstractDocumentManagerTest<Doc extends AbstractDocument> 
         .assertNoErrors()
         .assertNotComplete();
 
-    offerTestObserver
+    docTestObserver
         .assertValue(expectedDoc)
         .assertNoErrors()
         .assertNotComplete();
@@ -198,7 +198,7 @@ public abstract class AbstractDocumentManagerTest<Doc extends AbstractDocument> 
   public void testWithDebtorCity() {
     TestObserver<Debtor> debtorTestObserver = this.docManager.getDebtor().skip(1L).test();
     TestObserver<Header> headerTestObserver = this.docManager.getHeader().skip(1L).test();
-    TestObserver<Doc> offerTestObserver = this.docManager.getDocument().skip(1L).test();
+    TestObserver<Doc> docTestObserver = this.docManager.getDocument().skip(1L).test();
 
     Debtor expectedDebtor = new Debtor(Optional.empty(), "", "", "", "", "my-city", Optional.empty());
     Header expectedHeader = new Header(
@@ -224,7 +224,7 @@ public abstract class AbstractDocumentManagerTest<Doc extends AbstractDocument> 
         .assertNoErrors()
         .assertNotComplete();
 
-    offerTestObserver
+    docTestObserver
         .assertValue(expectedDoc)
         .assertNoErrors()
         .assertNotComplete();
@@ -234,7 +234,7 @@ public abstract class AbstractDocumentManagerTest<Doc extends AbstractDocument> 
   public void testWithDebtorVatNumber() {
     TestObserver<Debtor> debtorTestObserver = this.docManager.getDebtor().skip(1L).test();
     TestObserver<Header> headerTestObserver = this.docManager.getHeader().skip(1L).test();
-    TestObserver<Doc> offerTestObserver = this.docManager.getDocument().skip(1L).test();
+    TestObserver<Doc> docTestObserver = this.docManager.getDocument().skip(1L).test();
 
     Debtor expectedDebtor = new Debtor(Optional.empty(), "", "", "", "", "", Optional.of("my-vatnumber"));
     Header expectedHeader = new Header(
@@ -260,7 +260,7 @@ public abstract class AbstractDocumentManagerTest<Doc extends AbstractDocument> 
         .assertNoErrors()
         .assertNotComplete();
 
-    offerTestObserver
+    docTestObserver
         .assertValue(expectedDoc)
         .assertNoErrors()
         .assertNotComplete();
@@ -270,7 +270,7 @@ public abstract class AbstractDocumentManagerTest<Doc extends AbstractDocument> 
   public void testWithDebtor() {
     TestObserver<Debtor> debtorTestObserver = this.docManager.getDebtor().skip(1L).test();
     TestObserver<Header> headerTestObserver = this.docManager.getHeader().skip(1L).test();
-    TestObserver<Doc> offerTestObserver = this.docManager.getDocument().skip(1L).test();
+    TestObserver<Doc> docTestObserver = this.docManager.getDocument().skip(1L).test();
 
     Debtor expectedDebtor = new Debtor(1, "my-name", "my-street", "my-number", "my-zipcode", "my-city", "my-vatnumber");
     Header expectedHeader = new Header(
@@ -296,8 +296,27 @@ public abstract class AbstractDocumentManagerTest<Doc extends AbstractDocument> 
         .assertNoErrors()
         .assertNotComplete();
 
-    offerTestObserver
+    docTestObserver
         .assertValue(expectedDoc)
+        .assertNoErrors()
+        .assertNotComplete();
+  }
+
+  @Test
+  public void testWithStoreDebtorOnSave() {
+    TestObserver<Boolean> storeDebtorTestObserver = this.docManager.storeDebtorOnSave().skip(1L).test();
+
+    this.docManager.withStoreDebtorOnSave(true)
+        .andThen(this.docManager.withStoreDebtorOnSave(true))
+        .andThen(this.docManager.withStoreDebtorOnSave(false))
+        .andThen(this.docManager.withStoreDebtorOnSave(true))
+        .test()
+        .assertNoValues()
+        .assertNoErrors()
+        .assertComplete();
+
+    storeDebtorTestObserver
+        .assertValues(true, false, true)
         .assertNoErrors()
         .assertNotComplete();
   }
@@ -306,7 +325,7 @@ public abstract class AbstractDocumentManagerTest<Doc extends AbstractDocument> 
   public void testWithDate() {
     TestObserver<Debtor> debtorTestObserver = this.docManager.getDebtor().skip(1L).test();
     TestObserver<Header> headerTestObserver = this.docManager.getHeader().skip(1L).test();
-    TestObserver<Doc> offerTestObserver = this.docManager.getDocument().skip(1L).test();
+    TestObserver<Doc> docTestObserver = this.docManager.getDocument().skip(1L).test();
 
     LocalDate expectedDate = LocalDate.parse("2018-07-31", DateTimeFormatter.ISO_DATE);
     Header expectedHeader = new Header(
@@ -332,7 +351,7 @@ public abstract class AbstractDocumentManagerTest<Doc extends AbstractDocument> 
         .assertNoErrors()
         .assertNotComplete();
 
-    offerTestObserver
+    docTestObserver
         .assertValue(expectedDoc)
         .assertNoErrors()
         .assertNotComplete();
@@ -342,7 +361,7 @@ public abstract class AbstractDocumentManagerTest<Doc extends AbstractDocument> 
   public void testWithInvoiceNumber() {
     TestObserver<Debtor> debtorTestObserver = this.docManager.getDebtor().skip(1L).test();
     TestObserver<Header> headerTestObserver = this.docManager.getHeader().skip(1L).test();
-    TestObserver<Doc> offerTestObserver = this.docManager.getDocument().skip(1L).test();
+    TestObserver<Doc> docTestObserver = this.docManager.getDocument().skip(1L).test();
 
     String expectedInvoiceNumber = "22018";
     Header expectedHeader = new Header(
@@ -368,7 +387,7 @@ public abstract class AbstractDocumentManagerTest<Doc extends AbstractDocument> 
         .assertNoErrors()
         .assertNotComplete();
 
-    offerTestObserver
+    docTestObserver
         .assertValue(expectedDoc)
         .assertNoErrors()
         .assertNotComplete();

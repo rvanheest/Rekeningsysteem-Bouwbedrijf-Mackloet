@@ -93,6 +93,12 @@ public class DebtorSectionPlayground extends Playground implements Configuration
             System.err::println,
             () -> System.out.println("COMPLETED IS NOT EXPECTED TO EVER HAPPEN!!!")
         );
+    headerManager.storeDebtorOnSave()
+        .subscribe(
+            System.out::println,
+            System.err::println,
+            () -> System.out.println("COMPLETED IS NOT EXPECTED TO EVER HAPPEN!!!")
+        );
 
     return ui;
   }

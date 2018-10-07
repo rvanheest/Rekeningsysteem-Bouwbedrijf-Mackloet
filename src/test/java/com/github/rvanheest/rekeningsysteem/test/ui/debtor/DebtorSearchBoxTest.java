@@ -220,7 +220,10 @@ public class DebtorSearchBoxTest extends ApplicationTest {
     List<Debtor> debtors = this.testDebtors();
     when(this.searchEngine.suggest(eq("test"))).thenReturn(Observable.just(debtors));
 
+    this.headerManager.withStoreDebtorOnSave(true);
+
     TestObserver<Debtor> debtorTestObserver = this.headerManager.getDebtor().skip(1L).test();
+    TestObserver<Boolean> storeDebtorTestObserver = this.headerManager.storeDebtorOnSave().skip(1L).test();
 
     clickOn(this.textfield)
         .write("test")
@@ -230,6 +233,11 @@ public class DebtorSearchBoxTest extends ApplicationTest {
 
     debtorTestObserver
         .assertValue(debtors.get(2))
+        .assertNoErrors()
+        .assertNotComplete();
+
+    storeDebtorTestObserver
+        .assertValue(false)
         .assertNoErrors()
         .assertNotComplete();
   }

@@ -23,7 +23,9 @@ public class DebtorSearchBoxPresenter extends SearchBoxPresenter<Debtor> {
 
     this.disposables.add(
         intent(SearchBoxView::selectedItemIntent)
-            .flatMapCompletable(this.headerManager::withDebtor)
+            .flatMapCompletable(debtor ->
+                this.headerManager.withDebtor(debtor)
+                    .andThen(this.headerManager.withStoreDebtorOnSave(false)))
             .subscribe()
     );
   }

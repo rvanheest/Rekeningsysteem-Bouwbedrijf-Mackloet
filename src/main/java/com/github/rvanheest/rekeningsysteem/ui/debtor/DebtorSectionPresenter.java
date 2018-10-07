@@ -1,16 +1,16 @@
 package com.github.rvanheest.rekeningsysteem.ui.debtor;
 
 import com.github.rvanheest.rekeningsysteem.businesslogic.model.DebtorManager;
-import com.github.rvanheest.rekeningsysteem.model.document.header.Debtor;
 import com.github.rvanheest.rekeningsysteem.ui.lib.mvi.BasePresenter;
 import com.github.rvanheest.rekeningsysteem.ui.lib.mvi.ViewIntentBinder;
 import io.reactivex.Completable;
+import io.reactivex.Observable;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Function;
 
 import java.util.concurrent.TimeUnit;
 
-public class DebtorSectionPresenter extends BasePresenter<DebtorSection, Debtor> {
+public class DebtorSectionPresenter extends BasePresenter<DebtorSection, DebtorSectionViewState> {
 
   private final DebtorManager debtorManager;
   private final CompositeDisposable disposables = new CompositeDisposable();
@@ -28,6 +28,11 @@ public class DebtorSectionPresenter extends BasePresenter<DebtorSection, Debtor>
     Completable cityIntent = createIntent(DebtorSection::cityIntent, this.debtorManager::withDebtorCity);
     Completable vatNumberIntent = createIntent(DebtorSection::vatNumberIntent, this.debtorManager::withDebtorVatNumber);
 
+    Completable saveDebtorOnSaveIntent = intent(DebtorSection::saveDebtorOnSaveIntent)
+        .skip(1L)
+        .distinctUntilChanged()
+        .flatMapCompletable(this.debtorManager::withStoreDebtorOnSave);
+
     Completable debtorIntent = Completable.mergeArray(
         nameIntent,
         streetIntent,
@@ -37,8 +42,14 @@ public class DebtorSectionPresenter extends BasePresenter<DebtorSection, Debtor>
         vatNumberIntent
     );
     this.disposables.add(debtorIntent.subscribe());
+    this.disposables.add(saveDebtorOnSaveIntent.subscribe());
 
-    subscribeViewState(this.debtorManager.getDebtor(), DebtorSection::render);
+    Observable<DebtorSectionViewState> viewStateObservable = Observable.combineLatest(
+        this.debtorManager.getDebtor(),
+        this.debtorManager.storeDebtorOnSave(),
+        DebtorSectionViewState::new
+    );
+    subscribeViewState(viewStateObservable, DebtorSection::render);
   }
 
   private <T> Completable createIntent(ViewIntentBinder<DebtorSection, T> intentFunc, Function<T, Completable> setter) {

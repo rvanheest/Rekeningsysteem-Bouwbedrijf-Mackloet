@@ -105,6 +105,12 @@ public class HeaderPagePlayground extends Playground implements ConfigurationFix
             System.err::println,
             () -> System.out.println("COMPLETED IS NOT EXPECTED TO EVER HAPPEN!!!")
         );
+    headerManager.storeDebtorOnSave()
+        .subscribe(
+            System.out::println,
+            System.err::println,
+            () -> System.out.println("COMPLETED IS NOT EXPECTED TO EVER HAPPEN!!!")
+        );
 
     return ui;
   }
@@ -127,6 +133,12 @@ public class HeaderPagePlayground extends Playground implements ConfigurationFix
             System.err::println,
             () -> System.out.println("COMPLETED IS NOT EXPECTED TO EVER HAPPEN!!!")
         );
+    headerManager.storeDebtorOnSave()
+        .subscribe(
+            System.out::println,
+            System.err::println,
+            () -> System.out.println("COMPLETED IS NOT EXPECTED TO EVER HAPPEN!!!")
+        );
 
     return ui;
   }
@@ -144,6 +156,12 @@ public class HeaderPagePlayground extends Playground implements ConfigurationFix
     HeaderPage ui = HeaderPage.createNormalInvoiceHeaderPage(searchEngine, headerWithDescriptionManager);
 
     headerWithDescriptionManager.getHeader()
+        .subscribe(
+            System.out::println,
+            System.err::println,
+            () -> System.out.println("COMPLETED IS NOT EXPECTED TO EVER HAPPEN!!!")
+        );
+    headerWithDescriptionManager.storeDebtorOnSave()
         .subscribe(
             System.out::println,
             System.err::println,
