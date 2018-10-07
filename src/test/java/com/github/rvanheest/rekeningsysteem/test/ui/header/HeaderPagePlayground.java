@@ -124,7 +124,7 @@ public class HeaderPagePlayground extends Playground implements ConfigurationFix
         "",
         true
     );
-    HeaderManager headerManager = new OfferManager(emptyOffer);
+    OfferManager headerManager = new OfferManager(emptyOffer);
     HeaderPage ui = HeaderPage.createOfferHeaderPage(searchEngine, headerManager);
 
     headerManager.getHeader()
@@ -134,6 +134,14 @@ public class HeaderPagePlayground extends Playground implements ConfigurationFix
             () -> System.out.println("COMPLETED IS NOT EXPECTED TO EVER HAPPEN!!!")
         );
     headerManager.storeDebtorOnSave()
+        .map(b -> String.format("store debtor on save: %b", b))
+        .subscribe(
+            System.out::println,
+            System.err::println,
+            () -> System.out.println("COMPLETED IS NOT EXPECTED TO EVER HAPPEN!!!")
+        );
+    headerManager.getSign()
+        .map(b -> String.format("sign offer: %b", b))
         .subscribe(
             System.out::println,
             System.err::println,
