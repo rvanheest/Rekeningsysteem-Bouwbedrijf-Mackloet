@@ -29,6 +29,13 @@ public class PdfListItemVisitor implements ListItemVisitor<List<String>> {
 		return Collections.emptyList();
 	}
 
+	private String formatBtwPercentage(double btwPercentage) {
+        if (btwPercentage == 0)
+            return "verlegd";
+        else
+            return String.valueOf(btwPercentage) + "%";
+    }
+
 	@Override
 	public List<String> visit(GebruiktEsselinkArtikel item) {
 		EsselinkArtikel artikel = item.getArtikel();
@@ -43,7 +50,7 @@ public class PdfListItemVisitor implements ListItemVisitor<List<String>> {
 			return Arrays.asList(
 					aantalAsString + "x " + artikel.getOmschrijving(),
 					materiaal.formattedString(),
-					String.valueOf(item.getMateriaalBtwPercentage()));
+                    formatBtwPercentage(item.getMateriaalBtwPercentage()));
 		}
 		return Collections.emptyList();
 	}
@@ -56,7 +63,7 @@ public class PdfListItemVisitor implements ListItemVisitor<List<String>> {
 			return Arrays.asList(
 					item.getOmschrijving(),
 					materiaal.formattedString(),
-					String.valueOf(item.getMateriaalBtwPercentage()));
+                    formatBtwPercentage(item.getMateriaalBtwPercentage()));
 		}
 		return Collections.emptyList();
 	}
@@ -84,7 +91,7 @@ public class PdfListItemVisitor implements ListItemVisitor<List<String>> {
 			return Arrays.asList(
 					item.getOmschrijving(),
 					loon.formattedString(),
-					String.valueOf(item.getLoonBtwPercentage()));
+                    formatBtwPercentage(item.getLoonBtwPercentage()));
 		}
 		return Collections.emptyList();
 	}
@@ -97,7 +104,7 @@ public class PdfListItemVisitor implements ListItemVisitor<List<String>> {
 			return Arrays.asList(
 					item.getUren() + " uren à " + item.getUurloon().formattedString(),
 					loon.formattedString(),
-					String.valueOf(item.getLoonBtwPercentage()));
+                    formatBtwPercentage(item.getLoonBtwPercentage()));
 		}
 		return Collections.emptyList();
 	}

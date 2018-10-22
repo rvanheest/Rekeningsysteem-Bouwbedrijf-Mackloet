@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -148,11 +149,17 @@ public class PdfExporterVisitor implements RekeningVoidVisitor {
 
 	private Consumer<PdfConverter> convertTotalen(Totalen totalen) {
 		return converter -> {
-			converter.replace("SubTotaalBedrag", totalen.getSubtotaal().formattedString());
+			converter.replace("SubTotaalBedrag",
+                totalen.getBtwPercentages().stream().anyMatch(btw -> btw != 0)
+                    ? Collections.singletonList(totalen.getSubtotaal().formattedString())
+                    : Collections.emptyList()
+            );
 			converter.replace("btwList", totalen.getNettoBtwTuple().entrySet()
 					.stream()
+                    .filter(entry -> entry.getKey() != 0.0)
 					.sorted(Map.Entry.comparingByKey())
-					.map(entry -> Arrays.asList(String.valueOf(entry.getKey()),
+					.map(entry -> Arrays.asList(
+					        String.valueOf(entry.getKey()) + "%",
 							entry.getValue().getNetto().formattedString(),
 							entry.getValue().getBtw().formattedString()))
 					.collect(Collectors.toList()));

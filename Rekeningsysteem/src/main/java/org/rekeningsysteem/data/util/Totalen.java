@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.function.Function;
 
 public final class Totalen {
@@ -90,6 +91,10 @@ public final class Totalen {
 
 		return Collections.unmodifiableMap(res);
 	}
+
+	public Set<Double> getBtwPercentages() {
+	    return Collections.unmodifiableSet(this.nettoBtwPerPercentage.keySet());
+    }
 
 	public Map<Double, NettoBtwTuple> getNettoBtwTuple() {
 		return Collections.unmodifiableMap(this.nettoBtwPerPercentage);
