@@ -73,6 +73,10 @@ public class PdfConverter extends JLRConverter {
 		super.replace(key, this.prepare(value));
 	}
 
+	public void replaceWithoutEscape(String key, Object value) {
+	    super.replace(key, value);
+    }
+
 	public Object prepare(Object value) {
 		if (value instanceof String) {
 			return this.prepareString((String) value);
@@ -84,7 +88,7 @@ public class PdfConverter extends JLRConverter {
 	}
 
 	private String prepareString(String value) {
-		String specials = "\\{}_^#&$%~";
+		String specials = "{}_^#&$%~";
 		return value.chars().parallel()
 				.mapToObj(c -> (char) c)
 				.map(c -> c.toString())

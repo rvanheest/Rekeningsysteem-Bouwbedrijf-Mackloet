@@ -13,9 +13,10 @@ import org.rekeningsysteem.data.util.header.FactuurHeader;
 public class OfferteTrueIntegrationTest extends AbstractIntegrationTest {
 
 	protected String makeText() {
-		return "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce quis quam tortor. "
+		return "# Section 1\n"
+                + "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce quis quam tortor. "
 				+ "Nunc id leo in eros tincidunt lobortis eget a erat. Mauris id velit ut diam "
-				+ "tincidunt auctor ut sed sapien. Morbi in tellus ut sapien molestie sodales "
+				+ "tincidunt auctor ut sed sapien. **Morbi in tellus** ut sapien molestie sodales "
 				+ "vitae molestie libero. Sed sodales augue nulla, ut pulvinar odio placerat eu. "
 				+ "Nunc at arcu euismod, pulvinar orci nec, fermentum tellus. In hac habitasse "
 				+ "platea dictumst. Interdum et malesuada fames ac ante ipsum primis in faucibus. "
@@ -23,13 +24,15 @@ public class OfferteTrueIntegrationTest extends AbstractIntegrationTest {
 				+ "Nunc fringilla quam venenatis lacus condimentum, vitae mattis risus "
 				+ "ullamcorper. Maecenas pulvinar gravida libero, ac scelerisque justo "
 				+ "dignissim in.\n\n"
-				
-				+ "Maecenas pretium mi id magna convallis, vel auctor erat pulvinar. Cras et "
+
+                + "## Subsection\n"
+				+ "\"_Maecenas pretium mi id magna convallis, vel auctor erat pulvinar._\" Cras et "
 				+ "tellus nec lacus pellentesque rutrum eget sodales nisi. In vitae sagittis "
 				+ "urna. Sed vestibulum suscipit vulputate. Vivamus commodo augue at dolor "
 				+ "volutpat blandit. Nunc in justo bibendum, cursus purus quis, scelerisque est. "
 				+ "Aenean ut accumsan arcu.\n\n"
-				
+
+                + "# Section 2\n"
 				+ "Cras volutpat auctor mollis. Sed aliquam elit et accumsan dictum. Pellentesque "
 				+ "sollicitudin, turpis sollicitudin tincidunt porttitor, velit quam mollis sem, "
 				+ "non volutpat nunc arcu quis magna. Fusce vitae mattis nisl. Nulla sit amet "

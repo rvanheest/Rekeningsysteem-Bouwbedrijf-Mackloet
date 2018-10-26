@@ -5,6 +5,7 @@ import java.io.File;
 import org.apache.log4j.Logger;
 import org.rekeningsysteem.data.util.AbstractRekening;
 import org.rekeningsysteem.io.FactuurExporter;
+import org.rekeningsysteem.logic.offerte.LaTeXMarkdownTransformer;
 
 public class PdfExporter implements FactuurExporter {
 
@@ -12,11 +13,11 @@ public class PdfExporter implements FactuurExporter {
 	private Logger logger;
 	
 	public PdfExporter(Logger logger) {
-		this(new PdfExporterVisitor(new PdfListItemVisitor()), logger);
+		this(new PdfExporterVisitor(new PdfListItemVisitor(), new LaTeXMarkdownTransformer()), logger);
 	}
 	
 	public PdfExporter(boolean autoOpen, Logger logger) {
-		this(new PdfExporterVisitor(autoOpen, new PdfListItemVisitor()), logger);
+		this(new PdfExporterVisitor(autoOpen, new PdfListItemVisitor(), new LaTeXMarkdownTransformer()), logger);
 	}
 
 	public PdfExporter(PdfExporterVisitor visitor, Logger logger) {

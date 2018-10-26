@@ -12,6 +12,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.rekeningsysteem.io.pdf.PdfExporterVisitor;
 import org.rekeningsysteem.io.pdf.PdfListItemVisitor;
+import org.rekeningsysteem.logic.offerte.MarkdownTransformer;
 import org.rekeningsysteem.properties.PropertiesWorker;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -21,10 +22,11 @@ public class PdfExporterVisitorTest {
 	@Mock private File mockedFile;
 	@Mock private PropertiesWorker properties;
 	@Mock private PdfListItemVisitor itemVisitor;
+	@Mock private MarkdownTransformer mdTransformer;
 
 	@Before
 	public void setUp() {
-		this.visitor = new PdfExporterVisitor(false, this.properties, this.itemVisitor);
+		this.visitor = new PdfExporterVisitor(false, this.properties, this.itemVisitor, this.mdTransformer);
 		this.visitor.setSaveLocation(this.mockedFile);
 	}
 

@@ -23,6 +23,7 @@ import org.rekeningsysteem.data.util.header.OmschrFactuurHeader;
 import org.rekeningsysteem.data.util.visitor.ListItemVisitor;
 import org.rekeningsysteem.data.util.visitor.RekeningVoidVisitor;
 import org.rekeningsysteem.exception.PdfException;
+import org.rekeningsysteem.logic.offerte.MarkdownTransformer;
 import org.rekeningsysteem.properties.PropertiesWorker;
 import org.rekeningsysteem.properties.PropertyModelEnum;
 
@@ -34,21 +35,23 @@ public class PdfExporterVisitor implements RekeningVoidVisitor {
 	private final boolean autoOpen;
 	private final PropertiesWorker properties;
 	private final ListItemVisitor<List<String>> itemVisitor;
+	private final MarkdownTransformer mdTransformer;
 	private File saveLocation;
 
-	public PdfExporterVisitor(ListItemVisitor<List<String>> itemVisitor) {
-		this(true, PropertiesWorker.getInstance(), itemVisitor);
+	public PdfExporterVisitor(ListItemVisitor<List<String>> itemVisitor, MarkdownTransformer mdTransformer) {
+		this(true, PropertiesWorker.getInstance(), itemVisitor, mdTransformer);
 	}
 
-	public PdfExporterVisitor(boolean autoOpen, ListItemVisitor<List<String>> itemVisitor) {
-		this(autoOpen, PropertiesWorker.getInstance(), itemVisitor);
+	public PdfExporterVisitor(boolean autoOpen, ListItemVisitor<List<String>> itemVisitor, MarkdownTransformer mdTransformer) {
+		this(autoOpen, PropertiesWorker.getInstance(), itemVisitor, mdTransformer);
 	}
 
 	public PdfExporterVisitor(boolean autoOpen, PropertiesWorker properties,
-			ListItemVisitor<List<String>> itemVisitor) {
+			ListItemVisitor<List<String>> itemVisitor, MarkdownTransformer mdTransformer) {
 		this.autoOpen = autoOpen;
 		this.properties = properties;
 		this.itemVisitor = itemVisitor;
+		this.mdTransformer = mdTransformer;
 	}
 
 	public File getSaveLocation() {
@@ -180,9 +183,21 @@ public class PdfExporterVisitor implements RekeningVoidVisitor {
 						.formattedString()));
 	}
 
-	private Consumer<PdfConverter> convert(Offerte offerte) {
-		return this.convertFactuurHeader(offerte.getFactuurHeader())
-				.andThen(converter -> converter.replace("Tekst", offerte.getTekst()))
+	private Consumer<PdfConverter> convert(Offerte offerte) throws IOException {
+        return this.convertFactuurHeader(offerte.getFactuurHeader())
+				.andThen(converter -> {
+				  String preparedText = (String) converter.prepare(offerte.getTekst());
+                  System.out.println(preparedText);
+                  System.out.println("-----");
+                  try {
+                    String text = this.mdTransformer.transform(preparedText);
+                    System.out.println(text);
+                    converter.replaceWithoutEscape("Tekst", text);
+                  }
+                  catch (IOException e) {
+                    e.printStackTrace();
+                  }
+                })
 				.andThen(converter -> converter.replace("Ondertekenen",
 						String.valueOf(offerte.isOndertekenen())));
 	}

@@ -94,6 +94,11 @@
 			<artifactId>jlr</artifactId>
 			<version>0</version>
 		</dependency>
+        <dependency>
+            <groupId>es.nitaur.markdown</groupId>
+            <artifactId>txtmark</artifactId>
+            <version>0.16</version>
+        </dependency>
 
 		<!-- SQLite database connector -->
 		<dependency>
