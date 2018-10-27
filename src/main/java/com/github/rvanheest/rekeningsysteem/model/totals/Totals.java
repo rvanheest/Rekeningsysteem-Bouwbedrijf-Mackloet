@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.function.Function;
 
 public class Totals {
@@ -92,6 +93,10 @@ public class Totals {
     map.forEach((key, value) -> res.put(key, f.apply(value)));
 
     return Collections.unmodifiableMap(res);
+  }
+
+  public Set<Double> getBtwPercentages() {
+    return Collections.unmodifiableSet(this.netTaxPerPercentage.keySet());
   }
 
   public Map<Double, NetTaxTuple> getNettoBtwTuple() {

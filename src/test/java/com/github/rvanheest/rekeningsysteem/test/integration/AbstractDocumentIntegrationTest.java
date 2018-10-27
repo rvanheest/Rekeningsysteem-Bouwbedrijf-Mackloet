@@ -23,7 +23,9 @@ import com.github.rvanheest.rekeningsysteem.xml.XmlWriter;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runners.MethodSorters;
 
 import javax.money.Monetary;
 import javax.xml.parsers.DocumentBuilder;
@@ -39,6 +41,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+// To make sure the PDF test is done last, I adjusted the names of the tests and made them run in name-ascending order
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public abstract class AbstractDocumentIntegrationTest implements DatabaseFixture, ConfigurationFixture {
 
   private DatabaseConnection databaseAccess;
@@ -73,7 +77,7 @@ public abstract class AbstractDocumentIntegrationTest implements DatabaseFixture
   protected abstract AbstractDocument makeDocument(Header header) throws Exception;
 
   @Test
-  public void testInitializeInvoiceNumber() throws Exception {
+  public void testT1InitializeInvoiceNumber() throws Exception {
     Database database = new Database(this.databaseAccess);
     InvoiceNumberTable table = new InvoiceNumberTable();
     InvoiceNumberGenerator generator = new InvoiceNumberGenerator(database);
@@ -103,10 +107,10 @@ public abstract class AbstractDocumentIntegrationTest implements DatabaseFixture
   }
 
   @Test
-  public void testExportPdf() throws Exception {
+  public void testT3ExportPdf() throws Exception {
     PdfExporter exporter = new PdfExporter(this.getConfiguration(), Locale.forLanguageTag("nl-NL"));
     AbstractDocument document = this.makeDocument(this.getHeaderWithInvoiceNumber());
-    Path pdf = this.getTestDir().resolve("document.pdf");
+    Path pdf = this.getTestDir().resolve(String.format("%s.pdf", getClass().getSimpleName()));
 
     assertFalse(Files.exists(pdf));
 
@@ -116,7 +120,7 @@ public abstract class AbstractDocumentIntegrationTest implements DatabaseFixture
   }
 
   @Test
-  public void testSaveXml() throws Exception {
+  public void testT2SaveXml() throws Exception {
     DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
     TransformerFactory transformerFactory = TransformerFactory.newInstance();
     XmlSaver saver = new XmlWriter(builder, transformerFactory);
@@ -127,7 +131,7 @@ public abstract class AbstractDocumentIntegrationTest implements DatabaseFixture
         new XmlReader1(builder, Locale.forLanguageTag("nl-NL"), Monetary.getCurrency("EUR")));
 
     AbstractDocument document = this.makeDocument(this.getHeaderWithInvoiceNumber());
-    Path xml = this.getTestDir().resolve("document.xml");
+    Path xml = this.getTestDir().resolve(String.format("%s.xml", getClass().getSimpleName()));
 
     assertFalse(Files.exists(xml));
     saver.save(document, xml);

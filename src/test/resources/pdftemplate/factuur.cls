@@ -21,11 +21,11 @@
 
 \newenvironment{particulierTable}[1][]{
 	\newcommand*{\particulierRow}[3]{
-		##1 & ##2 & ##3\% \\
+		##1 & ##2 & ##3 \\
 	}
 
 	\newcommand*{\loonRow}[3]{
-		##1 & ##2 & ##3\% \\
+		##1 & ##2 & ##3 \\
 	}
 
 	\newcommand*{\subtotalRow}[1]{

@@ -31,6 +31,7 @@ import javax.money.format.MonetaryAmountFormat;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -179,7 +180,7 @@ public class PdfDocumentVisitorTest {
     verify(converter).replace("Omschrijving", invoice.getDescription());
     verifyReplaceCurrency(converter);
     verify(converter).replace("artikelList", Arrays.asList(item1Output, item2Output, item3Output));
-    verify(converter).replace("SubTotaalBedrag", "144,31");
+    verify(converter).replace("SubTotaalBedrag", Collections.singleton("144,31"));
     verify(converter).replace("btwList", Arrays.asList(tax1Output, tax2Output));
     verify(converter).replace("TotaalBedrag", "168,52");
     verifyNoMoreInteractions(converter);

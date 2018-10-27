@@ -61,7 +61,7 @@ public class PdfListItemVisitor implements ListItemVisitor<List<String>> {
       return Arrays.asList(
           item.getDescription(),
           this.moneyFormatter.format(materialCosts),
-          String.valueOf(item.getMaterialCostsTaxPercentage()));
+          formatBtwPercentage(item.getMaterialCostsTaxPercentage()));
   }
 
   @Override
@@ -80,7 +80,7 @@ public class PdfListItemVisitor implements ListItemVisitor<List<String>> {
       return Arrays.asList(
           String.format("%sx %s", numberString, sub.getDescription()),
           this.moneyFormatter.format(materialCosts),
-          String.valueOf(item.getMaterialCostsTaxPercentage())
+          formatBtwPercentage(item.getMaterialCostsTaxPercentage())
       );
     }
   }
@@ -95,7 +95,7 @@ public class PdfListItemVisitor implements ListItemVisitor<List<String>> {
       return Arrays.asList(
           item.getDescription(),
           this.moneyFormatter.format(wage),
-          String.valueOf(item.getWageTaxPercentage()));
+          formatBtwPercentage(item.getWageTaxPercentage()));
   }
 
   @Override
@@ -108,6 +108,12 @@ public class PdfListItemVisitor implements ListItemVisitor<List<String>> {
       return Arrays.asList(
           String.format("%s uren à %s", String.valueOf(item.getHours()), this.moneyFormatter.format(item.getWagePerHour())),
           this.moneyFormatter.format(wage),
-          String.valueOf(item.getWageTaxPercentage()));
+          formatBtwPercentage(item.getWageTaxPercentage()));
+  }
+
+  private String formatBtwPercentage(double btwPercentage) {
+    return btwPercentage == 0
+        ? "verlegd"
+        : String.valueOf(btwPercentage) + "%";
   }
 }

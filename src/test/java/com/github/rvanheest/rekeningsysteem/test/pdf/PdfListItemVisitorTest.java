@@ -99,7 +99,7 @@ public class PdfListItemVisitorTest {
     Money m = Money.of(12.34, this.currency);
     when(this.formatter.format(any(MonetaryAmount.class))).thenReturn("output");
     SimpleListItem item = new SimpleListItem("descr", m, 19.5);
-    List<String> expected = Arrays.asList("descr", "output", "19.5");
+    List<String> expected = Arrays.asList("descr", "output", "19.5%");
 
     assertEquals(expected, this.visitor.visit(item));
     verify(this.formatter).format(eq(m));
@@ -120,7 +120,7 @@ public class PdfListItemVisitorTest {
     when(this.formatter.format(any(MonetaryAmount.class))).thenReturn("output2");
     EsselinkItem ei = new EsselinkItem("itemId", "descr", 10, "units", m);
     EsselinkListItem item = new EsselinkListItem(ei, 20, 30);
-    List<String> expected = Arrays.asList("20x descr", "output2", "30.0");
+    List<String> expected = Arrays.asList("20x descr", "output2", "30.0%");
 
     assertEquals(expected, this.visitor.visit(item));
     verify(this.formatter).format(eq(m.multiply(2)));
@@ -133,7 +133,7 @@ public class PdfListItemVisitorTest {
     when(this.formatter.format(any(MonetaryAmount.class))).thenReturn("output2");
     EsselinkItem ei = new EsselinkItem("itemId", "descr", 10, "units", m);
     EsselinkListItem item = new EsselinkListItem(ei, 20.4, 30);
-    List<String> expected = Arrays.asList("20.4x descr", "output2", "30.0");
+    List<String> expected = Arrays.asList("20.4x descr", "output2", "30.0%");
 
     assertEquals(expected, this.visitor.visit(item));
     verify(this.formatter).format(eq(m.multiply(2.04)));
@@ -154,7 +154,7 @@ public class PdfListItemVisitorTest {
     Money m = Money.of(12.34, this.currency);
     when(this.formatter.format(any(MonetaryAmount.class))).thenReturn("output");
     DefaultWage item = new DefaultWage("descr", m, 19.5);
-    List<String> expected = Arrays.asList("descr", "output", "19.5");
+    List<String> expected = Arrays.asList("descr", "output", "19.5%");
 
     assertEquals(expected, this.visitor.visit(item));
     verify(this.formatter).format(eq(m));
@@ -174,7 +174,7 @@ public class PdfListItemVisitorTest {
     Money m = Money.of(12.34, this.currency);
     when(this.formatter.format(any(MonetaryAmount.class))).thenReturn("output1", "output2");
     HourlyWage item = new HourlyWage("descr", 3.5, m, 19.5);
-    List<String> expected = Arrays.asList("3.5 uren à output1", "output2", "19.5");
+    List<String> expected = Arrays.asList("3.5 uren à output1", "output2", "19.5%");
 
     assertEquals(expected, this.visitor.visit(item));
     verify(this.formatter).format(eq(m));

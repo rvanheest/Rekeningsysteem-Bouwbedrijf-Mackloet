@@ -13,6 +13,7 @@ import javax.money.CurrencyUnit;
 import javax.money.format.MonetaryAmountFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Currency;
 import java.util.Locale;
 import java.util.Map;
@@ -60,14 +61,19 @@ public class PdfDocumentVisitor implements DocumentVisitor<Consumer<PdfConverter
 
   private Consumer<PdfConverter> visitTotals(Totals totals) {
     return converter -> {
-      converter.replace("SubTotaalBedrag", this.moneyFormatter.format(totals.getSubtotal()));
+      converter.replace("SubTotaalBedrag", totals.getBtwPercentages().stream().anyMatch(btw -> btw != 0)
+          ? Collections.singleton(this.moneyFormatter.format(totals.getSubtotal()))
+          : Collections.emptyList());
       converter.replace("btwList", totals.getNettoBtwTuple()
           .entrySet()
           .stream()
+          .filter(entry -> entry.getKey() != 0.0)
           .sorted(Map.Entry.comparingByKey())
-          .map(entry -> Arrays.asList(String.valueOf(entry.getKey()),
+          .map(entry -> Arrays.asList(
+              String.valueOf(entry.getKey()),
               this.moneyFormatter.format(entry.getValue().getNet()),
-              this.moneyFormatter.format(entry.getValue().getTax())))
+              this.moneyFormatter.format(entry.getValue().getTax())
+          ))
           .collect(Collectors.toList()));
       converter.replace("TotaalBedrag", this.moneyFormatter.format(totals.getTotal()));
     };
