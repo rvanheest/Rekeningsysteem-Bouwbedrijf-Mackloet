@@ -53,6 +53,6 @@ public abstract class AbstractRekeningController<M extends AbstractRekening> {
 								.getProperty(PropertyModelEnum.MATERIAALBTWPERCENTAGE)
 								.map(Double::parseDouble)
 								.map(m -> new BtwPercentage(l, m)))
-						.orElse(new BtwPercentage(6, 21));
+						.orElse(new BtwPercentage(9, 21));
 	}
 }
