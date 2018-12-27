@@ -27,12 +27,6 @@ public class ParticulierArtikelController extends AbstractListItemController<Par
 				new ProductLoonController(currency));
 	}
 
-//	public ParticulierArtikel2Controller(Currency currency, Database db, BtwPercentage defaultBtw,
-//			ParticulierArtikel2Impl input) {
-//		this(currency, db, defaultBtw);
-//		this.setAnderArtikel(input);
-//	}
-
 	public ParticulierArtikelController(BtwPercentage defaultBtw, ParticulierArtikelPane ui,
 			AnderArtikelController anderController,
 			GebruiktEsselinkArtikelController gebruiktController,
@@ -66,7 +60,7 @@ public class ParticulierArtikelController extends AbstractListItemController<Par
 		ui.addContent(ParticulierArtikelType.INSTANT, this.instantController.getUI());
 		ui.addContent(ParticulierArtikelType.PRODUCT, this.productController.getUI());
 
-		this.setBtwPercentage(defaultBtw.getMateriaalPercentage());
+		this.setBtwPercentage(defaultBtw);
 	}
 
 	@Override
@@ -74,16 +68,10 @@ public class ParticulierArtikelController extends AbstractListItemController<Par
 		return (ParticulierArtikelPane) super.getUI();
 	}
 
-//	private void setAnderArtikel(ParticulierArtikel2Impl ander) {
-//		this.anderController.getUI().setOmschrijving(ander.getOmschrijving());
-//		this.anderController.getUI().setPrijs(ander.getMateriaal().getBedrag());
-//		this.anderController.getUI().setBtwPercentage(ander.getMateriaalBtwPercentage());
-//	}
-
-	public void setBtwPercentage(Double btwPercentage) {
-		this.anderController.getUI().setBtwPercentage(btwPercentage);
-		this.gebruiktController.getUI().setBtwPercentage(btwPercentage);
-		this.instantController.getUI().setBtwPercentage(btwPercentage);
-		this.productController.getUI().setBtwPercentage(btwPercentage);
+	public void setBtwPercentage(BtwPercentage btwPercentage) {
+		this.anderController.getUI().setBtwPercentage(btwPercentage.getMateriaalPercentage());
+		this.gebruiktController.getUI().setBtwPercentage(btwPercentage.getMateriaalPercentage());
+		this.instantController.getUI().setBtwPercentage(btwPercentage.getLoonPercentage());
+		this.productController.getUI().setBtwPercentage(btwPercentage.getLoonPercentage());
 	}
 }
