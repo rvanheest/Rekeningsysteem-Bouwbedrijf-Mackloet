@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import javafx.event.ActionEvent;
 import javafx.scene.control.Button;
+import javafx.scene.control.Labeled;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -82,24 +83,23 @@ public class MainPane extends BorderPane {
 	}
 
 	private void initButtons() {
-		this.mutaties.setGraphic(new ImageView(new Image(Main
-				.getResource("/images/mutaties.png"))));
-		this.reparaties.setGraphic(new ImageView(new Image(Main
-				.getResource("/images/reparaties.png"))));
-		this.particulier.setGraphic(new ImageView(new Image(Main
-				.getResource("/images/particulier.png"))));
-		this.offerte.setGraphic(new ImageView(new Image(Main
-				.getResource("/images/offerte.png"))));
-		this.open.setGraphic(new ImageView(new Image(Main
-				.getResource("/images/openen.png"))));
-		this.save.setGraphic(new ImageView(new Image(Main
-				.getResource("/images/opslaan.png"))));
-		this.pdf.setGraphic(new ImageView(new Image(Main
-				.getResource("/images/pdf.png"))));
+		setGraphic(this.mutaties, "/images/mutaties.png");
+		setGraphic(this.reparaties, "/images/reparaties.png");
+		setGraphic(this.particulier, "/images/particulier.png");
+		setGraphic(this.offerte, "/images/offerte.png");
+		setGraphic(this.open, "/images/openen.png");
+		setGraphic(this.save, "/images/opslaan.png");
+		setGraphic(this.pdf, "/images/pdf.png");
 		this.settings.setId("settings-button");
-		this.settings.setGraphic(new ImageView(new Image(Main
-				.getResource("/images/settings.png"))));
+		setGraphic(this.settings, "/images/settings.png");
 	}
+
+    private static void setGraphic(Labeled node, String url) {
+        String resource = Main.getResource(url);
+        Image image = new Image(resource, 20, 23, false, false);
+        ImageView view = new ImageView(image);
+        node.setGraphic(view);
+    }
 
 	private void initButtonHandlers(Stage stage, Logger logger) {
 		this.initMutatiesObservable()
