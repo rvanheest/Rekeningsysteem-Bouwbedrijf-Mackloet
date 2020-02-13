@@ -138,9 +138,9 @@
                 </loon>
             </instant-loon>
         </loonList>
-        <btwPercentage>
+        <btwPercentages>
             <loonPercentage>6.0</loonPercentage>
             <materiaalPercentage>21.0</materiaalPercentage>
-        </btwPercentage>
+        </btwPercentages>
     </rekening>
 </bestand>

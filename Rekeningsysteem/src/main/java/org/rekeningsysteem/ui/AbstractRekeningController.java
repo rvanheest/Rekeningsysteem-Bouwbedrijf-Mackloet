@@ -4,7 +4,7 @@ import java.util.Currency;
 
 import org.rekeningsysteem.application.working.RekeningSplitPane;
 import org.rekeningsysteem.data.util.AbstractRekening;
-import org.rekeningsysteem.data.util.BtwPercentage;
+import org.rekeningsysteem.data.util.BtwPercentages;
 import org.rekeningsysteem.logic.factuurnummer.FactuurnummerManager;
 import org.rekeningsysteem.logic.factuurnummer.PropertyFactuurnummerManager;
 import org.rekeningsysteem.properties.PropertiesWorker;
@@ -46,13 +46,13 @@ public abstract class AbstractRekeningController<M extends AbstractRekening> {
 				.orElse(Currency.getInstance("EUR"));
 	}
 
-	protected static BtwPercentage getDefaultBtwPercentage(PropertiesWorker properties) {
+	protected static BtwPercentages getDefaultBtwPercentage(PropertiesWorker properties) {
 		return properties.getProperty(PropertyModelEnum.LOONBTWPERCENTAGE)
 						.map(Double::parseDouble)
-						.<BtwPercentage> flatMap(l -> properties
+						.<BtwPercentages> flatMap(l -> properties
 								.getProperty(PropertyModelEnum.MATERIAALBTWPERCENTAGE)
 								.map(Double::parseDouble)
-								.map(m -> new BtwPercentage(l, m)))
-						.orElse(new BtwPercentage(9, 21));
+								.map(m -> new BtwPercentages(l, m)))
+						.orElse(new BtwPercentages(9, 21));
 	}
 }

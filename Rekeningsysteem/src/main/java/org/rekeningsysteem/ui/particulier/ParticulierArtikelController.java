@@ -4,7 +4,7 @@ import java.util.Currency;
 import java.util.Optional;
 
 import org.rekeningsysteem.data.particulier.ParticulierArtikel;
-import org.rekeningsysteem.data.util.BtwPercentage;
+import org.rekeningsysteem.data.util.BtwPercentages;
 import org.rekeningsysteem.io.database.Database;
 import org.rekeningsysteem.logic.database.ArtikellijstDBInteraction;
 import org.rekeningsysteem.ui.list.AbstractListItemController;
@@ -18,7 +18,7 @@ public class ParticulierArtikelController extends AbstractListItemController<Par
 	private final InstantLoonController instantController;
 	private final ProductLoonController productController;
 
-	public ParticulierArtikelController(Currency currency, Database db, BtwPercentage defaultBtw) {
+	public ParticulierArtikelController(Currency currency, Database db, BtwPercentages defaultBtw) {
 		this(defaultBtw, new ParticulierArtikelPane(currency),
 				new AnderArtikelController(currency),
 				new GebruiktEsselinkArtikelController(currency,
@@ -27,7 +27,7 @@ public class ParticulierArtikelController extends AbstractListItemController<Par
 				new ProductLoonController(currency));
 	}
 
-	public ParticulierArtikelController(BtwPercentage defaultBtw, ParticulierArtikelPane ui,
+	public ParticulierArtikelController(BtwPercentages defaultBtw, ParticulierArtikelPane ui,
 			AnderArtikelController anderController,
 			GebruiktEsselinkArtikelController gebruiktController,
 			InstantLoonController instantController,
@@ -68,10 +68,10 @@ public class ParticulierArtikelController extends AbstractListItemController<Par
 		return (ParticulierArtikelPane) super.getUI();
 	}
 
-	public void setBtwPercentage(BtwPercentage btwPercentage) {
-		this.anderController.getUI().setBtwPercentage(btwPercentage.getMateriaalPercentage());
-		this.gebruiktController.getUI().setBtwPercentage(btwPercentage.getMateriaalPercentage());
-		this.instantController.getUI().setBtwPercentage(btwPercentage.getLoonPercentage());
-		this.productController.getUI().setBtwPercentage(btwPercentage.getLoonPercentage());
+	public void setBtwPercentage(BtwPercentages btwPercentages) {
+		this.anderController.getUI().setBtwPercentage(btwPercentages.getMateriaalPercentage());
+		this.gebruiktController.getUI().setBtwPercentage(btwPercentages.getMateriaalPercentage());
+		this.instantController.getUI().setBtwPercentage(btwPercentages.getLoonPercentage());
+		this.productController.getUI().setBtwPercentage(btwPercentages.getLoonPercentage());
 	}
 }

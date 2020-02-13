@@ -2,12 +2,12 @@ package org.rekeningsysteem.data.util;
 
 import java.util.Objects;
 
-public final class BtwPercentage {
+public final class BtwPercentages {
 
 	private final double loonPercentage;
 	private final double materiaalPercentage;
 
-	public BtwPercentage(double loonPercentage, double materiaalPercentage) {
+	public BtwPercentages(double loonPercentage, double materiaalPercentage) {
 		this.loonPercentage = loonPercentage;
 		this.materiaalPercentage = materiaalPercentage;
 	}
@@ -22,8 +22,8 @@ public final class BtwPercentage {
 
 	@Override
 	public boolean equals(Object other) {
-		if (other instanceof BtwPercentage) {
-			BtwPercentage that = (BtwPercentage) other;
+		if (other instanceof BtwPercentages) {
+			BtwPercentages that = (BtwPercentages) other;
 			return Objects.equals(this.loonPercentage, that.loonPercentage)
 					&& Objects.equals(this.materiaalPercentage, that.materiaalPercentage);
 		}
