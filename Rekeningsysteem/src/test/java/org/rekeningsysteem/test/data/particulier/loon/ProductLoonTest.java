@@ -95,7 +95,7 @@ public class ProductLoonTest extends AbstractLoonTest {
 
 	@Test
 	public void testToString() {
-		assertEquals("<ProductLoon[omschrijving, 10.0, <Geld[4,00]>, 10.0]>",
+		assertEquals("<ProductLoon[omschrijving, 10.0, <Geld[4,00]>, <BtwPercentage[10.0, false]>]>",
 				this.item.toString());
 	}
 }

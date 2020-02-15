@@ -81,6 +81,6 @@ public class InstantLoonTest extends AbstractLoonTest {
 
 	@Test
 	public void testToString() {
-		assertEquals("<InstantLoon[omschrijving, <Geld[12,00]>, 10.0]>", this.item.toString());
+		assertEquals("<InstantLoon[omschrijving, <Geld[12,00]>, <BtwPercentage[10.0, false]>]>", this.item.toString());
 	}
 }

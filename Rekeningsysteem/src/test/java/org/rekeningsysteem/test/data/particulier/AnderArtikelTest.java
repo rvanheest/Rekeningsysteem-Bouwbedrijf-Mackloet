@@ -73,7 +73,7 @@ public class AnderArtikelTest extends ParticulierArtikelTest {
 
 	@Test
 	public void testToString() {
-		assertEquals("<AnderArtikel[omschrijving, <Geld[21,00]>, 10.0]>",
+		assertEquals("<AnderArtikel[omschrijving, <Geld[21,00]>, <BtwPercentage[10.0, false]>]>",
 				this.artikel.toString());
 	}
 }

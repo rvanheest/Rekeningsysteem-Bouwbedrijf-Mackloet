@@ -94,7 +94,7 @@ public class GebruiktEsselinkArtikelTest extends ParticulierArtikelTest {
 
 	@Test
 	public void testToString() {
-		assertEquals("<GebruiktEsselinkArtikel[omschrijving, <Geld[2,50]>, 10.0, 5.0, "
+		assertEquals("<GebruiktEsselinkArtikel[omschrijving, <Geld[2,50]>, <BtwPercentage[10.0, false]>, 5.0, "
 				+ "<EsselinkArtikel[artikelnummer, omschrijving, 2, eenheid, <Geld[1,00]>]>]>",
 				this.gebruiktArtikel.toString());
 	}

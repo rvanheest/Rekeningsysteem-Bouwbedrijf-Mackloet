@@ -56,6 +56,6 @@ public class BtwPercentagesTest extends EqualsHashCodeTest {
 
 	@Test
 	public void testToString() {
-		assertEquals("<BtwPercentage[6.0, 21.0]>", this.btwPercentages.toString());
+		assertEquals("<BtwPercentages[<BtwPercentage[6.0, false]>, <BtwPercentage[21.0, false]>]>", this.btwPercentages.toString());
 	}
 }
