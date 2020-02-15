@@ -7,7 +7,9 @@ public interface BtwListItem extends ListItem {
 	BtwPercentage getMateriaalBtwPercentage();
 
 	default Geld getLoonBtw() {
-		return this.getLoon().multiply(this.getLoonBtwPercentage().getPercentage()).divide(100);
+		return this.getMateriaalBtwPercentage().isVerlegd()
+			? new Geld(0)
+			: this.getLoon().multiply(this.getLoonBtwPercentage().getPercentage()).divide(100);
 	}
 
 	default Geld getMateriaalBtw() {
