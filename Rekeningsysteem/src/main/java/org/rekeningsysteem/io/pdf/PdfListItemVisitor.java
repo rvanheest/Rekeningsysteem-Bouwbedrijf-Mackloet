@@ -34,7 +34,7 @@ public class PdfListItemVisitor implements ListItemVisitor<List<String>> {
 			if (btwPercentage.getPercentage() == 0)
 					return "verlegd";
 			else {
-				String btw = String.valueOf(btwPercentage) + "%";
+				String btw = String.valueOf(btwPercentage.getPercentage()) + "%";
 				return btwPercentage.isVerlegd() ? btw + ", verlegd" : btw;
 			}
 	}
