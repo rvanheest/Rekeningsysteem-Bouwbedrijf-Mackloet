@@ -11,6 +11,8 @@ public interface BtwListItem extends ListItem {
 	}
 
 	default Geld getMateriaalBtw() {
-		return this.getMateriaal().multiply(this.getMateriaalBtwPercentage().getPercentage()).divide(100);
+		return this.getMateriaalBtwPercentage().isVerlegd()
+			? new Geld(0)
+			: this.getMateriaal().multiply(this.getMateriaalBtwPercentage().getPercentage()).divide(100);
 	}
 }

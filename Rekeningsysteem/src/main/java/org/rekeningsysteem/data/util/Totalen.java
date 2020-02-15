@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 public final class Totalen {
 
@@ -117,11 +116,8 @@ public final class Totalen {
 	}
 
 	public Geld getTotaal() {
-		return this.nettoBtwPerPercentage
-				.entrySet()
+		return this.nettoBtwPerPercentage.values()
 				.parallelStream()
-				.filter(entry -> !entry.getKey().isVerlegd())
-				.map(Map.Entry::getValue)
 				.map(NettoBtwTuple::getTotaal)
 				.reduce(new Geld(0.0), Geld::add);
 	}
