@@ -57,9 +57,9 @@
                 </materiaal>
             </list-item>
         </list>
-        <btwPercentages>
+        <btwPercentage>
             <loonPercentage>6.0</loonPercentage>
             <materiaalPercentage>21.0</materiaalPercentage>
-        </btwPercentages>
+        </btwPercentage>
     </rekening>
 </bestand>
