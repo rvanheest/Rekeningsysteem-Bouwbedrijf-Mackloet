@@ -159,7 +159,7 @@ public class PdfExporterVisitor implements RekeningVoidVisitor {
 					.filter(entry -> entry.getKey().getPercentage() != 0.0)
 					.sorted(Map.Entry.comparingByKey())
 					.map(entry -> Arrays.asList(
-							String.valueOf(entry.getKey().getPercentage()) + "%" + (entry.getKey().isVerlegd() ? ", verlegd" : ""),
+							entry.getKey().formattedString(),
 							entry.getValue().getNetto().formattedString(),
 							entry.getValue().getBtw().formattedString()))
 					.collect(Collectors.toList()));

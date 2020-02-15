@@ -25,6 +25,11 @@ public class BtwPercentage implements Comparable<BtwPercentage> {
     return this.verlegd;
   }
 
+  public String formattedString() {
+    String btw = String.valueOf(this.percentage) + "%";
+    return this.verlegd ? btw + ", verlegd" : btw;
+  }
+
   @Override
   public boolean equals(Object other) {
     if (other instanceof BtwPercentage) {

@@ -32,11 +32,9 @@ public class PdfListItemVisitor implements ListItemVisitor<List<String>> {
 
 	private String formatBtwPercentage(BtwPercentage btwPercentage) {
 			if (btwPercentage.getPercentage() == 0)
-					return "verlegd";
-			else {
-				String btw = String.valueOf(btwPercentage.getPercentage()) + "%";
-				return btwPercentage.isVerlegd() ? btw + ", verlegd" : btw;
-			}
+				return "verlegd";
+			else
+				return btwPercentage.formattedString();
 	}
 
 	@Override
