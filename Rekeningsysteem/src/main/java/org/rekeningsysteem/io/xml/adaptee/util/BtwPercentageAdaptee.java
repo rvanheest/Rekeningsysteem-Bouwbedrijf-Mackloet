@@ -19,19 +19,27 @@ public class BtwPercentageAdaptee {
     return this.btwPercentage;
   }
 
-  public BtwPercentageAdaptee setBtwPercentage(double btwPercentage) {
+  public BtwPercentageAdaptee withBtwPercentage(double btwPercentage) {
     this.btwPercentage = btwPercentage;
     return this;
   }
 
-  @XmlAttribute(name = "verlegd")
+  public void setBtwPercentage(double btwPercentage) {
+    this.btwPercentage = btwPercentage;
+  }
+
+  @XmlAttribute
   public boolean isVerlegd() {
     return this.verlegd;
   }
 
-  public BtwPercentageAdaptee setVerlegd(boolean verlegd) {
+  public BtwPercentageAdaptee withVerlegd(boolean verlegd) {
     this.verlegd = verlegd;
     return this;
+  }
+
+  public void setVerlegd(boolean verlegd) {
+    this.verlegd = verlegd;
   }
 
   public static BtwPercentageAdaptee build(Function<BtwPercentageAdaptee, BtwPercentageAdaptee> builder) {

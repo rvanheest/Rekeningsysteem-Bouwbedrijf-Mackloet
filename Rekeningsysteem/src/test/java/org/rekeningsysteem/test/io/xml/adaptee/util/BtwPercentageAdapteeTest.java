@@ -15,8 +15,8 @@ public class BtwPercentageAdapteeTest {
   @Before
   public void setUp() {
     this.adaptee = BtwPercentageAdaptee.build(adaptee -> adaptee
-        .setBtwPercentage(percentage)
-        .setVerlegd(verlegd));
+        .withBtwPercentage(percentage)
+        .withVerlegd(verlegd));
   }
   
   @Test
