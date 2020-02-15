@@ -54,6 +54,15 @@ public class PdfListItemVisitorTest {
 	}
 
 	@Test
+	public void testGebruiktEsselinkArtikelVerlegd() {
+		EsselinkArtikel artikel = new EsselinkArtikel("art", "omschr", 5, "eenh", new Geld(2.0));
+		GebruiktEsselinkArtikel item = new GebruiktEsselinkArtikel(artikel, 2.0, new BtwPercentage(19.0, true));
+		List<String> expected = Arrays.asList("2x omschr", "0,80", "19.0%, verlegd");
+
+		assertEquals(expected, this.visitor.visit(item));
+	}
+
+	@Test
 	public void testGebruiktEsselinkArtikelZero() {
 		EsselinkArtikel artikel = new EsselinkArtikel("art", "omschr", 5, "eenh", new Geld(0.0));
 		GebruiktEsselinkArtikel item = new GebruiktEsselinkArtikel(artikel, 2.0, new BtwPercentage(19.0, false));
@@ -84,6 +93,14 @@ public class PdfListItemVisitorTest {
 	public void testVisitAnderArtikel() {
 		AnderArtikel item = new AnderArtikel("omschr", new Geld(12.34), new BtwPercentage(19.0, false));
 		List<String> expected = Arrays.asList("omschr", "12,34", "19.0%");
+
+		assertEquals(expected, this.visitor.visit(item));
+	}
+
+	@Test
+	public void testVisitAnderArtikelVerlegd() {
+		AnderArtikel item = new AnderArtikel("omschr", new Geld(12.34), new BtwPercentage(19.0, true));
+		List<String> expected = Arrays.asList("omschr", "12,34", "19.0%, verlegd");
 
 		assertEquals(expected, this.visitor.visit(item));
 	}
@@ -121,6 +138,14 @@ public class PdfListItemVisitorTest {
 	}
 
 	@Test
+	public void testVisitInstantLoonVerlegd() {
+		InstantLoon item = new InstantLoon("omschr", new Geld(12.34), new BtwPercentage(19.0, true));
+		List<String> expected = Arrays.asList("omschr", "12,34", "19.0%, verlegd");
+
+		assertEquals(expected, this.visitor.visit(item));
+	}
+
+	@Test
 	public void testVisitInstantLoonZero() {
 		InstantLoon item = new InstantLoon("omschr", new Geld(0), new BtwPercentage(19.0, false));
 		List<String> expected = Collections.emptyList();
@@ -132,6 +157,14 @@ public class PdfListItemVisitorTest {
 	public void testVisitProductLoon() {
 		ProductLoon item = new ProductLoon("omschr", 2.0, new Geld(12.34), new BtwPercentage(19.0, false));
 		List<String> expected = Arrays.asList("2.0 uren à 12,34", "24,68", "19.0%");
+
+		assertEquals(expected, this.visitor.visit(item));
+	}
+
+	@Test
+	public void testVisitProductLoonVerlegd() {
+		ProductLoon item = new ProductLoon("omschr", 2.0, new Geld(12.34), new BtwPercentage(19.0, true));
+		List<String> expected = Arrays.asList("2.0 uren à 12,34", "24,68", "19.0%, verlegd");
 
 		assertEquals(expected, this.visitor.visit(item));
 	}
