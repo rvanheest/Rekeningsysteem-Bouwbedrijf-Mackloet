@@ -161,7 +161,7 @@ public class PdfExporterVisitor implements RekeningVoidVisitor {
 					.map(entry -> Arrays.asList(
 							entry.getKey().formattedString(),
 							entry.getValue().getNetto().formattedString(),
-							entry.getValue().getBtw().formattedString()))
+							entry.getValue().getBtw().formattedString() + (entry.getKey().isVerlegd() ? " (verlegd)" : "")))
 					.collect(Collectors.toList()));
 			converter.replace("TotaalBedrag", totalen.getTotaal().formattedString());
 		};

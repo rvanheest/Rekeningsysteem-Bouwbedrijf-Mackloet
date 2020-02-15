@@ -47,7 +47,7 @@ public class TotalenTest extends EqualsHashCodeTest {
 
 		assertEquals(expected, this.totalen.getBtw());
 		assertEquals(new Geld(2), this.totalen.getSubtotaal());
-		assertEquals(new Geld(268), this.totalen.getTotaal()); // 2 + 16 + 20 + 30 + 100 + 100
+		assertEquals(new Geld(68), this.totalen.getTotaal()); // 2 + 16 + 20 + 30
 	}
 
 	@Test

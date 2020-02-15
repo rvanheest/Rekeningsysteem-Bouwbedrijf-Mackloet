@@ -31,6 +31,10 @@ public final class Totalen {
 			return this.btw;
 		}
 
+		public NettoBtwTuple wipeBtw() {
+			return new NettoBtwTuple(this.netto, new Geld(0));
+		}
+
 		public Geld getTotaal() {
 			return this.netto.add(this.btw);
 		}
@@ -116,8 +120,9 @@ public final class Totalen {
 	}
 
 	public Geld getTotaal() {
-		return this.nettoBtwPerPercentage.values()
+		return this.nettoBtwPerPercentage.entrySet()
 				.parallelStream()
+				.map(entry -> entry.getKey().isVerlegd() ? entry.getValue().wipeBtw() : entry.getValue())
 				.map(NettoBtwTuple::getTotaal)
 				.reduce(new Geld(0.0), Geld::add);
 	}

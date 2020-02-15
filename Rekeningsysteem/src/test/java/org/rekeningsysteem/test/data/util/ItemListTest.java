@@ -79,14 +79,14 @@ public class ItemListTest extends EqualsHashCodeTest {
 
 		Map<BtwPercentage, Geld> expectedBtw = new HashMap<>();
 		expectedBtw.put(new BtwPercentage(50.0, false), new Geld(8));
-		expectedBtw.put(new BtwPercentage(25.0, true), new Geld(0));
+		expectedBtw.put(new BtwPercentage(25.0, true), new Geld(5));
 		expectedBtw.put(new BtwPercentage(0.0, false), new Geld(0));
 
 		assertEquals(new Geld(12), result.getNetto().get(new BtwPercentage(0.0, false)));
 		assertEquals(new Geld(20), result.getNetto().get(new BtwPercentage(25.0, true)));
 		assertEquals(new Geld(16), result.getNetto().get(new BtwPercentage(50.0, false)));
 		assertEquals(new Geld(8), result.getBtw().get(new BtwPercentage(50.0, false)));
-		assertEquals(new Geld(0), result.getBtw().get(new BtwPercentage(25.0, true)));
+		assertEquals(new Geld(5), result.getBtw().get(new BtwPercentage(25.0, true)));
 		assertEquals(expectedBtw, result.getBtw());
 		assertEquals(new Geld(48), result.getSubtotaal()); // 12 + 20 + 16
 		assertEquals(new Geld(56), result.getTotaal()); // 48 + (16 * 0.5)
