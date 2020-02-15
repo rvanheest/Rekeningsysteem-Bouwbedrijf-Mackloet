@@ -11,6 +11,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.rekeningsysteem.data.particulier.loon.ProductLoon;
+import org.rekeningsysteem.data.util.BtwPercentage;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.data.util.visitor.ListItemVisitor;
 
@@ -20,7 +21,7 @@ public class ProductLoonTest extends AbstractLoonTest {
 	private ProductLoon item;
 	private final double uren = 10;
 	private final Geld uurloon = new Geld(4);
-	private final double loonBtwPercentage = 10;
+	private final BtwPercentage loonBtwPercentage = new BtwPercentage(10, false);
 	@Mock private ListItemVisitor<Object> visitor;
 
 	@Override
@@ -88,7 +89,7 @@ public class ProductLoonTest extends AbstractLoonTest {
 	@Test
 	public void testEqualsFalseOtherLoonBtwPercentage() {
 		ProductLoon loon2 = new ProductLoon(this.getTestOmschrijving(), this.uren,
-				this.uurloon, this.loonBtwPercentage + 1.0);
+				this.uurloon, new BtwPercentage(this.loonBtwPercentage.getPercentage() + 1.0, false));
 		assertFalse(this.item.equals(loon2));
 	}
 

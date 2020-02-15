@@ -4,19 +4,23 @@ import java.util.Objects;
 
 public final class BtwPercentages {
 
-	private final double loonPercentage;
-	private final double materiaalPercentage;
+	private final BtwPercentage loonPercentage;
+	private final BtwPercentage materiaalPercentage;
 
-	public BtwPercentages(double loonPercentage, double materiaalPercentage) {
+	public BtwPercentages(BtwPercentage loonPercentage, BtwPercentage materiaalPercentage) {
 		this.loonPercentage = loonPercentage;
 		this.materiaalPercentage = materiaalPercentage;
 	}
 
-	public double getLoonPercentage() {
+	public BtwPercentages(double loonPercentage, double materiaalPercentage) {
+		this(new BtwPercentage(loonPercentage, false), new BtwPercentage(materiaalPercentage, false));
+	}
+
+	public BtwPercentage getLoonPercentage() {
 		return this.loonPercentage;
 	}
 
-	public double getMateriaalPercentage() {
+	public BtwPercentage getMateriaalPercentage() {
 		return this.materiaalPercentage;
 	}
 
@@ -37,7 +41,7 @@ public final class BtwPercentages {
 
 	@Override
 	public String toString() {
-		return "<BtwPercentage[" + String.valueOf(this.loonPercentage) + ", "
+		return "<BtwPercentages[" + String.valueOf(this.loonPercentage) + ", "
 				+ String.valueOf(this.materiaalPercentage) + "]>";
 	}
 }

@@ -8,6 +8,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.rekeningsysteem.data.util.BtwPercentage;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.io.xml.adaptee.ListItemAdapteeVisitor;
 import org.rekeningsysteem.io.xml.adaptee.particulier.AnderArtikelAdaptee;
@@ -18,7 +19,7 @@ public class AnderArtikelAdapteeTest extends ListItemAdapteeVisitableTest {
 
 	private final String omschrijving = "omschr";
 	private final Geld prijs = new Geld(12.00);
-	private final double materiaalBtw = 0.8;
+	private final BtwPercentage materiaalBtw = new BtwPercentage(0.8, false);
 	@Mock private ListItemAdapteeVisitor<Object> visitor;
 
 	@Override
@@ -46,7 +47,7 @@ public class AnderArtikelAdapteeTest extends ListItemAdapteeVisitableTest {
 
 	@Test
 	public void testSetGetMateriaalBtwPercentage() {
-		assertEquals(this.materiaalBtw, this.getInstance().getMateriaalBtwPercentage(), 0.0);
+		assertEquals(this.materiaalBtw, this.getInstance().getMateriaalBtwPercentage());
 	}
 
 	@Test

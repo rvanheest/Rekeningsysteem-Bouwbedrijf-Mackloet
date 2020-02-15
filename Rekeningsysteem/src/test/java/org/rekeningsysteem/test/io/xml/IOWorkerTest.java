@@ -30,6 +30,7 @@ import org.rekeningsysteem.data.particulier.loon.ProductLoon;
 import org.rekeningsysteem.data.reparaties.ReparatiesInkoopOrder;
 import org.rekeningsysteem.data.reparaties.ReparatiesFactuur;
 import org.rekeningsysteem.data.util.AbstractRekening;
+import org.rekeningsysteem.data.util.BtwPercentage;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.data.util.ItemList;
 import org.rekeningsysteem.data.util.header.Debiteur;
@@ -489,19 +490,19 @@ public class IOWorkerTest {
 		EsselinkArtikel sub7 = new EsselinkArtikel("2009200105", "Product 7", 1, "Stuks",
 				new Geld(7.44));
 
-		list.add(new GebruiktEsselinkArtikel(sub1, 8, 21));
-		list.add(new GebruiktEsselinkArtikel(sub2, 1, 21));
-		list.add(new GebruiktEsselinkArtikel(sub3, 1, 21));
-		list.add(new GebruiktEsselinkArtikel(sub4, 1, 21));
-		list.add(new GebruiktEsselinkArtikel(sub5, 1, 21));
-		list.add(new GebruiktEsselinkArtikel(sub6, 1, 21));
-		list.add(new GebruiktEsselinkArtikel(sub7, 1, 21));
-		list.add(new AnderArtikel("Stucloper + trapfolie", new Geld(15.00), 21));
-		list.add(new AnderArtikel("Kitwerk", new Geld(149.50), 21));
+		list.add(new GebruiktEsselinkArtikel(sub1, 8, new BtwPercentage(21, false)));
+		list.add(new GebruiktEsselinkArtikel(sub2, 1, new BtwPercentage(21, true)));
+		list.add(new GebruiktEsselinkArtikel(sub3, 1, new BtwPercentage(21, false)));
+		list.add(new GebruiktEsselinkArtikel(sub4, 1, new BtwPercentage(21, true)));
+		list.add(new GebruiktEsselinkArtikel(sub5, 1, new BtwPercentage(21, false)));
+		list.add(new GebruiktEsselinkArtikel(sub6, 1, new BtwPercentage(21, true)));
+		list.add(new GebruiktEsselinkArtikel(sub7, 1, new BtwPercentage(21, false)));
+		list.add(new AnderArtikel("Stucloper + trapfolie", new Geld(15.00), new BtwPercentage(21, true)));
+		list.add(new AnderArtikel("Kitwerk", new Geld(149.50), new BtwPercentage(21, false)));
 
-		list.add(new ProductLoon("Uurloon à 38.50", 25, new Geld(38.50), 6));
-		list.add(new ProductLoon("test123", 12, new Geld(12.50), 6));
-		list.add(new InstantLoon("foobar", new Geld(40.00), 6));
+		list.add(new ProductLoon("Uurloon à 38.50", 25, new Geld(38.50), new BtwPercentage(6, true)));
+		list.add(new ProductLoon("test123", 12, new Geld(12.50), new BtwPercentage(6, false)));
+		list.add(new InstantLoon("foobar", new Geld(40.00), new BtwPercentage(6, true)));
 
 		return new ParticulierFactuur(header, currency, list);
 	}

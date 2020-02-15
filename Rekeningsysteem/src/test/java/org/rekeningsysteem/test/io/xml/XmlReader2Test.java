@@ -23,6 +23,7 @@ import org.rekeningsysteem.data.particulier.loon.ProductLoon;
 import org.rekeningsysteem.data.reparaties.ReparatiesInkoopOrder;
 import org.rekeningsysteem.data.reparaties.ReparatiesFactuur;
 import org.rekeningsysteem.data.util.AbstractRekening;
+import org.rekeningsysteem.data.util.BtwPercentage;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.data.util.ItemList;
 import org.rekeningsysteem.data.util.header.Debiteur;
@@ -56,24 +57,24 @@ public class XmlReader2Test {
 
 		ItemList<ParticulierArtikel> itemList = new ItemList<>();
 		itemList.add(new GebruiktEsselinkArtikel(new EsselinkArtikel("2018021117",
-				"Product 1", 1, "Zak", new Geld(5.16)), 8.0, 21.0));
+				"Product 1", 1, "Zak", new Geld(5.16)), 8.0, new BtwPercentage(21.0, false)));
 		itemList.add(new GebruiktEsselinkArtikel(new EsselinkArtikel("2003131360",
-				"Product 2", 1, "zak", new Geld(129.53)), 1.0, 21.0));
+				"Product 2", 1, "zak", new Geld(129.53)), 1.0, new BtwPercentage(21.0, false)));
 		itemList.add(new GebruiktEsselinkArtikel(new EsselinkArtikel("2003131060",
-				"Product 3", 1, "set", new Geld(35.96)), 1.0, 21.0));
+				"Product 3", 1, "set", new Geld(35.96)), 1.0, new BtwPercentage(21.0, false)));
 		itemList.add(new GebruiktEsselinkArtikel(new EsselinkArtikel("2003131306",
-				"Product 4", 1, "zak", new Geld(9.47)), 1.0, 21.0));
+				"Product 4", 1, "zak", new Geld(9.47)), 1.0, new BtwPercentage(21.0, false)));
 		itemList.add(new GebruiktEsselinkArtikel(new EsselinkArtikel("4010272112",
-				"Product 5", 1, "Stuks", new Geld(17.18)), 1.0, 21.0));
+				"Product 5", 1, "Stuks", new Geld(17.18)), 1.0, new BtwPercentage(21.0, false)));
 		itemList.add(new GebruiktEsselinkArtikel(new EsselinkArtikel("2009200131",
-				"Product 6", 1, "Stuks", new Geld(6.84)), 1.0, 21.0));
+				"Product 6", 1, "Stuks", new Geld(6.84)), 1.0, new BtwPercentage(21.0, false)));
 		itemList.add(new GebruiktEsselinkArtikel(new EsselinkArtikel("2009200105",
-				"Product 7", 1, "Stuks", new Geld(7.44)), 1.0, 21.0));
-		itemList.add(new AnderArtikel("Stucloper + trapfolie", new Geld(15.0), 21.0));
-		itemList.add(new AnderArtikel("Kitwerk", new Geld(149.5), 21.0));
-		itemList.add(new ProductLoon("Uurloon à 38.50", 25.0, new Geld(38.5), 6.0));
-		itemList.add(new ProductLoon("test123", 12.0, new Geld(12.5), 6.0));
-		itemList.add(new InstantLoon("foobar", new Geld(40.0), 6.0));
+				"Product 7", 1, "Stuks", new Geld(7.44)), 1.0, new BtwPercentage(21.0, false)));
+		itemList.add(new AnderArtikel("Stucloper + trapfolie", new Geld(15.0), new BtwPercentage(21.0, false)));
+		itemList.add(new AnderArtikel("Kitwerk", new Geld(149.5), new BtwPercentage(21.0, false)));
+		itemList.add(new ProductLoon("Uurloon à 38.50", 25.0, new Geld(38.5), new BtwPercentage(6.0, false)));
+		itemList.add(new ProductLoon("test123", 12.0, new Geld(12.5), new BtwPercentage(6.0, false)));
+		itemList.add(new InstantLoon("foobar", new Geld(40.0), new BtwPercentage(6.0, false)));
 
 		ParticulierFactuur expected = new ParticulierFactuur(factuurHeader,
 				Currency.getInstance("EUR"), itemList);
@@ -177,14 +178,14 @@ public class XmlReader2Test {
 				"Voor u verrichte werkzaamheden");
 
 		ItemList<ParticulierArtikel> itemList = new ItemList<>();
-		itemList.add(new AnderArtikel("omschr1", new Geld(2791.25), 21));
-		itemList.add(new InstantLoon("omschr1", new Geld(5183.75), 6));
-		itemList.add(new AnderArtikel("omschr2", new Geld(1972.2), 21));
-		itemList.add(new InstantLoon("omschr2", new Geld(1314.8), 6));
-		itemList.add(new AnderArtikel("omschr3", new Geld(5667), 21));
-		itemList.add(new InstantLoon("omschr3", new Geld(2300.0), 6));
-		itemList.add(new AnderArtikel("omschr4", new Geld(0), 21));
-		itemList.add(new InstantLoon("omschr4", new Geld(-800.0), 6));
+		itemList.add(new AnderArtikel("omschr1", new Geld(2791.25), new BtwPercentage(21.0, false)));
+		itemList.add(new InstantLoon("omschr1", new Geld(5183.75), new BtwPercentage(6.0, false)));
+		itemList.add(new AnderArtikel("omschr2", new Geld(1972.2), new BtwPercentage(21.0, false)));
+		itemList.add(new InstantLoon("omschr2", new Geld(1314.8), new BtwPercentage(6.0, false)));
+		itemList.add(new AnderArtikel("omschr3", new Geld(5667), new BtwPercentage(21.0, false)));
+		itemList.add(new InstantLoon("omschr3", new Geld(2300.0), new BtwPercentage(6.0, false)));
+		itemList.add(new AnderArtikel("omschr4", new Geld(0), new BtwPercentage(21.0, false)));
+		itemList.add(new InstantLoon("omschr4", new Geld(-800.0), new BtwPercentage(6.0, false)));
 
 		ParticulierFactuur expected = new ParticulierFactuur(factuurHeader,
 				Currency.getInstance("EUR"), itemList);

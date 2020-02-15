@@ -5,14 +5,15 @@ import static org.junit.Assert.assertFalse;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.rekeningsysteem.data.util.BtwPercentage;
 import org.rekeningsysteem.data.util.BtwPercentages;
 import org.rekeningsysteem.test.data.EqualsHashCodeTest;
 
 public class BtwPercentagesTest extends EqualsHashCodeTest {
 
 	private BtwPercentages btwPercentages;
-	private final double loonPercentage = 6.0;
-	private final double materiaalPercentage = 21.0;
+	private final BtwPercentage loonPercentage = new BtwPercentage(6.0, false);
+	private final BtwPercentage materiaalPercentage = new BtwPercentage(21.0, false);
 
 	@Override
 	protected BtwPercentages makeInstance() {
@@ -21,7 +22,7 @@ public class BtwPercentagesTest extends EqualsHashCodeTest {
 
 	@Override
 	protected Object makeNotInstance() {
-		return new BtwPercentages(this.loonPercentage + 1, this.materiaalPercentage);
+		return new BtwPercentages(new BtwPercentage(this.loonPercentage.getPercentage() + 1, false), this.materiaalPercentage);
 	}
 
 	@Override
@@ -33,23 +34,23 @@ public class BtwPercentagesTest extends EqualsHashCodeTest {
 
 	@Test
 	public void testGetMateriaalPercentage() {
-		assertEquals(this.materiaalPercentage, this.btwPercentages.getMateriaalPercentage(), 0.0);
+		assertEquals(this.materiaalPercentage, this.btwPercentages.getMateriaalPercentage());
 	}
 
 	@Test
-	public void testGetLoonPeercentage() {
-		assertEquals(this.loonPercentage, this.btwPercentages.getLoonPercentage(), 0.0);
+	public void testGetLoonPercentage() {
+		assertEquals(this.loonPercentage, this.btwPercentages.getLoonPercentage());
 	}
 
 	@Test
 	public void testEqualsFalseOtherMateriaalPercentage() {
-		BtwPercentages btw = new BtwPercentages(this.materiaalPercentage + 1, this.loonPercentage);
+		BtwPercentages btw = new BtwPercentages(new BtwPercentage(this.materiaalPercentage.getPercentage() + 1, false), this.loonPercentage);
 		assertFalse(this.btwPercentages.equals(btw));
 	}
 
 	@Test
 	public void testEqualsFalseOTherLoonPercentage() {
-		BtwPercentages btw = new BtwPercentages(this.materiaalPercentage, this.loonPercentage + 1);
+		BtwPercentages btw = new BtwPercentages(this.materiaalPercentage, new BtwPercentage(this.loonPercentage.getPercentage() + 1, false));
 		assertFalse(this.btwPercentages.equals(btw));
 	}
 

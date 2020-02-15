@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.util.Currency;
 import java.util.Objects;
 
+import javafx.scene.control.CheckBox;
+import org.rekeningsysteem.data.util.BtwPercentage;
 import org.rekeningsysteem.rxjavafx.Observables;
 import org.rekeningsysteem.ui.textfields.MoneyField;
 import org.rekeningsysteem.ui.textfields.PercentageField;
@@ -20,10 +22,12 @@ public class InstantLoonPane extends GridPane {
 	private final TextField omschrTF = new TextField();
 	private final MoneyField loonTF;
 	private final PercentageField loonBtwTF = new PercentageField();
+	private final CheckBox verlegdCB = new CheckBox();
 
 	private final Observable<String> omschrijving;
 	private final Observable<Double> loon;
 	private final Observable<Double> loonBtwPercentage;
+	private final Observable<Boolean> verlegd;
 
 	public InstantLoonPane(Currency currency) {
 		this.loonTF = new MoneyField(currency);
@@ -35,6 +39,8 @@ public class InstantLoonPane extends GridPane {
 		this.loonBtwPercentage = Observables.fromProperty(this.loonBtwTF.valueProperty())
 				.map(n -> Objects.isNull(n) ? BigDecimal.ZERO : n)
 				.map(BigDecimal::doubleValue);
+		this.verlegd = Observables.fromProperty(this.verlegdCB.selectedProperty())
+				.map(Boolean::booleanValue);
 
 		this.omschrTF.setPrefColumnCount(20);
 
@@ -50,14 +56,17 @@ public class InstantLoonPane extends GridPane {
 		Label omschrL = new Label("Omschrijving");
 		Label loonL = new Label("Loon");
 		Label loonBtwL = new Label("Btw percentage");
+		Label verlegdL = new Label("Verlegd");
 
 		this.add(omschrL, 0, 0);
 		this.add(loonL, 0, 1);
 		this.add(loonBtwL, 0, 2);
+		this.add(verlegdL, 0, 3);
 
 		this.add(this.omschrTF, 1, 0);
 		this.add(this.loonTF, 1, 1);
 		this.add(this.loonBtwTF, 1, 2);
+		this.add(this.verlegdCB, 1, 3);
 	}
 
 	public Observable<String> getOmschrijving() {
@@ -76,11 +85,12 @@ public class InstantLoonPane extends GridPane {
 		this.loonTF.setValue(BigDecimal.valueOf(loon));
 	}
 
-	public Observable<Double> getLoonBtwPercentage() {
-		return this.loonBtwPercentage;
+	public Observable<BtwPercentage> getLoonBtwPercentage() {
+		return Observable.combineLatest(this.loonBtwPercentage, this.verlegd, BtwPercentage::new);
 	}
 
-	public void setBtwPercentage(Double percentage) {
-		this.loonBtwTF.setValue(BigDecimal.valueOf(percentage));
+	public void setBtwPercentage(BtwPercentage btwPercentage) {
+		this.loonBtwTF.setValue(BigDecimal.valueOf(btwPercentage.getPercentage()));
+		this.verlegdCB.setSelected(btwPercentage.isVerlegd());
 	}
 }

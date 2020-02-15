@@ -11,6 +11,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.rekeningsysteem.data.particulier.AnderArtikel;
+import org.rekeningsysteem.data.util.BtwPercentage;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.data.util.visitor.ListItemVisitor;
 
@@ -19,7 +20,7 @@ public class AnderArtikelTest extends ParticulierArtikelTest {
 
 	private AnderArtikel artikel;
 	private final Geld prijs = new Geld(21);
-	private final double btwPercentage = 10;
+	private final BtwPercentage btwPercentage = new BtwPercentage(10, false);
 	@Mock private ListItemVisitor<Object> visitor;
 
 	@Override
@@ -46,7 +47,7 @@ public class AnderArtikelTest extends ParticulierArtikelTest {
 
 	@Test
 	public void testGetMateriaalBtwPercentage() {
-		assertEquals(this.btwPercentage, this.artikel.getMateriaalBtwPercentage(), 0.0);
+		assertEquals(this.btwPercentage, this.artikel.getMateriaalBtwPercentage());
 	}
 
 	@Test
@@ -66,7 +67,7 @@ public class AnderArtikelTest extends ParticulierArtikelTest {
 	@Test
 	public void testEqualsFalseOtherBtw() {
 		AnderArtikel aa2 = new AnderArtikel(this.getTestOmschrijving(), this.prijs,
-				this.btwPercentage + 1);
+				new BtwPercentage(this.btwPercentage.getPercentage() + 1, false));
 		assertFalse(this.artikel.equals(aa2));
 	}
 

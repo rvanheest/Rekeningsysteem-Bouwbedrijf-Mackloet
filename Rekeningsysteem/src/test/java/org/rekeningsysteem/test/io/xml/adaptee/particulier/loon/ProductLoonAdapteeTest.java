@@ -8,6 +8,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.rekeningsysteem.data.util.BtwPercentage;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.io.xml.adaptee.ListItemAdapteeVisitor;
 import org.rekeningsysteem.io.xml.adaptee.particulier.loon.ProductLoonAdaptee;
@@ -19,7 +20,7 @@ public class ProductLoonAdapteeTest extends ListItemAdapteeVisitableTest {
 	private final String omschrijving = "foobar";
 	private final double uren = 1.0;
 	private final Geld uurloon = new Geld(1.0);
-	private final double loonBtw = 0.4;
+	private final BtwPercentage loonBtw = new BtwPercentage(0.4, false);
 	@Mock private ListItemAdapteeVisitor<Object> visitor;
 
 	@Override
@@ -53,7 +54,7 @@ public class ProductLoonAdapteeTest extends ListItemAdapteeVisitableTest {
 
 	@Test
 	public void testSetGetLoonBtwPercentage() {
-		assertEquals(this.loonBtw, this.getInstance().getLoonBtwPercentage(), 0.0);
+		assertEquals(this.loonBtw, this.getInstance().getLoonBtwPercentage());
 	}
 
 	@Test

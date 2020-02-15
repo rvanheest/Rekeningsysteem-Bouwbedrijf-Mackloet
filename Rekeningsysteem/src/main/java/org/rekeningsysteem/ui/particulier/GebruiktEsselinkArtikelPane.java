@@ -4,7 +4,9 @@ import java.math.BigDecimal;
 import java.util.Currency;
 import java.util.Objects;
 
+import javafx.scene.control.CheckBox;
 import org.rekeningsysteem.data.particulier.EsselinkArtikel;
+import org.rekeningsysteem.data.util.BtwPercentage;
 import org.rekeningsysteem.rxjavafx.Observables;
 import org.rekeningsysteem.ui.textfields.NumberField;
 import org.rekeningsysteem.ui.textfields.PercentageField;
@@ -24,9 +26,11 @@ public class GebruiktEsselinkArtikelPane extends GridPane {
 
 	private final NumberField aantalTF = new NumberField();
 	private final PercentageField btwPercentageTF = new PercentageField();
+	private final CheckBox verlegdCB = new CheckBox();
 
 	private Observable<Double> aantal;
 	private final Observable<Double> btwPercentage;
+	private final Observable<Boolean> verlegd;
 
 	private final AbstractSearchBox<EsselinkArtikel> searchBox;
 	private final ToggleGroup searchType = new ToggleGroup();
@@ -76,6 +80,8 @@ public class GebruiktEsselinkArtikelPane extends GridPane {
 		this.btwPercentage = Observables.fromProperty(this.btwPercentageTF.valueProperty())
 				.map(n -> Objects.isNull(n) ? BigDecimal.ZERO : n)
 				.map(BigDecimal::doubleValue);
+		this.verlegd = Observables.fromProperty(this.verlegdCB.selectedProperty())
+				.map(Boolean::booleanValue);
 
 		GridPane inner = new GridPane();
 		inner.setPadding(new Insets(0));
@@ -85,7 +91,9 @@ public class GebruiktEsselinkArtikelPane extends GridPane {
 		inner.add(new Label("Aantal"), 0, 0);
 		inner.add(this.aantalTF, 1, 0);
 		inner.add(new Label("BTW"), 0, 1);
+		inner.add(new Label("Verlegd"), 0, 2);
 		inner.add(this.btwPercentageTF, 1, 1);
+		inner.add(this.verlegdCB, 1, 2);
 
 		this.add(vbox, 0, 0);
 		this.add(searchField, 1, 0);
@@ -107,12 +115,13 @@ public class GebruiktEsselinkArtikelPane extends GridPane {
 		this.aantalTF.setValue(BigDecimal.valueOf(aantal));
 	}
 
-	public Observable<Double> getBtwPercentage() {
-		return this.btwPercentage;
+	public Observable<BtwPercentage> getBtwPercentage() {
+		return Observable.combineLatest(this.btwPercentage, this.verlegd, BtwPercentage::new);
 	}
 
-	public void setBtwPercentage(Double btwPercentage) {
-		this.btwPercentageTF.setValue(BigDecimal.valueOf(btwPercentage));
+	public void setBtwPercentage(BtwPercentage btwPercentage) {
+		this.btwPercentageTF.setValue(BigDecimal.valueOf(btwPercentage.getPercentage()));
+		this.verlegdCB.setSelected(btwPercentage.isVerlegd());
 	}
 
 	public Observable<EsselinkArtikelToggle> getSelectedToggle() {

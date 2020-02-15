@@ -7,9 +7,11 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import org.rekeningsysteem.data.util.BtwPercentage;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.io.xml.adaptee.ListItemAdapteeVisitable;
 import org.rekeningsysteem.io.xml.adaptee.ListItemAdapteeVisitor;
+import org.rekeningsysteem.io.xml.adapter.util.BtwPercentageAdapter;
 import org.rekeningsysteem.io.xml.adapter.util.GeldAdapter;
 
 @XmlRootElement(name = "product-loon")
@@ -19,7 +21,7 @@ public class ProductLoonAdaptee extends ListItemAdapteeVisitable {
 	private String omschrijving;
 	private double uren;
 	private Geld uurloon;
-	private double loonBtwPercentage;
+	private BtwPercentage loonBtwPercentage;
 
 	private ProductLoonAdaptee() {
 	}
@@ -54,12 +56,12 @@ public class ProductLoonAdaptee extends ListItemAdapteeVisitable {
 		return this;
 	}
 
-	@XmlElement
-	public double getLoonBtwPercentage() {
+	@XmlJavaTypeAdapter(BtwPercentageAdapter.class)
+	public BtwPercentage getLoonBtwPercentage() {
 		return this.loonBtwPercentage;
 	}
 
-	public ProductLoonAdaptee setLoonBtwPercentage(double loonBtwPercentage) {
+	public ProductLoonAdaptee setLoonBtwPercentage(BtwPercentage loonBtwPercentage) {
 		this.loonBtwPercentage = loonBtwPercentage;
 		return this;
 	}

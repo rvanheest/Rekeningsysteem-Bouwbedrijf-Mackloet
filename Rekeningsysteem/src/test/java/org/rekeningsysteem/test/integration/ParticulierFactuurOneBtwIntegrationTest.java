@@ -14,6 +14,7 @@ import org.rekeningsysteem.data.particulier.ParticulierFactuur;
 import org.rekeningsysteem.data.particulier.loon.AbstractLoon;
 import org.rekeningsysteem.data.particulier.loon.InstantLoon;
 import org.rekeningsysteem.data.particulier.loon.ProductLoon;
+import org.rekeningsysteem.data.util.BtwPercentage;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.data.util.ItemList;
 import org.rekeningsysteem.data.util.header.Debiteur;
@@ -40,15 +41,15 @@ public class ParticulierFactuurOneBtwIntegrationTest extends AbstractIntegration
 		EsselinkArtikel sub7 = new EsselinkArtikel("2009200105", "Product 7", 1, "Stuks",
 				new Geld(7.44));
 
-		list.add(new GebruiktEsselinkArtikel(sub1, 8, 19));
-		list.add(new GebruiktEsselinkArtikel(sub2, 1, 19));
-		list.add(new GebruiktEsselinkArtikel(sub3, 1, 19));
-		list.add(new GebruiktEsselinkArtikel(sub4, 1, 19));
-		list.add(new GebruiktEsselinkArtikel(sub5, 1, 19));
-		list.add(new GebruiktEsselinkArtikel(sub6, 1, 19));
-		list.add(new GebruiktEsselinkArtikel(sub7, 1, 19));
-		list.add(new AnderArtikel("Stucloper + trapfolie", new Geld(15.00), 19));
-		list.add(new AnderArtikel("Kitwerk", new Geld(149.50), 19));
+		list.add(new GebruiktEsselinkArtikel(sub1, 8, new BtwPercentage(19, false)));
+		list.add(new GebruiktEsselinkArtikel(sub2, 1, new BtwPercentage(19, false)));
+		list.add(new GebruiktEsselinkArtikel(sub3, 1, new BtwPercentage(19, false)));
+		list.add(new GebruiktEsselinkArtikel(sub4, 1, new BtwPercentage(19, false)));
+		list.add(new GebruiktEsselinkArtikel(sub5, 1, new BtwPercentage(19, false)));
+		list.add(new GebruiktEsselinkArtikel(sub6, 1, new BtwPercentage(19, false)));
+		list.add(new GebruiktEsselinkArtikel(sub7, 1, new BtwPercentage(19, false)));
+		list.add(new AnderArtikel("Stucloper + trapfolie", new Geld(15.00), new BtwPercentage(19, false)));
+		list.add(new AnderArtikel("Kitwerk", new Geld(149.50), new BtwPercentage(19, false)));
 
 		return list;
 	}
@@ -56,9 +57,9 @@ public class ParticulierFactuurOneBtwIntegrationTest extends AbstractIntegration
 	protected ItemList<AbstractLoon> addLoon() {
 		ItemList<AbstractLoon> list = new ItemList<>();
 
-		list.add(new ProductLoon("Uurloon à 38.50", 25, new Geld(38.50), 19));
-		list.add(new ProductLoon("test123", 12, new Geld(12.50), 19));
-		list.add(new InstantLoon("foobar", new Geld(40.00), 19));
+		list.add(new ProductLoon("Uurloon à 38.50", 25, new Geld(38.50), new BtwPercentage(19, false)));
+		list.add(new ProductLoon("test123", 12, new Geld(12.50), new BtwPercentage(19, false)));
+		list.add(new InstantLoon("foobar", new Geld(40.00), new BtwPercentage(19, false)));
 
 		return list;
 	}

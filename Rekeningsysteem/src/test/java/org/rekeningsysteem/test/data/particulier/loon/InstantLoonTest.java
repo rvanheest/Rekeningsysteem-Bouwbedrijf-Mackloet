@@ -11,6 +11,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.rekeningsysteem.data.particulier.loon.InstantLoon;
+import org.rekeningsysteem.data.util.BtwPercentage;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.data.util.visitor.ListItemVisitor;
 
@@ -19,7 +20,7 @@ public class InstantLoonTest extends AbstractLoonTest {
 
 	private InstantLoon item;
 	private final Geld loon = new Geld(12);
-	private final double loonBtwPercentage = 10;
+	private final BtwPercentage loonBtwPercentage = new BtwPercentage(10, false);
 	@Mock private ListItemVisitor<Object> visitor;
 
 	@Override
@@ -47,7 +48,7 @@ public class InstantLoonTest extends AbstractLoonTest {
 
 	@Test
 	public void testGetLoonBtwPercentage() {
-		assertEquals(this.loonBtwPercentage, this.item.getLoonBtwPercentage(), 0.0);
+		assertEquals(this.loonBtwPercentage, this.item.getLoonBtwPercentage());
 	}
 
 	@Test
@@ -74,7 +75,7 @@ public class InstantLoonTest extends AbstractLoonTest {
 	@Test
 	public void testEqualsFalseOtherLoonBtwPercentage() {
 		InstantLoon loon2 = new InstantLoon(this.getTestOmschrijving(),
-				this.loon, this.loonBtwPercentage + 1.0);
+				this.loon, new BtwPercentage(this.loonBtwPercentage.getPercentage() + 1.0, false));
 		assertFalse(this.item.equals(loon2));
 	}
 

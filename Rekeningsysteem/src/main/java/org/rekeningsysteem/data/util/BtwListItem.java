@@ -2,15 +2,15 @@ package org.rekeningsysteem.data.util;
 
 public interface BtwListItem extends ListItem {
 
-	double getLoonBtwPercentage();
+	BtwPercentage getLoonBtwPercentage();
 
-	double getMateriaalBtwPercentage();
+	BtwPercentage getMateriaalBtwPercentage();
 
 	default Geld getLoonBtw() {
-		return this.getLoon().multiply(this.getLoonBtwPercentage()).divide(100);
+		return this.getLoon().multiply(this.getLoonBtwPercentage().getPercentage()).divide(100);
 	}
 
 	default Geld getMateriaalBtw() {
-		return this.getMateriaal().multiply(this.getMateriaalBtwPercentage()).divide(100);
+		return this.getMateriaal().multiply(this.getMateriaalBtwPercentage().getPercentage()).divide(100);
 	}
 }

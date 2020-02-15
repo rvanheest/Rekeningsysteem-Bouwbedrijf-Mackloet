@@ -29,6 +29,7 @@ import org.rekeningsysteem.data.particulier.loon.ProductLoon;
 import org.rekeningsysteem.data.reparaties.ReparatiesInkoopOrder;
 import org.rekeningsysteem.data.reparaties.ReparatiesFactuur;
 import org.rekeningsysteem.data.util.AbstractRekening;
+import org.rekeningsysteem.data.util.BtwPercentage;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.data.util.ItemList;
 import org.rekeningsysteem.data.util.header.Debiteur;
@@ -229,10 +230,14 @@ public class XmlReader3 implements FactuurLoader {
 		Observable<String> omschrijving = this.getNodeValue(node, "omschrijving");
 		Observable<Geld> loon = this
 				.makeGeld(((Element) node).getElementsByTagName("loon").item(0));
-		Observable<Double> loonBtw = this.getNodeValue(node, "loonBtwPercentage").map(Double::parseDouble);
+		Observable<BtwPercentage> loonBtw = this.getNodeValue(node, "loonBtwPercentage")
+				.map(Double::parseDouble)
+				.map(b -> new BtwPercentage(b, false));
 		Observable<Geld> materiaal = this.makeGeld(((Element) node).getElementsByTagName(
 				"materiaal").item(0));
-		Observable<Double> materiaalBtw = this.getNodeValue(node, "materiaalBtwPercentage").map(Double::parseDouble);
+		Observable<BtwPercentage> materiaalBtw = this.getNodeValue(node, "materiaalBtwPercentage")
+				.map(Double::parseDouble)
+				.map(b -> new BtwPercentage(b, false));
 
 		return Observable.zip(omschrijving, loon, loonBtw, materiaal, materiaalBtw,
 				(omschr, l, lb, m, mb) -> Observable.just(
@@ -314,7 +319,9 @@ public class XmlReader3 implements FactuurLoader {
 		Observable<EsselinkArtikel> artikel = this.makeEsselinkArtikel(((Element) node)
 				.getElementsByTagName("artikel").item(0));
 		Observable<Double> aantal = this.getNodeValue(node, "aantal").map(Double::parseDouble);
-		Observable<Double> btw = this.getNodeValue(node, "materiaalBtwPercentage").map(Double::parseDouble);
+		Observable<BtwPercentage> btw = this.getNodeValue(node, "materiaalBtwPercentage")
+				.map(Double::parseDouble)
+				.map(b -> new BtwPercentage(b, false));
 
 		return Observable.zip(artikel, aantal, btw, GebruiktEsselinkArtikel::new);
 	}
@@ -323,7 +330,9 @@ public class XmlReader3 implements FactuurLoader {
 		Observable<String> omschrijving = this.getNodeValue(node, "omschrijving");
 		Observable<Geld> prijs = this.makeGeld(((Element) node)
 				.getElementsByTagName("prijs").item(0));
-		Observable<Double> btw = this.getNodeValue(node, "materiaalBtwPercentage").map(Double::parseDouble);
+		Observable<BtwPercentage> btw = this.getNodeValue(node, "materiaalBtwPercentage")
+				.map(Double::parseDouble)
+				.map(b -> new BtwPercentage(b, false));
 
 		return Observable.zip(omschrijving, prijs, btw, AnderArtikel::new);
 	}
@@ -350,7 +359,9 @@ public class XmlReader3 implements FactuurLoader {
 		Observable<Double> uren = this.getNodeValue(node, "uren").map(Double::parseDouble);
 		Observable<Geld> uurloon = this.makeGeld(((Element) node)
 				.getElementsByTagName("uurloon").item(0));
-		Observable<Double> btw = this.getNodeValue(node, "loonBtwPercentage").map(Double::parseDouble);
+		Observable<BtwPercentage> btw = this.getNodeValue(node, "loonBtwPercentage")
+				.map(Double::parseDouble)
+				.map(b -> new BtwPercentage(b, false));
 
 		return Observable.zip(omschrijving, uren, uurloon, btw, ProductLoon::new);
 	}
@@ -359,7 +370,9 @@ public class XmlReader3 implements FactuurLoader {
 		Observable<String> omschrijving = this.getNodeValue(node, "omschrijving");
 		Observable<Geld> loon = this.makeGeld(((Element) node)
 				.getElementsByTagName("loon").item(0));
-		Observable<Double> btw = this.getNodeValue(node, "loonBtwPercentage").map(Double::parseDouble);
+		Observable<BtwPercentage> btw = this.getNodeValue(node, "loonBtwPercentage")
+				.map(Double::parseDouble)
+				.map(b -> new BtwPercentage(b, false));
 
 		return Observable.zip(omschrijving, loon, btw, InstantLoon::new);
 	}

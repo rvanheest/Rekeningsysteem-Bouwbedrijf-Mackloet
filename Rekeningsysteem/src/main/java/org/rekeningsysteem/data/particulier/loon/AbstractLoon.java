@@ -1,6 +1,7 @@
 package org.rekeningsysteem.data.particulier.loon;
 
 import org.rekeningsysteem.data.particulier.ParticulierArtikel;
+import org.rekeningsysteem.data.util.BtwPercentage;
 import org.rekeningsysteem.data.util.Geld;
 
 public abstract class AbstractLoon extends ParticulierArtikel {
@@ -13,11 +14,6 @@ public abstract class AbstractLoon extends ParticulierArtikel {
 	@Override
 	public final Geld getMateriaal() {
 		return new Geld(0);
-	}
-
-	@Override
-	public final double getMateriaalBtwPercentage() {
-		return 0;
 	}
 
 	@Override

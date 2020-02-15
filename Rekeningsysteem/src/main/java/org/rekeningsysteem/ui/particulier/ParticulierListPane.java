@@ -10,7 +10,9 @@ import org.rekeningsysteem.data.particulier.GebruiktEsselinkArtikel;
 import org.rekeningsysteem.data.particulier.AnderArtikel;
 import org.rekeningsysteem.data.particulier.loon.InstantLoon;
 import org.rekeningsysteem.data.particulier.loon.ProductLoon;
+import org.rekeningsysteem.data.util.BtwPercentage;
 import org.rekeningsysteem.ui.list.AbstractListPane;
+import org.rekeningsysteem.ui.list.BtwPercentageCell;
 import org.rekeningsysteem.ui.list.DoubleCell;
 import org.rekeningsysteem.ui.list.MoneyCell;
 import org.rekeningsysteem.ui.particulier.ParticulierListPane.ParticulierModel;
@@ -25,9 +27,9 @@ public class ParticulierListPane extends AbstractListPane<ParticulierModel> {
 	protected List<TableColumn<ParticulierModel, ?>> initTableColumns() {
 		TableColumn<ParticulierModel, String> omschrCol = new TableColumn<>("Omschrijving");
 		TableColumn<ParticulierModel, Double> loonCol = new TableColumn<>("Arbeid");
-		TableColumn<ParticulierModel, Double> loonBtwCol = new TableColumn<>("BTW arbeid");
+		TableColumn<ParticulierModel, BtwPercentage> loonBtwCol = new TableColumn<>("BTW arbeid");
 		TableColumn<ParticulierModel, Double> materiaalCol = new TableColumn<>("Materiaal");
-		TableColumn<ParticulierModel, Double> materiaalBtwCol = new TableColumn<>("BTW materiaal");
+		TableColumn<ParticulierModel, BtwPercentage> materiaalBtwCol = new TableColumn<>("BTW materiaal");
 
 		omschrCol.setMinWidth(300);
 		loonCol.setMinWidth(75);
@@ -42,9 +44,9 @@ public class ParticulierListPane extends AbstractListPane<ParticulierModel> {
 		materiaalBtwCol.setCellValueFactory(new PropertyValueFactory<>("materiaalBtwPercentage"));
 
 		loonCol.setCellFactory(c -> new MoneyCell<>());
-		loonBtwCol.setCellFactory(c -> new DoubleCell<>());
+		loonBtwCol.setCellFactory(c -> new BtwPercentageCell<>());
 		materiaalCol.setCellFactory(c -> new MoneyCell<>());
-		materiaalBtwCol.setCellFactory(c -> new DoubleCell<>());
+		materiaalBtwCol.setCellFactory(c -> new BtwPercentageCell<>());
 
 		return Arrays.asList(omschrCol, loonCol, loonBtwCol, materiaalCol, materiaalBtwCol,
 				this.getDeleteCol());
@@ -59,9 +61,9 @@ public class ParticulierListPane extends AbstractListPane<ParticulierModel> {
 
 		private final String omschrijving;
 		private final Double loon;
-		private final Double loonBtwPercentage;
+		private final BtwPercentage loonBtwPercentage;
 		private final Double materiaal;
-		private final Double materiaalBtwPercentage;
+		private final BtwPercentage materiaalBtwPercentage;
 
 		public ParticulierModel(GebruiktEsselinkArtikel epa) {
 			this.esselink = epa;
@@ -139,7 +141,7 @@ public class ParticulierListPane extends AbstractListPane<ParticulierModel> {
 			return this.loon;
 		}
 
-		public Double getLoonBtwPercentage() {
+		public BtwPercentage getLoonBtwPercentage() {
 			return this.loonBtwPercentage;
 		}
 
@@ -147,7 +149,7 @@ public class ParticulierListPane extends AbstractListPane<ParticulierModel> {
 			return this.materiaal;
 		}
 
-		public Double getMateriaalBtwPercentage() {
+		public BtwPercentage getMateriaalBtwPercentage() {
 			return this.materiaalBtwPercentage;
 		}
 	}

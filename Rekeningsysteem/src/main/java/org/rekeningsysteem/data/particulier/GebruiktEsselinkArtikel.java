@@ -2,22 +2,23 @@ package org.rekeningsysteem.data.particulier;
 
 import java.util.Objects;
 
+import org.rekeningsysteem.data.util.BtwPercentage;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.data.util.visitor.ListItemVisitor;
 
 public class GebruiktEsselinkArtikel extends ParticulierArtikel {
 
 	private final Geld prijs;
-	private final double btwPercentage;
+	private final BtwPercentage btwPercentage;
 	private final EsselinkArtikel artikel;
 	private final double aantal;
 
-	public GebruiktEsselinkArtikel(EsselinkArtikel artikel, double aantal, double btwPercentage) {
+	public GebruiktEsselinkArtikel(EsselinkArtikel artikel, double aantal, BtwPercentage btwPercentage) {
 		this(artikel.getOmschrijving(), artikel, aantal, btwPercentage);
 	}
 
 	public GebruiktEsselinkArtikel(String omschrijving, EsselinkArtikel artikel,
-			double aantal, double btwPercentage) {
+			double aantal, BtwPercentage btwPercentage) {
 		super(omschrijving);
 		this.prijs = artikel.getVerkoopPrijs().multiply(aantal).divide(artikel.getPrijsPer());
 		this.btwPercentage = btwPercentage;
@@ -31,7 +32,7 @@ public class GebruiktEsselinkArtikel extends ParticulierArtikel {
 	}
 
 	@Override
-	public double getMateriaalBtwPercentage() {
+	public BtwPercentage getMateriaalBtwPercentage() {
 		return this.btwPercentage;
 	}
 
@@ -41,8 +42,8 @@ public class GebruiktEsselinkArtikel extends ParticulierArtikel {
 	}
 
 	@Override
-	public final double getLoonBtwPercentage() {
-		return 0;
+	public final BtwPercentage getLoonBtwPercentage() {
+		return new BtwPercentage(0, this.btwPercentage.isVerlegd());
 	}
 
 	@Override

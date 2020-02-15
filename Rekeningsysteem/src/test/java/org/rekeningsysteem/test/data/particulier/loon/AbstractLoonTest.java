@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 import org.rekeningsysteem.data.particulier.loon.AbstractLoon;
+import org.rekeningsysteem.data.util.BtwPercentage;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.test.data.particulier.ParticulierArtikelTest;
 
@@ -29,7 +30,7 @@ public abstract class AbstractLoonTest extends ParticulierArtikelTest {
 
 	@Test
 	public void testGetMateriaalBtwPercentage() {
-		assertEquals(0.0, this.loon.getMateriaalBtwPercentage(), 0.0);
+		assertEquals(new BtwPercentage(0.0, false), this.loon.getMateriaalBtwPercentage());
 	}
 
 	@Test

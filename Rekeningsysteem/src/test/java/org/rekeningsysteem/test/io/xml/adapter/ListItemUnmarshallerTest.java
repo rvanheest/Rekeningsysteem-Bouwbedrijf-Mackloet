@@ -11,6 +11,7 @@ import org.rekeningsysteem.data.particulier.GebruiktEsselinkArtikel;
 import org.rekeningsysteem.data.particulier.loon.InstantLoon;
 import org.rekeningsysteem.data.particulier.loon.ProductLoon;
 import org.rekeningsysteem.data.reparaties.ReparatiesInkoopOrder;
+import org.rekeningsysteem.data.util.BtwPercentage;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.io.xml.adaptee.mutaties.MutatiesInkoopOrderAdaptee;
 import org.rekeningsysteem.io.xml.adaptee.particulier.AnderArtikelAdaptee;
@@ -47,8 +48,8 @@ public class ListItemUnmarshallerTest {
 				.setOmschrijving("omschr")
 				.setArtikel(artikel)
 				.setAantal(2.3)
-				.setMateriaalBtwPercentage(4.2));
-		GebruiktEsselinkArtikel gea = new GebruiktEsselinkArtikel(artikel, 2.3, 4.2);
+				.setMateriaalBtwPercentage(new BtwPercentage(4.2, true)));
+		GebruiktEsselinkArtikel gea = new GebruiktEsselinkArtikel(artikel, 2.3, new BtwPercentage(4.2, true));
 
 		assertEquals(gea, this.visitor.visit(adaptee));
 	}
@@ -58,8 +59,8 @@ public class ListItemUnmarshallerTest {
 		AnderArtikelAdaptee adaptee = AnderArtikelAdaptee.build(a -> a
 				.setOmschrijving("omschr")
 				.setPrijs(new Geld(12))
-				.setMateriaalBtwPercentage(42));
-		AnderArtikel artikel = new AnderArtikel("omschr", new Geld(12), 42.0);
+				.setMateriaalBtwPercentage(new BtwPercentage(42, false)));
+		AnderArtikel artikel = new AnderArtikel("omschr", new Geld(12), new BtwPercentage(42.0, false));
 
 		assertEquals(artikel, this.visitor.visit(adaptee));
 	}
@@ -81,8 +82,8 @@ public class ListItemUnmarshallerTest {
 		InstantLoonAdaptee adaptee = InstantLoonAdaptee.build(a -> a
 				.setOmschrijving("omschr")
 				.setLoon(new Geld(12))
-				.setLoonBtwPercentage(21));
-		InstantLoon loon = new InstantLoon("omschr", new Geld(12), 21);
+				.setLoonBtwPercentage(new BtwPercentage(21, false)));
+		InstantLoon loon = new InstantLoon("omschr", new Geld(12), new BtwPercentage(21, false));
 
 		assertEquals(loon, this.visitor.visit(adaptee));
 	}
@@ -93,8 +94,8 @@ public class ListItemUnmarshallerTest {
 				.setOmschrijving("omschr")
 				.setUren(15)
 				.setUurloon(new Geld(12))
-				.setLoonBtwPercentage(21));
-		ProductLoon loon = new ProductLoon("omschr", 15, new Geld(12), 21);
+				.setLoonBtwPercentage(new BtwPercentage(21, true)));
+		ProductLoon loon = new ProductLoon("omschr", 15, new Geld(12), new BtwPercentage(21, true));
 
 		assertEquals(loon, this.visitor.visit(adaptee));
 	}
