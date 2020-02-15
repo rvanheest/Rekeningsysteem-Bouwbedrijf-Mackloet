@@ -1,11 +1,16 @@
 package org.rekeningsysteem.data.util;
 
+import java.util.Comparator;
 import java.util.Objects;
 
 public class BtwPercentage implements Comparable<BtwPercentage> {
 
   private final double percentage;
   private final boolean verlegd;
+
+  private static final Comparator<BtwPercentage> percentageComparator = Comparator.comparing(BtwPercentage::getPercentage);
+  private static final Comparator<BtwPercentage> verlegdComparator = Comparator.comparing(BtwPercentage::isVerlegd);
+  private static final Comparator<BtwPercentage> comparator = percentageComparator.thenComparing(verlegdComparator);
 
   public BtwPercentage(double percentage, boolean verlegd) {
     this.percentage = percentage;
@@ -41,10 +46,7 @@ public class BtwPercentage implements Comparable<BtwPercentage> {
   }
 
   @Override
-  public int compareTo(BtwPercentage o) {
-    int comp1 = Double.compare(this.percentage, o.percentage);
-    return comp1 == 0
-        ? -Boolean.compare(this.verlegd, o.verlegd)
-        : comp1;
+  public int compareTo(BtwPercentage that) {
+    return comparator.compare(this, that);
   }
 }
