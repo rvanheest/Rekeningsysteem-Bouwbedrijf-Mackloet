@@ -156,7 +156,6 @@ public class PdfExporterVisitor implements RekeningVoidVisitor {
 			);
 			converter.replace("btwList", totalen.getNettoBtwTuple().entrySet()
 					.stream()
-					.filter(entry -> entry.getKey().getPercentage() != 0.0)
 					.sorted(Map.Entry.comparingByKey())
 					.map(entry -> Arrays.asList(
 							entry.getKey().formattedString(),
