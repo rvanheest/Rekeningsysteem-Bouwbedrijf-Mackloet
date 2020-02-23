@@ -335,6 +335,19 @@ public class IOWorkerTest {
 	}
 
 	@Test
+	public void testLoadParticulierVerlegdFactuur4() {
+		TestSubscriber<Class<? extends AbstractRekening>> testObserver = new TestSubscriber<>();
+		this.loader.load(new File("src\\test\\resources\\ioWorker\\loadXML\\4ParticulierVerlegd.xml"))
+				.map(AbstractRekening::getClass)
+				.subscribe(testObserver);
+
+		testObserver.assertValue(ParticulierFactuur.class);
+		testObserver.assertNoErrors();
+		testObserver.assertCompleted();
+		verifyZeroInteractions(this.logger);
+	}
+
+	@Test
 	public void testSaveParticulier() {
 		TestSubscriber<AbstractRekening> testObserver = new TestSubscriber<>();
 

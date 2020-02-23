@@ -9,7 +9,9 @@ public class BtwPercentageAdapter extends XmlAdapter<BtwPercentageAdaptee, BtwPe
 
   @Override
   public BtwPercentage unmarshal(BtwPercentageAdaptee adaptee) {
-    return new BtwPercentage(adaptee.getBtwPercentage(), adaptee.isVerlegd());
+    return new Double(0).equals(adaptee.getBtwPercentage())
+        ? new BtwPercentage(adaptee.getBtwPercentage(), true)
+        : new BtwPercentage(adaptee.getBtwPercentage(), adaptee.isVerlegd());
   }
 
   @Override

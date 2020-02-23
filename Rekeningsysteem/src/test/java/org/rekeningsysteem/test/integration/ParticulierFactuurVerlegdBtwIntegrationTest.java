@@ -57,9 +57,9 @@ public class ParticulierFactuurVerlegdBtwIntegrationTest extends AbstractIntegra
 	protected ItemList<AbstractLoon> addLoon() {
 		ItemList<AbstractLoon> list = new ItemList<>();
 
-		list.add(new ProductLoon("Uurloon à 38.50", 25, new Geld(38.50), new BtwPercentage(0, false)));
-		list.add(new ProductLoon("test123", 12, new Geld(12.50), new BtwPercentage(0, false)));
-		list.add(new InstantLoon("foobar", new Geld(40.00), new BtwPercentage(0, false)));
+		list.add(new ProductLoon("Uurloon à 38.50", 25, new Geld(38.50), new BtwPercentage(0, true)));
+		list.add(new ProductLoon("test123", 12, new Geld(12.50), new BtwPercentage(0, true)));
+		list.add(new InstantLoon("foobar", new Geld(40.00), new BtwPercentage(0, true)));
 
 		return list;
 	}
