@@ -11,6 +11,7 @@ import org.rekeningsysteem.data.particulier.GebruiktEsselinkArtikel;
 import org.rekeningsysteem.data.particulier.loon.InstantLoon;
 import org.rekeningsysteem.data.particulier.loon.ProductLoon;
 import org.rekeningsysteem.data.reparaties.ReparatiesInkoopOrder;
+import org.rekeningsysteem.data.util.BtwPercentage;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.io.xml.adapter.ListItemAdapter;
 
@@ -25,26 +26,26 @@ public class ListItemAdapterTest {
 
 	@Test
 	public void testMarshalUnmarshalAnderArtikel() {
-		AnderArtikel expected = new AnderArtikel("omschr", new Geld(1), 6);
+		AnderArtikel expected = new AnderArtikel("omschr", new Geld(1), new BtwPercentage(6, true));
 		assertEquals(expected, this.adapter.unmarshal(this.adapter.marshal(expected)));
 	}
 
 	@Test
 	public void testMarshalUnmarshalGebruiktEsselinkArtikel() {
 		GebruiktEsselinkArtikel expected = new GebruiktEsselinkArtikel(new EsselinkArtikel("nr",
-				"omschr", 1, "eenheid", new Geld(2)), 12.3, 6);
+				"omschr", 1, "eenheid", new Geld(2)), 12.3, new BtwPercentage(6, false));
 		assertEquals(expected, this.adapter.unmarshal(this.adapter.marshal(expected)));
 	}
 
 	@Test
 	public void testMarshalUnmarshalInstantLoon() {
-		InstantLoon expected = new InstantLoon("omschr", new Geld(1.0), 6);
+		InstantLoon expected = new InstantLoon("omschr", new Geld(1.0), new BtwPercentage(6, true));
 		assertEquals(expected, this.adapter.unmarshal(this.adapter.marshal(expected)));
 	}
 
 	@Test
 	public void testMarshalUnmarshalProductLoon() {
-		ProductLoon expected = new ProductLoon("omschr", 3.0, new Geld(1.0), 6);
+		ProductLoon expected = new ProductLoon("omschr", 3.0, new Geld(1.0), new BtwPercentage(6, false));
 		assertEquals(expected, this.adapter.unmarshal(this.adapter.marshal(expected)));
 	}
 

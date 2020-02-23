@@ -27,6 +27,8 @@ import org.rekeningsysteem.data.particulier.loon.ProductLoon;
 import org.rekeningsysteem.data.reparaties.ReparatiesInkoopOrder;
 import org.rekeningsysteem.data.reparaties.ReparatiesFactuur;
 import org.rekeningsysteem.data.util.AbstractRekening;
+import org.rekeningsysteem.data.util.BtwPercentage;
+import org.rekeningsysteem.data.util.BtwPercentages;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.data.util.ItemList;
 import org.rekeningsysteem.data.util.header.Debiteur;
@@ -218,7 +220,7 @@ public class XmlReader1 implements FactuurLoader {
 		return Observable.zip(debiteur, datum, offertenummer, FactuurHeader::new);
 	}
 
-	private Observable<Func1<Double, AnderArtikel>> makeAnderArtikel(Node node) {
+	private Observable<Func1<BtwPercentage, AnderArtikel>> makeAnderArtikel(Node node) {
 		Node temp = ((Element) node).getElementsByTagName("artikel").item(0);
 		Observable<String> omschrijving = this.getNodeValue(temp, "omschrijving");
 		Observable<Geld> prijs = this.getNodeValue(((Element) node).getElementsByTagName("prijs"))
@@ -240,7 +242,7 @@ public class XmlReader1 implements FactuurLoader {
 				EsselinkArtikel::new);
 	}
 
-	private Observable<Func1<Double, GebruiktEsselinkArtikel>> makeGebruiktArtikelEsselink(Node node) {
+	private Observable<Func1<BtwPercentage, GebruiktEsselinkArtikel>> makeGebruiktArtikelEsselink(Node node) {
 		Observable<EsselinkArtikel> artikel = this.makeArtikelEsselink(((Element) node)
 				.getElementsByTagName("artikel").item(0));
 		Observable<Double> aantal = this.getNodeValue(node, "aantal").map(Double::parseDouble);
@@ -249,7 +251,7 @@ public class XmlReader1 implements FactuurLoader {
 				btw -> new GebruiktEsselinkArtikel(art, aant, btw));
 	}
 
-	private Observable<Func1<Double, ProductLoon>> makeLoon(Node node) {
+	private Observable<Func1<BtwPercentage, ProductLoon>> makeLoon(Node node) {
 		Observable<Geld> uurloon = this.getNodeValue(node, "uurloon").flatMap(this::makeGeld);
 		Observable<Double> uren = this.getNodeValue(node, "uren").map(Double::parseDouble);
 
@@ -257,19 +259,21 @@ public class XmlReader1 implements FactuurLoader {
 				btw -> new ProductLoon("Uurloon à " + ul.formattedString(), ur, ul, btw));
 	}
 
-	private Observable<BtwPercentage> makeEnkelBtw(Node node) {
-		Observable<Double> btw = this.getNodeValue(node, "btw").map(Double::parseDouble);
+	private Observable<BtwPercentages> makeEnkelBtw(Node node) {
+		Observable<BtwPercentage> btw = this.getNodeValue(node, "btw").map(Double::parseDouble).map(b -> new BtwPercentage(b, false));
 
-		return btw.map(b -> new BtwPercentage(b, b));
+		return btw.map(b -> new BtwPercentages(b, b));
 	}
 
-	private Observable<BtwPercentage> makeDubbelBtw(Node node) {
-		Observable<Double> btwArt = this.getNodeValue(node, "btwpercentageart")
-				.map(Double::parseDouble);
-		Observable<Double> btwLoon = this.getNodeValue(node, "btwpercentageloon")
-				.map(Double::parseDouble);
+	private Observable<BtwPercentages> makeDubbelBtw(Node node) {
+		Observable<BtwPercentage> btwArt = this.getNodeValue(node, "btwpercentageart")
+				.map(Double::parseDouble)
+				.map(b -> new BtwPercentage(b, false));
+		Observable<BtwPercentage> btwLoon = this.getNodeValue(node, "btwpercentageloon")
+				.map(Double::parseDouble)
+				.map(b -> new BtwPercentage(b, false));
 
-		return Observable.zip(btwLoon, btwArt, BtwPercentage::new);
+		return Observable.zip(btwLoon, btwArt, BtwPercentages::new);
 	}
 
 	public Observable<ParticulierFactuur> makeParticulierFactuur1(Node node) {
@@ -278,7 +282,7 @@ public class XmlReader1 implements FactuurLoader {
 				.getChildNodes();
 
 		Observable<OmschrFactuurHeader> header = this.makeFactuurHeader(node);
-		Func1<Double, Observable<ItemList<ParticulierArtikel>>> itemList = btw ->
+		Func1<BtwPercentage, Observable<ItemList<ParticulierArtikel>>> itemList = btw ->
 				Observable.range(0, gal.getLength())
 						.map(gal::item)
 						.flatMap(item -> {
@@ -294,15 +298,15 @@ public class XmlReader1 implements FactuurLoader {
 						})
 						.map(f -> f.call(btw))
 						.collect(ItemList::new, Collection::add);
-		Func1<Double, Observable<ItemList<AbstractLoon>>> loonList = btw ->
+		Func1<BtwPercentage, Observable<ItemList<AbstractLoon>>> loonList = btw ->
 				this.makeLoon(((Element) node).getElementsByTagName("loon").item(0))
 						.map(f -> f.call(btw))
 						.collect(ItemList::new, Collection::add);
 
-		Observable<BtwPercentage> btw = this.makeEnkelBtw(node);
+		Observable<BtwPercentages> btw = this.makeEnkelBtw(node);
 		return btw.first().publish(percentage -> {
-			Observable<ItemList<ParticulierArtikel>> art = percentage.map(b -> b.materiaalPercentage).flatMap(itemList);
-			Observable<ItemList<AbstractLoon>> loon = percentage.map(b -> b.loonPercentage).flatMap(loonList);
+			Observable<ItemList<ParticulierArtikel>> art = percentage.map(BtwPercentages::getMateriaalPercentage).flatMap(itemList);
+			Observable<ItemList<AbstractLoon>> loon = percentage.map(BtwPercentages::getLoonPercentage).flatMap(loonList);
 			
 			return Observable.zip(header, art, loon,(h, li, lo) -> {
 				li.addAll(lo);
@@ -317,7 +321,7 @@ public class XmlReader1 implements FactuurLoader {
 				.getChildNodes();
 
 		Observable<OmschrFactuurHeader> header = this.makeFactuurHeader(node);
-		Func1<Double, Observable<ItemList<ParticulierArtikel>>> itemList = btw ->
+		Func1<BtwPercentage, Observable<ItemList<ParticulierArtikel>>> itemList = btw ->
 		Observable.range(0, gal.getLength())
         				.map(gal::item)
         				.flatMap(item -> {
@@ -333,15 +337,15 @@ public class XmlReader1 implements FactuurLoader {
         				})
         				.map(f -> f.call(btw))
         				.collect(ItemList::new, Collection::add);
-        Func1<Double, Observable<ItemList<AbstractLoon>>> loonList = btw ->
+        Func1<BtwPercentage, Observable<ItemList<AbstractLoon>>> loonList = btw ->
         		this.makeLoon(((Element) node).getElementsByTagName("loon").item(0))
         				.map(f -> f.call(btw))
         				.collect(ItemList::new, Collection::add);
 
-		Observable<BtwPercentage> btw = this.makeDubbelBtw(node);
+		Observable<BtwPercentages> btw = this.makeDubbelBtw(node);
 		return btw.first().publish(percentage -> {
-			Observable<ItemList<ParticulierArtikel>> art = percentage.map(b -> b.materiaalPercentage).flatMap(itemList);
-			Observable<ItemList<AbstractLoon>> loon = percentage.map(b -> b.loonPercentage).flatMap(loonList);
+			Observable<ItemList<ParticulierArtikel>> art = percentage.map(BtwPercentages::getMateriaalPercentage).flatMap(itemList);
+			Observable<ItemList<AbstractLoon>> loon = percentage.map(BtwPercentages::getLoonPercentage).flatMap(loonList);
 			
 			return Observable.zip(header, art, loon, (h, li, lo) -> {
 				li.addAll(lo);
@@ -402,16 +406,5 @@ public class XmlReader1 implements FactuurLoader {
 				.map(Boolean::parseBoolean);
 
 		return Observable.zip(header, tekst, ondertekenen, Offerte::new);
-	}
-
-	public final class BtwPercentage {
-
-		public final double loonPercentage;
-		public final double materiaalPercentage;
-
-		public BtwPercentage(double loonPercentage, double materiaalPercentage) {
-			this.loonPercentage = loonPercentage;
-			this.materiaalPercentage = materiaalPercentage;
-		}
 	}
 }

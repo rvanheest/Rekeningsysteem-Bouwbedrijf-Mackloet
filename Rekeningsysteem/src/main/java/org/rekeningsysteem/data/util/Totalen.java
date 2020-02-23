@@ -31,6 +31,10 @@ public final class Totalen {
 			return this.btw;
 		}
 
+		public NettoBtwTuple wipeBtw() {
+			return new NettoBtwTuple(this.netto, new Geld(0));
+		}
+
 		public Geld getTotaal() {
 			return this.netto.add(this.btw);
 		}
@@ -57,27 +61,27 @@ public final class Totalen {
 		}
 	}
 
-	private final Map<Double, NettoBtwTuple> nettoBtwPerPercentage;
+	private final Map<BtwPercentage, NettoBtwTuple> nettoBtwPerPercentage;
 
 	public Totalen() {
 		this(new HashMap<>());
 	}
 
-	public Totalen(double percentage, Geld netto, Geld btw) {
+	public Totalen(BtwPercentage percentage, Geld netto, Geld btw) {
 		this();
 		this.nettoBtwPerPercentage.put(percentage, new NettoBtwTuple(netto, btw));
 	}
 
-	private Totalen(Map<Double, NettoBtwTuple> nettoBtwPerPercentage) {
+	private Totalen(Map<BtwPercentage, NettoBtwTuple> nettoBtwPerPercentage) {
 		this.nettoBtwPerPercentage = nettoBtwPerPercentage;
 	}
 
 	public Totalen add(Geld netto) {
-		return this.add(0.0, netto, new Geld(0));
+		return this.add(new BtwPercentage(0.0, false), netto, new Geld(0));
 	}
 
-	public Totalen add(double percentage, Geld netto, Geld btw) {
-		Map<Double, NettoBtwTuple> map = new HashMap<>(this.nettoBtwPerPercentage);
+	public Totalen add(BtwPercentage percentage, Geld netto, Geld btw) {
+		Map<BtwPercentage, NettoBtwTuple> map = new HashMap<>(this.nettoBtwPerPercentage);
 		map.merge(percentage, new NettoBtwTuple(netto, btw), NettoBtwTuple::add);
 
 		return new Totalen(map);
@@ -92,19 +96,19 @@ public final class Totalen {
 		return Collections.unmodifiableMap(res);
 	}
 
-	public Set<Double> getBtwPercentages() {
+	public Set<BtwPercentage> getBtwPercentages() {
 	    return Collections.unmodifiableSet(this.nettoBtwPerPercentage.keySet());
     }
 
-	public Map<Double, NettoBtwTuple> getNettoBtwTuple() {
+	public Map<BtwPercentage, NettoBtwTuple> getNettoBtwTuple() {
 		return Collections.unmodifiableMap(this.nettoBtwPerPercentage);
 	}
 
-	public Map<Double, Geld> getNetto() {
+	public Map<BtwPercentage, Geld> getNetto() {
 		return Collections.unmodifiableMap(sep(this.nettoBtwPerPercentage, NettoBtwTuple::getNetto));
 	}
 
-	public Map<Double, Geld> getBtw() {
+	public Map<BtwPercentage, Geld> getBtw() {
 		return Collections.unmodifiableMap(sep(this.nettoBtwPerPercentage, NettoBtwTuple::getBtw));
 	}
 
@@ -116,14 +120,15 @@ public final class Totalen {
 	}
 
 	public Geld getTotaal() {
-		return this.nettoBtwPerPercentage.values()
+		return this.nettoBtwPerPercentage.entrySet()
 				.parallelStream()
+				.map(entry -> entry.getKey().isVerlegd() ? entry.getValue().wipeBtw() : entry.getValue())
 				.map(NettoBtwTuple::getTotaal)
 				.reduce(new Geld(0.0), Geld::add);
 	}
 
 	public Totalen plus(Totalen t2) {
-		Map<Double, NettoBtwTuple> map = new HashMap<>(this.nettoBtwPerPercentage);
+		Map<BtwPercentage, NettoBtwTuple> map = new HashMap<>(this.nettoBtwPerPercentage);
 		t2.nettoBtwPerPercentage
 				.forEach((percentage, bedrag) -> map.merge(percentage, bedrag, NettoBtwTuple::add));
 

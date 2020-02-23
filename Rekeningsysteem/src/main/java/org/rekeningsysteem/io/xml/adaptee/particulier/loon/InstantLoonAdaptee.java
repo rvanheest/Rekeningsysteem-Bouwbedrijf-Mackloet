@@ -7,9 +7,11 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import org.rekeningsysteem.data.util.BtwPercentage;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.io.xml.adaptee.ListItemAdapteeVisitable;
 import org.rekeningsysteem.io.xml.adaptee.ListItemAdapteeVisitor;
+import org.rekeningsysteem.io.xml.adapter.util.BtwPercentageAdapter;
 import org.rekeningsysteem.io.xml.adapter.util.GeldAdapter;
 
 @XmlRootElement(name = "instant-loon")
@@ -18,7 +20,7 @@ public class InstantLoonAdaptee extends ListItemAdapteeVisitable {
 
 	private String omschrijving;
 	private Geld loon;
-	private double loonBtwPercentage;
+	private BtwPercentage loonBtwPercentage;
 
 	private InstantLoonAdaptee() {
 	}
@@ -43,12 +45,12 @@ public class InstantLoonAdaptee extends ListItemAdapteeVisitable {
 		return this;
 	}
 
-	@XmlElement
-	public double getLoonBtwPercentage() {
+	@XmlJavaTypeAdapter(BtwPercentageAdapter.class)
+	public BtwPercentage getLoonBtwPercentage() {
 		return this.loonBtwPercentage;
 	}
 
-	public InstantLoonAdaptee setLoonBtwPercentage(double loonBtwPercentage) {
+	public InstantLoonAdaptee setLoonBtwPercentage(BtwPercentage loonBtwPercentage) {
 		this.loonBtwPercentage = loonBtwPercentage;
 		return this;
 	}

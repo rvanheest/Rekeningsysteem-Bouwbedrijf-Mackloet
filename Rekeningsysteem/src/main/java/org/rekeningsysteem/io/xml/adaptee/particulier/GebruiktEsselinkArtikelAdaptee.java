@@ -8,9 +8,11 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.rekeningsysteem.data.particulier.EsselinkArtikel;
+import org.rekeningsysteem.data.util.BtwPercentage;
 import org.rekeningsysteem.io.xml.adaptee.ListItemAdapteeVisitable;
 import org.rekeningsysteem.io.xml.adaptee.ListItemAdapteeVisitor;
 import org.rekeningsysteem.io.xml.adapter.particulier.EsselinkArtikelAdapter;
+import org.rekeningsysteem.io.xml.adapter.util.BtwPercentageAdapter;
 
 @XmlRootElement(name = "gebruikt-esselink-artikel")
 @XmlType(propOrder = { "omschrijving", "artikel", "aantal", "materiaalBtwPercentage" })
@@ -19,7 +21,7 @@ public class GebruiktEsselinkArtikelAdaptee extends ListItemAdapteeVisitable {
 	private String omschrijving;
 	private EsselinkArtikel artikel;
 	private double aantal;
-	private double materiaalBtwPercentage;
+	private BtwPercentage materiaalBtwPercentage;
 
 	private GebruiktEsselinkArtikelAdaptee() {
 	}
@@ -54,12 +56,12 @@ public class GebruiktEsselinkArtikelAdaptee extends ListItemAdapteeVisitable {
 		return this;
 	}
 
-	@XmlElement
-	public double getMateriaalBtwPercentage() {
+	@XmlJavaTypeAdapter(BtwPercentageAdapter.class)
+	public BtwPercentage getMateriaalBtwPercentage() {
 		return this.materiaalBtwPercentage;
 	}
 
-	public GebruiktEsselinkArtikelAdaptee setMateriaalBtwPercentage(double materiaalBtwPercentage) {
+	public GebruiktEsselinkArtikelAdaptee setMateriaalBtwPercentage(BtwPercentage materiaalBtwPercentage) {
 		this.materiaalBtwPercentage = materiaalBtwPercentage;
 		return this;
 	}

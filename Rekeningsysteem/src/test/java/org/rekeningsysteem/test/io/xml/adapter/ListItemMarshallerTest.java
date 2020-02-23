@@ -11,6 +11,7 @@ import org.rekeningsysteem.data.particulier.GebruiktEsselinkArtikel;
 import org.rekeningsysteem.data.particulier.loon.InstantLoon;
 import org.rekeningsysteem.data.particulier.loon.ProductLoon;
 import org.rekeningsysteem.data.reparaties.ReparatiesInkoopOrder;
+import org.rekeningsysteem.data.util.BtwPercentage;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.io.xml.adaptee.mutaties.MutatiesInkoopOrderAdaptee;
 import org.rekeningsysteem.io.xml.adaptee.particulier.AnderArtikelAdaptee;
@@ -42,23 +43,23 @@ public class ListItemMarshallerTest {
 	@Test
 	public void testVisitGebruiktEsselinkArtikel() {
 		EsselinkArtikel artikel = new EsselinkArtikel("artNr", "omschr", 1, "eenh", new Geld(12));
-		GebruiktEsselinkArtikel gea = new GebruiktEsselinkArtikel(artikel, 2.3, 4.2);
+		GebruiktEsselinkArtikel gea = new GebruiktEsselinkArtikel(artikel, 2.3, new BtwPercentage(4.2, false));
 		GebruiktEsselinkArtikelAdaptee adaptee = this.visitor.visit(gea);
 
 		assertEquals("omschr", adaptee.getOmschrijving());
 		assertEquals(artikel, adaptee.getArtikel());
 		assertEquals(2.3, adaptee.getAantal(), 0.0);
-		assertEquals(4.2, adaptee.getMateriaalBtwPercentage(), 0.0);
+		assertEquals(new BtwPercentage(4.2, false), adaptee.getMateriaalBtwPercentage());
 	}
 
 	@Test
 	public void testVisitAnderArtikel() {
-		AnderArtikel artikel = new AnderArtikel("omschr", new Geld(12), 42.0);
+		AnderArtikel artikel = new AnderArtikel("omschr", new Geld(12), new BtwPercentage(42.0, true));
 		AnderArtikelAdaptee adaptee = this.visitor.visit(artikel);
 
 		assertEquals("omschr", adaptee.getOmschrijving());
 		assertEquals(new Geld(12), adaptee.getPrijs());
-		assertEquals(42.0, adaptee.getMateriaalBtwPercentage(), 0.0);
+		assertEquals(new BtwPercentage(42.0, true), adaptee.getMateriaalBtwPercentage());
 	}
 
 	@Test
@@ -74,22 +75,22 @@ public class ListItemMarshallerTest {
 
 	@Test
 	public void testVisitInstantLoon() {
-		InstantLoon loon = new InstantLoon("omschr", new Geld(12), 21);
+		InstantLoon loon = new InstantLoon("omschr", new Geld(12), new BtwPercentage(21, true));
 		InstantLoonAdaptee adaptee = this.visitor.visit(loon);
 
 		assertEquals("omschr", adaptee.getOmschrijving());
 		assertEquals(new Geld(12), adaptee.getLoon());
-		assertEquals(21.0, adaptee.getLoonBtwPercentage(), 0.0);
+		assertEquals(new BtwPercentage(21.0, true), adaptee.getLoonBtwPercentage());
 	}
 
 	@Test
 	public void testVisitProductLoon() {
-		ProductLoon loon = new ProductLoon("omschr", 15, new Geld(12), 21);
+		ProductLoon loon = new ProductLoon("omschr", 15, new Geld(12), new BtwPercentage(21, false));
 		ProductLoonAdaptee adaptee = this.visitor.visit(loon);
 
 		assertEquals("omschr", adaptee.getOmschrijving());
 		assertEquals(15.0, adaptee.getUren(), 0.0);
 		assertEquals(new Geld(12), adaptee.getUurloon());
-		assertEquals(21.0, adaptee.getLoonBtwPercentage(), 0.0);
+		assertEquals(new BtwPercentage(21.0, false), adaptee.getLoonBtwPercentage());
 	}
 }

@@ -12,6 +12,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.rekeningsysteem.data.particulier.EsselinkArtikel;
 import org.rekeningsysteem.data.particulier.GebruiktEsselinkArtikel;
+import org.rekeningsysteem.data.util.BtwPercentage;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.data.util.visitor.ListItemVisitor;
 
@@ -22,7 +23,7 @@ public class GebruiktEsselinkArtikelTest extends ParticulierArtikelTest {
 	private final EsselinkArtikel artikel = new EsselinkArtikel("artikelnummer", "omschrijving", 2,
 			"eenheid", new Geld(1));
 	private final double aantal = 5;
-	private final double btwPercentage = 10;
+	private final BtwPercentage btwPercentage = new BtwPercentage(10, false);
 	@Mock private ListItemVisitor<Object> visitor;
 
 	@Override
@@ -59,7 +60,7 @@ public class GebruiktEsselinkArtikelTest extends ParticulierArtikelTest {
 
 	@Test
 	public void testGetMateriaalBtwPercentage() {
-		assertEquals(this.btwPercentage, this.gebruiktArtikel.getMateriaalBtwPercentage(), 0.0);
+		assertEquals(this.btwPercentage, this.gebruiktArtikel.getMateriaalBtwPercentage());
 	}
 
 	@Test
@@ -87,13 +88,13 @@ public class GebruiktEsselinkArtikelTest extends ParticulierArtikelTest {
 	@Test
 	public void testEqualsFalseOtherMateriaalBtwPercentage() {
 		GebruiktEsselinkArtikel gea = new GebruiktEsselinkArtikel(this.artikel, this.aantal,
-				this.btwPercentage + 1);
+				new BtwPercentage(this.btwPercentage.getPercentage() + 1, false));
 		assertFalse(this.gebruiktArtikel.equals(gea));
 	}
 
 	@Test
 	public void testToString() {
-		assertEquals("<GebruiktEsselinkArtikel[omschrijving, <Geld[2,50]>, 10.0, 5.0, "
+		assertEquals("<GebruiktEsselinkArtikel[omschrijving, <Geld[2,50]>, <BtwPercentage[10.0, false]>, 5.0, "
 				+ "<EsselinkArtikel[artikelnummer, omschrijving, 2, eenheid, <Geld[1,00]>]>]>",
 				this.gebruiktArtikel.toString());
 	}

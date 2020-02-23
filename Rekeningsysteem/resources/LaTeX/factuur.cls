@@ -34,7 +34,7 @@
 	}
 
 	\newcommand*{\btwRow}[3]{
-		{\bf BTW ##1\% over #1 ##2} & ##3 & \\
+		{\bf BTW ##1 over #1 ##2} & ##3 & \\
 	}
 
 	\newcommand*{\totalRow}[1]{

@@ -9,6 +9,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.rekeningsysteem.data.particulier.EsselinkArtikel;
+import org.rekeningsysteem.data.util.BtwPercentage;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.io.xml.adaptee.ListItemAdapteeVisitor;
 import org.rekeningsysteem.io.xml.adaptee.particulier.GebruiktEsselinkArtikelAdaptee;
@@ -21,7 +22,7 @@ public class GebruiktEsselinkArtikelAdapteeTest extends ListItemAdapteeVisitable
 	private final EsselinkArtikel artikel = new EsselinkArtikel("artnr", "omschr", 12, "eenheid", new Geld(
 			12.30));
 	private final double aantal = 12.43;
-	private final double materiaalBtw = 0.7;
+	private final BtwPercentage materiaalBtw = new BtwPercentage(0.7, false);
 	@Mock private ListItemAdapteeVisitor<Object> visitor;
 
 	@Override
@@ -55,7 +56,7 @@ public class GebruiktEsselinkArtikelAdapteeTest extends ListItemAdapteeVisitable
 
 	@Test
 	public void testSetGetMateriaalBtwPercentage() {
-		assertEquals(this.materiaalBtw, this.getInstance().getMateriaalBtwPercentage(), 0.0);
+		assertEquals(this.materiaalBtw, this.getInstance().getMateriaalBtwPercentage());
 	}
 
 	@Test

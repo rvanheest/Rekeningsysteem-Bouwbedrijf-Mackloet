@@ -7,9 +7,11 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import org.rekeningsysteem.data.util.BtwPercentage;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.io.xml.adaptee.ListItemAdapteeVisitable;
 import org.rekeningsysteem.io.xml.adaptee.ListItemAdapteeVisitor;
+import org.rekeningsysteem.io.xml.adapter.util.BtwPercentageAdapter;
 import org.rekeningsysteem.io.xml.adapter.util.GeldAdapter;
 
 @XmlRootElement(name = "ander-artikel")
@@ -18,7 +20,7 @@ public class AnderArtikelAdaptee extends ListItemAdapteeVisitable {
 
 	private String omschrijving;
 	private Geld prijs;
-	private double materiaalBtwPercentage;
+	private BtwPercentage materiaalBtwPercentage;
 
 	private AnderArtikelAdaptee() {
 	}
@@ -43,12 +45,12 @@ public class AnderArtikelAdaptee extends ListItemAdapteeVisitable {
 		return this;
 	}
 
-	@XmlElement
-	public double getMateriaalBtwPercentage() {
+	@XmlJavaTypeAdapter(BtwPercentageAdapter.class)
+	public BtwPercentage getMateriaalBtwPercentage() {
 		return this.materiaalBtwPercentage;
 	}
 
-	public AnderArtikelAdaptee setMateriaalBtwPercentage(double materiaalBtwPercentage) {
+	public AnderArtikelAdaptee setMateriaalBtwPercentage(BtwPercentage materiaalBtwPercentage) {
 		this.materiaalBtwPercentage = materiaalBtwPercentage;
 		return this;
 	}

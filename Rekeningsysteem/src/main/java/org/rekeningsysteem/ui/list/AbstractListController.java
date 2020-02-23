@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.rekeningsysteem.application.Main;
-import org.rekeningsysteem.data.util.BtwPercentage;
+import org.rekeningsysteem.data.util.BtwPercentages;
 import org.rekeningsysteem.data.util.ItemList;
 import org.rekeningsysteem.data.util.ListItem;
 import org.rekeningsysteem.io.database.Database;
@@ -26,15 +26,15 @@ public abstract class AbstractListController<M extends ListItem, U> {
 		this(ui, ui.getAddButtonEvent().map(e -> func.call(currency)));
 	}
 
-	public AbstractListController(Currency currency, BtwPercentage defaultBtw,
+	public AbstractListController(Currency currency, BtwPercentages defaultBtw,
 			AbstractListPane<U> ui,
-			Func2<Currency, BtwPercentage, AbstractListItemController<M>> func) {
+			Func2<Currency, BtwPercentages, AbstractListItemController<M>> func) {
 		this(ui, ui.getAddButtonEvent().map(e -> func.call(currency, defaultBtw)));
 	}
 
 	public AbstractListController(Currency currency, Database db,
-			BtwPercentage defaultBtw, AbstractListPane<U> ui,
-			Func3<Currency, Database, BtwPercentage, AbstractListItemController<M>> func) {
+			BtwPercentages defaultBtw, AbstractListPane<U> ui,
+			Func3<Currency, Database, BtwPercentages, AbstractListItemController<M>> func) {
 		this(ui, ui.getAddButtonEvent().map(e -> func.call(currency, db, defaultBtw)));
 	}
 

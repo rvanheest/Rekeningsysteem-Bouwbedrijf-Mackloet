@@ -9,7 +9,7 @@ import org.rekeningsysteem.data.particulier.ParticulierArtikel;
 import org.rekeningsysteem.data.particulier.AnderArtikel;
 import org.rekeningsysteem.data.particulier.loon.InstantLoon;
 import org.rekeningsysteem.data.particulier.loon.ProductLoon;
-import org.rekeningsysteem.data.util.BtwPercentage;
+import org.rekeningsysteem.data.util.BtwPercentages;
 import org.rekeningsysteem.data.util.ItemList;
 import org.rekeningsysteem.io.database.Database;
 import org.rekeningsysteem.ui.list.AbstractListController;
@@ -17,17 +17,17 @@ import org.rekeningsysteem.ui.particulier.ParticulierListPane.ParticulierModel;
 
 public class ParticulierListController extends AbstractListController<ParticulierArtikel, ParticulierModel> {
 
-	public ParticulierListController(Currency currency, Database db, BtwPercentage defaultBtw) {
+	public ParticulierListController(Currency currency, Database db, BtwPercentages defaultBtw) {
 		this(currency, db, defaultBtw, new ParticulierListPane());
 	}
 
-	public ParticulierListController(Currency currency, Database db, BtwPercentage defaultBtw,
+	public ParticulierListController(Currency currency, Database db, BtwPercentages defaultBtw,
 			List<ParticulierArtikel> input) {
 		this(currency, db, defaultBtw);
 		this.getUI().setData(this.modelToUI(input));
 	}
 
-	public ParticulierListController(Currency currency, Database db, BtwPercentage defaultBtw,
+	public ParticulierListController(Currency currency, Database db, BtwPercentages defaultBtw,
 			ParticulierListPane ui) {
 		super(currency, db, defaultBtw, ui, ParticulierArtikelController::new);
 	}

@@ -2,6 +2,7 @@ package org.rekeningsysteem.data.particulier.loon;
 
 import java.util.Objects;
 
+import org.rekeningsysteem.data.util.BtwPercentage;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.data.util.visitor.ListItemVisitor;
 
@@ -10,9 +11,9 @@ public final class ProductLoon extends AbstractLoon {
 	private final double uren;
 	private final Geld uurloon;
 	private final Geld loon;
-	private final double loonBtwPercentage;
+	private final BtwPercentage loonBtwPercentage;
 
-	public ProductLoon(String omschrijving, double uren, Geld uurloon, double loonBtwPercentage) {
+	public ProductLoon(String omschrijving, double uren, Geld uurloon, BtwPercentage loonBtwPercentage) {
 		super(omschrijving);
 		this.uren = uren;
 		this.uurloon = uurloon;
@@ -34,7 +35,12 @@ public final class ProductLoon extends AbstractLoon {
 	}
 
 	@Override
-	public double getLoonBtwPercentage() {
+	public final BtwPercentage getMateriaalBtwPercentage() {
+		return new BtwPercentage(0, this.loonBtwPercentage.isVerlegd());
+	}
+
+	@Override
+	public BtwPercentage getLoonBtwPercentage() {
 		return this.loonBtwPercentage;
 	}
 	

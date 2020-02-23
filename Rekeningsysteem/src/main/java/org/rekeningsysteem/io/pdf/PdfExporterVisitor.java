@@ -150,18 +150,17 @@ public class PdfExporterVisitor implements RekeningVoidVisitor {
 	private Consumer<PdfConverter> convertTotalen(Totalen totalen) {
 		return converter -> {
 			converter.replace("SubTotaalBedrag",
-                totalen.getBtwPercentages().stream().anyMatch(btw -> btw != 0)
-                    ? Collections.singletonList(totalen.getSubtotaal().formattedString())
-                    : Collections.emptyList()
-            );
+					totalen.getBtwPercentages().stream().anyMatch(btw -> btw.getPercentage() != 0.0)
+							? Collections.singletonList(totalen.getSubtotaal().formattedString())
+							: Collections.emptyList()
+			);
 			converter.replace("btwList", totalen.getNettoBtwTuple().entrySet()
 					.stream()
-                    .filter(entry -> entry.getKey() != 0.0)
 					.sorted(Map.Entry.comparingByKey())
 					.map(entry -> Arrays.asList(
-					        String.valueOf(entry.getKey()) + "%",
+							entry.getKey().formattedString(),
 							entry.getValue().getNetto().formattedString(),
-							entry.getValue().getBtw().formattedString()))
+							entry.getValue().getBtw().formattedString() + (entry.getKey().isVerlegd() ? " (verlegd)" : "")))
 					.collect(Collectors.toList()));
 			converter.replace("TotaalBedrag", totalen.getTotaal().formattedString());
 		};

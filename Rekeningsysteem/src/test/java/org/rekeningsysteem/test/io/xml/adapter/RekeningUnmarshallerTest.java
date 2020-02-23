@@ -18,6 +18,7 @@ import org.rekeningsysteem.data.particulier.ParticulierFactuur;
 import org.rekeningsysteem.data.particulier.loon.ProductLoon;
 import org.rekeningsysteem.data.reparaties.ReparatiesInkoopOrder;
 import org.rekeningsysteem.data.reparaties.ReparatiesFactuur;
+import org.rekeningsysteem.data.util.BtwPercentage;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.data.util.ItemList;
 import org.rekeningsysteem.data.util.header.Debiteur;
@@ -76,9 +77,9 @@ public class RekeningUnmarshallerTest {
 		Currency currency = Currency.getInstance("EUR");
 		ItemList<ParticulierArtikel> itemList = new ItemList<>();
 		itemList.add(new GebruiktEsselinkArtikel(new EsselinkArtikel("nr", "omschr", 1, "eenheid",
-				new Geld(2)), 12.3, 21));
-		itemList.add(new AnderArtikel("omschr", new Geld(1), 21));
-		itemList.add(new ProductLoon("productLoon", 12, new Geld(1), 6));
+				new Geld(2)), 12.3, new BtwPercentage(21, false)));
+		itemList.add(new AnderArtikel("omschr", new Geld(1), new BtwPercentage(21, true)));
+		itemList.add(new ProductLoon("productLoon", 12, new Geld(1), new BtwPercentage(6, false)));
 		ParticulierFactuur factuur = new ParticulierFactuur(header, currency, itemList);
 
 		ParticulierFactuurAdaptee adaptee = ParticulierFactuurAdaptee.build(a -> a

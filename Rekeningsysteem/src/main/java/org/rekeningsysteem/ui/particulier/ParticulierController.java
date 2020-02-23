@@ -5,7 +5,7 @@ import java.util.Optional;
 
 import org.rekeningsysteem.application.working.RekeningSplitPane;
 import org.rekeningsysteem.data.particulier.ParticulierFactuur;
-import org.rekeningsysteem.data.util.BtwPercentage;
+import org.rekeningsysteem.data.util.BtwPercentages;
 import org.rekeningsysteem.io.database.Database;
 import org.rekeningsysteem.properties.PropertiesWorker;
 import org.rekeningsysteem.properties.PropertyModelEnum;
@@ -27,7 +27,7 @@ public class ParticulierController extends AbstractRekeningController<Particulie
 		this(getDefaultCurrency(properties), getDefaultBtwPercentage(properties), database);
 	}
 
-	public ParticulierController(Currency currency, BtwPercentage defaultBtw, Database database) {
+	public ParticulierController(Currency currency, BtwPercentages defaultBtw, Database database) {
 		this(new OmschrFactuurHeaderController(database),
 				new ParticulierListPaneController(currency, database, defaultBtw));
 	}
