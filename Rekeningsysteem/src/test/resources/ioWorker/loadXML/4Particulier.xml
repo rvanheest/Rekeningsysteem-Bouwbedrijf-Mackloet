@@ -26,9 +26,7 @@
                     <omschrijving>Product 1</omschrijving>
                     <prijsPer>1</prijsPer>
                     <eenheid>Zak</eenheid>
-                    <verkoopPrijs>
-                        <bedrag>5.16</bedrag>
-                    </verkoopPrijs>
+                    <verkoopPrijs>5,16</verkoopPrijs>
                 </artikel>
                 <aantal>8.0</aantal>
 				<materiaalBtwPercentage>21.0</materiaalBtwPercentage>
@@ -40,9 +38,7 @@
                     <omschrijving>Product 2</omschrijving>
                     <prijsPer>1</prijsPer>
                     <eenheid>zak</eenheid>
-                    <verkoopPrijs>
-                        <bedrag>129.53</bedrag>
-                    </verkoopPrijs>
+                    <verkoopPrijs>129,53</verkoopPrijs>
                 </artikel>
                 <aantal>1.0</aantal>
 				<materiaalBtwPercentage>21.0</materiaalBtwPercentage>
@@ -54,9 +50,7 @@
                     <omschrijving>Product 3</omschrijving>
                     <prijsPer>1</prijsPer>
                     <eenheid>set</eenheid>
-                    <verkoopPrijs>
-                        <bedrag>35.96</bedrag>
-                    </verkoopPrijs>
+                    <verkoopPrijs>35,96</verkoopPrijs>
                 </artikel>
                 <aantal>1.0</aantal>
 				<materiaalBtwPercentage>21.0</materiaalBtwPercentage>
@@ -68,9 +62,7 @@
                     <omschrijving>Product 4</omschrijving>
                     <prijsPer>1</prijsPer>
                     <eenheid>zak</eenheid>
-                    <verkoopPrijs>
-                        <bedrag>9.47</bedrag>
-                    </verkoopPrijs>
+                    <verkoopPrijs>9,47</verkoopPrijs>
                 </artikel>
                 <aantal>1.0</aantal>
 				<materiaalBtwPercentage>21.0</materiaalBtwPercentage>
@@ -82,9 +74,7 @@
                     <omschrijving>Product 5</omschrijving>
                     <prijsPer>1</prijsPer>
                     <eenheid>Stuks</eenheid>
-                    <verkoopPrijs>
-                        <bedrag>17.18</bedrag>
-                    </verkoopPrijs>
+                    <verkoopPrijs>17,18</verkoopPrijs>
                 </artikel>
                 <aantal>1.0</aantal>
 				<materiaalBtwPercentage>21.0</materiaalBtwPercentage>
@@ -96,9 +86,7 @@
                     <omschrijving>Product 6</omschrijving>
                     <prijsPer>1</prijsPer>
                     <eenheid>Stuks</eenheid>
-                    <verkoopPrijs>
-                        <bedrag>6.84</bedrag>
-                    </verkoopPrijs>
+                    <verkoopPrijs>6,84</verkoopPrijs>
                 </artikel>
                 <aantal>1.0</aantal>
 				<materiaalBtwPercentage>21.0</materiaalBtwPercentage>
@@ -110,48 +98,36 @@
                     <omschrijving>Product 7</omschrijving>
                     <prijsPer>1</prijsPer>
                     <eenheid>Stuks</eenheid>
-                    <verkoopPrijs>
-                        <bedrag>7.44</bedrag>
-                    </verkoopPrijs>
+                    <verkoopPrijs>7,44</verkoopPrijs>
                 </artikel>
                 <aantal>1.0</aantal>
 				<materiaalBtwPercentage>21.0</materiaalBtwPercentage>
             </gebruikt-esselink-artikel>
             <ander-artikel>
                 <omschrijving>Stucloper + trapfolie</omschrijving>
-                <prijs>
-                    <bedrag>15.0</bedrag>
-                </prijs>
+                <prijs>15,0</prijs>
 				<materiaalBtwPercentage>21.0</materiaalBtwPercentage>
             </ander-artikel>
             <ander-artikel>
                 <omschrijving>Kitwerk</omschrijving>
-                <prijs>
-                    <bedrag>149.5</bedrag>
-                </prijs>
+                <prijs>149,5</prijs>
 				<materiaalBtwPercentage>21.0</materiaalBtwPercentage>
             </ander-artikel>
             <product-loon>
                 <omschrijving>Uurloon à 38.50</omschrijving>
                 <uren>25.0</uren>
-                <uurloon>
-                    <bedrag>38.5</bedrag>
-                </uurloon>
+                <uurloon>38,5</uurloon>
 				<loonBtwPercentage>6.0</loonBtwPercentage>
             </product-loon>
             <product-loon>
                 <omschrijving>test123</omschrijving>
                 <uren>12.0</uren>
-                <uurloon>
-                    <bedrag>12.5</bedrag>
-                </uurloon>
+                <uurloon>12,5</uurloon>
 				<loonBtwPercentage>6.0</loonBtwPercentage>
             </product-loon>
             <instant-loon>
                 <omschrijving>foobar</omschrijving>
-                <loon>
-                    <bedrag>40.0</bedrag>
-                </loon>
+                <loon>40,0</loon>
 				<loonBtwPercentage>6.0</loonBtwPercentage>
             </instant-loon>
         </list>
