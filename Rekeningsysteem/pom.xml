@@ -4,7 +4,7 @@
 
 	<groupId>com.mackloet</groupId>
 	<artifactId>Rekeningsysteem</artifactId>
-	<version>v0.5-alpha</version>
+	<version>v0.6-alpha</version>
 	<packaging>jar</packaging>
 
 	<name>RekeningSysteem Bouwbedrijf Mackloet</name>
