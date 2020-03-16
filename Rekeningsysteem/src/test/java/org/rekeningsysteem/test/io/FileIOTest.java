@@ -7,16 +7,21 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.util.Arrays;
 
+import org.apache.commons.io.FileUtils;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+import org.rekeningsysteem.data.particulier.EsselinkArtikel;
+import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.io.FileIO;
 
 import rx.Observable;
@@ -33,6 +38,47 @@ public class FileIOTest {
 	public void setUp() throws IOException {
 		this.file = this.folder.newFile();
 		this.io = new FileIO();
+	}
+
+	@Test
+	public void testReadCSV() throws IOException {
+		FileUtils.writeLines(this.file, Arrays.asList(
+			"artikelnummer;omschrijving;prijsPer;Eenheid;verkoopprijs",
+			"6030001186;PPB vloerbalk T2 183 503cm *;1;m1;13,20",
+			"6030001187;PPB vloerbalk T2 183 363cm;1;m1;13,20",
+			"6030001188;PPB vloerbalk T2 183 223cm;1;m1;13,20",
+			"6030001189;PPB vloerbalk T2 183 373cm;1;m1;13,20",
+			"6030001190;PPB vloerbalk T3 184;1;m1;13,80",
+			"6030001223;PPB vulelement 640-3.0;1;Stuks;10,75",
+			"6030001224;PPB vulelement 640-3.5 *;1;Stuks;12,22",
+			"6030001225;PPB vulelement 640-4.0;1;Stuks;15,11"
+		));
+
+		TestSubscriber<EsselinkArtikel> observer = new TestSubscriber<>();
+		this.io.readCSV(this.file).subscribe(observer);
+
+		observer.assertValues(
+			new EsselinkArtikel("6030001186", "PPB vloerbalk T2 183 503cm *", 1, "m1", new Geld(13.20)),
+			new EsselinkArtikel("6030001187", "PPB vloerbalk T2 183 363cm", 1, "m1", new Geld(13.20)),
+			new EsselinkArtikel("6030001188", "PPB vloerbalk T2 183 223cm", 1, "m1", new Geld(13.20)),
+			new EsselinkArtikel("6030001189", "PPB vloerbalk T2 183 373cm", 1, "m1", new Geld(13.20)),
+			new EsselinkArtikel("6030001190", "PPB vloerbalk T3 184", 1, "m1", new Geld(13.80)),
+			new EsselinkArtikel("6030001223", "PPB vulelement 640-3.0", 1, "Stuks", new Geld(10.75)),
+			new EsselinkArtikel("6030001224", "PPB vulelement 640-3.5 *", 1, "Stuks", new Geld(12.22)),
+			new EsselinkArtikel("6030001225", "PPB vulelement 640-4.0", 1, "Stuks", new Geld(15.11))
+		);
+		observer.assertNoErrors();
+		observer.assertCompleted();
+	}
+
+	@Test
+	public void testNonExistingFile() {
+		TestSubscriber<EsselinkArtikel> observer = new TestSubscriber<>();
+		this.io.readCSV(new File("does-not-exist.csv")).subscribe(observer);
+
+		observer.assertNoValues();
+		observer.assertError(FileNotFoundException.class);
+		observer.assertNotCompleted();
 	}
 
 	@Test

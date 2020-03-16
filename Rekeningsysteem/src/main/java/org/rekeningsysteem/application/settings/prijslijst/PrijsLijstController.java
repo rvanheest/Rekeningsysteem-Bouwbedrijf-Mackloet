@@ -1,27 +1,18 @@
 package org.rekeningsysteem.application.settings.prijslijst;
 
-import static rx.observables.StringObservable.from;
-import static rx.observables.StringObservable.split;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.util.Objects;
-
 import javafx.scene.control.ButtonBase;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
-
 import org.apache.log4j.Logger;
-import org.rekeningsysteem.data.particulier.EsselinkArtikel;
-import org.rekeningsysteem.data.util.Geld;
-import org.rekeningsysteem.exception.GeldParseException;
+import org.rekeningsysteem.io.FileIO;
 import org.rekeningsysteem.logic.database.ArtikellijstDBInteraction;
 import org.rekeningsysteem.rxjavafx.JavaFxScheduler;
-
 import rx.Observable;
 import rx.schedulers.Schedulers;
+
+import java.io.File;
+import java.util.Objects;
 
 public class PrijsLijstController {
 
@@ -29,10 +20,10 @@ public class PrijsLijstController {
 
 	public PrijsLijstController(Stage stage, ButtonBase closeButton, ArtikellijstDBInteraction db,
 			Logger logger) {
-		this(stage, closeButton, db, logger, new PrijsLijstPane());
+		this(stage, closeButton, db, new FileIO(), logger, new PrijsLijstPane());
 	}
 
-	public PrijsLijstController(Stage stage, ButtonBase closeButton, ArtikellijstDBInteraction db,
+	public PrijsLijstController(Stage stage, ButtonBase closeButton, ArtikellijstDBInteraction db, FileIO fileIO,
 			Logger logger, PrijsLijstPane ui) {
 		this.ui = ui;
 
@@ -44,7 +35,7 @@ public class PrijsLijstController {
 				})
 				.observeOn(Schedulers.io())
 				.flatMap(file -> db.clearData()
-						.flatMap(i -> this.readFile(file))
+						.flatMap(i -> fileIO.readCSV(file))
 						.window(100)
 						.flatMap(db::insertAll)
 						.scan(0, Math::addExact)
@@ -74,35 +65,5 @@ public class PrijsLijstController {
 
 		return Observable.just(chooser.showOpenDialog(stage))
 				.filter(Objects::nonNull);
-	}
-
-	private Observable<EsselinkArtikel> readFile(File csv) {
-		// TODO replace this implementation with the Apache Commons CSV parser
-		// http://commons.apache.org/proper/commons-csv/
-		// TODO move to separate class as this is an IO thing!
-		try {
-			String regex = ";(?=([^\"]*\"[^\"]*\")*[^\"]*$)";
-
-			FileReader reader = new FileReader(csv);
-			return split(split(from(reader), System.lineSeparator()).map(s -> s + ";"), regex)
-					.map(s -> s.startsWith("\"") && s.endsWith("\"")
-							? s.substring(1, s.length() - 1)
-							: s)
-					.buffer(5)
-					.skip(1)
-					.flatMap(list -> {
-						try {
-							return Observable.just(new EsselinkArtikel(list.get(0), list.get(1),
-									Integer.parseInt(list.get(2)), list.get(3),
-									new Geld(list.get(4))));
-						}
-						catch (GeldParseException e) {
-							return Observable.error(e);
-						}
-					});
-		}
-		catch (FileNotFoundException e) {
-			return Observable.error(e);
-		}
 	}
 }
