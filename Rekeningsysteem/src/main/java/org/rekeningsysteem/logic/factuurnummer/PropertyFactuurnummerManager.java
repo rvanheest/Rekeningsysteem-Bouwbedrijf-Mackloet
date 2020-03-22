@@ -29,7 +29,7 @@ public class PropertyFactuurnummerManager implements FactuurnummerManager {
 			String yearNow = String.valueOf(LocalDate.now().getYear());
 			if (nr.map(s -> s.endsWith(yearNow)).orElse(false)) {
 				// same year
-				nr.map(s -> s.substring(0, s.indexOf(yearNow)))
+				nr.map(s -> s.substring(0, s.lastIndexOf(yearNow)))
 						.map(Integer::parseInt)
 						.map(i -> i + 1)
 						.map(String::valueOf)

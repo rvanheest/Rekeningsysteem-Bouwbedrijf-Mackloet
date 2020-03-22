@@ -45,6 +45,21 @@ public class PropertyFactuurnummerManagerTest {
 	}
 
 	@Test
+	public void testGetFactuurnummerOverlappingNumbers() {
+		when(this.worker.getProperty(eq(this.key))).thenReturn(Optional.of("202020"));
+
+		assertEquals("202020", this.manager.getFactuurnummer());
+		verify(this.worker).getProperty(eq(this.key));
+		if (yearNow == 2020)
+			verify(this.worker).setProperty(eq(this.key), eq("212020"));
+		else
+			verify(this.worker).setProperty(eq(this.key), eq("1" + yearNow));
+
+		assertEquals("202020", this.manager.getFactuurnummer());
+		verifyNoMoreInteractions(this.worker);
+	}
+
+	@Test
 	public void testGetFactuurnummerOtherYear() {
 		when(this.worker.getProperty(eq(this.key))).thenReturn(Optional.of("25" + (yearNow - 2)));
 
