@@ -72,6 +72,7 @@ public class GebruiktEsselinkArtikelController {
 								return text.filter(s -> s.length() >= 4)
 										.observeOn(Schedulers.io())
 										.withLatestFrom(toggleFunction, (s, f) -> f.apply(s))
+										.onBackpressureBuffer()
 										.observeOn(JavaFxScheduler.getInstance())
 										.doOnNext(searchField::populateMenu)
 										.flatMap(o -> o);

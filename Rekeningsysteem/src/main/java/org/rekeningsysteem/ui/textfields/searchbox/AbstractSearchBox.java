@@ -67,7 +67,7 @@ public abstract class AbstractSearchBox<T> extends Region {
 		this.contextMenu.getItems().clear();
 		this.contextMenu.hide();
 
-		ts.observeOn(JavaFxScheduler.getInstance())
+		ts.onBackpressureBuffer().observeOn(JavaFxScheduler.getInstance())
 				.doOnNext(this::populateMenu)
 				.doOnCompleted(() -> this.contextMenu.show(this, Side.BOTTOM, 10, -5))
 				.subscribe();
