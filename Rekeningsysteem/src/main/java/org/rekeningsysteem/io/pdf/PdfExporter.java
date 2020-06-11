@@ -32,7 +32,6 @@ public class PdfExporter implements FactuurExporter {
 			rekening.accept(this.visitor);
 		}
 		catch (PdfException exception) {
-		  System.out.println("found  pdf exception");
 			throw exception;
 		}
 		catch (Exception exception) {
