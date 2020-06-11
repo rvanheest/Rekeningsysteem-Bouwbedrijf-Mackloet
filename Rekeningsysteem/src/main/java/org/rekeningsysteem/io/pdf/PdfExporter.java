@@ -4,6 +4,7 @@ import java.io.File;
 
 import org.apache.log4j.Logger;
 import org.rekeningsysteem.data.util.AbstractRekening;
+import org.rekeningsysteem.exception.PdfException;
 import org.rekeningsysteem.io.FactuurExporter;
 
 public class PdfExporter implements FactuurExporter {
@@ -29,6 +30,10 @@ public class PdfExporter implements FactuurExporter {
 		try {
 			this.visitor.setSaveLocation(saveLocation);
 			rekening.accept(this.visitor);
+		}
+		catch (PdfException exception) {
+		  System.out.println("found  pdf exception");
+			throw exception;
 		}
 		catch (Exception exception) {
 			this.logger.error(exception.getMessage(), exception);
