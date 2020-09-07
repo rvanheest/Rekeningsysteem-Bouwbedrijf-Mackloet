@@ -6,7 +6,10 @@ import java.util.Objects;
 import java.util.Optional;
 
 import javafx.event.ActionEvent;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Labeled;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.image.Image;
@@ -24,6 +27,7 @@ import org.apache.log4j.Logger;
 import org.rekeningsysteem.application.Main;
 import org.rekeningsysteem.application.settings.SettingsPane;
 import org.rekeningsysteem.data.offerte.Offerte;
+import org.rekeningsysteem.exception.PdfException;
 import org.rekeningsysteem.io.database.Database;
 import org.rekeningsysteem.properties.PropertiesWorker;
 import org.rekeningsysteem.properties.PropertyKey;
@@ -57,9 +61,11 @@ public class MainPane extends BorderPane {
 	private final ToggleButton settings = new ToggleButton();
 
 	private final PropertiesWorker properties = PropertiesWorker.getInstance();
+	private final Logger logger;
 
 	public MainPane(Stage stage, Database database, Logger logger) {
 		this.database = database;
+		this.logger = logger;
 
 		this.setId("main-pane");
 		this.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
@@ -163,7 +169,21 @@ public class MainPane extends BorderPane {
 						}), (tab, isOfferte) -> tab)
 				.subscribe(tab -> this.showExportFileChooser(stage).ifPresent(file -> {
 					this.saveLastSaveLocationProperty(file);
-					tab.export(file);
+					try {
+						tab.export(file);
+					}
+					catch (PdfException exception) {
+						if (file.toString().contains("  ")) {
+							// LaTeX doesn't like double spaces in the file name
+							String alertText = "De PDF kon niet worden gegenereerd. De bestandsnaam bevat 2 " 
+								+ "opeenvolgende spaties. Pas dit aan en probeer opnieuw.";
+							ButtonType close = new ButtonType("Sluit", ButtonBar.ButtonData.CANCEL_CLOSE);
+							Alert alert = new Alert(Alert.AlertType.ERROR, alertText, close);
+							alert.setHeaderText("Fout bij PDF genereren");
+							alert.show();
+						}
+						this.logger.error(exception.getMessage(), exception);
+					}
 				}));
 
 		Observables.fromProperty(this.settings.selectedProperty())

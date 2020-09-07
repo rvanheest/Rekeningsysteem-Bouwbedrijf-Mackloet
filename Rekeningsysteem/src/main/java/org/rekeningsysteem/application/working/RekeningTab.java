@@ -3,6 +3,7 @@ package org.rekeningsysteem.application.working;
 import java.io.File;
 import java.io.IOException;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -17,6 +18,7 @@ import org.rekeningsysteem.data.particulier.ParticulierFactuur;
 import org.rekeningsysteem.data.reparaties.ReparatiesFactuur;
 import org.rekeningsysteem.data.util.AbstractRekening;
 import org.rekeningsysteem.data.util.header.Debiteur;
+import org.rekeningsysteem.exception.PdfException;
 import org.rekeningsysteem.io.database.Database;
 import org.rekeningsysteem.io.xml.IOWorker;
 import org.rekeningsysteem.logging.ApplicationLogger;
@@ -144,6 +146,21 @@ public class RekeningTab extends Tab {
 	}
 
 	public void export(File file) {
-		this.latest.first().subscribe(factuur -> ioWorker.export(factuur, file));
+		final AtomicReference<PdfException> e = new AtomicReference<>();
+
+		this.latest.first()
+			.subscribe(
+				factuur -> {
+					try {
+						ioWorker.export(factuur, file);
+					}
+					catch (PdfException ex) {
+						e.set(ex);
+					}
+				}
+			);
+
+		if (e.get() != null)
+			throw e.get();
 	}
 }

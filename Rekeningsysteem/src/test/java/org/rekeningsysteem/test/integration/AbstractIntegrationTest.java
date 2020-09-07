@@ -18,6 +18,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.rekeningsysteem.data.util.AbstractRekening;
 import org.rekeningsysteem.data.util.visitor.RekeningVoidVisitor;
+import org.rekeningsysteem.exception.PdfException;
 import org.rekeningsysteem.io.FactuurExporter;
 import org.rekeningsysteem.io.FactuurLoader;
 import org.rekeningsysteem.io.FactuurSaver;
@@ -57,6 +58,15 @@ public abstract class AbstractIntegrationTest {
 	@Test
 	public void testPdf() {
 		this.exporter.export(this.rekening, this.pdfFile);
+
+		verifyZeroInteractions(this.logger);
+	}
+
+	// PdfException expected due to double spaces in filename
+	@Test(expected = PdfException.class)
+	public void testPdfWithDoubleSpacesInFileName() {
+		File file = new File("src\\test\\resources\\pdf\\File  with double spaces.pdf");
+		this.exporter.export(this.rekening, file);
 
 		verifyZeroInteractions(this.logger);
 	}
