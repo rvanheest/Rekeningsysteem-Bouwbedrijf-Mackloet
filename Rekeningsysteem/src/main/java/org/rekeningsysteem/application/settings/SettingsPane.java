@@ -13,6 +13,11 @@ import org.rekeningsysteem.application.settings.prijslijst.PrijsLijstController;
 import org.rekeningsysteem.io.database.Database;
 import org.rekeningsysteem.logic.database.ArtikellijstDBInteraction;
 import org.rekeningsysteem.logic.database.DebiteurDBInteraction;
+import org.rekeningsysteem.properties.PropertiesWorker;
+import org.rekeningsysteem.properties.PropertyKey;
+import org.rekeningsysteem.properties.PropertyModelEnum;
+
+import java.util.Optional;
 
 public class SettingsPane extends TabPane {
 
@@ -20,17 +25,27 @@ public class SettingsPane extends TabPane {
 		this.setId("settings-tabs");
 		this.setTabClosingPolicy(TabClosingPolicy.UNAVAILABLE);
 
+		PropertiesWorker properties = PropertiesWorker.getInstance();
+		boolean esselinkArtikelFeature = properties.getProperty(PropertyModelEnum.FEATURE_PARTICULIER_ESSELINK_ARTIKEL)
+			.map(Boolean::parseBoolean)
+			.orElse(false);
+
 		DebiteurDBInteraction dbInteraction = new DebiteurDBInteraction(database);
 		DebiteurTableController debC = new DebiteurTableController(dbInteraction);
 		Tab debiteurTab = new Tab("Debiteur beheer", new DebiteurTablePane(debC.getUI()));
+		this.getTabs().add(debiteurTab);
 
-		PrijsLijstController prijslijstC = new PrijsLijstController(stage, closeButton,
-				new ArtikellijstDBInteraction(database), logger);
-		Tab prijslijstTab = new Tab("Esselink artikel data", prijslijstC.getUI());
+		properties.getProperty(PropertyModelEnum.FEATURE_PARTICULIER_ESSELINK_ARTIKEL).map(Boolean::parseBoolean)
+			.filter(b -> b)
+			.ifPresent(b -> {
+				PrijsLijstController prijslijstC = new PrijsLijstController(stage, closeButton,
+					new ArtikellijstDBInteraction(database), logger);
+				Tab prijslijstTab = new Tab("Esselink artikel data", prijslijstC.getUI());
+				this.getTabs().add(prijslijstTab);
+			});
 
 		DefaultOfferteTextPaneController offerteC = new DefaultOfferteTextPaneController(logger);
 		Tab offerteTab = new Tab("Offerte", offerteC.getUI());
-
-		this.getTabs().addAll(debiteurTab, prijslijstTab, offerteTab);
+		this.getTabs().add(offerteTab);
 	}
 }
