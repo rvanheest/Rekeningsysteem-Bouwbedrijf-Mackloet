@@ -35,6 +35,10 @@ public enum PropertyModelEnum implements PropertyKey {
 	FEATURE_PARTICULIER_LOON_PER_UUR("feature.particulier.loon-per-uur"),
 	FEATURE_OFFERTE("feature.offerte"),
 
+	APPLICATION_TITLE("application.title"),
+	APPLICATION_ICON("application.icon"),
+	APPLICATION_LOGO("application.logo"),
+	APPLICATION_NAME_LOGO("application.name_logo"),
 	APPLICATION_FULL_SCREEN_MODE("application.fullscreen");
 
 	private String key;
