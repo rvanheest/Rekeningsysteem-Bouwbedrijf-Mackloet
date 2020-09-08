@@ -35,7 +35,7 @@ public enum PropertyModelEnum implements PropertyKey {
 	FEATURE_PARTICULIER_LOON_PER_UUR("feature.particulier.loon-per-uur"),
 	FEATURE_OFFERTE("feature.offerte"),
 
-	FULL_SCREEN("fullscreen");
+	APPLICATION_FULL_SCREEN_MODE("application.fullscreen");
 
 	private String key;
 
