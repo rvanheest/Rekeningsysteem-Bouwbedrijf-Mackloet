@@ -1,0 +1,67 @@
+\documentclass{factuur}
+
+\usepackage[dutch]{babel}
+\usepackage{graphicx}
+\usepackage[hidelinks]{hyperref}
+\usepackage{longtable}
+\usepackage{eurosym}
+\usepackage{lastpage}
+
+\begin{document}
+
+%-----------------------------------------------------------------------------
+%     HEADING SECTION
+%-----------------------------------------------------------------------------
+
+\includegraphics{header.png}
+
+% Company Information
+\begin{minipage}[c]{0.45\textwidth}
+	Prins Bernhardlaan 79\\
+	3241TA Middelharnis\\
+	Tel. 0187 - 49 38 68\\
+	\href{mailto:ejmackloet@solcon.nl}{ejmackloet@solcon.nl} \\ \\
+	Rek.nr. NL30RABO0360602835 \\
+	K.v.K. nr. 63636972 \\
+	BTW.nr. NL001707662B86 \\
+\end{minipage}
+\hfill
+% Customer address
+\begin{minipage}[c]{0.45\textwidth}
+	\begin{tabular}{r l}
+		{\bf Offerte voor:} & $DebiteurNaam \\
+		& $DebiteurStraat $DebiteurNummer \\
+		& $DebiteurPostcode $DebiteurPlaats \\
+		& \\
+		{\bf Pagina} & \thepage/\pageref{LastPage} \\
+	\end{tabular}
+\end{minipage}
+
+\HRule
+
+%Invoice number and VAT number
+\begin{minipage}[t]{0.45\textwidth}
+	\begin{tabbing}
+		{\bf Offertenummer:} \= $Factuurnummer \\
+		\BtwNummer{$HasDebiteurBtwNummer}{$DebiteurBtwNummer} \\
+	\end{tabbing}
+\end{minipage}
+\hfill
+%Invoice date
+\begin{minipage}[t]{0.45\textwidth}
+	\begin{tabular}{r l}
+		{\bf Datum:} & $Datum \\
+	\end{tabular}
+\end{minipage}
+
+%----------------------------------------------------------------------------------------
+%	TEXT
+%----------------------------------------------------------------------------------------
+
+\begin{offerteTekst}
+	$Tekst
+	\vspace{10mm}
+
+	\ondertekenen{$Ondertekenen}
+\end{offerteTekst}
+\end{document}

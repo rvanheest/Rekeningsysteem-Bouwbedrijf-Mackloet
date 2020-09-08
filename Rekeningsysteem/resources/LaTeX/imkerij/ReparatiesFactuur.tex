@@ -13,7 +13,7 @@
 %     HEADING SECTION
 %-----------------------------------------------------------------------------
 
-\includegraphics[width=\textwidth]{header.png}
+\includegraphics{header.png}
 
 % Company Information
 \begin{minipage}[c]{0.45\textwidth}
@@ -54,22 +54,16 @@
 	\end{tabular}
 \end{minipage}
 
-$Omschrijving
-
 %----------------------------------------------------------------------------------------
 %	TABLE OF EXPENSES
 %----------------------------------------------------------------------------------------
 
-\begin{aangenomenTable}[$Valuta]
-	#foreach( $item in $aangenomenList )
-		\aangenomenRow{$item[0]}{$item[1]}{$item[2]}
-	#end
-	\subtotalRow{$SubTotaalBedrag}
-	#foreach( $btw in $btwList)
-		\btwRow{$btw[0]}{$btw[1]}
+\begin{reparatiesTable}[$Valuta]
+	#foreach( $order in $orderList )
+		\reparatiesRow{$order[0]}{$order[1]}{$order[2]}{$order[3]}{$order[4]}
 	#end
 	\totalRow{$TotaalBedrag}
-\end{aangenomenTable}
+\end{reparatiesTable}
 
 %----------------------------------------------------------------------------------------
 %	BOTTEM SECTION
