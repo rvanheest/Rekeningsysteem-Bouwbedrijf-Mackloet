@@ -26,9 +26,6 @@ public class SettingsPane extends TabPane {
 		this.setTabClosingPolicy(TabClosingPolicy.UNAVAILABLE);
 
 		PropertiesWorker properties = PropertiesWorker.getInstance();
-		boolean esselinkArtikelFeature = properties.getProperty(PropertyModelEnum.FEATURE_PARTICULIER_ESSELINK_ARTIKEL)
-			.map(Boolean::parseBoolean)
-			.orElse(false);
 
 		DebiteurDBInteraction dbInteraction = new DebiteurDBInteraction(database);
 		DebiteurTableController debC = new DebiteurTableController(dbInteraction);

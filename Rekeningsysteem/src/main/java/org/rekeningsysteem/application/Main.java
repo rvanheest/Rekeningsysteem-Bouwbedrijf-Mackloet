@@ -98,7 +98,6 @@ public class Main extends Application {
 			stage.show();
 		}
 		catch (Exception e) {
-			e.printStackTrace();
 			logger.error("Exception caught on toplevel", e);
 		}
 	}
