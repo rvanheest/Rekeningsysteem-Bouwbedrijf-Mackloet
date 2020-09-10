@@ -35,7 +35,7 @@ public class Root extends BorderPane {
 		this.setId("root");
 
 		Boolean fullscreen = PropertiesWorker.getInstance()
-				.getProperty(PropertyModelEnum.FULL_SCREEN)
+				.getProperty(PropertyModelEnum.APPLICATION_FULL_SCREEN_MODE)
 				.map(Boolean::parseBoolean)
 				.orElse(false);
 		this.max = BehaviorSubject.create(fullscreen);
@@ -56,7 +56,7 @@ public class Root extends BorderPane {
 		Observable<Boolean> maxToggle = this.max.scan(!fullscreen, (cum, b) -> !cum)
 				.skip(1)
 				.doOnNext(b -> PropertiesWorker.getInstance()
-						.setProperty(PropertyModelEnum.FULL_SCREEN, Boolean.toString(b)));
+						.setProperty(PropertyModelEnum.APPLICATION_FULL_SCREEN_MODE, Boolean.toString(b)));
 		maxToggle.filter(b -> b).subscribe(b -> {
 			Platform.runLater(() -> {
 				double x = Math.max(0, stage.getX());

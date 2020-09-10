@@ -1,5 +1,6 @@
 package org.rekeningsysteem.application;
 
+import java.io.File;
 import java.sql.SQLException;
 
 import javafx.animation.Interpolator;
@@ -24,6 +25,8 @@ import org.apache.log4j.Logger;
 import org.rekeningsysteem.application.versioning.VersionControl;
 import org.rekeningsysteem.io.database.Database;
 import org.rekeningsysteem.logging.ApplicationLogger;
+import org.rekeningsysteem.properties.PropertiesWorker;
+import org.rekeningsysteem.properties.PropertyModelEnum;
 import org.rekeningsysteem.rxjavafx.Observables;
 
 import rx.Observable;
@@ -49,9 +52,14 @@ public class Main extends Application {
 		return Main.class.getResource(s).toExternalForm();
 	}
 
+	public static String getExternalResource(String path) {
+		return new File(path).toURI().toString();
+	}
+
 	@Override
 	public void start(Stage stage) {
 		Logger logger = ApplicationLogger.getInstance();
+		PropertiesWorker properties = PropertiesWorker.getInstance();
 		try {
 			Database database = Database.getInstance();
 			VersionControl vc = new VersionControl(database);
@@ -81,10 +89,12 @@ public class Main extends Application {
 					logger.error("Could not close database.", e);
 				}
 			});
-			stage.getIcons().add(new Image(getResource("/images/icon.gif")));
+			properties.getProperty(PropertyModelEnum.APPLICATION_ICON)
+				.map(path -> new Image(Main.getExternalResource(path)))
+				.ifPresent(stage.getIcons()::add);
 			stage.setScene(scene);
 			stage.initStyle(StageStyle.UNDECORATED);
-			stage.setTitle("Rekeningsysteem Mackloet");
+			properties.getProperty(PropertyModelEnum.APPLICATION_TITLE).ifPresent(stage::setTitle);
 			stage.show();
 		}
 		catch (Exception e) {

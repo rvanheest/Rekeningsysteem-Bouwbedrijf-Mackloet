@@ -1,11 +1,14 @@
 package org.rekeningsysteem.application.working;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
 import javafx.event.ActionEvent;
+import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar;
@@ -75,8 +78,27 @@ public class MainPane extends BorderPane {
 		Region spacer = new Region();
 		HBox.setHgrow(spacer, Priority.ALWAYS);
 
-		this.toolbar = new RekeningToolbar(this.mutaties, this.reparaties, this.particulier,
-				this.offerte, this.open, this.save, this.pdf, spacer, this.settings);
+		List<Node> toolbarButtons = new ArrayList<>();
+
+		properties.getProperty(PropertyModelEnum.FEATURE_MUTATIES).map(Boolean::parseBoolean)
+			.filter(b -> b)
+			.ifPresent(b -> toolbarButtons.add(this.mutaties));
+
+		properties.getProperty(PropertyModelEnum.FEATURE_REPARATIES).map(Boolean::parseBoolean)
+			.filter(b -> b)
+			.ifPresent(b -> toolbarButtons.add(this.reparaties));
+
+		properties.getProperty(PropertyModelEnum.FEATURE_PARTICULIER).map(Boolean::parseBoolean)
+			.filter(b -> b)
+			.ifPresent(b -> toolbarButtons.add(this.particulier));
+
+		properties.getProperty(PropertyModelEnum.FEATURE_OFFERTE).map(Boolean::parseBoolean)
+			.filter(b -> b)
+			.ifPresent(b -> toolbarButtons.add(this.offerte));
+
+		toolbarButtons.addAll(Arrays.asList(this.open, this.save, this.pdf, spacer, this.settings));
+
+		this.toolbar = new RekeningToolbar(toolbarButtons.toArray(new Node[0]));
 		this.tabpane = new RekeningTabpane();
 		this.settingsPaneFactory = () -> new SettingsPane(stage, this.settings, this.database,
 				logger);

@@ -11,48 +11,56 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 
+import org.rekeningsysteem.properties.PropertiesWorker;
+import org.rekeningsysteem.properties.PropertyModelEnum;
 import org.rekeningsysteem.rxjavafx.Observables;
 
 import rx.Observable;
 
 public class UpperBar extends ToolBar {
 
-	private final ImageView logo = new ImageView(new Image(Main.getResource("/images/logo.png")));
-	private final ImageView name = new ImageView(new Image(Main.getResource("/images/name.png")));
-
-	private final Region leftSpacer = new Region();
-	private final Region rightSpacer = new Region();
-
-	private final Button closeBtn = new Button();
-	private final Button minBtn = new Button();
-	private final Button maxBtn = new Button();
-
 	private final Observable<ActionEvent> closeButtonEvents;
 	private final Observable<ActionEvent> minButtonEvents;
 	private final Observable<ActionEvent> maxButtonEvents;
 
 	public UpperBar() {
+		Region leftSpacer = new Region();
+		Region rightSpacer = new Region();
+
+		Button closeBtn = new Button();
+		Button minBtn = new Button();
+		Button maxBtn = new Button();
+
 		this.setId("mainToolBar");
-		this.getItems().addAll(this.logo, this.leftSpacer, this.name, this.rightSpacer,
-				new VBox(4, this.closeBtn, this.minBtn, this.maxBtn));
+
+		PropertiesWorker properties = PropertiesWorker.getInstance();
+		properties.getProperty(PropertyModelEnum.APPLICATION_LOGO)
+			.map(path -> new ImageView(new Image(Main.getExternalResource(path))))
+			.ifPresent(img -> {
+				this.getItems().add(img);
+				HBox.setMargin(img, new Insets(0, 0, 0, 5));
+			});
+		this.getItems().add(leftSpacer);
+		properties.getProperty(PropertyModelEnum.APPLICATION_NAME_LOGO)
+			.map(path -> new ImageView(new Image(Main.getExternalResource(path))))
+			.ifPresent(this.getItems()::add);
+		this.getItems().addAll(rightSpacer, new VBox(4, closeBtn, minBtn, maxBtn));
+
 		this.setPrefHeight(66);
 		this.setMinHeight(66);
 		this.setMaxHeight(66);
 
-		HBox.setMargin(this.logo, new Insets(0, 0, 0, 5));
-		this.name.setId("name-image");
+		HBox.setHgrow(leftSpacer, Priority.ALWAYS);
+		HBox.setHgrow(rightSpacer, Priority.ALWAYS);
 
-		HBox.setHgrow(this.leftSpacer, Priority.ALWAYS);
-		HBox.setHgrow(this.rightSpacer, Priority.ALWAYS);
+		closeBtn.setId("window-close");
+		this.closeButtonEvents = Observables.fromNodeEvents(closeBtn, ActionEvent.ACTION);
 
-		this.closeBtn.setId("window-close");
-		this.closeButtonEvents = Observables.fromNodeEvents(this.closeBtn, ActionEvent.ACTION);
+		minBtn.setId("window-min");
+		this.minButtonEvents = Observables.fromNodeEvents(minBtn, ActionEvent.ACTION);
 
-		this.minBtn.setId("window-min");
-		this.minButtonEvents = Observables.fromNodeEvents(this.minBtn, ActionEvent.ACTION);
-
-		this.maxBtn.setId("window-max");
-		this.maxButtonEvents = Observables.fromNodeEvents(this.maxBtn, ActionEvent.ACTION);
+		maxBtn.setId("window-max");
+		this.maxButtonEvents = Observables.fromNodeEvents(maxBtn, ActionEvent.ACTION);
 	}
 
 	public Observable<ActionEvent> getCloseButtonEvents() {

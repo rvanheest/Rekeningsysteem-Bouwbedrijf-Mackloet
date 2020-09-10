@@ -34,9 +34,6 @@
     -fx-background-position: left top;
     -fx-background-repeat: no-repeat;
 }
-#name-image {
-	-fx-effect: dropshadow(three-pass-box, rgba(255.0, 255.0, 255.0, 0.8), 5.0, 0.5, 0.0, 0.0);
-}
 #window-close {
     -fx-font-size: 1.0px;
     -fx-background-color: null;

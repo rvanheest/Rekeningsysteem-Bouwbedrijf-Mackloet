@@ -7,6 +7,8 @@ import org.rekeningsysteem.data.particulier.ParticulierArtikel;
 import org.rekeningsysteem.data.util.BtwPercentages;
 import org.rekeningsysteem.io.database.Database;
 import org.rekeningsysteem.logic.database.ArtikellijstDBInteraction;
+import org.rekeningsysteem.properties.PropertiesWorker;
+import org.rekeningsysteem.properties.PropertyModelEnum;
 import org.rekeningsysteem.ui.list.AbstractListItemController;
 import org.rekeningsysteem.ui.particulier.loon.InstantLoonController;
 import org.rekeningsysteem.ui.particulier.loon.ProductLoonController;
@@ -32,33 +34,49 @@ public class ParticulierArtikelController extends AbstractListItemController<Par
 			GebruiktEsselinkArtikelController gebruiktController,
 			InstantLoonController instantController,
 			ProductLoonController productController) {
-		super(ui, ui.getType().<ParticulierArtikel> flatMap(type -> {
-			switch (type) {
-				case ESSELINK:
-					return gebruiktController.getModel();
-				case ANDER:
-					return anderController.getModel();
-				case INSTANT:
-					return instantController.getModel();
-				case PRODUCT:
-					return productController.getModel();
-				default:
-					return null;
-					// Does never happen!!!
-			}
-		}).sample(ui.getAddButtonEvent()).map(Optional::of)
-				.mergeWith(ui.getCancelButtonEvent().map(event -> Optional.empty()))
-				.first());
+		super(ui, ui.getType()
+			.flatMap(type -> {
+				switch (type) {
+					case ESSELINK:
+						return gebruiktController.getModel();
+					case ANDER:
+						return anderController.getModel();
+					case INSTANT:
+						return instantController.getModel();
+					case PRODUCT:
+						return productController.getModel();
+					default:
+						// Does never happen!!!
+						return null;
+				}
+			})
+			.sample(ui.getAddButtonEvent())
+			.map(Optional::of)
+			.mergeWith(ui.getCancelButtonEvent().map(event -> Optional.empty()))
+			.first());
+
+		PropertiesWorker properties = PropertiesWorker.getInstance();
 
 		this.anderController = anderController;
 		this.gebruiktController = gebruiktController;
 		this.instantController = instantController;
 		this.productController = productController;
 
-		ui.addContent(ParticulierArtikelType.ESSELINK, this.gebruiktController.getUI());
-		ui.addContent(ParticulierArtikelType.ANDER, this.anderController.getUI());
-		ui.addContent(ParticulierArtikelType.INSTANT, this.instantController.getUI());
-		ui.addContent(ParticulierArtikelType.PRODUCT, this.productController.getUI());
+		properties.getProperty(PropertyModelEnum.FEATURE_PARTICULIER_ESSELINK_ARTIKEL).map(Boolean::parseBoolean)
+			.filter(b -> b)
+			.ifPresent(b -> ui.addContent(ParticulierArtikelType.ESSELINK, this.gebruiktController.getUI()));
+
+		properties.getProperty(PropertyModelEnum.FEATURE_PARTICULIER_EIGEN_ARTIKEL).map(Boolean::parseBoolean)
+			.filter(b -> b)
+			.ifPresent(b -> ui.addContent(ParticulierArtikelType.ANDER, this.anderController.getUI()));
+
+		properties.getProperty(PropertyModelEnum.FEATURE_PARTICULIER_LOON).map(Boolean::parseBoolean)
+			.filter(b -> b)
+			.ifPresent(b -> ui.addContent(ParticulierArtikelType.INSTANT, this.instantController.getUI()));
+
+		properties.getProperty(PropertyModelEnum.FEATURE_PARTICULIER_LOON_PER_UUR).map(Boolean::parseBoolean)
+			.filter(b -> b)
+			.ifPresent(b -> ui.addContent(ParticulierArtikelType.PRODUCT, this.productController.getUI()));
 
 		this.setBtwPercentage(defaultBtw);
 	}

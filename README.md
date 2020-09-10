@@ -15,6 +15,11 @@ Here `<path-to-jar>` is the location of the downloaded jar. This creates a priva
 
 To generate the runnable jar-with-dependencies, run `mvn package`.
 
+## Running
+Run the jar-with-dependencies to start the application. By default this uses the default configuration found in `config.properties`. For custom configuration, use:
+
+    java -DApp.config.file=... -jar ...
+
 ## Generating PDF
 In order to generate the pdf invoices, this application depends on the previously mentioned JavaLatexReport. This library demands you to have LaTeX installed on your computer. During the testing phase of this application, [MikTex](http://miktex.org/) was used. **Install this before running the application.**
 
