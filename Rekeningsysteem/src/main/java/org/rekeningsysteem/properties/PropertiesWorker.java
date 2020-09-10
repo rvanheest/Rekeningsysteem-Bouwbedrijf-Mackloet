@@ -17,8 +17,7 @@ public class PropertiesWorker {
 
 	public static PropertiesWorker getInstance() {
 		if (__instance == null) {
-			__instance = new PropertiesWorker(new Properties(), new File("config.properties"),
-					ApplicationLogger.getInstance());
+			__instance = new PropertiesWorker();
 		}
 		return __instance;
 	}
@@ -31,7 +30,18 @@ public class PropertiesWorker {
 	private final File file;
 	private Logger logger;
 
-	public PropertiesWorker(Properties properties, File file, Logger logger) {
+	private PropertiesWorker() {
+		this(
+			new Properties(),
+			Optional.ofNullable(System.getProperty("App.config.file"))
+				.map(File::new)
+				.filter(File::exists)
+				.orElseGet(() -> new File("config.properties")),
+			ApplicationLogger.getInstance()
+		);
+	}
+
+	private PropertiesWorker(Properties properties, File file, Logger logger) {
 		this.properties = properties;
 		this.file = file;
 		this.logger = logger;
