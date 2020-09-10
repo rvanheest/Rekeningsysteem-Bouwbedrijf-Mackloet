@@ -44,8 +44,12 @@ public class SettingsPane extends TabPane {
 				this.getTabs().add(prijslijstTab);
 			});
 
-		DefaultOfferteTextPaneController offerteC = new DefaultOfferteTextPaneController(logger);
-		Tab offerteTab = new Tab("Offerte", offerteC.getUI());
-		this.getTabs().add(offerteTab);
+		properties.getProperty(PropertyModelEnum.FEATURE_OFFERTE).map(Boolean::parseBoolean)
+			.filter(b -> b)
+			.ifPresent(b -> {
+				DefaultOfferteTextPaneController offerteC = new DefaultOfferteTextPaneController(logger);
+				Tab offerteTab = new Tab("Offerte", offerteC.getUI());
+				this.getTabs().add(offerteTab);
+			});
 	}
 }
