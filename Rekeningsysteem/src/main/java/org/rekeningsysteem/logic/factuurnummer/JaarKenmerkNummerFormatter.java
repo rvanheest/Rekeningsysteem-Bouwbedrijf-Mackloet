@@ -7,8 +7,8 @@ import java.util.regex.Pattern;
  * Deze formatter produceert factuurnummers als '20201012',
  * met '2020' als jaar, '1' als bedrijfskenmerk en '012' als volgnummer 
  */
-public class JaarKenmerkNummerFormatter implements FactuurnummerFormatter {
-	
+public class JaarKenmerkNummerFormatter extends AbstractFactuurnummerFormatter {
+
 	private final String kenmerk;
 
 	public JaarKenmerkNummerFormatter(String kenmerk) {

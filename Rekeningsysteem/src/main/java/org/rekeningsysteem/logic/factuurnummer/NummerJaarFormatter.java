@@ -4,7 +4,7 @@ package org.rekeningsysteem.logic.factuurnummer;
  * Deze formatter produceert factuurnummers als '122020',
  * met '12' als volgnummer en '2020' als jaar
  */
-public class NummerJaarFormatter implements FactuurnummerFormatter {
+public class NummerJaarFormatter extends AbstractFactuurnummerFormatter {
 
 	@Override
 	public boolean heeftJaar(String factuurnummer, String jaar) {

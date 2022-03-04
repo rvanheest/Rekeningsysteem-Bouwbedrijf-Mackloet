@@ -13,8 +13,12 @@ public class PropertyFactuurnummerManager implements FactuurnummerManager {
 	private Optional<String> factNr;
 	private final FactuurnummerFormatter formatter;
 
-	public PropertyFactuurnummerManager(PropertyKey key) {
-		this(PropertiesWorker.getInstance(), key, new NummerJaarFormatter());
+	public PropertyFactuurnummerManager(PropertyKey nummerKey, PropertyKey kenmerkKey) {
+		this(PropertiesWorker.getInstance(), nummerKey, kenmerkKey);
+	}
+
+	public PropertyFactuurnummerManager(PropertiesWorker worker, PropertyKey nummerKey, PropertyKey kenmerkKey) {
+		this(worker, nummerKey, CompositeFactuurnummerFormatter.Create(worker, kenmerkKey));
 	}
 
 	public PropertyFactuurnummerManager(PropertiesWorker worker, PropertyKey key, FactuurnummerFormatter formatter) {
@@ -28,23 +32,17 @@ public class PropertyFactuurnummerManager implements FactuurnummerManager {
 	public String getFactuurnummer() {
 		if (this.factNr.isPresent()) return this.factNr.get();
 
-		Optional<String> nr = this.worker.getProperty(this.key);
 		String yearNow = String.valueOf(LocalDate.now().getYear());
-		if (nr.map(s -> this.formatter.heeftJaar(s, yearNow)).orElse(false)) {
-			// same year
-			nr.map(s -> this.formatter.parse(s, yearNow))
-					.map(Factuurnummer::next)
-					.map(this.formatter::format)
-					.ifPresent(s -> this.worker.setProperty(this.key, s));
-			this.factNr = nr;
-		}
-		else {
-			// first in current year
-			Factuurnummer initial = new Factuurnummer(yearNow);
-			this.factNr = Optional.of(this.formatter.format(initial));
-			Factuurnummer next = initial.next();
-			this.factNr.ifPresent(s -> this.worker.setProperty(this.key, this.formatter.format(next)));
-		}
-		return this.factNr.get();
+
+		Factuurnummer factuurnummer = this.worker.getProperty(this.key)
+				.filter(s -> this.formatter.heeftJaar(s, yearNow))
+				.map(s -> this.formatter.parse(s, yearNow))
+				.orElseGet(() -> new Factuurnummer(yearNow));
+
+		this.worker.setProperty(this.key, this.formatter.format(factuurnummer.next()));
+
+		String result = this.formatter.format(factuurnummer);
+		this.factNr = Optional.of(result);
+		return result;
 	}
 }

@@ -61,7 +61,7 @@ public class MutatiesController extends AbstractRekeningController<MutatiesFactu
 	@Override
 	public void initFactuurnummer() {
 		String factuurnummer = this.getFactuurnummerFactory()
-				.call(PropertyModelEnum.FACTUURNUMMER)
+				.call(PropertyModelEnum.FACTUURNUMMER, PropertyModelEnum.FACTUURNUMMER_KENMERK)
 				.getFactuurnummer();
 		this.header.getFactuurnummerController()
 				.getUI()
