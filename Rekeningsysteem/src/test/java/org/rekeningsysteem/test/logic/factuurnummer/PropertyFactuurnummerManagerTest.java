@@ -14,6 +14,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.rekeningsysteem.logic.factuurnummer.NummerJaarFormatter;
 import org.rekeningsysteem.logic.factuurnummer.PropertyFactuurnummerManager;
 import org.rekeningsysteem.properties.PropertiesWorker;
 import org.rekeningsysteem.properties.PropertyKey;
@@ -29,7 +30,7 @@ public class PropertyFactuurnummerManagerTest {
 
 	@Before
 	public void setUp() {
-		this.manager = new PropertyFactuurnummerManager(this.worker, this.key);
+		this.manager = new PropertyFactuurnummerManager(this.worker, this.key, new NummerJaarFormatter());
 	}
 
 	@Test
@@ -41,21 +42,6 @@ public class PropertyFactuurnummerManagerTest {
 		verify(this.worker).setProperty(eq(this.key), eq("13" + yearNow));
 
 		assertEquals("12" + yearNow, this.manager.getFactuurnummer());
-		verifyNoMoreInteractions(this.worker);
-	}
-
-	@Test
-	public void testGetFactuurnummerOverlappingNumbers() {
-		when(this.worker.getProperty(eq(this.key))).thenReturn(Optional.of("202020"));
-
-		assertEquals("202020", this.manager.getFactuurnummer());
-		verify(this.worker).getProperty(eq(this.key));
-		if (yearNow == 2020)
-			verify(this.worker).setProperty(eq(this.key), eq("212020"));
-		else
-			verify(this.worker).setProperty(eq(this.key), eq("1" + yearNow));
-
-		assertEquals("202020", this.manager.getFactuurnummer());
 		verifyNoMoreInteractions(this.worker);
 	}
 

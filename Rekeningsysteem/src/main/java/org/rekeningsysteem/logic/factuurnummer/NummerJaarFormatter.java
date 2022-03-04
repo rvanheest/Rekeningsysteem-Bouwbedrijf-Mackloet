@@ -8,8 +8,8 @@ public class NummerJaarFormatter implements FactuurnummerFormatter {
 	}
 
 	@Override
-	public Factuurnummer parse(String s, String jaar) {
-		String nr = s.substring(0, s.lastIndexOf(jaar));
+	public Factuurnummer parse(String factuurnummerString, String jaar) {
+		String nr = factuurnummerString.substring(0, factuurnummerString.lastIndexOf(jaar));
 		int nummer = Integer.parseInt(nr);
 		return new Factuurnummer(jaar, nummer);
 	}

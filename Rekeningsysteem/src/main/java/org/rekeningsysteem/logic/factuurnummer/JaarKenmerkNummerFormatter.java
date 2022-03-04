@@ -14,7 +14,7 @@ public class JaarKenmerkNummerFormatter implements FactuurnummerFormatter {
 	}
 
 	@Override
-	public Factuurnummer parse(String s, String jaar) {
+	public Factuurnummer parse(String factuurnummerString, String jaar) {
 		
 		return null;
 	}
