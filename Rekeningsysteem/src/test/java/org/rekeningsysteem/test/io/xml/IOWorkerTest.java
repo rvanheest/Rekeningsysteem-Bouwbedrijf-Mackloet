@@ -11,7 +11,7 @@ import java.util.Currency;
 
 import javax.management.modelmbean.XMLParseException;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.core.Logger;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

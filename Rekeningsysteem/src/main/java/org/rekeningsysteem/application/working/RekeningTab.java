@@ -11,7 +11,6 @@ import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Tab;
 
-import org.apache.log4j.Logger;
 import org.rekeningsysteem.data.mutaties.MutatiesFactuur;
 import org.rekeningsysteem.data.offerte.Offerte;
 import org.rekeningsysteem.data.particulier.ParticulierFactuur;
@@ -63,7 +62,7 @@ public class RekeningTab extends Tab {
 		this.getModel().subscribe(this.latest);
 		this.getModel().skip(1).subscribe(ar -> this.modified.onNext(true));
 
-		this.modified.filter(b -> b == true)
+		this.modified.filter(b -> b)
 				.map(b -> this.getText())
 				.filter(s -> !s.endsWith("*"))
 				.map(s -> s + "*")

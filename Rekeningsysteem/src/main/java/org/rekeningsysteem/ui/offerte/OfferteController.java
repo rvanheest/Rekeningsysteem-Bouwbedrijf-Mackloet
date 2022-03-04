@@ -3,7 +3,7 @@ package org.rekeningsysteem.ui.offerte;
 import java.util.Currency;
 import java.util.Optional;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.core.Logger;
 import org.rekeningsysteem.application.working.RekeningSplitPane;
 import org.rekeningsysteem.data.offerte.Offerte;
 import org.rekeningsysteem.io.database.Database;

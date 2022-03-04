@@ -11,7 +11,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.core.Logger;
 import org.rekeningsysteem.application.working.MainPane;
 import org.rekeningsysteem.io.database.Database;
 import org.rekeningsysteem.properties.PropertiesWorker;

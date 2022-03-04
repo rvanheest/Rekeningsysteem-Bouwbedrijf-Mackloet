@@ -26,7 +26,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.core.Logger;
 import org.rekeningsysteem.application.Main;
 import org.rekeningsysteem.application.settings.SettingsPane;
 import org.rekeningsysteem.data.offerte.Offerte;

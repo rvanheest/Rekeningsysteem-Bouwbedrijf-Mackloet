@@ -1,12 +1,11 @@
 package org.rekeningsysteem.logging;
 
-import java.io.IOException;
-
-import org.apache.log4j.ConsoleAppender;
-import org.apache.log4j.FileAppender;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.apache.log4j.PatternLayout;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.appender.ConsoleAppender;
+import org.apache.logging.log4j.core.appender.FileAppender;
+import org.apache.logging.log4j.core.layout.PatternLayout;
 
 public class ApplicationLogger {
 	
@@ -20,32 +19,29 @@ public class ApplicationLogger {
 	}
 
 	public static Logger consoleInstance() {
-		Logger logger = Logger.getRootLogger();
+		Logger logger = LoggerContext.getContext().getRootLogger();
 
-		ConsoleAppender consoleAppender = new ConsoleAppender();
-		PatternLayout layout = new PatternLayout("%d [%p|%l] %m%n");
-		consoleAppender.setLayout(layout);
-		consoleAppender.setThreshold(Level.ALL);
-		consoleAppender.activateOptions();
+		PatternLayout layout = PatternLayout.newBuilder().withPattern("%d [%p|%l] %m%n").build();
+		ConsoleAppender consoleAppender = ConsoleAppender.newBuilder()
+			.setLayout(layout)
+			.setName("Rekeningsysteem-console-logger")
+			.build();
 		logger.addAppender(consoleAppender);
+		logger.setLevel(Level.ALL);
 
 		return logger;
 	}
 
 	public static Logger fileInstance() {
-		Logger logger = Logger.getRootLogger();
-		FileAppender fileAppender;
-		try {
-			PatternLayout layout = new PatternLayout("%d [%p|%l] %m%n");
-			fileAppender = new FileAppender(layout, "./LogFile.txt");
-			fileAppender.setThreshold(Level.ALL);
-			fileAppender.activateOptions();
-			logger.addAppender(fileAppender);
-		}
-		catch (IOException e) {
-			// should not happen
-			consoleInstance().fatal("Failure in FileAppender", e);
-		}
+		Logger logger = LoggerContext.getContext().getRootLogger();
+		PatternLayout layout = PatternLayout.newBuilder().withPattern("%d [%p|%l] %m%n").build();
+		FileAppender fileAppender = FileAppender.newBuilder()
+			.setLayout(layout)
+			.withFileName("./LogFile.txt")
+			.setName("Rekeningsysteem-file-logger")
+			.build();
+		logger.addAppender(fileAppender);
+		logger.setLevel(Level.ALL);
 
 		return logger;
 	}

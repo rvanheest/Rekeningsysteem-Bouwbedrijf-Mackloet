@@ -5,7 +5,7 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.stage.Stage;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.core.Logger;
 import org.rekeningsysteem.application.settings.debiteur.DebiteurTableController;
 import org.rekeningsysteem.application.settings.debiteur.DebiteurTablePane;
 import org.rekeningsysteem.application.settings.offerte.DefaultOfferteTextPaneController;
@@ -14,10 +14,7 @@ import org.rekeningsysteem.io.database.Database;
 import org.rekeningsysteem.logic.database.ArtikellijstDBInteraction;
 import org.rekeningsysteem.logic.database.DebiteurDBInteraction;
 import org.rekeningsysteem.properties.PropertiesWorker;
-import org.rekeningsysteem.properties.PropertyKey;
 import org.rekeningsysteem.properties.PropertyModelEnum;
-
-import java.util.Optional;
 
 public class SettingsPane extends TabPane {
 
