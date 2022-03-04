@@ -24,26 +24,40 @@ public class PropertyFactuurnummerManager implements FactuurnummerManager {
 
 	@Override
 	public String getFactuurnummer() {
-		if (!this.factNr.isPresent()) {
-			Optional<String> nr = this.worker.getProperty(this.key);
-			String yearNow = String.valueOf(LocalDate.now().getYear());
-			if (nr.map(s -> s.endsWith(yearNow)).orElse(false)) {
-				// same year
-				nr.map(s -> s.substring(0, s.lastIndexOf(yearNow)))
-						.map(Integer::parseInt)
-						.map(i -> i + 1)
-						.map(String::valueOf)
-						.map(s -> s.concat(yearNow))
-						.ifPresent(s -> this.worker.setProperty(this.key, s));
-				this.factNr = nr;
-			}
-			else {
-				// first in current year
-				this.factNr = Optional.of("1".concat(yearNow));
-				this.factNr.ifPresent(s -> this.worker.setProperty(this.key, "2".concat(yearNow)));
-			}
-			return this.factNr.get();
+		if (this.factNr.isPresent()) return this.factNr.get();
+		
+		Optional<String> nr = this.worker.getProperty(this.key);
+		String yearNow = String.valueOf(LocalDate.now().getYear());
+		if (nr.map(s -> factuurnummerHeeftJaar(s, yearNow)).orElse(false)) {
+			// same year
+			nr.map(s -> parseFactuurnummer(s, yearNow))
+					.map(Factuurnummer::next)
+					.map(this::format)
+					.ifPresent(s -> this.worker.setProperty(this.key, s));
+			this.factNr = nr;
+		}
+		else {
+			// first in current year
+			Factuurnummer initial = new Factuurnummer(yearNow);
+			this.factNr = Optional.of(format(initial));
+			Factuurnummer next = initial.next();
+			this.factNr.ifPresent(s -> this.worker.setProperty(this.key, format(next)));
 		}
 		return this.factNr.get();
 	}
+
+	private boolean factuurnummerHeeftJaar(String factuurnummer, String jaar) {
+		return factuurnummer.endsWith(jaar);
+	}
+
+	private Factuurnummer parseFactuurnummer(String s, String jaar) {
+		String nr = s.substring(0, s.lastIndexOf(jaar));
+		int nummer = Integer.parseInt(nr);
+		return new Factuurnummer(jaar, nummer);
+	}
+
+	private String format(Factuurnummer nr) {
+		return nr.getNummer() + nr.getJaar();
+	}
+
 }
