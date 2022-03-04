@@ -22,7 +22,7 @@ public class FileIO {
 
   public Observable<EsselinkArtikel> readCSV(File csv) {
     try {
-      return Observable.from(CSVParser.parse(csv, StandardCharsets.UTF_8, CSVFormat.DEFAULT.withDelimiter(';')))
+      return Observable.from(CSVParser.parse(csv, StandardCharsets.UTF_8, CSVFormat.DEFAULT.builder().setDelimiter(';').build()))
           .skip(1)
           .flatMap(list -> {
             try {
