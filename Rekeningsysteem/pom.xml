@@ -29,7 +29,6 @@
 		<developer>
 			<id>richard</id>
 			<name>Richard van Heest</name>
-			<email>richardvanheest@solcon.nl</email>
 			<url>http://www.linkedin.com/pub/richard-van-heest/3a/453/a46</url>
 			<roles>
 				<role>Developer</role>
@@ -89,8 +88,7 @@
 		<!-- PDF generator via LaTeX -->
 		<!-- Note that this is from the local repository defined above. It can 
 			be downloaded from http://www.nixo-soft.de/en/category/Downloads/page/libs/JavaLatexReport.php 
-			After downloading, use mvn install:install-file -Dfile=lib/jlr.jar -DgroupId=jlr
-			-DartifactId=jlr -Dversion=0 -Dpackaging=jar -DlocalRepositoryPath=lib/
+			After downloading, use mvn install:install-file -Dfile=lib/jlr.jar -DgroupId=jlr -DartifactId=jlr -Dversion=0 -Dpackaging=jar -DlocalRepositoryPath=lib/
 			to install this dependency.
 			See also http://randomizedsort.blogspot.nl/2011/10/configuring-maven-to-use-local-library.html
 			-->

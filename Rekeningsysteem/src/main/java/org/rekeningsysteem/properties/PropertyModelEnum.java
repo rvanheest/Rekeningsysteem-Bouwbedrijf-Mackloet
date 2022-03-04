@@ -3,8 +3,10 @@ package org.rekeningsysteem.properties;
 public enum PropertyModelEnum implements PropertyKey {
 
 	FACTUURNUMMER("factuur.nummer"),
+	FACTUURNUMMER_KENMERK("factuur.nummer.kenmerk"),
 
 	OFFERTENUMMER("offerte.nummer"),
+	OFFERTENUMMER_KENMERK("offerte.nummer.kenmerk"),
 	OFFERTE_DEFAULT_TEXT_LOCATION("offerte.default-text-location"),
 
 	LOONBTWPERCENTAGE("btwpercentage.loon"),

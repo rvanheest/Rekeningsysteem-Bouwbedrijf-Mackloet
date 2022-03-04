@@ -11,39 +11,39 @@ public class PropertyFactuurnummerManager implements FactuurnummerManager {
 	private final PropertiesWorker worker;
 	private final PropertyKey key;
 	private Optional<String> factNr;
+	private final FactuurnummerFormatter formatter;
 
-	public PropertyFactuurnummerManager(PropertyKey key) {
-		this(PropertiesWorker.getInstance(), key);
+	public PropertyFactuurnummerManager(PropertyKey nummerKey, PropertyKey kenmerkKey) {
+		this(PropertiesWorker.getInstance(), nummerKey, kenmerkKey);
 	}
 
-	public PropertyFactuurnummerManager(PropertiesWorker worker, PropertyKey key) {
+	public PropertyFactuurnummerManager(PropertiesWorker worker, PropertyKey nummerKey, PropertyKey kenmerkKey) {
+		this(worker, nummerKey, CompositeFactuurnummerFormatter.Create(worker, kenmerkKey));
+	}
+
+	public PropertyFactuurnummerManager(PropertiesWorker worker, PropertyKey key, FactuurnummerFormatter formatter) {
 		this.worker = worker;
 		this.key = key;
 		this.factNr = Optional.empty();
+		this.formatter = formatter;
 	}
 
 	@Override
 	public String getFactuurnummer() {
-		if (!this.factNr.isPresent()) {
-			Optional<String> nr = this.worker.getProperty(this.key);
-			String yearNow = String.valueOf(LocalDate.now().getYear());
-			if (nr.map(s -> s.endsWith(yearNow)).orElse(false)) {
-				// same year
-				nr.map(s -> s.substring(0, s.lastIndexOf(yearNow)))
-						.map(Integer::parseInt)
-						.map(i -> i + 1)
-						.map(String::valueOf)
-						.map(s -> s.concat(yearNow))
-						.ifPresent(s -> this.worker.setProperty(this.key, s));
-				this.factNr = nr;
-			}
-			else {
-				// first in current year
-				this.factNr = Optional.of("1".concat(yearNow));
-				this.factNr.ifPresent(s -> this.worker.setProperty(this.key, "2".concat(yearNow)));
-			}
-			return this.factNr.get();
-		}
-		return this.factNr.get();
+		return this.factNr
+			.orElseGet(() -> {
+				String yearNow = String.valueOf(LocalDate.now().getYear());
+
+				Factuurnummer factuurnummer = this.worker.getProperty(this.key)
+					.filter(s -> this.formatter.heeftJaar(s, yearNow))
+					.map(s -> this.formatter.parse(s, yearNow))
+					.orElseGet(() -> new Factuurnummer(yearNow));
+
+				this.worker.setProperty(this.key, this.formatter.format(factuurnummer.next()));
+
+				String result = this.formatter.format(factuurnummer);
+				this.factNr = Optional.of(result);
+				return result;
+			});
 	}
 }

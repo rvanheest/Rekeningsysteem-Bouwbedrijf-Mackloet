@@ -56,7 +56,7 @@ public class OfferteController extends AbstractRekeningController<Offerte> {
 	@Override
 	public void initFactuurnummer() {
 		String offertenummer = this.getFactuurnummerFactory()
-				.call(PropertyModelEnum.OFFERTENUMMER)
+				.call(PropertyModelEnum.OFFERTENUMMER, PropertyModelEnum.OFFERTENUMMER_KENMERK)
 				.getFactuurnummer();
 		this.header.getOffertenummerController()
 				.getUI()

@@ -12,7 +12,7 @@ import org.rekeningsysteem.properties.PropertyKey;
 import org.rekeningsysteem.properties.PropertyModelEnum;
 
 import rx.Observable;
-import rx.functions.Func1;
+import rx.functions.Func2;
 
 public abstract class AbstractRekeningController<M extends AbstractRekening> {
 
@@ -36,7 +36,7 @@ public abstract class AbstractRekeningController<M extends AbstractRekening> {
 
 	public abstract void initFactuurnummer();
 
-	protected final Func1<PropertyKey, FactuurnummerManager> getFactuurnummerFactory() {
+	protected final Func2<PropertyKey, PropertyKey, FactuurnummerManager> getFactuurnummerFactory() {
 		return PropertyFactuurnummerManager::new;
 	}
 
