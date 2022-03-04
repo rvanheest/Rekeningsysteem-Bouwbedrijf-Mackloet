@@ -5,8 +5,7 @@ public abstract class AbstractFactuurnummerFormatter implements FactuurnummerFor
   @Override
   public boolean canParse(String factuurnummerString, String jaar) {
     try {
-      Factuurnummer f = this.parse(factuurnummerString, jaar);
-      return f != null;
+		return this.parse(factuurnummerString, jaar) != null;
     }
     catch (Exception e) {
       return false;

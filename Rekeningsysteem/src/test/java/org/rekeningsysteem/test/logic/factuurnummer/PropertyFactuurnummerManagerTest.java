@@ -1,7 +1,6 @@
 package org.rekeningsysteem.test.logic.factuurnummer;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -17,7 +16,6 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.rekeningsysteem.logic.factuurnummer.Factuurnummer;
 import org.rekeningsysteem.logic.factuurnummer.FactuurnummerFormatter;
-import org.rekeningsysteem.logic.factuurnummer.NummerJaarFormatter;
 import org.rekeningsysteem.logic.factuurnummer.PropertyFactuurnummerManager;
 import org.rekeningsysteem.properties.PropertiesWorker;
 import org.rekeningsysteem.properties.PropertyKey;

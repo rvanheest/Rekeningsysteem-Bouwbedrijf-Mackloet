@@ -5,7 +5,7 @@ import java.util.regex.Pattern;
 
 /**
  * Deze formatter produceert factuurnummers als '20201012',
- * met '2020' als jaar, '1' als bedrijfskenmerk en '012' als volgnummer 
+ * met '2020' als jaar, '1' als bedrijfskenmerk en '012' als volgnummer
  */
 public class JaarKenmerkNummerFormatter extends AbstractFactuurnummerFormatter {
 
@@ -22,13 +22,10 @@ public class JaarKenmerkNummerFormatter extends AbstractFactuurnummerFormatter {
 
 	@Override
 	public Factuurnummer parse(String factuurnummerString, String jaar) {
-		Pattern pattern = Pattern.compile("^([0-9]{4})" + this.kenmerk + "([0-9]*)$");
-		Matcher matcher = pattern.matcher(factuurnummerString);
-		if (matcher.matches()) {
-			String jr = matcher.group(1);
-			String nr = matcher.group(2);
-			return new Factuurnummer(jr, Integer.parseInt(nr));
-		}
+		Matcher matcher = Pattern.compile("^([0-9]{4})" + this.kenmerk + "([0-9]*)$").matcher(factuurnummerString);
+
+		if (matcher.matches())
+			return new Factuurnummer(matcher.group(1), Integer.parseInt(matcher.group(2)));
 
 		throw new NumberFormatException(String.format("Factuurnummer %s is ongeldig", factuurnummerString));
 	}

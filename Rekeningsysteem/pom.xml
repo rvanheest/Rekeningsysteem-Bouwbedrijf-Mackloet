@@ -16,7 +16,7 @@
 	<repositories>
 		<repository>
 			<id>lib</id>
-			<url>file://${project.basedir}/lib/jlr</url>
+			<url>file://${project.basedir}/lib</url>
 		</repository>
 	</repositories>
 
@@ -29,7 +29,6 @@
 		<developer>
 			<id>richard</id>
 			<name>Richard van Heest</name>
-			<email>richardvanheest@solcon.nl</email>
 			<url>http://www.linkedin.com/pub/richard-van-heest/3a/453/a46</url>
 			<roles>
 				<role>Developer</role>
@@ -77,11 +76,6 @@
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-csv</artifactId>
 			<version>1.8</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.velocity</groupId>
-			<artifactId>velocity</artifactId>
-			<version>1.7</version>
 		</dependency>
 
 		<!-- Logging -->

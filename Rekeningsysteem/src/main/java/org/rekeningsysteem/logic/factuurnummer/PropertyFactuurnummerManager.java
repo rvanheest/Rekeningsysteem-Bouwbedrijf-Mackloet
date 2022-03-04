@@ -30,19 +30,20 @@ public class PropertyFactuurnummerManager implements FactuurnummerManager {
 
 	@Override
 	public String getFactuurnummer() {
-		if (this.factNr.isPresent()) return this.factNr.get();
+		return this.factNr
+			.orElseGet(() -> {
+				String yearNow = String.valueOf(LocalDate.now().getYear());
 
-		String yearNow = String.valueOf(LocalDate.now().getYear());
+				Factuurnummer factuurnummer = this.worker.getProperty(this.key)
+					.filter(s -> this.formatter.heeftJaar(s, yearNow))
+					.map(s -> this.formatter.parse(s, yearNow))
+					.orElseGet(() -> new Factuurnummer(yearNow));
 
-		Factuurnummer factuurnummer = this.worker.getProperty(this.key)
-				.filter(s -> this.formatter.heeftJaar(s, yearNow))
-				.map(s -> this.formatter.parse(s, yearNow))
-				.orElseGet(() -> new Factuurnummer(yearNow));
+				this.worker.setProperty(this.key, this.formatter.format(factuurnummer.next()));
 
-		this.worker.setProperty(this.key, this.formatter.format(factuurnummer.next()));
-
-		String result = this.formatter.format(factuurnummer);
-		this.factNr = Optional.of(result);
-		return result;
+				String result = this.formatter.format(factuurnummer);
+				this.factNr = Optional.of(result);
+				return result;
+			});
 	}
 }
