@@ -7,12 +7,12 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.nio.file.NoSuchFileException;
 import java.util.Arrays;
 
 import org.apache.commons.io.FileUtils;
@@ -77,7 +77,7 @@ public class FileIOTest {
 		this.io.readCSV(new File("does-not-exist.csv")).subscribe(observer);
 
 		observer.assertNoValues();
-		observer.assertError(FileNotFoundException.class);
+		observer.assertError(NoSuchFileException.class);
 		observer.assertNotCompleted();
 	}
 
