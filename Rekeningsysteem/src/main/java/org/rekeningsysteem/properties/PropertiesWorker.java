@@ -32,7 +32,7 @@ public class PropertiesWorker {
 
 	private PropertiesWorker() {
 		this(
-			new Properties(),
+			new OrderedProperties(),
 			Optional.ofNullable(System.getProperty("App.config.file"))
 				.map(File::new)
 				.filter(File::exists)
