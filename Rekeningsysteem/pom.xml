@@ -60,12 +60,6 @@
 			<version>1.0.13</version>
 		</dependency>
 
-		<dependency>
-			<groupId>io.reactivex</groupId>
-			<artifactId>rxjava-string</artifactId>
-			<version>0.22.0</version>
-		</dependency>
-
 		<!-- Commons utilities -->
 		<dependency>
 			<groupId>commons-io</groupId>

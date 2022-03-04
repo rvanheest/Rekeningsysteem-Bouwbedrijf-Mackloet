@@ -1,7 +1,6 @@
 package org.rekeningsysteem.io;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
@@ -18,10 +17,6 @@ import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.exception.GeldParseException;
 import rx.Observable;
 import rx.Observable.Transformer;
-import rx.Single;
-
-import static rx.observables.StringObservable.from;
-import static rx.observables.StringObservable.split;
 
 public class FileIO {
 
