@@ -13,13 +13,6 @@
 		<name>Bouwbedrijf Mackloet en Zn.</name>
 	</organization>
 
-	<repositories>
-		<repository>
-			<id>lib</id>
-			<url>file://${project.basedir}/lib</url>
-		</repository>
-	</repositories>
-
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<targetJdk>1.8</targetJdk>
@@ -78,26 +71,17 @@
 			<artifactId>commons-csv</artifactId>
 			<version>1.8</version>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.velocity</groupId>
+			<artifactId>velocity</artifactId>
+			<version>1.7</version>
+		</dependency>
 
 		<!-- Logging -->
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
 			<version>1.2.17</version>
-		</dependency>
-
-		<!-- PDF generator via LaTeX -->
-		<!-- Note that this is from the local repository defined above. It can 
-			be downloaded from http://www.nixo-soft.de/en/category/Downloads/page/libs/JavaLatexReport.php 
-			After downloading, use mvn install:install-file -Dfile=lib/jlr.jar -DgroupId=jlr
-			-DartifactId=jlr -Dversion=0 -Dpackaging=jar -DlocalRepositoryPath=lib/
-			to install this dependency.
-			See also http://randomizedsort.blogspot.nl/2011/10/configuring-maven-to-use-local-library.html
-			-->
-		<dependency>
-			<groupId>jlr</groupId>
-			<artifactId>jlr</artifactId>
-			<version>0</version>
 		</dependency>
 
 		<!-- SQLite database connector -->
