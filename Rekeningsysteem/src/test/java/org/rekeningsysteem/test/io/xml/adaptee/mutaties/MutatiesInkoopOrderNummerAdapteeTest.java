@@ -1,13 +1,13 @@
 package org.rekeningsysteem.test.io.xml.adaptee.mutaties;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.io.xml.adaptee.ListItemAdapteeVisitor;
 import org.rekeningsysteem.io.xml.adaptee.mutaties.MutatiesInkoopOrderAdaptee;

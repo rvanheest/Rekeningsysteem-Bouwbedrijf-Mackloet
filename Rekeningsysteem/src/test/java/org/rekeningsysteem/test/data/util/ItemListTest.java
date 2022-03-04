@@ -8,7 +8,7 @@ import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.rekeningsysteem.data.mutaties.MutatiesInkoopOrder;
 import org.rekeningsysteem.data.particulier.AnderArtikel;
 import org.rekeningsysteem.data.particulier.loon.InstantLoon;

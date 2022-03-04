@@ -1,7 +1,7 @@
 package org.rekeningsysteem.test.integration;
 
 import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.rekeningsysteem.data.particulier.AnderArtikel;
 import org.rekeningsysteem.data.particulier.EsselinkArtikel;
 import org.rekeningsysteem.data.particulier.GebruiktEsselinkArtikel;

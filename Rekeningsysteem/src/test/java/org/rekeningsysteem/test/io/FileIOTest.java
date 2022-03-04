@@ -1,6 +1,6 @@
 package org.rekeningsysteem.test.io;
 
-import static org.mockito.Matchers.anyString;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -158,7 +158,7 @@ public class FileIOTest {
 	@Test
 	public void testWriteFileWithWriterAndExceptionInWrite() throws IOException {
 		Writer writer = mock(Writer.class);
-		doThrow(Exception.class).when(writer).write(anyString());
+		doThrow(IOException.class).when(writer).write(anyString());
 
 		TestSubscriber<Void> observer = new TestSubscriber<>();
 		Observable.just("abc", "def")
@@ -176,7 +176,7 @@ public class FileIOTest {
 	@Test
 	public void testWriteFileWithWriterAndExceptionInClose() throws IOException {
 		Writer writer = mock(Writer.class);
-		doThrow(Exception.class).when(writer).close();
+		doThrow(IOException.class).when(writer).close();
 
 		TestSubscriber<Void> observer = new TestSubscriber<>();
 		Observable.just("abc", "def")
@@ -194,8 +194,8 @@ public class FileIOTest {
 	@Test
 	public void testWriteFileWithWriterAndExceptions() throws IOException {
 		Writer writer = mock(Writer.class);
-		doThrow(Exception.class).when(writer).write(anyString());
-		doThrow(Exception.class).when(writer).close();
+		doThrow(IOException.class).when(writer).write(anyString());
+		doThrow(IOException.class).when(writer).close();
 
 		TestSubscriber<Void> observer = new TestSubscriber<>();
 		Observable.just("abc", "def")

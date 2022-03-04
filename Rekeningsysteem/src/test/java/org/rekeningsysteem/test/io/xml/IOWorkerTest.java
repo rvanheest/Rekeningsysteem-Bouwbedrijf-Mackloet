@@ -1,9 +1,9 @@
 package org.rekeningsysteem.test.io.xml;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.verifyNoInteractions;
 
 import java.io.File;
 import java.time.LocalDate;
@@ -16,7 +16,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.rekeningsysteem.data.mutaties.MutatiesInkoopOrder;
 import org.rekeningsysteem.data.mutaties.MutatiesFactuur;
 import org.rekeningsysteem.data.offerte.Offerte;
@@ -85,7 +85,7 @@ public class IOWorkerTest {
 		testObserver.assertValue(ParticulierFactuur.class);
 		testObserver.assertNoErrors();
 		testObserver.assertCompleted();
-		verifyZeroInteractions(this.logger);
+		verifyNoInteractions(this.logger);
 	}
 
 	@Test
@@ -98,7 +98,7 @@ public class IOWorkerTest {
 		testObserver.assertValue(ParticulierFactuur.class);
 		testObserver.assertNoErrors();
 		testObserver.assertCompleted();
-		verifyZeroInteractions(this.logger);
+		verifyNoInteractions(this.logger);
 	}
 
 	@Test
@@ -111,7 +111,7 @@ public class IOWorkerTest {
 		testObserver.assertValue(MutatiesFactuur.class);
 		testObserver.assertNoErrors();
 		testObserver.assertCompleted();
-		verifyZeroInteractions(this.logger);
+		verifyNoInteractions(this.logger);
 	}
 
 	@Test
@@ -124,7 +124,7 @@ public class IOWorkerTest {
 		testObserver.assertValue(MutatiesFactuur.class);
 		testObserver.assertNoErrors();
 		testObserver.assertCompleted();
-		verifyZeroInteractions(this.logger);
+		verifyNoInteractions(this.logger);
 	}
 
 	@Test
@@ -137,7 +137,7 @@ public class IOWorkerTest {
 		testObserver.assertValue(MutatiesFactuur.class);
 		testObserver.assertNoErrors();
 		testObserver.assertCompleted();
-		verifyZeroInteractions(this.logger);
+		verifyNoInteractions(this.logger);
 	}
 
 	@Test
@@ -150,7 +150,7 @@ public class IOWorkerTest {
 		testObserver.assertValue(MutatiesFactuur.class);
 		testObserver.assertNoErrors();
 		testObserver.assertCompleted();
-		verifyZeroInteractions(this.logger);
+		verifyNoInteractions(this.logger);
 	}
 
 	@Test
@@ -166,7 +166,7 @@ public class IOWorkerTest {
 		testObserver.assertValue(factuur);
 		testObserver.assertNoErrors();
 		testObserver.assertCompleted();
-		verifyZeroInteractions(this.logger);
+		verifyNoInteractions(this.logger);
 	}
 
 	@Test
@@ -175,7 +175,7 @@ public class IOWorkerTest {
 		File file = new File("src\\test\\resources\\ioWorker\\savePDF\\Mutaties.pdf");
 
 		this.loader.export(factuur, file);
-		verifyZeroInteractions(this.logger);
+		verifyNoInteractions(this.logger);
 	}
 
 	@Test
@@ -188,7 +188,7 @@ public class IOWorkerTest {
 		testObserver.assertValue(Offerte.class);
 		testObserver.assertNoErrors();
 		testObserver.assertCompleted();
-		verifyZeroInteractions(this.logger);
+		verifyNoInteractions(this.logger);
 	}
 
 	@Test
@@ -201,7 +201,7 @@ public class IOWorkerTest {
 		testObserver.assertValue(Offerte.class);
 		testObserver.assertNoErrors();
 		testObserver.assertCompleted();
-		verifyZeroInteractions(this.logger);
+		verifyNoInteractions(this.logger);
 	}
 
 	@Test
@@ -214,7 +214,7 @@ public class IOWorkerTest {
 		testObserver.assertValue(Offerte.class);
 		testObserver.assertNoErrors();
 		testObserver.assertCompleted();
-		verifyZeroInteractions(this.logger);
+		verifyNoInteractions(this.logger);
 	}
 
 	@Test
@@ -227,7 +227,7 @@ public class IOWorkerTest {
 		testObserver.assertValue(Offerte.class);
 		testObserver.assertNoErrors();
 		testObserver.assertCompleted();
-		verifyZeroInteractions(this.logger);
+		verifyNoInteractions(this.logger);
 	}
 
 	@Test
@@ -243,7 +243,7 @@ public class IOWorkerTest {
 		testObserver.assertValue(offerte);
 		testObserver.assertNoErrors();
 		testObserver.assertCompleted();
-		verifyZeroInteractions(this.logger);
+		verifyNoInteractions(this.logger);
 	}
 
 	@Test
@@ -252,7 +252,7 @@ public class IOWorkerTest {
 		File file = new File("src\\test\\resources\\ioWorker\\savePDF\\Offerte.pdf");
 
 		this.loader.export(factuur, file);
-		verifyZeroInteractions(this.logger);
+		verifyNoInteractions(this.logger);
 	}
 
 	@Test
@@ -265,7 +265,7 @@ public class IOWorkerTest {
 		testObserver.assertValue(ParticulierFactuur.class);
 		testObserver.assertNoErrors();
 		testObserver.assertCompleted();
-		verifyZeroInteractions(this.logger);
+		verifyNoInteractions(this.logger);
 	}
 
 	@Test
@@ -278,7 +278,7 @@ public class IOWorkerTest {
 		testObserver.assertValue(ParticulierFactuur.class);
 		testObserver.assertNoErrors();
 		testObserver.assertCompleted();
-		verifyZeroInteractions(this.logger);
+		verifyNoInteractions(this.logger);
 	}
 
 	@Test
@@ -291,7 +291,7 @@ public class IOWorkerTest {
 		testObserver.assertValue(ParticulierFactuur.class);
 		testObserver.assertNoErrors();
 		testObserver.assertCompleted();
-		verifyZeroInteractions(this.logger);
+		verifyNoInteractions(this.logger);
 	}
 
 	@Test
@@ -304,7 +304,7 @@ public class IOWorkerTest {
 		testObserver.assertValue(ParticulierFactuur.class);
 		testObserver.assertNoErrors();
 		testObserver.assertCompleted();
-		verifyZeroInteractions(this.logger);
+		verifyNoInteractions(this.logger);
 	}
 
 	@Test
@@ -318,7 +318,7 @@ public class IOWorkerTest {
 		testObserver.assertValue(ParticulierFactuur.class);
 		testObserver.assertNoErrors();
 		testObserver.assertCompleted();
-		verifyZeroInteractions(this.logger);
+		verifyNoInteractions(this.logger);
 	}
 
 	@Test
@@ -331,7 +331,7 @@ public class IOWorkerTest {
 		testObserver.assertValue(ParticulierFactuur.class);
 		testObserver.assertNoErrors();
 		testObserver.assertCompleted();
-		verifyZeroInteractions(this.logger);
+		verifyNoInteractions(this.logger);
 	}
 
 	@Test
@@ -344,7 +344,7 @@ public class IOWorkerTest {
 		testObserver.assertValue(ParticulierFactuur.class);
 		testObserver.assertNoErrors();
 		testObserver.assertCompleted();
-		verifyZeroInteractions(this.logger);
+		verifyNoInteractions(this.logger);
 	}
 
 	@Test
@@ -360,7 +360,7 @@ public class IOWorkerTest {
 		testObserver.assertValue(factuur);
 		testObserver.assertNoErrors();
 		testObserver.assertCompleted();
-		verifyZeroInteractions(this.logger);
+		verifyNoInteractions(this.logger);
 	}
 
 	@Test
@@ -369,7 +369,7 @@ public class IOWorkerTest {
 		File file = new File("src\\test\\resources\\ioWorker\\savePDF\\Particulier.pdf");
 
 		this.loader.export(factuur, file);
-		verifyZeroInteractions(this.logger);
+		verifyNoInteractions(this.logger);
 	}
 
 	@Test
@@ -382,7 +382,7 @@ public class IOWorkerTest {
 		testObserver.assertValue(ReparatiesFactuur.class);
 		testObserver.assertNoErrors();
 		testObserver.assertCompleted();
-		verifyZeroInteractions(this.logger);
+		verifyNoInteractions(this.logger);
 	}
 
 	@Test
@@ -395,7 +395,7 @@ public class IOWorkerTest {
 		testObserver.assertValue(ReparatiesFactuur.class);
 		testObserver.assertNoErrors();
 		testObserver.assertCompleted();
-		verifyZeroInteractions(this.logger);
+		verifyNoInteractions(this.logger);
 	}
 
 	@Test
@@ -408,7 +408,7 @@ public class IOWorkerTest {
 		testObserver.assertValue(ReparatiesFactuur.class);
 		testObserver.assertNoErrors();
 		testObserver.assertCompleted();
-		verifyZeroInteractions(this.logger);
+		verifyNoInteractions(this.logger);
 	}
 
 	@Test
@@ -421,7 +421,7 @@ public class IOWorkerTest {
 		testObserver.assertValue(ReparatiesFactuur.class);
 		testObserver.assertNoErrors();
 		testObserver.assertCompleted();
-		verifyZeroInteractions(this.logger);
+		verifyNoInteractions(this.logger);
 	}
 
 	@Test
@@ -437,7 +437,7 @@ public class IOWorkerTest {
 		testObserver.assertValue(factuur);
 		testObserver.assertNoErrors();
 		testObserver.assertCompleted();
-		verifyZeroInteractions(this.logger);
+		verifyNoInteractions(this.logger);
 	}
 
 	@Test
@@ -446,7 +446,7 @@ public class IOWorkerTest {
 		File file = new File("src\\test\\resources\\ioWorker\\savePDF\\Reparaties.pdf");
 
 		this.loader.export(factuur, file);
-		verifyZeroInteractions(this.logger);
+		verifyNoInteractions(this.logger);
 	}
 
 	private MutatiesFactuur mutaties() {
