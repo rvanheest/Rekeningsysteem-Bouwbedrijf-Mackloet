@@ -182,7 +182,7 @@ public class XmlReader2 implements FactuurLoader {
 		Observable<String> plaats = this.getNodeValue(node, "plaats");
 		Observable<String> btwnr = this.getNodeValue(node, "btwNummer");
 
-		return btwnr.isEmpty().flatMap(b -> b
+		return btwnr.filter(s -> !s.isEmpty()).isEmpty().flatMap(b -> b
 				? Observable.zip(naam, straat, nummer, postcode, plaats, Debiteur::new)
 				: Observable.zip(naam, straat, nummer, postcode, plaats, btwnr, Debiteur::new));
 	}
