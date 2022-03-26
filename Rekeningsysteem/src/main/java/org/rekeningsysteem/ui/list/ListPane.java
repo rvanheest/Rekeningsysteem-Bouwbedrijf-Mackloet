@@ -12,7 +12,6 @@ public class ListPane extends WorkingPane {
 		Observables.fromProperty(this.heightProperty())
 				.map(Number::doubleValue)
 				.map(d -> Math.min(d, 700))
-				.doOnNext(listPane::setPrefHeight)
-				.subscribe();
+				.subscribe(listPane::setPrefHeight);
 	}
 }

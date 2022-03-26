@@ -3,13 +3,14 @@ package org.rekeningsysteem.logic.offerte;
 import java.io.File;
 import java.util.Optional;
 
+import io.reactivex.rxjava3.core.Completable;
+import io.reactivex.rxjava3.core.Maybe;
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 import org.rekeningsysteem.exception.NoSuchFileException;
 import org.rekeningsysteem.io.FileIO;
 import org.rekeningsysteem.properties.PropertiesWorker;
 import org.rekeningsysteem.properties.PropertyModelEnum;
-
-import rx.Observable;
-import rx.schedulers.Schedulers;
 
 public class DefaultOfferteTextHandler {
 
@@ -18,8 +19,8 @@ public class DefaultOfferteTextHandler {
 
 	public DefaultOfferteTextHandler() {
 		this.file = PropertiesWorker.getInstance()
-				.getProperty(PropertyModelEnum.OFFERTE_DEFAULT_TEXT_LOCATION)
-				.map(File::new);
+			.getProperty(PropertyModelEnum.OFFERTE_DEFAULT_TEXT_LOCATION)
+			.map(File::new);
 		this.io = new FileIO();
 	}
 
@@ -28,18 +29,18 @@ public class DefaultOfferteTextHandler {
 		this.io = io;
 	}
 
-	public Observable<String> getDefaultText() {
-		return this.file.map(file -> this.io.readFile(file)
+	public Maybe<String> getDefaultText() {
+		return this.file
+			.map(file -> this.io.readFile(file)
 				.subscribeOn(Schedulers.io())
-				.reduce(String::concat))
-				.orElseGet(Observable::empty);
+				.reduce(String::concat)
+			)
+			.orElseGet(Maybe::empty);
 	}
 
-	public Observable<Void> setDefaultText(Observable<String> text) {
+	public Completable setDefaultText(Observable<String> text) {
 		return this.file
-				.map(file -> text.observeOn(Schedulers.io())
-						.compose(this.io.writeToFile(file, false)))
-				.orElseGet(() -> Observable.error(new NoSuchFileException(
-						"Er bestaat geen file waarin deze tekst kan worden opgeslagen.")));
+			.map(file -> this.io.writeToFile(file, false, text.observeOn(Schedulers.io())))
+			.orElseGet(() -> Completable.error(new NoSuchFileException("Er bestaat geen file waarin deze tekst kan worden opgeslagen.")));
 	}
 }

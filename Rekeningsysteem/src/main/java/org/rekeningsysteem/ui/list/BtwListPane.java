@@ -11,8 +11,8 @@ public class BtwListPane extends WorkingPane {
 		super("BTW & Factuurlijst", listPane);
 
 		Observables.fromProperty(this.heightProperty())
-				.map(Number::doubleValue)
-				.map(d -> Math.min(d, 700))
-				.subscribe(listPane::setPrefHeight);
+			.map(Number::doubleValue)
+			.map(d -> Math.min(d, 700))
+			.subscribe(listPane::setPrefHeight);
 	}
 }

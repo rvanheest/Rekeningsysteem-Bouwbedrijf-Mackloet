@@ -1,10 +1,14 @@
 package org.rekeningsysteem.application.working;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
+import io.reactivex.rxjava3.core.Completable;
+import io.reactivex.rxjava3.core.Maybe;
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.subjects.BehaviorSubject;
+import io.reactivex.rxjava3.subjects.PublishSubject;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonBar.ButtonData;
@@ -30,9 +34,6 @@ import org.rekeningsysteem.ui.particulier.ParticulierController;
 import org.rekeningsysteem.ui.reparaties.ReparatiesController;
 
 import de.nixosoft.jlr.JLROpener;
-import rx.Observable;
-import rx.subjects.BehaviorSubject;
-import rx.subjects.PublishSubject;
 
 public class RekeningTab extends Tab {
 
@@ -44,14 +45,11 @@ public class RekeningTab extends Tab {
 	private Optional<File> saveFile;
 	private final DebiteurDBInteraction debiteurDB;
 
-	public RekeningTab(String name,
-			AbstractRekeningController<? extends AbstractRekening> controller, Database database) {
+	public RekeningTab(String name, AbstractRekeningController<? extends AbstractRekening> controller, Database database) {
 		this(name, controller, null, database);
 	}
 
-	public RekeningTab(String name,
-			AbstractRekeningController<? extends AbstractRekening> controller,
-			File file, Database database) {
+	public RekeningTab(String name, AbstractRekeningController<? extends AbstractRekening> controller, File file, Database database) {
 		super(name);
 		this.controller = controller;
 		this.saveFile = Optional.ofNullable(file);
@@ -63,10 +61,10 @@ public class RekeningTab extends Tab {
 		this.getModel().skip(1).subscribe(ar -> this.modified.onNext(true));
 
 		this.modified.filter(b -> b)
-				.map(b -> this.getText())
-				.filter(s -> !s.endsWith("*"))
-				.map(s -> s + "*")
-				.subscribe(this::setText);
+			.map(b -> this.getText())
+			.filter(s -> !s.endsWith("*"))
+			.map(s -> s + "*")
+			.subscribe(this::setText);
 	}
 
 	public Observable<? extends AbstractRekening> getModel() {
@@ -86,68 +84,59 @@ public class RekeningTab extends Tab {
 		this.controller.initFactuurnummer();
 	}
 
-	public static Observable<RekeningTab> openFile(File file, Database database) {
+	public static Maybe<RekeningTab> openFile(File file, Database database) {
 		if (file.getName().endsWith(".pdf")) {
-			try {
-				JLROpener.open(file);
-				return Observable.empty();
-			}
-			catch (IOException e) {
-				return Observable.error(e);
-			}
+			return Maybe.fromAction(() -> JLROpener.open(file));
 		}
-		else if (file.getName().endsWith(".xml")) {
-			PropertiesWorker properties = PropertiesWorker.getInstance();
 
+		if (file.getName().endsWith(".xml")) {
 			return ioWorker.load(file)
-					.doOnError(error -> {
-						// TODO move this to a separate class (as well as all other popup windows)
-						String alertText = "Deze factuur kon niet worden geopend. De file is "
-								+ "waarschijnlijk corrupt. Raadpleeg de programmeur om dit probleem "
-								+ "op te lossen.";
-						ButtonType close = new ButtonType("Sluit", ButtonData.CANCEL_CLOSE);
-						Alert alert = new Alert(AlertType.NONE, alertText, close);
-						alert.setHeaderText("Fout bij inladen factuur");
-						alert.show();
-					})
-					.publish(f -> {
-				Observable<MutatiesController> mutaties = f.ofType(MutatiesFactuur.class)
-						.map(fact -> new MutatiesController(fact, database));
-				Observable<OfferteController> offerte = f.ofType(Offerte.class)
-						.map(fact -> new OfferteController(fact, database));
-				Observable<ParticulierController> particulier = f.ofType(ParticulierFactuur.class)
-						.map(fact -> new ParticulierController(fact, properties, database));
-				Observable<ReparatiesController> reparaties = f.ofType(ReparatiesFactuur.class)
-						.map(fact -> new ReparatiesController(fact, database));
-
-				return Observable.merge(mutaties, offerte, particulier, reparaties);
-			}).map(c -> new RekeningTab(file.getName(), c, file, database)).single();
+				.doOnError(error -> {
+					// TODO move this to a separate class (as well as all other popup windows)
+					String alertText = "Deze factuur kon niet worden geopend. De file is "
+						+ "waarschijnlijk corrupt. Raadpleeg de programmeur om dit probleem "
+						+ "op te lossen.";
+					ButtonType close = new ButtonType("Sluit", ButtonData.CANCEL_CLOSE);
+					Alert alert = new Alert(AlertType.NONE, alertText, close);
+					alert.setHeaderText("Fout bij inladen factuur");
+					alert.show();
+				})
+				.toObservable()
+				.publish(f -> Observable.merge(
+					f.ofType(MutatiesFactuur.class).map(fact -> new MutatiesController(fact, database)),
+					f.ofType(Offerte.class).map(fact -> new OfferteController(fact, database)),
+					f.ofType(ParticulierFactuur.class).map(fact -> new ParticulierController(fact, PropertiesWorker.getInstance(), database)),
+					f.ofType(ReparatiesFactuur.class).map(fact -> new ReparatiesController(fact, database))
+				))
+				.map(c -> new RekeningTab(file.getName(), c, file, database))
+				.singleElement();
 		}
-		return Observable.empty();
+
+		return Maybe.empty();
 	}
 
 	public void save() {
-		this.latest.first()
-				.doOnNext(factuur -> this.saveFile.ifPresent(file -> ioWorker.save(factuur, file)))
-				.flatMap(rekening -> this.controller.getSaveSelected().flatMap(select -> {
-					if (select) {
-						Debiteur debiteur = rekening.getFactuurHeader().getDebiteur();
-						// TODO on which scheduler should the following line be? ioScheduler?
-						return this.debiteurDB.addDebiteur(debiteur);
-					}
-					return Observable.just(-1);
-				}))
-				.map(i -> this.getText())
-				.filter(s -> s.endsWith("*"))
-				.map(s -> s.substring(0, s.length() - 1))
-				.subscribe(this::setText);
+		this.latest.firstElement()
+			.doOnSuccess(factuur -> this.saveFile.ifPresent(file -> ioWorker.save(factuur, file)))
+			.flatMapCompletable(rekening -> this.controller.getSaveSelected().flatMapCompletable(select -> {
+				if (select) {
+					Debiteur debiteur = rekening.getFactuurHeader().getDebiteur();
+					// TODO on which scheduler should the following line be? ioScheduler?
+					return this.debiteurDB.addDebiteur(debiteur);
+				}
+				return Completable.complete();
+			}))
+			.toSingle(this::getText)
+			.filter(s -> s.endsWith("*"))
+			.map(s -> s.substring(0, s.length() - 1))
+			.subscribe(this::setText);
 		this.modified.onNext(false);
 	}
 
 	public void export(File file) {
 		final AtomicReference<PdfException> e = new AtomicReference<>();
 
-		this.latest.first()
+		this.latest.firstElement()
 			.subscribe(
 				factuur -> {
 					try {

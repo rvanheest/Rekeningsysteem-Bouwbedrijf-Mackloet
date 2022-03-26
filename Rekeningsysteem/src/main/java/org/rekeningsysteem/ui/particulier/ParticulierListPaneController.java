@@ -10,13 +10,11 @@ import org.rekeningsysteem.ui.list.AbstractListPaneController;
 
 public class ParticulierListPaneController extends AbstractListPaneController<ParticulierArtikel> {
 
-	public ParticulierListPaneController(Currency currency, Database db,
-			BtwPercentages defaultBtw) {
+	public ParticulierListPaneController(Currency currency, Database db, BtwPercentages defaultBtw) {
 		super(new ParticulierListController(currency, db, defaultBtw), currency);
 	}
 
-	public ParticulierListPaneController(Currency currency, Database db,
-			BtwPercentages defaultBtw, ItemList<ParticulierArtikel> inputList) {
+	public ParticulierListPaneController(Currency currency, Database db, BtwPercentages defaultBtw, ItemList<ParticulierArtikel> inputList) {
 		super(new ParticulierListController(currency, db, defaultBtw, inputList), currency);
 	}
 }

@@ -2,9 +2,8 @@ package org.rekeningsysteem.ui.header;
 
 import java.util.Optional;
 
+import io.reactivex.rxjava3.core.Observable;
 import org.rekeningsysteem.ui.header.FactuurnummerPane.FactuurnummerType;
-
-import rx.Observable;
 
 public class FactuurnummerController {
 

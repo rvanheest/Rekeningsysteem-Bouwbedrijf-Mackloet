@@ -2,10 +2,9 @@ package org.rekeningsysteem.application.settings.debiteur;
 
 import java.util.Optional;
 
+import io.reactivex.rxjava3.core.Observable;
 import org.rekeningsysteem.data.util.header.Debiteur;
 import org.rekeningsysteem.ui.list.AbstractListItemController;
-
-import rx.Observable;
 
 public class DebiteurItemPaneController extends AbstractListItemController<Debiteur> {
 
@@ -29,14 +28,26 @@ public class DebiteurItemPaneController extends AbstractListItemController<Debit
 	}
 
 	public DebiteurItemPaneController(Optional<Integer> debiteurID, DebiteurItemPane ui) {
-		super(ui, Observable.combineLatest(ui.getNaam(), ui.getStraat(), ui.getNummer(),
-				ui.getPostcode(), ui.getPlaats(), ui.getBtwnummer(),
-				(naam, straat, nummer, postcode, plaats, btw) -> new Debiteur(debiteurID,
-						naam, straat, nummer, postcode, plaats, btw))
+		super(
+			ui,
+			getDebiteurObservable(debiteurID, ui)
 				.sample(ui.getAddButtonEvent())
 				.map(Optional::of)
 				.mergeWith(ui.getCancelButtonEvent().map(event -> Optional.empty()))
-				.first());
+				.firstElement()
+		);
+	}
+
+	private static Observable<Debiteur> getDebiteurObservable(Optional<Integer> debiteurID, DebiteurItemPane ui) {
+		return Observable.combineLatest(
+			ui.getNaam(),
+			ui.getStraat(),
+			ui.getNummer(),
+			ui.getPostcode(),
+			ui.getPlaats(),
+			ui.getBtwnummer(),
+			(naam, straat, nummer, postcode, plaats, btw) -> new Debiteur(debiteurID, naam, straat, nummer, postcode, plaats, btw)
+		);
 	}
 
 	public DebiteurItemPane getUI() {

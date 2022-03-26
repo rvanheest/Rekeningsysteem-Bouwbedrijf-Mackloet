@@ -13,7 +13,6 @@ import org.rekeningsysteem.data.particulier.loon.ProductLoon;
 import org.rekeningsysteem.data.util.BtwPercentage;
 import org.rekeningsysteem.ui.list.AbstractListPane;
 import org.rekeningsysteem.ui.list.BtwPercentageCell;
-import org.rekeningsysteem.ui.list.DoubleCell;
 import org.rekeningsysteem.ui.list.MoneyCell;
 import org.rekeningsysteem.ui.particulier.ParticulierListPane.ParticulierModel;
 

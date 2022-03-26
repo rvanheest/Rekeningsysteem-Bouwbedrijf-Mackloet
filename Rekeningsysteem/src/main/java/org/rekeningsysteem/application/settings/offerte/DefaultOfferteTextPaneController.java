@@ -19,24 +19,21 @@ public class DefaultOfferteTextPaneController {
 
 		this.handler.getDefaultText().subscribe(this.ui::setText);
 
-		this.ui.getText()
-				.sample(this.ui.getSaveButtonEvent())
-				.compose(this.handler::setDefaultText)
-				.observeOn(JavaFxScheduler.getInstance())
-				.doOnError(e -> {
-					String alertText = "De tekst kon niet worden opgeslagen. "
-							+ "Zie de log voor meer info.";
-					ButtonType close = new ButtonType("Sluit", ButtonData.CANCEL_CLOSE);
-					Alert alert = new Alert(AlertType.NONE, alertText, close);
-					alert.setHeaderText("Fout bij opslaan");
-					alert.show();
-					logger.error(e.getMessage(), e);
-				})
-				.subscribe();
+		this.handler.setDefaultText(this.ui.getText().sample(this.ui.getSaveButtonEvent()))
+			.observeOn(JavaFxScheduler.getInstance())
+			.doOnError(e -> {
+				String alertText = "De tekst kon niet worden opgeslagen. Zie de log voor meer info.";
+				ButtonType close = new ButtonType("Sluit", ButtonData.CANCEL_CLOSE);
+				Alert alert = new Alert(AlertType.NONE, alertText, close);
+				alert.setHeaderText("Fout bij opslaan");
+				alert.show();
+				logger.error(e.getMessage(), e);
+			})
+			.subscribe();
 
 		this.ui.getCancelButtonEvent()
-				.flatMap(e -> this.handler.getDefaultText())
-				.subscribe(this.ui::setText);
+			.flatMapMaybe(e -> this.handler.getDefaultText())
+			.subscribe(this.ui::setText);
 	}
 
 	public DefaultOfferteTextPane getUI() {

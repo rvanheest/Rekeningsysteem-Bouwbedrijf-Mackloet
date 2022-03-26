@@ -1,5 +1,8 @@
 package org.rekeningsysteem.ui.textfields.searchbox;
 
+import io.reactivex.rxjava3.core.BackpressureStrategy;
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.subjects.PublishSubject;
 import javafx.event.ActionEvent;
 import javafx.geometry.Side;
 import javafx.geometry.Point2D;
@@ -17,17 +20,13 @@ import javafx.stage.WindowEvent;
 import org.rekeningsysteem.rxjavafx.JavaFxScheduler;
 import org.rekeningsysteem.rxjavafx.Observables;
 
-import rx.Observable;
-import rx.subjects.PublishSubject;
-
 public abstract class AbstractSearchBox<T> extends Region {
 
 	private final TextField textBox = new TextField();
 	private final Button clearButton = new Button();
 	final ContextMenu contextMenu = new ContextMenu();
 
-	private final Observable<String> textProperty = Observables.fromProperty(this.textBox
-			.textProperty());
+	private final Observable<String> textProperty = Observables.fromProperty(this.textBox.textProperty());
 	final PublishSubject<T> selectedItem = PublishSubject.create();
 
 	// info popup
@@ -42,19 +41,19 @@ public abstract class AbstractSearchBox<T> extends Region {
 
 		this.textBox.setPromptText(defaultSearchBoxValue);
 		this.textProperty()
-				.map(String::isEmpty)
-				.map(b -> !b)
-				.subscribe(this.clearButton::setVisible);
+			.map(String::isEmpty)
+			.map(b -> !b)
+			.subscribe(this.clearButton::setVisible);
 
 		Observables.fromNodeEvents(this.clearButton, ActionEvent.ACTION)
-				.doOnNext(e -> this.textBox.setText(""))
-				.subscribe(e -> this.textBox.requestFocus());
+			.doOnNext(e -> this.textBox.setText(""))
+			.subscribe(e -> this.textBox.requestFocus());
 
 		this.getChildren().addAll(this.textBox, this.clearButton);
 
 		this.infoPopup.getContent().add(this.infoBox);
 		Observables.fromNodeEvents(this.contextMenu, WindowEvent.WINDOW_HIDDEN)
-				.subscribe(e -> this.infoPopup.hide());
+			.subscribe(e -> this.infoPopup.hide());
 	}
 
 	@Override
@@ -67,10 +66,11 @@ public abstract class AbstractSearchBox<T> extends Region {
 		this.contextMenu.getItems().clear();
 		this.contextMenu.hide();
 
-		ts.onBackpressureBuffer().observeOn(JavaFxScheduler.getInstance())
-				.doOnNext(this::populateMenu)
-				.doOnCompleted(() -> this.contextMenu.show(this, Side.BOTTOM, 10, -5))
-				.subscribe();
+		ts.toFlowable(BackpressureStrategy.BUFFER)
+			.observeOn(JavaFxScheduler.getInstance())
+			.doOnNext(this::populateMenu)
+			.doOnComplete(() -> this.contextMenu.show(this, Side.BOTTOM, 10, -5))
+			.subscribe();
 	}
 
 	private void populateMenu(T t) {
@@ -83,26 +83,24 @@ public abstract class AbstractSearchBox<T> extends Region {
 		hBox.setFillHeight(true);
 
 		Observables.fromProperty(popRegion.opacityProperty())
-				.map(Number::doubleValue)
-				.filter(d -> d == 1)
-				.subscribeOn(JavaFxScheduler.getInstance()) // used here as a workaround for
-															// RT-14396
-				.doOnNext(d -> this.setTextfields(t))
-				.map(d -> hBox.localToScene(0, 0))
-				.map(hBoxPos -> new Point2D(
-						hBoxPos.getX() + this.contextMenu.getScene().getX()
-								+ this.contextMenu.getX() - this.infoBox.getPrefWidth() - 10,
-						hBoxPos.getY() + this.contextMenu.getScene().getY()
-								+ this.contextMenu.getY() - 10))
-				.forEach(d -> this.infoPopup.show(this.getScene().getWindow(),
-						d.getX(), d.getY()));
+			.skip(1)
+			.map(Number::doubleValue)
+			.filter(d -> d == 1)
+			.subscribeOn(JavaFxScheduler.getInstance()) // used here as a workaround for RT-14396
+			.doOnNext(d -> this.setTextfields(t))
+			.map(d -> hBox.localToScene(0, 0))
+			.map(hBoxPos -> new Point2D(
+				hBoxPos.getX() + this.contextMenu.getScene().getX() + this.contextMenu.getX() - this.infoBox.getPrefWidth() - 10,
+				hBoxPos.getY() + this.contextMenu.getScene().getY() + this.contextMenu.getY() - 10
+			))
+			.subscribe(d -> this.infoPopup.show(this.getScene().getWindow(), d.getX(), d.getY()));
 
 		MenuItem menu = this.createMenuItem(hBox);
 		menu.getStyleClass().add("search-menu-item");
 		this.contextMenu.getItems().add(menu);
 		Observables.fromNodeEvents(menu, ActionEvent.ACTION)
-				.map(event -> t)
-				.subscribe(this.selectedItem);
+			.map(event -> t)
+			.subscribe(this.selectedItem);
 	}
 
 	abstract void setTextfields(T t);
@@ -119,7 +117,7 @@ public abstract class AbstractSearchBox<T> extends Region {
 	}
 
 	public Observable<T> getSelectedItem() {
-		return this.selectedItem.asObservable();
+		return this.selectedItem;
 	}
 
 	public void setText(String value) {

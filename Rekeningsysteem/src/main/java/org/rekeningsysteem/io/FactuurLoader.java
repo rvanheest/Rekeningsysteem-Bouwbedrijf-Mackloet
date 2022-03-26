@@ -2,11 +2,10 @@ package org.rekeningsysteem.io;
 
 import java.io.File;
 
+import io.reactivex.rxjava3.core.Single;
 import org.rekeningsysteem.data.util.AbstractRekening;
-
-import rx.Observable;
 
 public interface FactuurLoader {
 
-	Observable<AbstractRekening> load(File file);
+	Single<AbstractRekening> load(File file);
 }

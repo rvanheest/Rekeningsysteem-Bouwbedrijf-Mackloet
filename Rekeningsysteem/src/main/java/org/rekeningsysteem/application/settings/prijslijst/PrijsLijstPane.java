@@ -1,5 +1,6 @@
 package org.rekeningsysteem.application.settings.prijslijst;
 
+import io.reactivex.rxjava3.core.Observable;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
@@ -8,8 +9,6 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 
 import org.rekeningsysteem.rxjavafx.Observables;
-
-import rx.Observable;
 
 public class PrijsLijstPane extends GridPane {
 

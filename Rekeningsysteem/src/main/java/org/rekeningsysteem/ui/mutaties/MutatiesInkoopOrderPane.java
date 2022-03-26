@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.Currency;
 import java.util.Objects;
 
+import io.reactivex.rxjava3.core.Observable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -14,8 +15,6 @@ import javafx.scene.layout.GridPane;
 import org.rekeningsysteem.rxjavafx.Observables;
 import org.rekeningsysteem.ui.list.ItemPane;
 import org.rekeningsysteem.ui.textfields.MoneyField;
-
-import rx.Observable;
 
 public class MutatiesInkoopOrderPane extends ItemPane {
 
@@ -30,13 +29,13 @@ public class MutatiesInkoopOrderPane extends ItemPane {
 	public MutatiesInkoopOrderPane(Currency currency) {
 		super("Nieuwe mutaties inkooporder");
 		this.prijsTF = new MoneyField(currency);
-		
+
 		this.omschrijving = Observables.fromProperty(this.omschrTF.textProperty());
 		this.ordernummer = Observables.fromProperty(this.ordernrTF.textProperty());
 		this.prijs = Observables.fromProperty(this.prijsTF.valueProperty())
-				.filter(Objects::nonNull)
-				.map(BigDecimal::doubleValue);
-		
+			.filter(Objects::nonNull)
+			.map(BigDecimal::doubleValue);
+
 		this.omschrTF.setPrefColumnCount(20);
 
 		this.getChildren().add(1, this.getContent());
@@ -60,7 +59,7 @@ public class MutatiesInkoopOrderPane extends ItemPane {
 		content.add(this.omschrTF, 1, 0);
 		content.add(this.ordernrTF, 1, 1);
 		content.add(this.prijsTF, 1, 2);
-		
+
 		this.omschrTF.requestFocus();
 
 		return content;

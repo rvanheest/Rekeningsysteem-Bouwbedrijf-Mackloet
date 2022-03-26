@@ -1,11 +1,10 @@
 package org.rekeningsysteem.ui.offerte;
 
+import io.reactivex.rxjava3.core.Observable;
 import javafx.scene.control.TextArea;
 
 import org.rekeningsysteem.rxjavafx.Observables;
 import org.rekeningsysteem.ui.Page;
-
-import rx.Observable;
 
 public class TextPane extends Page {
 

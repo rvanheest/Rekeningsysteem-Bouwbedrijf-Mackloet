@@ -2,14 +2,13 @@ package org.rekeningsysteem.io.xml;
 
 import java.io.File;
 
+import io.reactivex.rxjava3.core.Single;
 import org.apache.logging.log4j.core.Logger;
 import org.rekeningsysteem.data.util.AbstractRekening;
 import org.rekeningsysteem.io.FactuurExporter;
 import org.rekeningsysteem.io.FactuurLoader;
 import org.rekeningsysteem.io.FactuurSaver;
 import org.rekeningsysteem.io.pdf.PdfExporter;
-
-import rx.Observable;
 
 public class IOWorker implements FactuurSaver, FactuurExporter, FactuurLoader {
 
@@ -41,7 +40,7 @@ public class IOWorker implements FactuurSaver, FactuurExporter, FactuurLoader {
 	}
 
 	@Override
-	public Observable<AbstractRekening> load(File file) {
+	public Single<AbstractRekening> load(File file) {
 		return this.loader.load(file)
 				.onErrorResumeNext(t -> this.oldLoader3.load(file))
 				.onErrorResumeNext(t -> this.oldLoader2.load(file))

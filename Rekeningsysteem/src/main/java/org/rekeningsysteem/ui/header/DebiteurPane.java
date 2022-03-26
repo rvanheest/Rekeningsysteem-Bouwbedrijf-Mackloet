@@ -2,6 +2,7 @@ package org.rekeningsysteem.ui.header;
 
 import java.util.Optional;
 
+import io.reactivex.rxjava3.core.Observable;
 import javafx.geometry.Pos;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
@@ -15,8 +16,6 @@ import org.rekeningsysteem.ui.Page;
 import org.rekeningsysteem.ui.textfields.PostcodeTextField;
 import org.rekeningsysteem.ui.textfields.searchbox.AbstractSearchBox;
 import org.rekeningsysteem.util.OptionalUtils;
-
-import rx.Observable;
 
 public class DebiteurPane extends Page {
 

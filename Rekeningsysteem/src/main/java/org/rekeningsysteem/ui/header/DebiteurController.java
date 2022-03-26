@@ -3,15 +3,14 @@ package org.rekeningsysteem.ui.header;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 import org.rekeningsysteem.data.util.header.Debiteur;
 import org.rekeningsysteem.logic.database.DebiteurDBInteraction;
 import org.rekeningsysteem.rxjavafx.JavaFxScheduler;
 import org.rekeningsysteem.ui.textfields.searchbox.AbstractSearchBox;
 import org.rekeningsysteem.ui.textfields.searchbox.DebiteurSearchBox;
 import org.rekeningsysteem.ui.textfields.searchbox.SearchBoxController;
-
-import rx.Observable;
-import rx.schedulers.Schedulers;
 
 public class DebiteurController {
 
@@ -40,38 +39,43 @@ public class DebiteurController {
 		this.searchBoxController = new SearchBoxController<>(ui);
 		this.ui = uiFactory.apply(this.searchBoxController.getUI());
 		this.saveDebiteur = this.ui.isSaveSelected();
-		this.model = Observable.combineLatest(this.ui.getNaam(), this.ui.getStraat(),
-				this.ui.getNummer(), this.ui.getPostcode(), this.ui.getPlaats(),
-				this.ui.getBtwnummer(), Debiteur::new)
-				.publish(debs -> {
-					debs.skip(1).subscribe(d -> this.ui.setSaveSelected(true));
-					return debs;
-				});
+		this.model = Observable.combineLatest(
+				this.ui.getNaam(),
+				this.ui.getStraat(),
+				this.ui.getNummer(),
+				this.ui.getPostcode(),
+				this.ui.getPlaats(),
+				this.ui.getBtwnummer(),
+				Debiteur::new)
+			.publish(debs -> {
+				debs.skip(1).subscribe(d -> this.ui.setSaveSelected(true));
+				return debs;
+			});
 
 		ui.textProperty()
-				.throttleWithTimeout(300, TimeUnit.MILLISECONDS, JavaFxScheduler.getInstance())
-				.publish(text -> text.filter(s -> s.length() < 2)
-							.doOnNext(s -> ui.hideContextMenu())
-							.switchMap(s -> text)
-							.filter(s -> s.length() >= 2)
-							.observeOn(Schedulers.io())
-							.map(db::getWithNaam)
-							.observeOn(JavaFxScheduler.getInstance())
-							.doOnNext(ui::populateMenu))
-				.subscribe();
+			.throttleWithTimeout(300, TimeUnit.MILLISECONDS, JavaFxScheduler.getInstance())
+			.publish(text -> text.filter(s -> s.length() < 2)
+				.doOnNext(s -> ui.hideContextMenu())
+				.switchMap(s -> text)
+				.filter(s -> s.length() >= 2)
+				.observeOn(Schedulers.io())
+				.map(db::getWithNaam)
+				.observeOn(JavaFxScheduler.getInstance())
+				.doOnNext(ui::populateMenu))
+			.subscribe();
 
 		ui.getSelectedItem()
-				.subscribe(debiteur -> {
-					this.ui.setNaam(debiteur.getNaam());
-					this.ui.setStraat(debiteur.getStraat());
-					this.ui.setNummer(debiteur.getNummer());
-					this.ui.setPostcode(debiteur.getPostcode());
-					this.ui.setPlaats(debiteur.getPlaats());
-					this.ui.setBtwNummer(debiteur.getBtwNummer().orElse(""));
+			.subscribe(debiteur -> {
+				this.ui.setNaam(debiteur.getNaam());
+				this.ui.setStraat(debiteur.getStraat());
+				this.ui.setNummer(debiteur.getNummer());
+				this.ui.setPostcode(debiteur.getPostcode());
+				this.ui.setPlaats(debiteur.getPlaats());
+				this.ui.setBtwNummer(debiteur.getBtwNummer().orElse(""));
 
-					ui.clear();
-					this.ui.setSaveSelected(false);
-				});
+				ui.clear();
+				this.ui.setSaveSelected(false);
+			});
 	}
 
 	public DebiteurPane getUI() {

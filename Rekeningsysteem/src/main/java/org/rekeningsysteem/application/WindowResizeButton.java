@@ -1,5 +1,6 @@
 package org.rekeningsysteem.application;
 
+import io.reactivex.rxjava3.core.Observable;
 import javafx.geometry.Point2D;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.input.MouseEvent;
@@ -8,8 +9,6 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 import org.rekeningsysteem.rxjavafx.Observables;
-
-import rx.Observable;
 
 public class WindowResizeButton extends Region {
 
@@ -35,7 +34,7 @@ public class WindowResizeButton extends Region {
 				(press, dragg, bound) -> new Point2D(
 						Math.min(bound.getMaxX(), dragg.getX() + press.getX()),
 						Math.min(bound.getMaxY(), dragg.getY() + press.getY())))
-				.forEach(point -> {
+				.subscribe(point -> {
 					stage.setWidth(Math.max(stageMinWidth, point.getX() - stage.getX()));
 					stage.setHeight(Math.max(stageMinHeight, point.getY() - stage.getY()));
 				});

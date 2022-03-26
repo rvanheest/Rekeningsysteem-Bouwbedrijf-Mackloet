@@ -1,7 +1,5 @@
 package org.rekeningsysteem.test.io.xml;
 
-import static org.junit.Assert.assertEquals;
-
 import java.io.File;
 import java.time.LocalDate;
 import java.util.Currency;
@@ -23,7 +21,6 @@ import org.rekeningsysteem.data.particulier.ParticulierFactuur;
 import org.rekeningsysteem.data.particulier.loon.ProductLoon;
 import org.rekeningsysteem.data.reparaties.ReparatiesInkoopOrder;
 import org.rekeningsysteem.data.reparaties.ReparatiesFactuur;
-import org.rekeningsysteem.data.util.AbstractRekening;
 import org.rekeningsysteem.data.util.BtwPercentage;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.data.util.ItemList;
@@ -31,19 +28,16 @@ import org.rekeningsysteem.data.util.header.Debiteur;
 import org.rekeningsysteem.data.util.header.FactuurHeader;
 import org.rekeningsysteem.data.util.header.OmschrFactuurHeader;
 import org.rekeningsysteem.io.xml.XmlReader1;
-import rx.observers.TestSubscriber;
 
 public class XmlReader1Test {
 
 	private XmlReader1 reader;
 	private DocumentBuilder builder;
-	private TestSubscriber<? super AbstractRekening> testObserver;
 
 	@Before
 	public void setUp() throws ParserConfigurationException {
 		this.builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 		this.reader = new XmlReader1(this.builder);
-		this.testObserver = new TestSubscriber<>();
 	}
 
 	@Test
@@ -67,13 +61,11 @@ public class XmlReader1Test {
 		ParticulierFactuur expected = new ParticulierFactuur(factuurHeader,
 				Currency.getInstance("EUR"), itemList);
 
-		this.reader.load(file).subscribe(this.testObserver);
-		
-		this.testObserver.awaitTerminalEvent();
-		this.testObserver.assertValue(expected);
-		this.testObserver.assertNoErrors();
-		this.testObserver.assertCompleted();
-		this.testObserver.assertUnsubscribed();
+		this.reader.load(file)
+			.test()
+			.assertValue(expected)
+			.assertNoErrors()
+			.assertComplete();
 	}
 
 	@Test
@@ -95,13 +87,11 @@ public class XmlReader1Test {
 		ParticulierFactuur expected = new ParticulierFactuur(factuurHeader,
 				Currency.getInstance("EUR"), itemList);
 
-		this.reader.load(file).subscribe(this.testObserver);
-
-		this.testObserver.awaitTerminalEvent();
-		this.testObserver.assertValue(expected);
-		this.testObserver.assertNoErrors();
-		this.testObserver.assertCompleted();
-		this.testObserver.assertUnsubscribed();
+		this.reader.load(file)
+			.test()
+			.assertValue(expected)
+			.assertNoErrors()
+			.assertComplete();
 	}
 
 	@Test
@@ -122,13 +112,11 @@ public class XmlReader1Test {
 		ParticulierFactuur expected = new ParticulierFactuur(factuurHeader,
 				Currency.getInstance("EUR"), itemList);
 
-		this.reader.load(file).subscribe(this.testObserver);
-
-		this.testObserver.awaitTerminalEvent();
-		this.testObserver.assertValue(expected);
-		this.testObserver.assertNoErrors();
-		this.testObserver.assertCompleted();
-		this.testObserver.assertUnsubscribed();
+		this.reader.load(file)
+			.test()
+			.assertValue(expected)
+			.assertNoErrors()
+			.assertComplete();
 	}
 
 	@Test
@@ -145,13 +133,11 @@ public class XmlReader1Test {
 		MutatiesFactuur expected = new MutatiesFactuur(factuurHeader,
 				Currency.getInstance("EUR"), itemList);
 
-		this.reader.load(file).subscribe(this.testObserver);
-
-		this.testObserver.awaitTerminalEvent();
-		this.testObserver.assertValue(expected);
-		this.testObserver.assertNoErrors();
-		this.testObserver.assertCompleted();
-		this.testObserver.assertUnsubscribed();
+		this.reader.load(file)
+			.test()
+			.assertValue(expected)
+			.assertNoErrors()
+			.assertComplete();
 	}
 
 	@Test
@@ -168,13 +154,11 @@ public class XmlReader1Test {
 		ReparatiesFactuur expected = new ReparatiesFactuur(factuurHeader,
 				Currency.getInstance("EUR"), itemList);
 
-		this.reader.load(file).subscribe(this.testObserver);
-
-		this.testObserver.awaitTerminalEvent();
-		this.testObserver.assertValue(expected);
-		this.testObserver.assertNoErrors();
-		this.testObserver.assertCompleted();
-		this.testObserver.assertUnsubscribed();
+		this.reader.load(file)
+			.test()
+			.assertValue(expected)
+			.assertNoErrors()
+			.assertComplete();
 	}
 
 	@Test
@@ -186,12 +170,10 @@ public class XmlReader1Test {
 				LocalDate.of(2012, 8, 24), "62012");
 		Offerte expected = new Offerte(factuurHeader, "dsafsdkljfaskljfpoj", true);
 
-		this.reader.load(file).subscribe(this.testObserver);
-
-		this.testObserver.awaitTerminalEvent();
-		this.testObserver.assertValue(expected);
-		this.testObserver.assertNoErrors();
-		this.testObserver.assertCompleted();
-		this.testObserver.assertUnsubscribed();
+		this.reader.load(file)
+			.test()
+			.assertValue(expected)
+			.assertNoErrors()
+			.assertComplete();
 	}
 }

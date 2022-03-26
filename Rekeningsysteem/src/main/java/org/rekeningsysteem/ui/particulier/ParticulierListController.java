@@ -21,14 +21,12 @@ public class ParticulierListController extends AbstractListController<Particulie
 		this(currency, db, defaultBtw, new ParticulierListPane());
 	}
 
-	public ParticulierListController(Currency currency, Database db, BtwPercentages defaultBtw,
-			List<ParticulierArtikel> input) {
+	public ParticulierListController(Currency currency, Database db, BtwPercentages defaultBtw, List<ParticulierArtikel> input) {
 		this(currency, db, defaultBtw);
 		this.getUI().setData(this.modelToUI(input));
 	}
 
-	public ParticulierListController(Currency currency, Database db, BtwPercentages defaultBtw,
-			ParticulierListPane ui) {
+	public ParticulierListController(Currency currency, Database db, BtwPercentages defaultBtw, ParticulierListPane ui) {
 		super(currency, db, defaultBtw, ui, ParticulierArtikelController::new);
 	}
 
@@ -36,21 +34,17 @@ public class ParticulierListController extends AbstractListController<Particulie
 	protected List<ParticulierModel> modelToUI(List<ParticulierArtikel> list) {
 		return list.stream().map(item -> {
 			if (item instanceof GebruiktEsselinkArtikel) {
-				GebruiktEsselinkArtikel artikel = (GebruiktEsselinkArtikel) item;
-				return new ParticulierModel(artikel);
+				return new ParticulierModel((GebruiktEsselinkArtikel) item);
 			}
 			else if (item instanceof AnderArtikel) {
-    			AnderArtikel artikel = (AnderArtikel) item;
-    			return new ParticulierModel(artikel);
+				return new ParticulierModel((AnderArtikel) item);
 			}
 			else if (item instanceof InstantLoon) {
-				InstantLoon loon = (InstantLoon) item;
-				return new ParticulierModel(loon);
+				return new ParticulierModel((InstantLoon) item);
 			}
 			else {
 				assert item instanceof ProductLoon;
-				ProductLoon loon = (ProductLoon) item;
-				return new ParticulierModel(loon);
+				return new ParticulierModel((ProductLoon) item);
 			}
 		}).collect(Collectors.toList());
 	}

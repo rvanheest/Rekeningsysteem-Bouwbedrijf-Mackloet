@@ -2,6 +2,7 @@ package org.rekeningsysteem.application.settings.debiteur;
 
 import java.util.Optional;
 
+import io.reactivex.rxjava3.core.Observable;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -11,8 +12,6 @@ import org.rekeningsysteem.rxjavafx.Observables;
 import org.rekeningsysteem.ui.list.ItemPane;
 import org.rekeningsysteem.ui.textfields.PostcodeTextField;
 import org.rekeningsysteem.util.OptionalUtils;
-
-import rx.Observable;
 
 public class DebiteurItemPane extends ItemPane {
 

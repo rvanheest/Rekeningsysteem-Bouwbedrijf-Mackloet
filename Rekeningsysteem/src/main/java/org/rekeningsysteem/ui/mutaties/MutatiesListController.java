@@ -28,16 +28,22 @@ public class MutatiesListController extends AbstractListController<MutatiesInkoo
 	@Override
 	protected List<MutatiesModel> modelToUI(List<MutatiesInkoopOrder> list) {
 		return list.stream()
-				.map(item -> new MutatiesModel(item.getOmschrijving(),
-						item.getInkoopOrderNummer(), item.getMateriaal().getBedrag()))
-				.collect(Collectors.toList());
+			.map(item -> new MutatiesModel(
+				item.getOmschrijving(),
+				item.getInkoopOrderNummer(),
+				item.getMateriaal().getBedrag()
+			))
+			.collect(Collectors.toList());
 	}
 
 	@Override
 	protected ItemList<MutatiesInkoopOrder> uiToModel(List<? extends MutatiesModel> list) {
 		return list.stream()
-				.map(item -> new MutatiesInkoopOrder(item.getOmschrijving(),
-						item.getOrdernummer(), new Geld(item.getPrijs())))
-				.collect(Collectors.toCollection(ItemList::new));
+			.map(item -> new MutatiesInkoopOrder(
+				item.getOmschrijving(),
+				item.getOrdernummer(),
+				new Geld(item.getPrijs())
+			))
+			.collect(Collectors.toCollection(ItemList::new));
 	}
 }

@@ -6,7 +6,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.Callable;
 
+import io.reactivex.rxjava3.core.Observable;
 import javafx.event.ActionEvent;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
@@ -41,9 +43,6 @@ import org.rekeningsysteem.ui.offerte.OfferteController;
 import org.rekeningsysteem.ui.particulier.ParticulierController;
 import org.rekeningsysteem.ui.reparaties.ReparatiesController;
 
-import rx.Observable;
-import rx.functions.Func0;
-
 public class MainPane extends BorderPane {
 
 	private final Database database;
@@ -52,7 +51,7 @@ public class MainPane extends BorderPane {
 	private final StackPane centerPane;
 	private final RekeningTabpane tabpane;
 	private SettingsPane settingsPane = null;
-	private final Func0<SettingsPane> settingsPaneFactory;
+	private final Callable<SettingsPane> settingsPaneFactory;
 
 	private final Button mutaties = new Button();
 	private final Button reparaties = new Button();
@@ -100,8 +99,7 @@ public class MainPane extends BorderPane {
 
 		this.toolbar = new RekeningToolbar(toolbarButtons.toArray(new Node[0]));
 		this.tabpane = new RekeningTabpane();
-		this.settingsPaneFactory = () -> new SettingsPane(stage, this.settings, this.database,
-				logger);
+		this.settingsPaneFactory = () -> new SettingsPane(stage, this.settings, this.database, logger);
 		this.centerPane = new StackPane(this.tabpane);
 
 		this.setTop(this.toolbar);
@@ -122,135 +120,140 @@ public class MainPane extends BorderPane {
 		setGraphic(this.settings, "/images/settings.png");
 	}
 
-    private static void setGraphic(Labeled node, String url) {
-        String resource = Main.getResource(url);
-        Image image = new Image(resource, 20, 23, false, false);
-        ImageView view = new ImageView(image);
-        node.setGraphic(view);
-    }
+	private static void setGraphic(Labeled node, String url) {
+		String resource = Main.getResource(url);
+		Image image = new Image(resource, 20, 23, false, false);
+		ImageView view = new ImageView(image);
+		node.setGraphic(view);
+	}
 
 	private void initButtonHandlers(Stage stage, Logger logger) {
 		this.initMutatiesObservable()
-				.mergeWith(this.initReparatiesObservable())
-				.mergeWith(this.initParticulierObservable())
-				.mergeWith(this.initOfferteObservable(logger))
-				.mergeWith(this.initOpenObservable(stage))
-				.retry()
-				.subscribe(tab -> {
-					this.tabpane.addTab(tab);
-					this.tabpane.selectTab(tab);
-				});
+			.mergeWith(this.initReparatiesObservable())
+			.mergeWith(this.initParticulierObservable())
+			.mergeWith(this.initOfferteObservable(logger))
+			.mergeWith(this.initOpenObservable(stage))
+			.retry()
+			.subscribe(tab -> {
+				this.tabpane.addTab(tab);
+				this.tabpane.selectTab(tab);
+			});
 
 		this.initSaveObservable()
-				.flatMap(tab -> tab.getModel()
-							.first()
-							.map(rekening -> rekening instanceof Offerte)
-							.doOnNext(isOfferte -> {
-								if (!tab.getSaveFile().isPresent()) {
-									if (isOfferte) {
-										this.showSaveFileChooserOfferte(stage).ifPresent(file -> {
-											this.saveLastSaveLocationOfferteProperty(file);
-											tab.setSaveFile(file);
-											tab.initFactuurnummer();
-										});
-									}
-									else {
-										this.showSaveFileChooser(stage).ifPresent(file -> {
-											this.saveLastSaveLocationProperty(file);
-											tab.setSaveFile(file);
-											tab.initFactuurnummer();
-										});
-									}
-								}
-							}), (tab, isOfferte) -> tab)
-				.filter(tab -> tab.getSaveFile().isPresent())
-				.subscribe(RekeningTab::save);
+			.flatMapMaybe(tab -> tab.getModel()
+				.firstElement()
+				.map(rekening -> rekening instanceof Offerte)
+				.doOnSuccess(isOfferte -> {
+					if (!tab.getSaveFile().isPresent()) {
+						if (isOfferte) {
+							this.showSaveFileChooserOfferte(stage).ifPresent(file -> {
+								this.saveLastSaveLocationOfferteProperty(file);
+								tab.setSaveFile(file);
+								tab.initFactuurnummer();
+							});
+						}
+						else {
+							this.showSaveFileChooser(stage).ifPresent(file -> {
+								this.saveLastSaveLocationProperty(file);
+								tab.setSaveFile(file);
+								tab.initFactuurnummer();
+							});
+						}
+					}
+				})
+				.map(isOfferte -> tab)
+			)
+			.filter(tab -> tab.getSaveFile().isPresent())
+			.subscribe(RekeningTab::save);
 
 		this.initExportObservable()
-				.flatMap(tab -> tab.getModel()
-						.first()
-						.map(rekening -> rekening instanceof Offerte)
-						.doOnNext(isOfferte -> {
-							if (!tab.getSaveFile().isPresent()) {
-								if (isOfferte) {
-									this.showSaveFileChooserOfferte(stage).ifPresent(file -> {
-										this.saveLastSaveLocationOfferteProperty(file);
-										tab.setSaveFile(file);
-										tab.initFactuurnummer();
-									});
-								}
-								else {
-									this.showSaveFileChooser(stage).ifPresent(file -> {
-										this.saveLastSaveLocationProperty(file);
-										tab.setSaveFile(file);
-										tab.initFactuurnummer();
-									});
-								}
-								tab.save();
-							}
-						}), (tab, isOfferte) -> tab)
-				.subscribe(tab -> this.showExportFileChooser(stage).ifPresent(file -> {
-					this.saveLastSaveLocationProperty(file);
-					try {
-						tab.export(file);
-					}
-					catch (PdfException exception) {
-						if (file.toString().contains("  ")) {
-							// LaTeX doesn't like double spaces in the file name
-							String alertText = "De PDF kon niet worden gegenereerd. De bestandsnaam bevat 2 " 
-								+ "opeenvolgende spaties. Pas dit aan en probeer opnieuw.";
-							ButtonType close = new ButtonType("Sluit", ButtonBar.ButtonData.CANCEL_CLOSE);
-							Alert alert = new Alert(Alert.AlertType.ERROR, alertText, close);
-							alert.setHeaderText("Fout bij PDF genereren");
-							alert.show();
+			.flatMapMaybe(tab -> tab.getModel()
+				.firstElement()
+				.map(rekening -> rekening instanceof Offerte)
+				.doOnSuccess(isOfferte -> {
+					if (!tab.getSaveFile().isPresent()) {
+						if (isOfferte) {
+							this.showSaveFileChooserOfferte(stage).ifPresent(file -> {
+								this.saveLastSaveLocationOfferteProperty(file);
+								tab.setSaveFile(file);
+								tab.initFactuurnummer();
+							});
 						}
-						this.logger.error(exception.getMessage(), exception);
+						else {
+							this.showSaveFileChooser(stage).ifPresent(file -> {
+								this.saveLastSaveLocationProperty(file);
+								tab.setSaveFile(file);
+								tab.initFactuurnummer();
+							});
+						}
+						tab.save();
 					}
-				}));
+				})
+				.map(isOfferte -> tab)
+			)
+			.subscribe(tab -> this.showExportFileChooser(stage).ifPresent(file -> {
+				this.saveLastSaveLocationProperty(file);
+				try {
+					tab.export(file);
+				}
+				catch (PdfException exception) {
+					if (file.toString().contains("  ")) {
+						// LaTeX doesn't like double spaces in the file name
+						String alertText = "De PDF kon niet worden gegenereerd. De bestandsnaam bevat 2 "
+							+ "opeenvolgende spaties. Pas dit aan en probeer opnieuw.";
+						ButtonType close = new ButtonType("Sluit", ButtonBar.ButtonData.CANCEL_CLOSE);
+						Alert alert = new Alert(Alert.AlertType.ERROR, alertText, close);
+						alert.setHeaderText("Fout bij PDF genereren");
+						alert.show();
+					}
+					this.logger.error(exception.getMessage(), exception);
+				}
+			}));
 
 		Observables.fromProperty(this.settings.selectedProperty())
-				.subscribe(selected -> {
-					if (selected) {
-						assert this.settingsPane == null;
-						this.settingsPane = this.settingsPaneFactory.call();
-						this.centerPane.getChildren().add(this.settingsPane);
-					}
-					else {
-						assert this.settingsPane != null;
-						this.centerPane.getChildren().remove(this.settingsPane);
-						this.settingsPane = null;
-					}
-					
-					this.mutaties.setDisable(selected);
-					this.reparaties.setDisable(selected);
-					this.particulier.setDisable(selected);
-					this.offerte.setDisable(selected);
-					this.open.setDisable(selected);
-				});
+			.subscribe(selected -> {
+				if (selected) {
+					assert this.settingsPane == null;
+					this.settingsPane = this.settingsPaneFactory.call();
+					this.centerPane.getChildren().add(this.settingsPane);
+				}
+				else {
+					assert this.settingsPane != null;
+					this.centerPane.getChildren().remove(this.settingsPane);
+					this.settingsPane = null;
+				}
 
-		Observable.combineLatest(Observables.fromObservableList(this.tabpane.getTabs())
-				.map(List::isEmpty),
+				this.mutaties.setDisable(selected);
+				this.reparaties.setDisable(selected);
+				this.particulier.setDisable(selected);
+				this.offerte.setDisable(selected);
+				this.open.setDisable(selected);
+			});
+
+		Observable.combineLatest(
+				Observables.fromObservableList(this.tabpane.getTabs()).map(List::isEmpty),
 				Observables.fromProperty(this.settings.selectedProperty()),
-				(Boolean listEmpty, Boolean settingsSelected) -> listEmpty || settingsSelected)
-				.forEach(disable -> {
-					this.save.setDisable(disable);
-					this.pdf.setDisable(disable);
-				});
+				(Boolean listEmpty, Boolean settingsSelected) -> listEmpty || settingsSelected
+			)
+			.subscribe(disable -> {
+				this.save.setDisable(disable);
+				this.pdf.setDisable(disable);
+			});
 	}
 
 	private void saveLastSaveLocationProperty(File file) {
 		this.properties.setProperty(PropertyModelEnum.LAST_SAVE_LOCATION,
-				file.getParentFile().getPath());
+			file.getParentFile().getPath());
 	}
 
 	private void saveLastSaveLocationOfferteProperty(File file) {
 		this.properties.setProperty(PropertyModelEnum.LAST_SAVE_LOCATION_OFFERTE,
-				file.getParentFile().getPath());
+			file.getParentFile().getPath());
 	}
 
 	private Observable<File> showOpenFileChooser(Stage stage) {
 		File initDir = new File(this.properties.getProperty(PropertyModelEnum.LAST_SAVE_LOCATION)
-				.orElse(System.getProperty("user.dir")));
+			.orElse(System.getProperty("user.dir")));
 
 		if (!initDir.exists()) {
 			initDir = new File(System.getProperty("user.dir"));
@@ -262,12 +265,12 @@ public class MainPane extends BorderPane {
 		chooser.getExtensionFilters().addAll(new ExtensionFilter("XML, PDF", "*.xml", "*.pdf"));
 
 		return Observable.just(chooser.showOpenDialog(stage))
-				.filter(Objects::nonNull);
+			.filter(Objects::nonNull);
 	}
 
 	private Optional<File> showSaveFileChooser(PropertyKey key, Stage stage) {
 		File initDir = new File(this.properties.getProperty(key)
-				.orElse(System.getProperty("user.dir")));
+			.orElse(System.getProperty("user.dir")));
 
 		if (!initDir.exists()) {
 			initDir = new File(System.getProperty("user.dir"));
@@ -280,7 +283,7 @@ public class MainPane extends BorderPane {
 
 		return Optional.ofNullable(chooser.showSaveDialog(stage));
 	}
-	
+
 	private Optional<File> showSaveFileChooser(Stage stage) {
 		return this.showSaveFileChooser(PropertyModelEnum.LAST_SAVE_LOCATION, stage);
 	}
@@ -291,7 +294,7 @@ public class MainPane extends BorderPane {
 
 	private Optional<File> showExportFileChooser(Stage stage) {
 		File initDir = new File(this.properties.getProperty(PropertyModelEnum.LAST_SAVE_LOCATION)
-				.orElse(System.getProperty("user.dir")));
+			.orElse(System.getProperty("user.dir")));
 
 		if (!initDir.exists()) {
 			initDir = new File(System.getProperty("user.dir"));
@@ -301,9 +304,9 @@ public class MainPane extends BorderPane {
 		chooser.setTitle("Exporteer een factuur");
 		chooser.setInitialDirectory(initDir);
 		chooser.setInitialFileName(this.tabpane.getSelectedTab().getSaveFile()
-				.map(file -> file.getName())
-				.map(s -> s.substring(0, s.length() - 3) + "pdf")
-				.orElse(""));
+			.map(File::getName)
+			.map(s -> s.substring(0, s.length() - 3) + "pdf")
+			.orElse(""));
 
 		chooser.getExtensionFilters().addAll(new ExtensionFilter("PDF", "*.pdf"));
 
@@ -312,38 +315,38 @@ public class MainPane extends BorderPane {
 
 	private Observable<RekeningTab> initMutatiesObservable() {
 		return Observables.fromNodeEvents(this.mutaties, ActionEvent.ACTION)
-				.map(event -> new RekeningTab("Mutaties factuur", new MutatiesController(this.database), this.database));
+			.map(event -> new RekeningTab("Mutaties factuur", new MutatiesController(this.database), this.database));
 	}
 
 	private Observable<RekeningTab> initReparatiesObservable() {
 		return Observables.fromNodeEvents(this.reparaties, ActionEvent.ACTION)
-				.map(event -> new RekeningTab("Reparaties factuur", new ReparatiesController(this.database), this.database));
+			.map(event -> new RekeningTab("Reparaties factuur", new ReparatiesController(this.database), this.database));
 	}
 
 	private Observable<RekeningTab> initParticulierObservable() {
 		return Observables.fromNodeEvents(this.particulier, ActionEvent.ACTION)
-				.map(event -> new RekeningTab("Particulier factuur", new ParticulierController(this.database), this.database));
+			.map(event -> new RekeningTab("Particulier factuur", new ParticulierController(this.database), this.database));
 	}
 
 	private Observable<RekeningTab> initOfferteObservable(Logger logger) {
 		return Observables.fromNodeEvents(this.offerte, ActionEvent.ACTION)
-				.map(event -> new RekeningTab("Offerte", new OfferteController(this.database, logger), this.database));
+			.map(event -> new RekeningTab("Offerte", new OfferteController(this.database, logger), this.database));
 	}
 
 	private Observable<RekeningTab> initOpenObservable(Stage stage) {
 		return Observables.fromNodeEvents(this.open, ActionEvent.ACTION)
-				.flatMap(event -> this.showOpenFileChooser(stage))
-				.doOnNext(this::saveLastSaveLocationProperty)
-				.flatMap(file -> RekeningTab.openFile(file, this.database));
+			.flatMap(event -> this.showOpenFileChooser(stage))
+			.doOnNext(this::saveLastSaveLocationProperty)
+			.flatMapMaybe(file -> RekeningTab.openFile(file, this.database));
 	}
 
 	private Observable<RekeningTab> initSaveObservable() {
 		return Observables.fromNodeEvents(this.save, ActionEvent.ACTION)
-				.map(event -> this.tabpane.getSelectedTab());
+			.map(event -> this.tabpane.getSelectedTab());
 	}
 
 	private Observable<RekeningTab> initExportObservable() {
 		return Observables.fromNodeEvents(this.pdf, ActionEvent.ACTION)
-				.map(event -> this.tabpane.getSelectedTab());
+			.map(event -> this.tabpane.getSelectedTab());
 	}
 }

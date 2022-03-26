@@ -1,17 +1,15 @@
 package org.rekeningsysteem.ui.offerte;
 
+import io.reactivex.rxjava3.core.Observable;
 import javafx.scene.control.CheckBox;
 
 import org.rekeningsysteem.rxjavafx.Observables;
 import org.rekeningsysteem.ui.Page;
 
-import rx.Observable;
-
 public class OndertekenenPane extends Page {
 
 	private final CheckBox checkbox = new CheckBox("ondertekenen");
-	private final Observable<Boolean> ondertekenen = Observables
-			.fromProperty(this.checkbox.selectedProperty());
+	private final Observable<Boolean> ondertekenen = Observables.fromProperty(this.checkbox.selectedProperty());
 
 	public OndertekenenPane() {
 		super("Ondertekenen");

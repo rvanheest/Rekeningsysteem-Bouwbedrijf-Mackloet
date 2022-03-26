@@ -3,12 +3,11 @@ package org.rekeningsysteem.ui.header;
 import java.util.Objects;
 import java.util.Optional;
 
+import io.reactivex.rxjava3.core.Observable;
 import javafx.scene.control.Label;
 
 import org.rekeningsysteem.rxjavafx.Observables;
 import org.rekeningsysteem.ui.Page;
-
-import rx.Observable;
 
 public class FactuurnummerPane extends Page {
 

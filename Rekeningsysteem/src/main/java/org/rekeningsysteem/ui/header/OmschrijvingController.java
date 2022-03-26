@@ -1,6 +1,6 @@
 package org.rekeningsysteem.ui.header;
 
-import rx.Observable;
+import io.reactivex.rxjava3.core.Observable;
 
 public class OmschrijvingController {
 

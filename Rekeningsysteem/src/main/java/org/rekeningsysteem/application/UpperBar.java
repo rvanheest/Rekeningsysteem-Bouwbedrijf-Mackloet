@@ -1,5 +1,6 @@
 package org.rekeningsysteem.application;
 
+import io.reactivex.rxjava3.core.Observable;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
@@ -14,8 +15,6 @@ import javafx.scene.layout.VBox;
 import org.rekeningsysteem.properties.PropertiesWorker;
 import org.rekeningsysteem.properties.PropertyModelEnum;
 import org.rekeningsysteem.rxjavafx.Observables;
-
-import rx.Observable;
 
 public class UpperBar extends ToolBar {
 

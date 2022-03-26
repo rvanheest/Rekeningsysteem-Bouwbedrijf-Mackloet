@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -12,10 +14,6 @@ import org.junit.rules.TemporaryFolder;
 import org.rekeningsysteem.application.versioning.V04AlphaQueries;
 import org.rekeningsysteem.application.versioning.VersionControl;
 import org.rekeningsysteem.io.database.Database;
-
-import rx.Observable;
-import rx.observers.TestSubscriber;
-import rx.schedulers.Schedulers;
 
 public class VersionControlTest {
 
@@ -31,220 +29,177 @@ public class VersionControlTest {
 	}
 
 	@After
-	public void tearDown() throws SQLException {
+	public void tearDown() throws Exception {
 		this.database.close();
 	}
 
 	@Test
 	public void testGetTableCountNoTables() {
-		TestSubscriber<Integer> observer = new TestSubscriber<>();
-		this.vc.getTableCount().subscribe(observer);
-
-		observer.assertValue(0);
-		observer.assertNoErrors();
-		observer.assertCompleted();
-		observer.assertUnsubscribed();
+		this.vc.getTableCount()
+			.test()
+			.assertValue(0)
+			.assertNoErrors()
+			.assertComplete();
 	}
 
 	@Test
 	public void testGetTableCountNotEmpty() {
-		TestSubscriber<Integer> observer = new TestSubscriber<>();
 		this.database.update(() -> "CREATE TABLE TestTable1 (foo TEXT, bar TEXT);\n"
 				+ "CREATE TABLE TestTable2 (tableID INTEGER PRIMARY KEY, test TEXT);")
-				.ignoreElements()
-				.concatWith(this.vc.getTableCount())
-				.subscribe(observer);
-
-		observer.assertValue(2);
-		observer.assertNoErrors();
-		observer.assertCompleted();
-		observer.assertUnsubscribed();
+			.toObservable()
+			.concatWith(this.vc.getTableCount())
+			.test()
+			.assertValue(2)
+			.assertNoErrors()
+			.assertComplete();
 	}
 
 	@Test
 	public void testMetadataExistsFalse() {
-		TestSubscriber<Boolean> observer = new TestSubscriber<>();
-		this.vc.metadataExists().subscribe(observer);
-
-		observer.assertValue(false);
-		observer.assertNoErrors();
-		observer.assertCompleted();
-		observer.assertUnsubscribed();
+		this.vc.metadataExists()
+			.test()
+			.assertValue(false)
+			.assertNoErrors()
+			.assertComplete();
 	}
 
 	@Test
 	public void testMetadataExistsTrue() {
-		TestSubscriber<Object> observer = new TestSubscriber<>();
-		Observable.concat(
-				this.database.update(V04AlphaQueries.CREATE_METADATA
-						.append(() -> "INSERT INTO Metadata VALUES ('abcde');"))
-						.ignoreElements(),
-				this.vc.metadataExists())
-				.subscribe(observer);
-
-		observer.assertValue(true);
-		observer.assertNoErrors();
-		observer.assertCompleted();
-		observer.assertUnsubscribed();
+		this.database.update(V04AlphaQueries.CREATE_METADATA.append(() -> "INSERT INTO Metadata VALUES ('abcde');"))
+			.toObservable()
+			.concatWith(this.vc.metadataExists())
+			.test()
+			.assertValue(true)
+			.assertNoErrors()
+			.assertComplete();
 	}
 
 	@Test
 	public void testGetVersion() {
-		TestSubscriber<Object> observer = new TestSubscriber<>();
-		Observable.concat(
-				this.database.update(V04AlphaQueries.CREATE_METADATA
-						.append(() -> "INSERT INTO Metadata VALUES ('abcde');"))
-						.ignoreElements(),
-				this.vc.metadataExists(),
-				this.vc.getVersion())
-				.subscribe(observer);
-
-		observer.assertValues(true, "abcde");
-		observer.assertNoErrors();
-		observer.assertCompleted();
-		observer.assertUnsubscribed();
+		this.database.update(V04AlphaQueries.CREATE_METADATA.append(() -> "INSERT INTO Metadata VALUES ('abcde');"))
+			.toObservable()
+			.concatWith(this.vc.metadataExists())
+			.concatWith(this.vc.getVersion())
+			.test()
+			.assertValues(true, "abcde")
+			.assertNoErrors()
+			.assertComplete();
 	}
 
 	@Test
 	public void testCheckDBVersioningFromEmpty() {
-		TestSubscriber<Object> observer = new TestSubscriber<>();
-		Observable.concat(
-				this.vc.checkDBVersioning().ignoreElements(),
-				this.vc.getTableCount(),
-				this.vc.getVersion())
-				.subscribe(observer);
-		
-		observer.assertValues(5, VersionControl.getAppVersion());
-		observer.assertNoErrors();
-		observer.assertCompleted();
-		observer.assertUnsubscribed();
+		this.vc.checkDBVersioning()
+			.toObservable()
+			.concatWith(this.vc.getTableCount())
+			.concatWith(this.vc.getVersion())
+			.test()
+			.assertValues(5, VersionControl.getAppVersion())
+			.assertNoErrors()
+			.assertComplete();
 	}
 
 	@Test
-	public void testCheckDBVersioningFromEmptyOnDifferentThread() {
-		TestSubscriber<Integer> observer1 = new TestSubscriber<>();
-		TestSubscriber<Object> observer2 = new TestSubscriber<>();
-		
+	public void testCheckDBVersioningFromEmptyOnDifferentThread() throws InterruptedException {
 		this.vc.checkDBVersioning()
-				.subscribeOn(Schedulers.io())
-				.subscribe(observer1);
-		
-		observer1.awaitTerminalEvent();
-		observer1.assertValue(1);
-		observer1.assertNoErrors();
-		observer1.assertCompleted();
-		observer1.isUnsubscribed();
-		
-		Observable.concat(this.vc.getTableCount(), this.vc.getVersion())
-				.subscribe(observer2);
-		
-		observer2.assertValues(5, VersionControl.getAppVersion());
-		observer2.assertNoErrors();
-		observer2.assertCompleted();
-		observer2.assertUnsubscribed();
+			.subscribeOn(Schedulers.io())
+			.test()
+			.await()
+			.assertNoValues()
+			.assertNoErrors()
+			.assertComplete();
+
+		this.vc.getTableCount()
+			.cast(Object.class)
+			.concatWith(this.vc.getVersion())
+			.test()
+			.assertValues(5, VersionControl.getAppVersion())
+			.assertNoErrors()
+			.assertComplete();
 	}
 
 	@Test
 	public void testCheckDBVersioningFromV03Alpha() {
-		TestSubscriber<Object> observer = new TestSubscriber<>();
-		Observable.concat(
-				this.database.update(VersionControl.getV03AlphaQueries()).ignoreElements(),
-				this.vc.metadataExists(),
-				this.vc.checkDBVersioning().ignoreElements(),
-				this.vc.getTableCount(),
-				this.vc.getVersion())
-				.subscribe(observer);
-
-		observer.assertValues(false, 5, VersionControl.getAppVersion());
-		observer.assertNoErrors();
-		observer.assertCompleted();
-		observer.assertUnsubscribed();
+		this.database.update(VersionControl.getV03AlphaQueries())
+			.toObservable()
+			.cast(Object.class)
+			.concatWith(this.vc.metadataExists())
+			.concatWith(this.vc.checkDBVersioning())
+			.concatWith(this.vc.getTableCount())
+			.concatWith(this.vc.getVersion())
+			.concatWith(this.vc.metadataExists())
+			.test()
+			.assertNoErrors()
+			.assertValues(false, 5, VersionControl.getAppVersion(), true)
+			.assertComplete();
 	}
 
 	@Test
-	public void testCheckDBVersioningFromV03AlphaOnDifferentThread() {
-		TestSubscriber<Object> observer0 = new TestSubscriber<>();
-		TestSubscriber<Integer> observer1 = new TestSubscriber<>();
-		TestSubscriber<Object> observer2 = new TestSubscriber<>();
-		
-		Observable.concat(
-				this.database.update(VersionControl.getV03AlphaQueries()).ignoreElements(),
-				this.vc.metadataExists())
-				.subscribe(observer0);
-		
-		observer0.assertValue(false);
-		observer0.assertNoErrors();
-		observer0.assertCompleted();
-		observer0.assertUnsubscribed();
-		
+	public void testCheckDBVersioningFromV03AlphaOnDifferentThread() throws InterruptedException {
+		this.database.update(VersionControl.getV03AlphaQueries())
+			.toObservable()
+			.concatWith(this.vc.metadataExists())
+			.test()
+			.await()
+			.assertValue(false)
+			.assertNoErrors()
+			.assertComplete();
+
 		this.vc.checkDBVersioning()
-        		.subscribeOn(Schedulers.io())
-        		.subscribe(observer1);
-        
-        observer1.awaitTerminalEvent();
-        observer1.assertValue(1);
-        observer1.assertNoErrors();
-        observer1.assertCompleted();
-        observer1.isUnsubscribed();
+			.subscribeOn(Schedulers.io())
+			.test()
+			.await()
+			.assertNoValues()
+			.assertNoErrors()
+			.assertComplete();
 
-		Observable.concat(this.vc.getTableCount(), this.vc.getVersion())
-				.subscribe(observer2);
-
-		observer2.assertValues(5, VersionControl.getAppVersion());
-		observer2.assertNoErrors();
-		observer2.assertCompleted();
-		observer2.assertUnsubscribed();
+		this.vc.getTableCount()
+			.cast(Object.class)
+			.concatWith(this.vc.getVersion())
+			.test()
+			.assertValues(5, VersionControl.getAppVersion())
+			.assertNoErrors()
+			.assertComplete();
 	}
 
 	@Test
 	public void testCheckDBVersioningFromV04Alpha() {
-		TestSubscriber<Object> observer = new TestSubscriber<>();
-		Observable.concat(
-				this.database.update(VersionControl.getV04AlphaQueries()).ignoreElements(),
-				this.vc.metadataExists(),
-				this.vc.checkDBVersioning().ignoreElements(),
-				this.vc.getTableCount(),
-				this.vc.getVersion())
-				.subscribe(observer);
-
-		observer.assertValues(true, 5, VersionControl.getAppVersion());
-		observer.assertNoErrors();
-		observer.assertCompleted();
-		observer.assertUnsubscribed();
+		this.database.update(VersionControl.getV04AlphaQueries())
+			.toObservable()
+			.cast(Object.class)
+			.concatWith(this.vc.metadataExists())
+			.concatWith(this.vc.checkDBVersioning())
+			.concatWith(this.vc.getTableCount())
+			.concatWith(this.vc.getVersion())
+			.test()
+			.assertValues(true, 5, VersionControl.getAppVersion())
+			.assertNoErrors()
+			.assertComplete();
 	}
-	
+
 	@Test
-	public void testCheckDBVersioningFromV04AlphaOnDifferentThread() {
-		TestSubscriber<Object> observer0 = new TestSubscriber<>();
-		TestSubscriber<Integer> observer1 = new TestSubscriber<>();
-		TestSubscriber<Object> observer2 = new TestSubscriber<>();
-		
-		Observable.concat(
-				this.database.update(VersionControl.getV04AlphaQueries()).ignoreElements(),
-				this.vc.metadataExists())
-				.subscribe(observer0);
-		
-		observer0.assertValue(true);
-		observer0.assertNoErrors();
-		observer0.assertCompleted();
-		observer0.assertUnsubscribed();
-		
+	public void testCheckDBVersioningFromV04AlphaOnDifferentThread() throws InterruptedException {
+		this.database.update(VersionControl.getV04AlphaQueries())
+			.toObservable()
+			.concatWith(this.vc.metadataExists())
+			.test()
+			.assertValue(true)
+			.assertNoErrors()
+			.assertComplete();
+
 		this.vc.checkDBVersioning()
-        		.subscribeOn(Schedulers.io())
-        		.subscribe(observer1);
-        
-        observer1.awaitTerminalEvent();
-        observer1.assertNoValues();
-        observer1.assertNoErrors();
-        observer1.assertCompleted();
-        observer1.isUnsubscribed();
+			.subscribeOn(Schedulers.io())
+			.test()
+			.await()
+			.assertNoValues()
+			.assertNoErrors()
+			.assertComplete();
 
-		Observable.concat(this.vc.getTableCount(), this.vc.getVersion())
-				.subscribe(observer2);
-
-		observer2.assertValues(5, VersionControl.getAppVersion());
-		observer2.assertNoErrors();
-		observer2.assertCompleted();
-		observer2.assertUnsubscribed();
+		this.vc.getTableCount()
+			.cast(Object.class)
+			.concatWith(this.vc.getVersion())
+			.test()
+			.assertValues(5, VersionControl.getAppVersion())
+			.assertNoErrors()
+			.assertComplete();
 	}
 }

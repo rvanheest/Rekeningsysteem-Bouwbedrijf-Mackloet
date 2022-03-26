@@ -2,6 +2,8 @@ package org.rekeningsysteem.ui.textfields.searchbox;
 
 import java.util.Optional;
 
+import javafx.collections.ObservableList;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
@@ -47,15 +49,17 @@ public class DebiteurSearchBox extends AbstractSearchBox<Debiteur> {
 
 		this.infoNaam.setText(debiteur.getNaam());
 		this.infoAdres.setText(debiteur.getStraat() + " " + debiteur.getNummer());
-		this.infoPostcodePlaats.setText(debiteur.getPostcode() + "  "
-				+ debiteur.getPlaats().toUpperCase());
+		this.infoPostcodePlaats.setText(debiteur.getPostcode() + "  " + debiteur.getPlaats().toUpperCase());
 		this.infoBtwNummer.setText(btwNummer.orElse(""));
 
+		ObservableList<Node> infoBoxChildren = this.infoBox.getChildren();
 		if (btwNummer.isPresent()) {
-			this.infoBox.getChildren().add(this.infoBtwNummer);
+			if (!infoBoxChildren.contains(this.infoBtwNummer)) {
+				infoBoxChildren.add(this.infoBtwNummer);
+			}
 		}
 		else {
-			this.infoBox.getChildren().remove(this.infoBtwNummer);
+			infoBoxChildren.remove(this.infoBtwNummer);
 		}
 	}
 

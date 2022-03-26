@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.Currency;
 import java.util.Objects;
 
+import io.reactivex.rxjava3.core.Observable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.CheckBox;
@@ -15,8 +16,6 @@ import org.rekeningsysteem.data.util.BtwPercentage;
 import org.rekeningsysteem.rxjavafx.Observables;
 import org.rekeningsysteem.ui.textfields.MoneyField;
 import org.rekeningsysteem.ui.textfields.PercentageField;
-
-import rx.Observable;
 
 public class AnderArtikelPane extends GridPane {
 

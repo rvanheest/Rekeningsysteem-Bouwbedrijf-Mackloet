@@ -3,6 +3,10 @@ package org.rekeningsysteem.application.settings.debiteur;
 import java.util.Arrays;
 import java.util.List;
 
+import io.reactivex.rxjava3.core.Completable;
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.functions.Function;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -20,10 +24,6 @@ import org.rekeningsysteem.rxjavafx.JavaFxScheduler;
 import org.rekeningsysteem.rxjavafx.Observables;
 import org.rekeningsysteem.ui.list.ButtonCell;
 
-import rx.Observable;
-import rx.functions.Func1;
-import rx.schedulers.Schedulers;
-
 public class DebiteurTable extends VBox {
 
 	private final TableView<DebiteurTableModel> table = new TableView<>();
@@ -32,9 +32,9 @@ public class DebiteurTable extends VBox {
 	private final Button add = new Button();
 	private final Button modify = new Button();
 
-	private final Func1<DebiteurTableModel, Observable<Integer>> dbDelete;
+	private final Function<DebiteurTableModel, Completable> dbDelete;
 
-	public DebiteurTable(Func1<DebiteurTableModel, Observable<Integer>> dbDelete) {
+	public DebiteurTable(Function<DebiteurTableModel, Completable> dbDelete) {
 		this.dbDelete = dbDelete;
 
 		this.setId("debiteur-table");
@@ -95,7 +95,7 @@ public class DebiteurTable extends VBox {
 			Observables.fromNodeEvents(button, ActionEvent.ACTION)
 					.map(event -> buttonCell.getTableView().getItems().get(buttonCell.getIndex()))
 					.observeOn(Schedulers.io())
-					.flatMap(this.dbDelete, (model, res) -> model)
+					.flatMapSingle(model -> this.dbDelete.apply(model).toSingle(() -> model))
 					.observeOn(JavaFxScheduler.getInstance())
 					.subscribe(this.data::remove);
 			return buttonCell;

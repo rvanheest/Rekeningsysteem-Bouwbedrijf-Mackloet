@@ -12,6 +12,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import io.reactivex.rxjava3.core.Single;
 import org.apache.logging.log4j.core.Logger;
 import org.rekeningsysteem.data.util.AbstractRekening;
 import org.rekeningsysteem.io.FactuurLoader;
@@ -25,8 +26,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
-import rx.Observable;
-
 public class XmlReader implements FactuurLoader {
 
 	private final Map<Class<? extends Root<?>>, Unmarshaller> map;
@@ -39,23 +38,23 @@ public class XmlReader implements FactuurLoader {
 			this.builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 
 			this.map.put(MutatiesFactuurRoot.class,
-					JAXBContext.newInstance(MutatiesFactuurRoot.class).createUnmarshaller());
+				JAXBContext.newInstance(MutatiesFactuurRoot.class).createUnmarshaller());
 			this.map.put(OfferteRoot.class,
-					JAXBContext.newInstance(OfferteRoot.class).createUnmarshaller());
+				JAXBContext.newInstance(OfferteRoot.class).createUnmarshaller());
 			this.map.put(ParticulierFactuurRoot.class,
-					JAXBContext.newInstance(ParticulierFactuurRoot.class).createUnmarshaller());
+				JAXBContext.newInstance(ParticulierFactuurRoot.class).createUnmarshaller());
 			this.map.put(ReparatiesFactuurRoot.class,
-					JAXBContext.newInstance(ReparatiesFactuurRoot.class).createUnmarshaller());
+				JAXBContext.newInstance(ReparatiesFactuurRoot.class).createUnmarshaller());
 		}
 		catch (JAXBException e) {
 			// Should not happen
 			logger.fatal("JAXBContext or Unmarshaller could not be "
-					+ "made. (should not happen)", e);
+				+ "made. (should not happen)", e);
 		}
 		catch (ParserConfigurationException e) {
 			// Should not happen
 			logger.fatal("DocumentBuilder could not be made. "
-					+ "(should not happen)", e);
+				+ "(should not happen)", e);
 		}
 	}
 
@@ -65,7 +64,7 @@ public class XmlReader implements FactuurLoader {
 	}
 
 	@Override
-	public Observable<AbstractRekening> load(File file) {
+	public Single<AbstractRekening> load(File file) {
 		try {
 			Document doc = this.builder.parse(file);
 			doc.getDocumentElement().normalize();
@@ -74,42 +73,33 @@ public class XmlReader implements FactuurLoader {
 			String version = ((Element) factuur).getAttribute("version");
 
 			if ("4".equals(version)) {
-    			switch (type) {
-    				case "MutatiesFactuur": {
-    					Unmarshaller unmarshaller = this.map.get(MutatiesFactuurRoot.class);
-    					return this.readXML(unmarshaller, doc).map(Root::getRekening);
-    				}
-    				case "Offerte": {
-    					Unmarshaller unmarshaller = this.map.get(OfferteRoot.class);
-    					return this.readXML(unmarshaller, doc).map(Root::getRekening);
-    				}
-    				case "ParticulierFactuur": {
-    					Unmarshaller unmarshaller = this.map.get(ParticulierFactuurRoot.class);
-						return this.readXML(unmarshaller, doc).map(Root::getRekening);
-    				}
-    				case "ReparatiesFactuur": {
-    					Unmarshaller unmarshaller = this.map.get(ReparatiesFactuurRoot.class);
-						return this.readXML(unmarshaller, doc).map(Root::getRekening);
-    				}
-    				default:
-    					return Observable.error(new IllegalArgumentException("This type (" + type + ") can't be used"));
-    			}
+				switch (type) {
+					case "MutatiesFactuur": {
+						return this.readXML(doc, MutatiesFactuurRoot.class).map(Root::getRekening);
+					}
+					case "Offerte": {
+						return this.readXML(doc, OfferteRoot.class).map(Root::getRekening);
+					}
+					case "ParticulierFactuur": {
+						return this.readXML(doc, ParticulierFactuurRoot.class).map(Root::getRekening);
+					}
+					case "ReparatiesFactuur": {
+						return this.readXML(doc, ReparatiesFactuurRoot.class).map(Root::getRekening);
+					}
+					default:
+						return Single.error(new IllegalArgumentException("This type (" + type + ") can't be used"));
+				}
 			}
 			else {
-				return Observable.error(new IllegalArgumentException("The version (" + version + ") is not supported by this parser"));
+				return Single.error(new IllegalArgumentException("The version (" + version + ") is not supported by this parser"));
 			}
 		}
 		catch (SAXException | IOException e) {
-			return Observable.error(e);
+			return Single.error(e);
 		}
 	}
 
-	private Observable<Root<?>> readXML(Unmarshaller unmarshaller, Node node) {
-		try {
-			return Observable.just((Root<?>) unmarshaller.unmarshal(node));
-		}
-		catch (JAXBException e) {
-			return Observable.error(e);
-		}
+	private Single<Root<?>> readXML(Node node, Class<? extends Root<?>> rootClass) {
+		return Single.fromCallable(() -> (Root<?>) this.map.get(rootClass).unmarshal(node));
 	}
 }

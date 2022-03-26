@@ -1,5 +1,6 @@
 package org.rekeningsysteem.ui.list;
 
+import io.reactivex.rxjava3.core.Observable;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.geometry.Insets;
@@ -12,12 +13,10 @@ import javafx.scene.layout.VBox;
 
 import org.rekeningsysteem.rxjavafx.Observables;
 
-import rx.Observable;
-
 public abstract class ItemPane extends VBox {
 
 	protected final Label title;
-	
+
 	protected final Button addBtn = new Button("Voeg toe");
 	private final Button cancelBtn = new Button("Annuleren");
 
@@ -27,7 +26,7 @@ public abstract class ItemPane extends VBox {
 
 		// block mouse events
 		Observables.fromNodeEvents(this, MouseEvent.MOUSE_CLICKED)
-				.subscribe(Event::consume);
+			.subscribe(Event::consume);
 
 		this.title = new Label(titleString);
 		this.title.setId("title");

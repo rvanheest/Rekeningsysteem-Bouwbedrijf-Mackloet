@@ -15,6 +15,8 @@ import java.io.Writer;
 import java.nio.file.NoSuchFileException;
 import java.util.Arrays;
 
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 import org.apache.commons.io.FileUtils;
 import org.junit.Before;
 import org.junit.Rule;
@@ -23,10 +25,6 @@ import org.junit.rules.TemporaryFolder;
 import org.rekeningsysteem.data.particulier.EsselinkArtikel;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.io.FileIO;
-
-import rx.Observable;
-import rx.observers.TestSubscriber;
-import rx.schedulers.Schedulers;
 
 public class FileIOTest {
 
@@ -54,104 +52,84 @@ public class FileIOTest {
 			"6030001225;PPB vulelement 640-4.0;1;Stuks;15,11"
 		));
 
-		TestSubscriber<EsselinkArtikel> observer = new TestSubscriber<>();
-		this.io.readCSV(this.file).subscribe(observer);
-
-		observer.assertValues(
-			new EsselinkArtikel("6030001186", "PPB vloerbalk T2 183 503cm *", 1, "m1", new Geld(13.20)),
-			new EsselinkArtikel("6030001187", "PPB vloerbalk T2 183 363cm", 1, "m1", new Geld(13.20)),
-			new EsselinkArtikel("6030001188", "PPB vloerbalk T2 183 223cm", 1, "m1", new Geld(13.20)),
-			new EsselinkArtikel("6030001189", "PPB vloerbalk T2 183 373cm", 1, "m1", new Geld(13.20)),
-			new EsselinkArtikel("6030001190", "PPB vloerbalk T3 184", 1, "m1", new Geld(13.80)),
-			new EsselinkArtikel("6030001223", "PPB vulelement 640-3.0", 1, "Stuks", new Geld(10.75)),
-			new EsselinkArtikel("6030001224", "PPB vulelement 640-3.5 *", 1, "Stuks", new Geld(12.22)),
-			new EsselinkArtikel("6030001225", "PPB vulelement 640-4.0", 1, "Stuks", new Geld(15.11))
-		);
-		observer.assertNoErrors();
-		observer.assertCompleted();
+		this.io.readCSV(this.file)
+			.test()
+			.assertValues(
+				new EsselinkArtikel("6030001186", "PPB vloerbalk T2 183 503cm *", 1, "m1", new Geld(13.20)),
+				new EsselinkArtikel("6030001187", "PPB vloerbalk T2 183 363cm", 1, "m1", new Geld(13.20)),
+				new EsselinkArtikel("6030001188", "PPB vloerbalk T2 183 223cm", 1, "m1", new Geld(13.20)),
+				new EsselinkArtikel("6030001189", "PPB vloerbalk T2 183 373cm", 1, "m1", new Geld(13.20)),
+				new EsselinkArtikel("6030001190", "PPB vloerbalk T3 184", 1, "m1", new Geld(13.80)),
+				new EsselinkArtikel("6030001223", "PPB vulelement 640-3.0", 1, "Stuks", new Geld(10.75)),
+				new EsselinkArtikel("6030001224", "PPB vulelement 640-3.5 *", 1, "Stuks", new Geld(12.22)),
+				new EsselinkArtikel("6030001225", "PPB vulelement 640-4.0", 1, "Stuks", new Geld(15.11))
+			)
+			.assertNoErrors()
+			.assertComplete();
 	}
 
 	@Test
 	public void testNonExistingFile() {
-		TestSubscriber<EsselinkArtikel> observer = new TestSubscriber<>();
-		this.io.readCSV(new File("does-not-exist.csv")).subscribe(observer);
-
-		observer.assertNoValues();
-		observer.assertError(NoSuchFileException.class);
-		observer.assertNotCompleted();
+		this.io.readCSV(new File("does-not-exist.csv"))
+			.test()
+			.assertNoValues()
+			.assertError(NoSuchFileException.class)
+			.assertNotComplete();
 	}
 
 	@Test
 	public void testReadFile() {
 		this.testWriteFile();
 
-		TestSubscriber<String> observer = new TestSubscriber<>();
 		this.io.readFile(this.file)
-				.subscribe(observer);
-
-		observer.awaitTerminalEvent();
-
-		observer.assertValue("abcdef");
-		observer.assertNoErrors();
-		observer.assertCompleted();
+			.test()
+			.assertValue("abcdef")
+			.assertNoErrors()
+			.assertComplete();
 	}
 
 	@Test
 	public void testWriteFile() {
-		TestSubscriber<Void> writeObserver = new TestSubscriber<>();
-		Observable.just("abc", "def")
-				.compose(this.io.writeToFile(this.file, true))
-				.subscribe(writeObserver);
+		this.io.writeToFile(this.file, true, Observable.just("abc", "def"))
+			.test()
+			.assertNoValues()
+			.assertNoErrors()
+			.assertComplete();
 
-		writeObserver.awaitTerminalEvent();
-
-		writeObserver.assertNoValues();
-		writeObserver.assertNoErrors();
-		writeObserver.assertCompleted();
-
-		TestSubscriber<String> readObserver = new TestSubscriber<>();
 		this.io.readFile(this.file)
-				.subscribe(readObserver);
-
-		readObserver.awaitTerminalEvent();
-
-		readObserver.assertValue("abcdef");
-		readObserver.assertNoErrors();
-		readObserver.assertCompleted();
+			.test()
+			.assertValue("abcdef")
+			.assertNoErrors()
+			.assertComplete();
 	}
 
 	@Test
 	public void testWriteFileWithWriter() throws IOException {
 		Writer writer = mock(Writer.class);
 
-		TestSubscriber<Void> observer = new TestSubscriber<>();
 		Observable.just("abc", "def")
-				.compose(this.io.writeToFile(writer))
-				.subscribe(observer);
+			.compose(this.io.writeToFile(writer))
+			.test()
+			.assertNoValues()
+			.assertNoErrors()
+			.assertComplete();
 
-		observer.awaitTerminalEvent();
-
-		observer.assertNoValues();
-		observer.assertNoErrors();
-		observer.assertCompleted();
 		verify(writer, times(2)).write(anyString());
 	}
 
 	@Test
-	public void testWriteFileWithWriterOnIOThread() throws IOException {
+	public void testWriteFileWithWriterOnIOThread() throws IOException, InterruptedException {
 		Writer writer = mock(Writer.class);
 
-		TestSubscriber<Void> observer = new TestSubscriber<>();
 		Observable.just("abc", "def")
-				.observeOn(Schedulers.io())
-				.compose(this.io.writeToFile(writer))
-				.subscribe(observer);
+			.observeOn(Schedulers.io())
+			.compose(this.io.writeToFile(writer))
+			.test()
+			.await()
+			.assertNoValues()
+			.assertNoErrors()
+			.assertComplete();
 
-		observer.awaitTerminalEvent();
-
-		observer.assertNoValues();
-		observer.assertNoErrors();
-		observer.assertCompleted();
 		verify(writer, times(2)).write(anyString());
 	}
 
@@ -160,16 +138,13 @@ public class FileIOTest {
 		Writer writer = mock(Writer.class);
 		doThrow(IOException.class).when(writer).write(anyString());
 
-		TestSubscriber<Void> observer = new TestSubscriber<>();
 		Observable.just("abc", "def")
-				.compose(this.io.writeToFile(writer))
-				.subscribe(observer);
+			.compose(this.io.writeToFile(writer))
+			.test()
+			.assertNoValues()
+			.assertError(Exception.class)
+			.assertNotComplete();
 
-		observer.awaitTerminalEvent();
-
-		observer.assertNoValues();
-		observer.assertError(Exception.class);
-		observer.assertNotCompleted();
 		verify(writer).write(anyString());
 	}
 
@@ -178,16 +153,13 @@ public class FileIOTest {
 		Writer writer = mock(Writer.class);
 		doThrow(IOException.class).when(writer).close();
 
-		TestSubscriber<Void> observer = new TestSubscriber<>();
 		Observable.just("abc", "def")
-				.compose(this.io.writeToFile(writer))
-				.subscribe(observer);
+			.compose(this.io.writeToFile(writer))
+			.test()
+			.assertNoValues()
+			.assertNoErrors()
+			.assertComplete();
 
-		observer.awaitTerminalEvent();
-
-		observer.assertNoValues();
-		observer.assertNoErrors();
-		observer.assertCompleted();
 		verify(writer, times(2)).write(anyString());
 	}
 
@@ -197,99 +169,74 @@ public class FileIOTest {
 		doThrow(IOException.class).when(writer).write(anyString());
 		doThrow(IOException.class).when(writer).close();
 
-		TestSubscriber<Void> observer = new TestSubscriber<>();
 		Observable.just("abc", "def")
-				.compose(this.io.writeToFile(writer))
-				.subscribe(observer);
+			.compose(this.io.writeToFile(writer))
+			.test()
+			.assertNoValues()
+			.assertError(Exception.class)
+			.assertNotComplete();
 
-		observer.awaitTerminalEvent();
-
-		observer.assertNoValues();
-		observer.assertError(Exception.class);
-		observer.assertNotCompleted();
 		verify(writer).write(anyString());
 	}
 
 	@Test
-	public void testWriteFileWithWriterOnIOThreadNoMock() throws IOException {
+	public void testWriteFileWithWriterOnIOThreadNoMock() throws IOException, InterruptedException {
 		try (OutputStream out = new FileOutputStream(this.file, false);
-				Writer writer = new OutputStreamWriter(out)) {
-			TestSubscriber<Void> writeObserver = new TestSubscriber<>();
-			Observable.just("abcdef")
-					.observeOn(Schedulers.io())
-					.compose(this.io.writeToFile(writer))
-					.subscribe(writeObserver);
+			Writer writer = new OutputStreamWriter(out)) {
 
-			writeObserver.awaitTerminalEvent();
-			writeObserver.assertNoValues();
-			writeObserver.assertNoErrors();
-			writeObserver.assertCompleted();
+			Observable.just("abcdef")
+				.observeOn(Schedulers.io())
+				.compose(this.io.writeToFile(writer))
+				.test()
+				.await()
+				.assertNoValues()
+				.assertNoErrors()
+				.assertComplete();
 		}
 
-		TestSubscriber<String> readObserver = new TestSubscriber<>();
 		this.io.readFile(this.file)
-				.subscribe(readObserver);
-		
-		readObserver.awaitTerminalEvent();
-		readObserver.assertValue("abcdef");
-		readObserver.assertNoErrors();
-		readObserver.assertCompleted();
+			.test()
+			.assertValue("abcdef")
+			.assertNoErrors()
+			.assertComplete();
 	}
 
 	@Test
-	public void testWriteFileWithFileOnIOThreadNoMock() {
-		TestSubscriber<Void> writeObserver = new TestSubscriber<>();
-		Observable.just("abcdef")
-				.observeOn(Schedulers.io())
-				.compose(this.io.writeToFile(this.file, false))
-				.subscribe(writeObserver);
+	public void testWriteFileWithFileOnIOThreadNoMock() throws InterruptedException {
+		this.io.writeToFile(this.file, false, Observable.just("abcdef").observeOn(Schedulers.io()))
+			.test()
+			.await()
+			.assertNoValues()
+			.assertNoErrors()
+			.assertComplete();
 
-		writeObserver.awaitTerminalEvent();
-		writeObserver.assertNoValues();
-		writeObserver.assertNoErrors();
-		writeObserver.assertCompleted();
-
-		TestSubscriber<String> readObserver = new TestSubscriber<>();
 		this.io.readFile(this.file)
-				.subscribe(readObserver);
-		
-		readObserver.awaitTerminalEvent();
-		readObserver.assertValue("abcdef");
-		readObserver.assertNoErrors();
-		readObserver.assertCompleted();
+			.test()
+			.assertValue("abcdef")
+			.assertNoErrors()
+			.assertComplete();
 	}
 
 	@Test
-	public void testAppendFileWithFileOnIOThreadNoMock() {
-		TestSubscriber<Void> writeObserver1 = new TestSubscriber<>();
-		Observable.just("abc", "def")
-				.observeOn(Schedulers.io())
-				.compose(this.io.writeToFile(this.file, false))
-				.subscribe(writeObserver1);
+	public void testAppendFileWithFileOnIOThreadNoMock() throws InterruptedException {
+		this.io.writeToFile(this.file, false, Observable.just("abc", "def").observeOn(Schedulers.io()))
+			.test()
+			.await()
+			.assertNoValues()
+			.assertNoErrors()
+			.assertComplete();
 
-		writeObserver1.awaitTerminalEvent();
-		writeObserver1.assertNoValues();
-		writeObserver1.assertNoErrors();
-		writeObserver1.assertCompleted();
+		this.io.writeToFile(this.file, true, Observable.just("ghi", "jkl").observeOn(Schedulers.io()))
+			.test()
+			.await()
+			.assertNoValues()
+			.assertNoErrors()
+			.assertComplete();
 
-		TestSubscriber<Void> writeObserver2 = new TestSubscriber<>();
-		Observable.just("ghi", "jkl")
-				.observeOn(Schedulers.io())
-				.compose(this.io.writeToFile(this.file, true))
-				.subscribe(writeObserver2);
-
-		writeObserver2.awaitTerminalEvent();
-		writeObserver2.assertNoValues();
-		writeObserver2.assertNoErrors();
-		writeObserver2.assertCompleted();
-
-		TestSubscriber<String> readObserver = new TestSubscriber<>();
 		this.io.readFile(this.file)
-				.subscribe(readObserver);
-		
-		readObserver.awaitTerminalEvent();
-		readObserver.assertValue("defghijkl");
-		readObserver.assertNoErrors();
-		readObserver.assertCompleted();
+			.test()
+			.assertValue("defghijkl")
+			.assertNoErrors()
+			.assertComplete();
 	}
 }

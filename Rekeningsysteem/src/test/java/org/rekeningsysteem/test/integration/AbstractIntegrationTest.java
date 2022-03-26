@@ -25,8 +25,6 @@ import org.rekeningsysteem.io.pdf.PdfExporter;
 import org.rekeningsysteem.io.xml.XmlMaker;
 import org.rekeningsysteem.io.xml.XmlReader;
 
-import rx.observers.TestSubscriber;
-
 @RunWith(MockitoJUnitRunner.class)
 public abstract class AbstractIntegrationTest {
 
@@ -85,12 +83,11 @@ public abstract class AbstractIntegrationTest {
 	public void testXML() {
 		this.saver.save(this.rekening, this.xmlFile);
 
-		TestSubscriber<AbstractRekening> testObserver = new TestSubscriber<>();
-		this.loader.load(this.xmlFile).subscribe(testObserver);
-
-		testObserver.assertValue(this.rekening);
-		testObserver.assertNoErrors();
-		testObserver.assertCompleted();
+		this.loader.load(this.xmlFile)
+			.test()
+			.assertValue(this.rekening)
+			.assertNoErrors()
+			.assertComplete();
 	}
 
 	@Test

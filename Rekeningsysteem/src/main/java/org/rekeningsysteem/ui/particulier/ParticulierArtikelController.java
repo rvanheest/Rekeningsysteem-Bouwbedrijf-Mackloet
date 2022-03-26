@@ -21,39 +21,46 @@ public class ParticulierArtikelController extends AbstractListItemController<Par
 	private final ProductLoonController productController;
 
 	public ParticulierArtikelController(Currency currency, Database db, BtwPercentages defaultBtw) {
-		this(defaultBtw, new ParticulierArtikelPane(currency),
-				new AnderArtikelController(currency),
-				new GebruiktEsselinkArtikelController(currency,
-						new ArtikellijstDBInteraction(db)),
-				new InstantLoonController(currency),
-				new ProductLoonController(currency));
+		this(
+			defaultBtw,
+			new ParticulierArtikelPane(),
+			new AnderArtikelController(currency),
+			new GebruiktEsselinkArtikelController(currency, new ArtikellijstDBInteraction(db)),
+			new InstantLoonController(currency),
+			new ProductLoonController(currency)
+		);
 	}
 
-	public ParticulierArtikelController(BtwPercentages defaultBtw, ParticulierArtikelPane ui,
-			AnderArtikelController anderController,
-			GebruiktEsselinkArtikelController gebruiktController,
-			InstantLoonController instantController,
-			ProductLoonController productController) {
-		super(ui, ui.getType()
-			.flatMap(type -> {
-				switch (type) {
-					case ESSELINK:
-						return gebruiktController.getModel();
-					case ANDER:
-						return anderController.getModel();
-					case INSTANT:
-						return instantController.getModel();
-					case PRODUCT:
-						return productController.getModel();
-					default:
-						// Does never happen!!!
-						return null;
-				}
-			})
-			.sample(ui.getAddButtonEvent())
-			.map(Optional::of)
-			.mergeWith(ui.getCancelButtonEvent().map(event -> Optional.empty()))
-			.first());
+	public ParticulierArtikelController(
+		BtwPercentages defaultBtw,
+		ParticulierArtikelPane ui,
+		AnderArtikelController anderController,
+		GebruiktEsselinkArtikelController gebruiktController,
+		InstantLoonController instantController,
+		ProductLoonController productController
+	) {
+		super(ui,
+			ui.getType()
+				.flatMap(type -> {
+					switch (type) {
+						case ESSELINK:
+							return gebruiktController.getModel();
+						case ANDER:
+							return anderController.getModel();
+						case INSTANT:
+							return instantController.getModel();
+						case PRODUCT:
+							return productController.getModel();
+						default:
+							// Does never happen!!!
+							return null;
+					}
+				})
+				.sample(ui.getAddButtonEvent())
+				.map(Optional::of)
+				.mergeWith(ui.getCancelButtonEvent().map(event -> Optional.empty()))
+				.firstElement()
+		);
 
 		PropertiesWorker properties = PropertiesWorker.getInstance();
 

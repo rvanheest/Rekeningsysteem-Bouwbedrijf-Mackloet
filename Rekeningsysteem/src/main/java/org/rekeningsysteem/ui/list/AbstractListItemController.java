@@ -1,15 +1,15 @@
 package org.rekeningsysteem.ui.list;
 
-import java.util.Optional;
+import io.reactivex.rxjava3.core.Maybe;
 
-import rx.Observable;
+import java.util.Optional;
 
 public abstract class AbstractListItemController<M> {
 
 	private final ItemPane ui;
-	private final Observable<Optional<M>> model;
+	private final Maybe<Optional<M>> model;
 
-	public AbstractListItemController(ItemPane ui, Observable<Optional<M>> model) {
+	public AbstractListItemController(ItemPane ui, Maybe<Optional<M>> model) {
 		this.ui = ui;
 		this.model = model;
 	}
@@ -18,7 +18,7 @@ public abstract class AbstractListItemController<M> {
 		return this.ui;
 	}
 
-	public Observable<Optional<M>> getModel() {
+	public Maybe<Optional<M>> getModel() {
 		return this.model;
 	}
 }

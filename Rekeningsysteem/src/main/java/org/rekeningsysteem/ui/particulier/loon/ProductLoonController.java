@@ -2,12 +2,11 @@ package org.rekeningsysteem.ui.particulier.loon;
 
 import java.util.Currency;
 
+import io.reactivex.rxjava3.core.Observable;
 import org.rekeningsysteem.data.particulier.loon.ProductLoon;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.properties.PropertiesWorker;
 import org.rekeningsysteem.properties.PropertyModelEnum;
-
-import rx.Observable;
 
 public class ProductLoonController {
 
@@ -23,12 +22,6 @@ public class ProductLoonController {
 		properties.getProperty(PropertyModelEnum.UURLOON)
 				.map(Double::parseDouble)
 				.ifPresent(this.getUI()::setUurloon);
-	}
-
-	public ProductLoonController(Currency currency, ProductLoon input) {
-		this(currency);
-		this.getUI().setUren(input.getUren());
-		this.getUI().setUurloon(input.getUurloon().getBedrag());
 	}
 
 	public ProductLoonController(ProductLoonPane ui) {

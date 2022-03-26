@@ -2,6 +2,10 @@ package org.rekeningsysteem.application;
 
 import java.util.Objects;
 
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.functions.Consumer;
+import io.reactivex.rxjava3.subjects.BehaviorSubject;
+import io.reactivex.rxjava3.subjects.PublishSubject;
 import javafx.application.Platform;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
@@ -18,11 +22,6 @@ import org.rekeningsysteem.properties.PropertiesWorker;
 import org.rekeningsysteem.properties.PropertyModelEnum;
 import org.rekeningsysteem.rxjavafx.Observables;
 
-import rx.Observable;
-import rx.functions.Action1;
-import rx.subjects.BehaviorSubject;
-import rx.subjects.PublishSubject;
-
 public class Root extends BorderPane {
 
 	private final UpperBar upperBar = new UpperBar();
@@ -35,10 +34,10 @@ public class Root extends BorderPane {
 		this.setId("root");
 
 		Boolean fullscreen = PropertiesWorker.getInstance()
-				.getProperty(PropertyModelEnum.APPLICATION_FULL_SCREEN_MODE)
-				.map(Boolean::parseBoolean)
-				.orElse(false);
-		this.max = BehaviorSubject.create(fullscreen);
+			.getProperty(PropertyModelEnum.APPLICATION_FULL_SCREEN_MODE)
+			.map(Boolean::parseBoolean)
+			.orElse(false);
+		this.max = BehaviorSubject.createDefault(fullscreen);
 
 		this.setTop(this.upperBar);
 		this.setCenter(new MainPane(stage, database, logger));
@@ -47,68 +46,66 @@ public class Root extends BorderPane {
 		this.resizeButton.setManaged(false);
 
 		this.upperBar.getCloseButtonEvents()
-				.subscribe(e -> Platform.exit());
+			.subscribe(e -> Platform.exit());
 		this.upperBar.getMinButtonEvents()
-				.subscribe(e -> stage.setIconified(true));
+			.subscribe(e -> stage.setIconified(true));
 		this.upperBar.getMaxButtonEvents()
-				.map(e -> false).subscribe(this.max);
+			.map(e -> false).subscribe(this.max);
 
 		Observable<Boolean> maxToggle = this.max.scan(!fullscreen, (cum, b) -> !cum)
-				.skip(1)
-				.doOnNext(b -> PropertiesWorker.getInstance()
-						.setProperty(PropertyModelEnum.APPLICATION_FULL_SCREEN_MODE, Boolean.toString(b)));
-		maxToggle.filter(b -> b).subscribe(b -> {
-			Platform.runLater(() -> {
+			.skip(1)
+			.doOnNext(b -> PropertiesWorker.getInstance()
+				.setProperty(PropertyModelEnum.APPLICATION_FULL_SCREEN_MODE, Boolean.toString(b)));
+		maxToggle.filter(b -> b)
+			.subscribe(b -> Platform.runLater(() -> {
 				double x = Math.max(0, stage.getX());
 				double y = Math.max(0, stage.getY());
 				double width = stage.getWidth();
 				double height = stage.getHeight();
 				this.windowBounds.onNext(new Rectangle2D(x, y, width, height));
 
-				Rectangle2D screen = Screen.getScreensForRectangle(x,
-						y, 1, 1).get(0).getVisualBounds();
+				Rectangle2D screen = Screen.getScreensForRectangle(x, y, 1, 1).get(0).getVisualBounds();
 				stage.setX(screen.getMinX());
 				stage.setY(screen.getMinY());
 				stage.setWidth(screen.getWidth());
 				stage.setHeight(screen.getHeight());
-			});
-		});
+			}));
 		maxToggle.filter(b -> !b)
-				.withLatestFrom(this.windowBounds, (b, windowBounds) -> windowBounds)
-				.subscribe(bounds -> {
-					stage.setX(bounds.getMinX());
-					stage.setY(bounds.getMinY());
-					stage.setWidth(bounds.getWidth());
-					stage.setHeight(bounds.getHeight());
-				});
-		Action1<WindowResizeButton> add = this.getChildren()::add;
-		Action1<WindowResizeButton> remove = this.getChildren()::remove;
+			.withLatestFrom(this.windowBounds, (b, windowBounds) -> windowBounds)
+			.subscribe(bounds -> {
+				stage.setX(bounds.getMinX());
+				stage.setY(bounds.getMinY());
+				stage.setWidth(bounds.getWidth());
+				stage.setHeight(bounds.getHeight());
+			});
+		Consumer<WindowResizeButton> add = this.getChildren()::add;
+		Consumer<WindowResizeButton> remove = this.getChildren()::remove;
 		maxToggle.map(b -> b ? remove : add)
-				.forEach(action -> action.call(this.resizeButton));
+			.subscribe(action -> action.accept(this.resizeButton));
 
 		Observables.fromNodeEvents(this.upperBar, MouseEvent.MOUSE_CLICKED)
-				.filter(event -> event.getClickCount() == 2)
-				.doOnNext(MouseEvent::consume)
-				.subscribe(event -> this.max.onNext(false));
+			.filter(event -> event.getClickCount() == 2)
+			.doOnNext(MouseEvent::consume)
+			.subscribe(event -> this.max.onNext(false));
 
 		Observable<Point2D> pressed = Observables
-				.fromNodeEvents(this.upperBar, MouseEvent.MOUSE_PRESSED)
-				.doOnNext(MouseEvent::consume)
-				.withLatestFrom(maxToggle, (event, maximized) -> maximized ? null : event)
-				.filter(Objects::nonNull)
-				.filter(event -> event.getClickCount() == 1)
-				.map(event -> new Point2D(event.getSceneX(), event.getSceneY()));
+			.fromNodeEvents(this.upperBar, MouseEvent.MOUSE_PRESSED)
+			.doOnNext(MouseEvent::consume)
+			.withLatestFrom(maxToggle, (event, maximized) -> maximized ? null : event)
+			.filter(Objects::nonNull)
+			.filter(event -> event.getClickCount() == 1)
+			.map(event -> new Point2D(event.getSceneX(), event.getSceneY()));
 		Observable<Point2D> dragged = Observables
-				.fromNodeEvents(this.upperBar, MouseEvent.MOUSE_DRAGGED)
-				.doOnNext(MouseEvent::consume)
-				.withLatestFrom(maxToggle, (event, maximized) -> maximized ? null : event)
-				.filter(Objects::nonNull)
-				.filter(event -> event.getClickCount() == 1)
-				.map(event -> new Point2D(event.getScreenX(), event.getScreenY()));
+			.fromNodeEvents(this.upperBar, MouseEvent.MOUSE_DRAGGED)
+			.doOnNext(MouseEvent::consume)
+			.withLatestFrom(maxToggle, (event, maximized) -> maximized ? null : event)
+			.filter(Objects::nonNull)
+			.filter(event -> event.getClickCount() == 1)
+			.map(event -> new Point2D(event.getScreenX(), event.getScreenY()));
 		Observable.combineLatest(dragged, pressed.sample(dragged), Point2D::subtract)
-				.doOnNext(point -> stage.setX(point.getX()))
-				.doOnNext(point -> stage.setY(point.getY()))
-				.subscribe();
+			.doOnNext(point -> stage.setX(point.getX()))
+			.doOnNext(point -> stage.setY(point.getY()))
+			.subscribe();
 	}
 
 	@Override

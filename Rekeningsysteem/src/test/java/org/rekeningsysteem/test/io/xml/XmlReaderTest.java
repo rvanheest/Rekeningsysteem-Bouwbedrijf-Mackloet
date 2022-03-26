@@ -30,7 +30,6 @@ import org.rekeningsysteem.data.mutaties.MutatiesFactuur;
 import org.rekeningsysteem.data.offerte.Offerte;
 import org.rekeningsysteem.data.particulier.ParticulierFactuur;
 import org.rekeningsysteem.data.reparaties.ReparatiesFactuur;
-import org.rekeningsysteem.data.util.AbstractRekening;
 import org.rekeningsysteem.data.util.ItemList;
 import org.rekeningsysteem.data.util.header.Debiteur;
 import org.rekeningsysteem.data.util.header.FactuurHeader;
@@ -46,13 +45,10 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import rx.observers.TestSubscriber;
-
 @RunWith(MockitoJUnitRunner.class)
 public class XmlReaderTest {
 
 	private XmlReader reader;
-	private TestSubscriber<? super AbstractRekening> testObserver;
 	private final Map<Class<? extends Root<?>>, Unmarshaller> map = new HashMap<>();
 	@Mock private Unmarshaller unmarshaller;
 	@Mock private DocumentBuilder builder;
@@ -60,7 +56,6 @@ public class XmlReaderTest {
 	@Before
 	public void setUp() {
 		this.reader = new XmlReader(this.map, this.builder);
-		this.testObserver = new TestSubscriber<>();
 
 		this.map.put(MutatiesFactuurRoot.class, this.unmarshaller);
 		this.map.put(OfferteRoot.class, this.unmarshaller);
@@ -92,11 +87,11 @@ public class XmlReaderTest {
 		when(this.unmarshaller.unmarshal((Node) any())).thenReturn(root);
 		when(root.getRekening()).thenReturn(rekening);
 
-		this.reader.load(file).subscribe(this.testObserver);
-
-		this.testObserver.assertValue(rekening);
-		this.testObserver.assertNoErrors();
-		this.testObserver.assertCompleted();
+		this.reader.load(file)
+			.test()
+			.assertValue(rekening)
+			.assertNoErrors()
+			.assertComplete();
 		verify(this.unmarshaller).unmarshal(eq(doc));
 	}
 
@@ -123,11 +118,11 @@ public class XmlReaderTest {
 		when(this.unmarshaller.unmarshal((Node) any())).thenReturn(root);
 		when(root.getRekening()).thenReturn(rekening);
 
-		this.reader.load(file).subscribe(this.testObserver);
-
-		this.testObserver.assertValue(rekening);
-		this.testObserver.assertNoErrors();
-		this.testObserver.assertCompleted();
+		this.reader.load(file)
+			.test()
+			.assertValue(rekening)
+			.assertNoErrors()
+			.assertComplete();
 		verify(this.unmarshaller).unmarshal(eq(doc));
 	}
 
@@ -155,11 +150,11 @@ public class XmlReaderTest {
 		when(this.unmarshaller.unmarshal((Node) any())).thenReturn(root);
 		when(root.getRekening()).thenReturn(rekening);
 
-		this.reader.load(file).subscribe(this.testObserver);
-
-		this.testObserver.assertValue(rekening);
-		this.testObserver.assertNoErrors();
-		this.testObserver.assertCompleted();
+		this.reader.load(file)
+			.test()
+			.assertValue(rekening)
+			.assertNoErrors()
+			.assertComplete();
 		verify(this.unmarshaller).unmarshal(eq(doc));
 	}
 
@@ -187,11 +182,11 @@ public class XmlReaderTest {
 		when(this.unmarshaller.unmarshal((Node) any())).thenReturn(root);
 		when(root.getRekening()).thenReturn(rekening);
 
-		this.reader.load(file).subscribe(this.testObserver);
-
-		this.testObserver.assertValue(rekening);
-		this.testObserver.assertNoErrors();
-		this.testObserver.assertCompleted();
+		this.reader.load(file)
+			.test()
+			.assertValue(rekening)
+			.assertNoErrors()
+			.assertComplete();
 		verify(this.unmarshaller).unmarshal(eq(doc));
 	}
 
@@ -210,11 +205,11 @@ public class XmlReaderTest {
 		when(nodeList.item(anyInt())).thenReturn(factuur);
 		when(factuur.getAttribute(anyString())).thenReturn(type);
 
-		this.reader.load(file).subscribe(this.testObserver);
-
-		this.testObserver.assertNoValues();
-		this.testObserver.assertError(IllegalArgumentException.class);
-		this.testObserver.assertNotCompleted();
+		this.reader.load(file)
+			.test()
+			.assertNoValues()
+			.assertError(IllegalArgumentException.class)
+			.assertNotComplete();
 	}
 
 	@Test
@@ -223,11 +218,11 @@ public class XmlReaderTest {
 
 		when(this.builder.parse((File) any())).thenThrow(new SAXException());
 
-		this.reader.load(file).subscribe(this.testObserver);
-
-		this.testObserver.assertNoValues();
-		this.testObserver.assertError(SAXException.class);
-		this.testObserver.assertNotCompleted();
+		this.reader.load(file)
+			.test()
+			.assertNoValues()
+			.assertError(SAXException.class)
+			.assertNotComplete();
 	}
 
 	@Test
@@ -236,11 +231,11 @@ public class XmlReaderTest {
 
 		when(this.builder.parse((File) any())).thenThrow(new IOException());
 
-		this.reader.load(file).subscribe(this.testObserver);
-
-		this.testObserver.assertNoValues();
-		this.testObserver.assertError(IOException.class);
-		this.testObserver.assertNotCompleted();
+		this.reader.load(file)
+			.test()
+			.assertNoValues()
+			.assertError(IOException.class)
+			.assertNotComplete();
 	}
 
 	@Test
@@ -261,10 +256,10 @@ public class XmlReaderTest {
 		when(factuur.getAttribute(eq("version"))).thenReturn(version);
 		when(this.unmarshaller.unmarshal((Node) any())).thenThrow(new JAXBException("foo"));
 
-		this.reader.load(file).subscribe(this.testObserver);
-
-		this.testObserver.assertNoValues();
-		this.testObserver.assertError(JAXBException.class);
-		this.testObserver.assertNotCompleted();
+		this.reader.load(file)
+			.test()
+			.assertNoValues()
+			.assertError(JAXBException.class)
+			.assertNotComplete();
 	}
 }

@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.Currency;
 import java.util.Objects;
 
+import io.reactivex.rxjava3.core.Observable;
 import javafx.scene.control.CheckBox;
 import org.rekeningsysteem.data.particulier.EsselinkArtikel;
 import org.rekeningsysteem.data.util.BtwPercentage;
@@ -12,7 +13,6 @@ import org.rekeningsysteem.ui.textfields.NumberField;
 import org.rekeningsysteem.ui.textfields.PercentageField;
 import org.rekeningsysteem.ui.textfields.searchbox.AbstractSearchBox;
 
-import rx.Observable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
@@ -37,8 +37,7 @@ public class GebruiktEsselinkArtikelPane extends GridPane {
 	private final RadioButton artNr = new RadioButton("Artikelnummer");
 	private final RadioButton omschr = new RadioButton("Omschrijving");
 
-	public GebruiktEsselinkArtikelPane(Currency currency,
-			AbstractSearchBox<EsselinkArtikel> searchField) {
+	public GebruiktEsselinkArtikelPane(Currency currency, AbstractSearchBox<EsselinkArtikel> searchField) {
 		this.searchBox = searchField;
 
 		this.artNr.setToggleGroup(this.searchType);
@@ -66,8 +65,7 @@ public class GebruiktEsselinkArtikelPane extends GridPane {
 		this.getArtikel().subscribe(ea -> {
 			artNrOmschr.getStyleClass().remove("no-item-found");
 			artNrOmschr.setText(ea.getArtikelNummer() + "\t" + ea.getOmschrijving());
-			extraInfo.setText(currency.getSymbol() + " " + ea.getVerkoopPrijs().getBedrag()
-					+ " per " + ea.getPrijsPer() + " " + ea.getEenheid());
+			extraInfo.setText(currency.getSymbol() + " " + ea.getVerkoopPrijs().getBedrag() + " per " + ea.getPrijsPer() + " " + ea.getEenheid());
 
 			searchField.clear();
 		});
@@ -128,6 +126,7 @@ public class GebruiktEsselinkArtikelPane extends GridPane {
 		return Observables.fromProperty(this.searchType.selectedToggleProperty())
 				.map(toggle -> toggle == this.artNr
 						? EsselinkArtikelToggle.ARTIKELNUMMER
-						: EsselinkArtikelToggle.OMSCHRIJVING);
+						: EsselinkArtikelToggle.OMSCHRIJVING
+				);
 	}
 }

@@ -3,6 +3,8 @@ package org.rekeningsysteem.application;
 import java.io.File;
 import java.sql.SQLException;
 
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
@@ -28,9 +30,6 @@ import org.rekeningsysteem.logging.ApplicationLogger;
 import org.rekeningsysteem.properties.PropertiesWorker;
 import org.rekeningsysteem.properties.PropertyModelEnum;
 import org.rekeningsysteem.rxjavafx.Observables;
-
-import rx.Observable;
-import rx.schedulers.Schedulers;
 
 public class Main extends Application {
 
@@ -72,7 +71,7 @@ public class Main extends Application {
 					Observables.fromNodeEvents(this.popup, KeyEvent.KEY_PRESSED)
 							.filter(event -> event.getCode() == KeyCode.ESCAPE))
 					.doOnNext(Event::consume)
-					.forEach(event -> this.hideModalMessage());
+					.subscribe(event -> this.hideModalMessage());
 
 			this.popup.setVisible(false);
 
@@ -85,7 +84,7 @@ public class Main extends Application {
 				try {
 					database.close();
 				}
-				catch (SQLException e) {
+				catch (Exception e) {
 					logger.error("Could not close database.", e);
 				}
 			});

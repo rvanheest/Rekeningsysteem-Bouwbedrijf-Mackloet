@@ -1,10 +1,8 @@
 package org.rekeningsysteem.rxjavafx;
 
+import io.reactivex.rxjava3.core.Scheduler;
+import io.reactivex.rxjava3.disposables.Disposable;
 import javafx.application.Platform;
-import rx.Scheduler.Worker;
-import rx.Subscription;
-import rx.functions.Action0;
-import rx.subscriptions.Subscriptions;
 
 public enum JavaFxSubscriptions {
 	; // no instance
@@ -17,16 +15,16 @@ public enum JavaFxSubscriptions {
 	 * @return an Subscription that always runs <code>unsubscribe</code> in the event dispatch
 	 *         thread.
 	 */
-	public static Subscription unsubscribeInEventDispatchThread(Action0 unsubscribe) {
-		return Subscriptions.create(() -> {
+	public static Disposable unsubscribeInEventDispatchThread(Runnable unsubscribe) {
+		return Disposable.fromRunnable(() -> {
 			if (Platform.isFxApplicationThread()) {
-				unsubscribe.call();
+				unsubscribe.run();
 			}
 			else {
-				final Worker inner = JavaFxScheduler.getInstance().createWorker();
+				final Scheduler.Worker inner = JavaFxScheduler.getInstance().createWorker();
 				inner.schedule(() -> {
-						unsubscribe.call();
-						inner.unsubscribe();
+					unsubscribe.run();
+					inner.dispose();
 				});
 			}
 		});
