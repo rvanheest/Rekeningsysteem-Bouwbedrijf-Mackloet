@@ -48,7 +48,7 @@ public class RekeningSplitPane extends BorderPane {
 				.map(Number::intValue)
 				.filter(i -> i >= 0)
 				.map(this.panes::get)
-				.forEach(this::setCenter);
+				.subscribe(this::setCenter);
 
 		return tree;
 	}
