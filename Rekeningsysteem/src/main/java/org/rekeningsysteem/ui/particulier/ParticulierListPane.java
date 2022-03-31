@@ -47,8 +47,7 @@ public class ParticulierListPane extends AbstractListPane<ParticulierModel> {
 		materiaalCol.setCellFactory(c -> new MoneyCell<>());
 		materiaalBtwCol.setCellFactory(c -> new BtwPercentageCell<>());
 
-		return Arrays.asList(omschrCol, loonCol, loonBtwCol, materiaalCol, materiaalBtwCol,
-				this.getDeleteCol());
+		return Arrays.asList(omschrCol, loonCol, loonBtwCol, materiaalCol, materiaalBtwCol, this.getDeleteCol());
 	}
 
 	public static class ParticulierModel {

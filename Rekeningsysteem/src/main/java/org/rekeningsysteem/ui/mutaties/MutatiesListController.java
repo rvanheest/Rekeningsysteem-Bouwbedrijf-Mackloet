@@ -10,7 +10,7 @@ import org.rekeningsysteem.data.util.ItemList;
 import org.rekeningsysteem.ui.list.AbstractListController;
 import org.rekeningsysteem.ui.mutaties.MutatiesListPane.MutatiesModel;
 
-public class MutatiesListController extends AbstractListController<MutatiesInkoopOrder, MutatiesModel> {
+public class MutatiesListController extends AbstractListController<MutatiesInkoopOrder, MutatiesModel, MutatiesInkoopOrderController> {
 
 	public MutatiesListController(Currency currency) {
 		this(currency, new MutatiesListPane());
@@ -18,7 +18,7 @@ public class MutatiesListController extends AbstractListController<MutatiesInkoo
 
 	public MutatiesListController(Currency currency, List<MutatiesInkoopOrder> input) {
 		this(currency);
-		this.getUI().setData(modelToUI(input));
+		this.setData(modelToUI(input));
 	}
 
 	public MutatiesListController(Currency currency, MutatiesListPane ui) {

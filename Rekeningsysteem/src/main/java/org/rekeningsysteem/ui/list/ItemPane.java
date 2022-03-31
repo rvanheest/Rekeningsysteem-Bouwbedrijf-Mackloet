@@ -1,6 +1,8 @@
 package org.rekeningsysteem.ui.list;
 
 import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
+import io.reactivex.rxjava3.disposables.Disposable;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.geometry.Insets;
@@ -13,20 +15,23 @@ import javafx.scene.layout.VBox;
 
 import org.rekeningsysteem.rxjavafx.Observables;
 
-public abstract class ItemPane extends VBox {
+public abstract class ItemPane extends VBox implements Disposable {
 
 	protected final Label title;
 
 	protected final Button addBtn = new Button("Voeg toe");
 	private final Button cancelBtn = new Button("Annuleren");
 
+	private final CompositeDisposable disposable = new CompositeDisposable();
+
 	public ItemPane(String titleString) {
 		this.getStyleClass().add("new-artikel");
 		this.setMaxSize(430, USE_PREF_SIZE);
 
 		// block mouse events
-		Observables.fromNodeEvents(this, MouseEvent.MOUSE_CLICKED)
-			.subscribe(Event::consume);
+		this.disposable.add(
+			Observables.fromNodeEvents(this, MouseEvent.MOUSE_CLICKED).subscribe(Event::consume)
+		);
 
 		this.title = new Label(titleString);
 		this.title.setId("title");
@@ -53,5 +58,15 @@ public abstract class ItemPane extends VBox {
 
 	public Observable<ActionEvent> getCancelButtonEvent() {
 		return Observables.fromNodeEvents(this.cancelBtn, ActionEvent.ACTION);
+	}
+
+	@Override
+	public boolean isDisposed() {
+		return this.disposable.isDisposed();
+	}
+
+	@Override
+	public void dispose() {
+		this.disposable.dispose();
 	}
 }

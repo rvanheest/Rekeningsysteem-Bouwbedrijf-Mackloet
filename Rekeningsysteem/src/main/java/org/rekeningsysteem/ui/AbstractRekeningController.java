@@ -5,6 +5,7 @@ import java.util.function.BiFunction;
 
 import io.reactivex.rxjava3.core.Maybe;
 import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.disposables.Disposable;
 import org.rekeningsysteem.application.working.RekeningSplitPane;
 import org.rekeningsysteem.data.util.AbstractRekening;
 import org.rekeningsysteem.data.util.BtwPercentages;
@@ -14,7 +15,7 @@ import org.rekeningsysteem.properties.PropertiesWorker;
 import org.rekeningsysteem.properties.PropertyKey;
 import org.rekeningsysteem.properties.PropertyModelEnum;
 
-public abstract class AbstractRekeningController<M extends AbstractRekening> {
+public abstract class AbstractRekeningController<M extends AbstractRekening> implements Disposable {
 
 	private final RekeningSplitPane ui;
 	private final Observable<M> model;
@@ -54,5 +55,15 @@ public abstract class AbstractRekeningController<M extends AbstractRekening> {
 				.map(Double::parseDouble)
 				.map(m -> new BtwPercentages(l, m)))
 			.orElse(new BtwPercentages(9, 21));
+	}
+
+	@Override
+	public boolean isDisposed() {
+		return this.ui.isDisposed();
+	}
+
+	@Override
+	public void dispose() {
+		this.ui.dispose();
 	}
 }

@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import io.reactivex.rxjava3.core.Maybe;
 import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import org.apache.logging.log4j.core.Logger;
 import org.rekeningsysteem.application.working.RekeningSplitPane;
 import org.rekeningsysteem.data.offerte.Offerte;
@@ -14,7 +15,7 @@ import org.rekeningsysteem.ui.AbstractRekeningController;
 public class OfferteController extends AbstractRekeningController<Offerte> {
 
 	private final OfferteHeaderController header;
-	private final TextPaneController textPane;
+	private final CompositeDisposable disposable = new CompositeDisposable();
 
 	public OfferteController(Database database, Logger logger) {
 		this(new OfferteHeaderController(database), new TextPaneController(logger));
@@ -38,15 +39,7 @@ public class OfferteController extends AbstractRekeningController<Offerte> {
 			)
 		);
 		this.header = header;
-		this.textPane = textPane;
-	}
-
-	public OfferteHeaderController getHeaderController() {
-		return this.header;
-	}
-
-	public TextPaneController getTextPaneController() {
-		return this.textPane;
+		this.disposable.addAll(header, textPane);
 	}
 
 	@Override
@@ -54,13 +47,22 @@ public class OfferteController extends AbstractRekeningController<Offerte> {
 		String offertenummer = this.getFactuurnummerFactory()
 			.apply(PropertyModelEnum.OFFERTENUMMER, PropertyModelEnum.OFFERTENUMMER_KENMERK)
 			.getFactuurnummer();
-		this.header.getOffertenummerController()
-			.getUI()
-			.setFactuurnummer(Optional.ofNullable(offertenummer));
+		this.header.getOffertenummerController().setFactuurnummer(Optional.ofNullable(offertenummer));
 	}
 
 	@Override
 	public Maybe<Boolean> getSaveSelected() {
 		return this.header.getDebiteurController().isSaveSelected().firstElement();
+	}
+
+	@Override
+	public boolean isDisposed() {
+		return super.isDisposed() && this.disposable.isDisposed();
+	}
+
+	@Override
+	public void dispose() {
+		super.dispose();
+		this.disposable.dispose();
 	}
 }

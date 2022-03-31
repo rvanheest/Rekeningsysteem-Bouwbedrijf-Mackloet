@@ -5,6 +5,8 @@ import java.util.List;
 
 import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
+import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.functions.Function;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -24,7 +26,7 @@ import org.rekeningsysteem.rxjavafx.JavaFxScheduler;
 import org.rekeningsysteem.rxjavafx.Observables;
 import org.rekeningsysteem.ui.list.ButtonCell;
 
-public class DebiteurTable extends VBox {
+public class DebiteurTable extends VBox implements Disposable {
 
 	private final TableView<DebiteurTableModel> table = new TableView<>();
 	private final ObservableList<DebiteurTableModel> data = FXCollections.observableArrayList();
@@ -33,6 +35,7 @@ public class DebiteurTable extends VBox {
 	private final Button modify = new Button();
 
 	private final Function<DebiteurTableModel, Completable> dbDelete;
+	private final CompositeDisposable disposable = new CompositeDisposable();
 
 	public DebiteurTable(Function<DebiteurTableModel, Completable> dbDelete) {
 		this.dbDelete = dbDelete;
@@ -54,9 +57,11 @@ public class DebiteurTable extends VBox {
 
 		this.getChildren().add(hb);
 
-		Observables.fromProperty(this.heightProperty())
+		this.disposable.add(
+			Observables.fromProperty(this.heightProperty())
 				.map(Number::doubleValue)
-				.subscribe(this.table::setPrefHeight);
+				.subscribe(this.table::setPrefHeight)
+		);
 	}
 
 	protected List<TableColumn<DebiteurTableModel, ?>> initTableColumns() {
@@ -81,8 +86,7 @@ public class DebiteurTable extends VBox {
 		plaatsCol.setCellValueFactory(new PropertyValueFactory<>("plaats"));
 		btwNummerCol.setCellValueFactory(new PropertyValueFactory<>("btwNummer"));
 
-		return Arrays.asList(naamCol, straatCol, nummerCol, postcodeCol, plaatsCol,
-				btwNummerCol, this.getDeleteCol());
+		return Arrays.asList(naamCol, straatCol, nummerCol, postcodeCol, plaatsCol, btwNummerCol, this.getDeleteCol());
 	}
 
 	protected TableColumn<DebiteurTableModel, Boolean> getDeleteCol() {
@@ -92,12 +96,14 @@ public class DebiteurTable extends VBox {
 		deleteCol.setCellFactory(param -> {
 			Button button = new Button();
 			ButtonCell<DebiteurTableModel> buttonCell = new ButtonCell<>(button);
-			Observables.fromNodeEvents(button, ActionEvent.ACTION)
+			this.disposable.add(
+				Observables.fromNodeEvents(button, ActionEvent.ACTION)
 					.map(event -> buttonCell.getTableView().getItems().get(buttonCell.getIndex()))
 					.observeOn(Schedulers.io())
 					.flatMapSingle(model -> this.dbDelete.apply(model).toSingle(() -> model))
 					.observeOn(JavaFxScheduler.getInstance())
-					.subscribe(this.data::remove);
+					.subscribe(this.data::remove)
+			);
 			return buttonCell;
 		});
 		deleteCol.setMinWidth(50);
@@ -118,14 +124,12 @@ public class DebiteurTable extends VBox {
 		nav.setSpacing(15);
 		nav.getChildren().addAll(this.add, this.modify);
 
-		Observable<Integer> selectedRow = Observables.fromProperty(this.table.getSelectionModel()
-				.selectedIndexProperty())
-				.map(Number::intValue);
-
-		selectedRow.filter(i -> this.data.isEmpty())
-				.subscribe(i -> this.modify.setDisable(true));
-		selectedRow.filter(i -> !this.data.isEmpty())
-				.subscribe(i -> this.modify.setDisable(false));
+		this.disposable.add(
+			Observables.fromProperty(this.table.getSelectionModel().selectedIndexProperty())
+				.map(Number::intValue)
+				.map(i -> this.data.isEmpty())
+				.subscribe(this.modify::setDisable)
+		);
 
 		return nav;
 	}
@@ -147,6 +151,16 @@ public class DebiteurTable extends VBox {
 		return Observables.fromNodeEvents(this.modify, ActionEvent.ACTION);
 	}
 
+	@Override
+	public boolean isDisposed() {
+		return this.disposable.isDisposed();
+	}
+
+	@Override
+	public void dispose() {
+		this.disposable.dispose();
+	}
+
 	public static class DebiteurTableModel {
 
 		private final Integer id;
@@ -158,7 +172,7 @@ public class DebiteurTable extends VBox {
 		private final String btwNummer;
 
 		public DebiteurTableModel(Integer id, String naam, String straat, String nummer,
-				String postcode, String plaats, String btwNummer) {
+			String postcode, String plaats, String btwNummer) {
 			this.id = id;
 			this.naam = naam;
 			this.straat = straat;

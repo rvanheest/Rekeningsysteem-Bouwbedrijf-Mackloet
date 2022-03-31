@@ -6,8 +6,10 @@ import java.util.Optional;
 
 import io.reactivex.rxjava3.core.Maybe;
 import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import org.rekeningsysteem.application.working.RekeningSplitPane;
 import org.rekeningsysteem.data.reparaties.ReparatiesFactuur;
+import org.rekeningsysteem.data.reparaties.ReparatiesInkoopOrder;
 import org.rekeningsysteem.data.util.header.Debiteur;
 import org.rekeningsysteem.data.util.header.FactuurHeader;
 import org.rekeningsysteem.io.database.Database;
@@ -15,19 +17,17 @@ import org.rekeningsysteem.properties.PropertiesWorker;
 import org.rekeningsysteem.properties.PropertyModelEnum;
 import org.rekeningsysteem.ui.AbstractRekeningController;
 import org.rekeningsysteem.ui.header.FactuurHeaderController;
+import org.rekeningsysteem.ui.list.ListPaneController;
 
 public class ReparatiesController extends AbstractRekeningController<ReparatiesFactuur> {
 
 	private final FactuurHeaderController header;
-	private final ReparatiesListPaneController list;
+	private final CompositeDisposable disposable = new CompositeDisposable();
 
 	public ReparatiesController(Database database) {
-		this(PropertiesWorker.getInstance(), database);
-	}
-
-	public ReparatiesController(PropertiesWorker properties, Database database) {
 		this(
-			properties.getProperty(PropertyModelEnum.VALUTAISO4217)
+			PropertiesWorker.getInstance()
+				.getProperty(PropertyModelEnum.VALUTAISO4217)
 				.map(Currency::getInstance)
 				.orElse(Currency.getInstance("EUR")),
 			database
@@ -43,18 +43,18 @@ public class ReparatiesController extends AbstractRekeningController<ReparatiesF
 				),
 				database
 			),
-			new ReparatiesListPaneController(currency)
+			new ListPaneController<>(new ReparatiesListController(currency), currency)
 		);
 	}
 
 	public ReparatiesController(ReparatiesFactuur input, Database database) {
 		this(
 			new FactuurHeaderController(input.getFactuurHeader(), database),
-			new ReparatiesListPaneController(input.getCurrency(), input.getItemList())
+			new ListPaneController<>(new ReparatiesListController(input.getCurrency(), input.getItemList()), input.getCurrency())
 		);
 	}
 
-	public ReparatiesController(FactuurHeaderController header, ReparatiesListPaneController body) {
+	public ReparatiesController(FactuurHeaderController header, ListPaneController<ReparatiesInkoopOrder> body) {
 		super(
 			new RekeningSplitPane(header.getUI(), body.getUI()),
 			Observable.combineLatest(
@@ -64,15 +64,7 @@ public class ReparatiesController extends AbstractRekeningController<ReparatiesF
 			)
 		);
 		this.header = header;
-		this.list = body;
-	}
-
-	public FactuurHeaderController getHeaderController() {
-		return this.header;
-	}
-
-	public ReparatiesListPaneController getListController() {
-		return this.list;
+		this.disposable.addAll(header, body);
 	}
 
 	@Override
@@ -80,13 +72,22 @@ public class ReparatiesController extends AbstractRekeningController<ReparatiesF
 		String factuurnummer = this.getFactuurnummerFactory()
 			.apply(PropertyModelEnum.FACTUURNUMMER, PropertyModelEnum.FACTUURNUMMER_KENMERK)
 			.getFactuurnummer();
-		this.header.getFactuurnummerController()
-			.getUI()
-			.setFactuurnummer(Optional.ofNullable(factuurnummer));
+		this.header.setFactuurnummer(Optional.ofNullable(factuurnummer));
 	}
 
 	@Override
 	public Maybe<Boolean> getSaveSelected() {
 		return this.header.getDebiteurController().isSaveSelected().firstElement();
+	}
+
+	@Override
+	public boolean isDisposed() {
+		return super.isDisposed() && this.disposable.isDisposed();
+	}
+
+	@Override
+	public void dispose() {
+		super.dispose();
+		this.disposable.dispose();
 	}
 }

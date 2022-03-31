@@ -10,7 +10,7 @@ import org.rekeningsysteem.data.util.ItemList;
 import org.rekeningsysteem.ui.list.AbstractListController;
 import org.rekeningsysteem.ui.reparaties.ReparatiesListPane.ReparatiesModel;
 
-public class ReparatiesListController extends AbstractListController<ReparatiesInkoopOrder, ReparatiesModel> {
+public class ReparatiesListController extends AbstractListController<ReparatiesInkoopOrder, ReparatiesModel, ReparatiesInkoopOrderController> {
 
 	public ReparatiesListController(Currency currency) {
 		this(currency, new ReparatiesListPane());
@@ -18,7 +18,7 @@ public class ReparatiesListController extends AbstractListController<ReparatiesI
 
 	public ReparatiesListController(Currency currency, List<ReparatiesInkoopOrder> input) {
 		this(currency);
-		this.getUI().setData(modelToUI(input));
+		this.setData(modelToUI(input));
 	}
 
 	public ReparatiesListController(Currency currency, ReparatiesListPane ui) {

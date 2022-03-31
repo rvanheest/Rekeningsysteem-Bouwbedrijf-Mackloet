@@ -4,9 +4,10 @@ import java.io.File;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
-import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Maybe;
 import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
+import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.subjects.BehaviorSubject;
 import io.reactivex.rxjava3.subjects.PublishSubject;
 import javafx.scene.control.Alert;
@@ -20,7 +21,6 @@ import org.rekeningsysteem.data.offerte.Offerte;
 import org.rekeningsysteem.data.particulier.ParticulierFactuur;
 import org.rekeningsysteem.data.reparaties.ReparatiesFactuur;
 import org.rekeningsysteem.data.util.AbstractRekening;
-import org.rekeningsysteem.data.util.header.Debiteur;
 import org.rekeningsysteem.exception.PdfException;
 import org.rekeningsysteem.io.database.Database;
 import org.rekeningsysteem.io.xml.IOWorker;
@@ -35,7 +35,7 @@ import org.rekeningsysteem.ui.reparaties.ReparatiesController;
 
 import de.nixosoft.jlr.JLROpener;
 
-public class RekeningTab extends Tab {
+public class RekeningTab extends Tab implements Disposable {
 
 	private static final IOWorker ioWorker = new IOWorker(ApplicationLogger.getInstance());
 
@@ -44,27 +44,35 @@ public class RekeningTab extends Tab {
 	private final AbstractRekeningController<? extends AbstractRekening> controller;
 	private Optional<File> saveFile;
 	private final DebiteurDBInteraction debiteurDB;
+	private final CompositeDisposable disposable = new CompositeDisposable();
 
 	public RekeningTab(String name, AbstractRekeningController<? extends AbstractRekening> controller, Database database) {
-		this(name, controller, null, database);
+		this(name, controller, Optional.empty(), database);
 	}
 
-	public RekeningTab(String name, AbstractRekeningController<? extends AbstractRekening> controller, File file, Database database) {
+	public RekeningTab(String name, AbstractRekeningController<? extends AbstractRekening> controller, Optional<File> file, Database database) {
 		super(name);
 		this.controller = controller;
-		this.saveFile = Optional.ofNullable(file);
+		this.saveFile = file;
 		this.debiteurDB = new DebiteurDBInteraction(database);
 
 		this.setContent(this.controller.getUI());
 
-		this.getModel().subscribe(this.latest);
-		this.getModel().skip(1).subscribe(ar -> this.modified.onNext(true));
+		this.disposable.addAll(
+			this.getModel().subscribe(this.latest::onNext, this.latest::onError, this.latest::onComplete),
 
-		this.modified.filter(b -> b)
-			.map(b -> this.getText())
-			.filter(s -> !s.endsWith("*"))
-			.map(s -> s + "*")
-			.subscribe(this::setText);
+			this.getModel().skip(1).subscribe(ar -> this.modified.onNext(true)),
+
+			this.modified.filter(b -> b)
+				.map(b -> this.getText())
+				.filter(s -> !s.endsWith("*"))
+				.map(s -> s + "*")
+				.subscribe(this::setText),
+
+			this.controller
+		);
+		
+		this.setOnClosed(evt -> this.dispose());
 	}
 
 	public Observable<? extends AbstractRekening> getModel() {
@@ -108,7 +116,7 @@ public class RekeningTab extends Tab {
 					f.ofType(ParticulierFactuur.class).map(fact -> new ParticulierController(fact, PropertiesWorker.getInstance(), database)),
 					f.ofType(ReparatiesFactuur.class).map(fact -> new ReparatiesController(fact, database))
 				))
-				.map(c -> new RekeningTab(file.getName(), c, file, database))
+				.map(c -> new RekeningTab(file.getName(), c, Optional.of(file), database))
 				.singleElement();
 		}
 
@@ -116,39 +124,46 @@ public class RekeningTab extends Tab {
 	}
 
 	public void save() {
-		this.latest.firstElement()
-			.doOnSuccess(factuur -> this.saveFile.ifPresent(file -> ioWorker.save(factuur, file)))
-			.flatMapCompletable(rekening -> this.controller.getSaveSelected().flatMapCompletable(select -> {
-				if (select) {
-					Debiteur debiteur = rekening.getFactuurHeader().getDebiteur();
-					// TODO on which scheduler should the following line be? ioScheduler?
-					return this.debiteurDB.addDebiteur(debiteur);
-				}
-				return Completable.complete();
-			}))
-			.toSingle(this::getText)
-			.filter(s -> s.endsWith("*"))
-			.map(s -> s.substring(0, s.length() - 1))
-			.subscribe(this::setText);
+		AbstractRekening rekening = this.latest.getValue();
+
+		this.saveFile.ifPresent(file -> ioWorker.save(rekening, file));
+
+		if (this.controller.getSaveSelected().blockingGet()) {
+			this.debiteurDB.addDebiteur(rekening.getFactuurHeader().getDebiteur()).blockingAwait();
+		}
+		
+		String text = this.getText();
+		if (text.endsWith("*")) {
+			this.setText(text.substring(0, text.length() - 1));
+		}
+
 		this.modified.onNext(false);
 	}
 
 	public void export(File file) {
 		final AtomicReference<PdfException> e = new AtomicReference<>();
 
-		this.latest.firstElement()
-			.subscribe(
-				factuur -> {
-					try {
-						ioWorker.export(factuur, file);
-					}
-					catch (PdfException ex) {
-						e.set(ex);
-					}
-				}
-			);
+		AbstractRekening rekening = this.latest.getValue();
 
-		if (e.get() != null)
+		try {
+			ioWorker.export(rekening, file);
+		}
+		catch (PdfException ex) {
+			e.set(ex);
+		}
+
+		if (e.get() != null) {
 			throw e.get();
+		}
+	}
+
+	@Override
+	public boolean isDisposed() {
+		return this.disposable.isDisposed();
+	}
+
+	@Override
+	public void dispose() {
+		this.disposable.dispose();
 	}
 }

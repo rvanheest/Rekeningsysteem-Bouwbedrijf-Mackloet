@@ -1,24 +1,24 @@
 package org.rekeningsysteem.ui.offerte;
 
 import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.disposables.Disposable;
 import org.rekeningsysteem.data.util.header.FactuurHeader;
 import org.rekeningsysteem.io.database.Database;
 import org.rekeningsysteem.logic.database.DebiteurDBInteraction;
-import org.rekeningsysteem.ui.WorkingPaneController;
 import org.rekeningsysteem.ui.header.DatumController;
 import org.rekeningsysteem.ui.header.DebiteurController;
 import org.rekeningsysteem.ui.header.FactuurHeaderPane;
 import org.rekeningsysteem.ui.header.FactuurnummerController;
 import org.rekeningsysteem.ui.header.FactuurnummerPane.FactuurnummerType;
 
-public class OfferteHeaderController extends WorkingPaneController {
+public class OfferteHeaderController implements Disposable {
 
 	private final Observable<FactuurHeader> model;
 	private final Observable<Boolean> ondertekenenModel;
+	private final FactuurHeaderPane ui;
 
 	// subcontrollers
 	private final DebiteurController debiteur;
-	private final DatumController datum;
 	private final FactuurnummerController offertenummer;
 	private final OndertekenenController ondertekenen;
 
@@ -41,15 +41,13 @@ public class OfferteHeaderController extends WorkingPaneController {
 	}
 
 	public OfferteHeaderController(DebiteurController debiteur, DatumController datum, FactuurnummerController offertenummer, OndertekenenController ondertekenen) {
-		super(new FactuurHeaderPane(debiteur.getUI(), datum.getUI(), offertenummer.getUI(), ondertekenen.getUI()));
 		this.debiteur = debiteur;
-		this.datum = datum;
 		this.offertenummer = offertenummer;
 		this.ondertekenen = ondertekenen;
 
-		this.model = Observable.combineLatest(debiteur.getModel(), datum.getModel(),
-			offertenummer.getModel(), FactuurHeader::new);
+		this.model = Observable.combineLatest(debiteur.getModel(), datum.getModel(), offertenummer.getModel(), FactuurHeader::new);
 		this.ondertekenenModel = ondertekenen.getModel();
+		this.ui = new FactuurHeaderPane(debiteur.getUI(), datum.getUI(), offertenummer.getUI(), ondertekenen.getUI());
 	}
 
 	public Observable<FactuurHeader> getModel() {
@@ -60,12 +58,12 @@ public class OfferteHeaderController extends WorkingPaneController {
 		return this.ondertekenenModel;
 	}
 
-	public DebiteurController getDebiteurController() {
-		return this.debiteur;
+	public FactuurHeaderPane getUI() {
+		return this.ui;
 	}
 
-	public DatumController getDatumController() {
-		return this.datum;
+	public DebiteurController getDebiteurController() {
+		return this.debiteur;
 	}
 
 	public FactuurnummerController getOffertenummerController() {
@@ -74,5 +72,15 @@ public class OfferteHeaderController extends WorkingPaneController {
 
 	public OndertekenenController getOndertekenen() {
 		return this.ondertekenen;
+	}
+
+	@Override
+	public boolean isDisposed() {
+		return this.debiteur.isDisposed();
+	}
+
+	@Override
+	public void dispose() {
+		this.debiteur.dispose();
 	}
 }

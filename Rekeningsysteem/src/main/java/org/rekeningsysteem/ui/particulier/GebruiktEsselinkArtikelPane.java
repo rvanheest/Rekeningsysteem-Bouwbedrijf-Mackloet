@@ -5,6 +5,8 @@ import java.util.Currency;
 import java.util.Objects;
 
 import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
+import io.reactivex.rxjava3.disposables.Disposable;
 import javafx.scene.control.CheckBox;
 import org.rekeningsysteem.data.particulier.EsselinkArtikel;
 import org.rekeningsysteem.data.util.BtwPercentage;
@@ -22,20 +24,21 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 
-public class GebruiktEsselinkArtikelPane extends GridPane {
+public class GebruiktEsselinkArtikelPane extends GridPane implements Disposable {
 
 	private final NumberField aantalTF = new NumberField();
 	private final PercentageField btwPercentageTF = new PercentageField();
 	private final CheckBox verlegdCB = new CheckBox();
 
-	private Observable<Double> aantal;
+	private final Observable<Double> aantal;
 	private final Observable<Double> btwPercentage;
 	private final Observable<Boolean> verlegd;
 
 	private final AbstractSearchBox<EsselinkArtikel> searchBox;
 	private final ToggleGroup searchType = new ToggleGroup();
 	private final RadioButton artNr = new RadioButton("Artikelnummer");
-	private final RadioButton omschr = new RadioButton("Omschrijving");
+
+	private final CompositeDisposable disposable = new CompositeDisposable();
 
 	public GebruiktEsselinkArtikelPane(Currency currency, AbstractSearchBox<EsselinkArtikel> searchField) {
 		this.searchBox = searchField;
@@ -43,8 +46,9 @@ public class GebruiktEsselinkArtikelPane extends GridPane {
 		this.artNr.setToggleGroup(this.searchType);
 		this.artNr.setSelected(false);
 
-		this.omschr.setToggleGroup(this.searchType);
-		this.omschr.setSelected(true);
+		RadioButton omschr = new RadioButton("Omschrijving");
+		omschr.setToggleGroup(this.searchType);
+		omschr.setSelected(true);
 
 		this.setPadding(new Insets(8));
 		this.setHgap(10);
@@ -54,7 +58,7 @@ public class GebruiktEsselinkArtikelPane extends GridPane {
 		VBox vbox = new VBox();
 		vbox.setSpacing(5);
 		vbox.getChildren().add(this.artNr);
-		vbox.getChildren().add(this.omschr);
+		vbox.getChildren().add(omschr);
 
 		Region spacer = new Region();
 		spacer.setPadding(new Insets(5, 0, 5, 0));
@@ -62,24 +66,23 @@ public class GebruiktEsselinkArtikelPane extends GridPane {
 		Label artNrOmschr = new Label("geen artikel geselecteerd");
 		Label extraInfo = new Label();
 		artNrOmschr.getStyleClass().add("no-item-found");
-		this.getArtikel().subscribe(ea -> {
-			artNrOmschr.getStyleClass().remove("no-item-found");
-			artNrOmschr.setText(ea.getArtikelNummer() + "\t" + ea.getOmschrijving());
-			extraInfo.setText(currency.getSymbol() + " " + ea.getVerkoopPrijs().getBedrag() + " per " + ea.getPrijsPer() + " " + ea.getEenheid());
 
-			searchField.clear();
-		});
+		this.disposable.addAll(
+			this.getArtikel()
+				.subscribe(ea -> {
+					artNrOmschr.getStyleClass().remove("no-item-found");
+					artNrOmschr.setText(ea.getArtikelNummer() + "\t" + ea.getOmschrijving());
+					extraInfo.setText(currency.getSymbol() + " " + ea.getVerkoopPrijs().getBedrag() + " per " + ea.getPrijsPer() + " " + ea.getEenheid());
 
-		this.aantal = Observables.fromProperty(this.aantalTF.valueProperty())
-				.filter(Objects::nonNull)
-				.map(BigDecimal::doubleValue);
+					searchField.clear();
+				})
+		);
+
+		this.aantal = Observables.fromProperty(this.aantalTF.valueProperty()).filter(Objects::nonNull).map(BigDecimal::doubleValue);
 		this.aantalTF.setPrefColumnCount(10);
 
-		this.btwPercentage = Observables.fromProperty(this.btwPercentageTF.valueProperty())
-				.map(n -> Objects.isNull(n) ? BigDecimal.ZERO : n)
-				.map(BigDecimal::doubleValue);
-		this.verlegd = Observables.fromProperty(this.verlegdCB.selectedProperty())
-				.map(Boolean::booleanValue);
+		this.btwPercentage = Observables.fromProperty(this.btwPercentageTF.valueProperty()).map(n -> Objects.isNull(n) ? BigDecimal.ZERO : n).map(BigDecimal::doubleValue);
+		this.verlegd = Observables.fromProperty(this.verlegdCB.selectedProperty()).map(Boolean::booleanValue);
 
 		GridPane inner = new GridPane();
 		inner.setPadding(new Insets(0));
@@ -124,9 +127,19 @@ public class GebruiktEsselinkArtikelPane extends GridPane {
 
 	public Observable<EsselinkArtikelToggle> getSelectedToggle() {
 		return Observables.fromProperty(this.searchType.selectedToggleProperty())
-				.map(toggle -> toggle == this.artNr
-						? EsselinkArtikelToggle.ARTIKELNUMMER
-						: EsselinkArtikelToggle.OMSCHRIJVING
-				);
+			.map(toggle -> toggle == this.artNr
+				? EsselinkArtikelToggle.ARTIKELNUMMER
+				: EsselinkArtikelToggle.OMSCHRIJVING
+			);
+	}
+
+	@Override
+	public boolean isDisposed() {
+		return this.disposable.isDisposed();
+	}
+
+	@Override
+	public void dispose() {
+		this.disposable.dispose();
 	}
 }

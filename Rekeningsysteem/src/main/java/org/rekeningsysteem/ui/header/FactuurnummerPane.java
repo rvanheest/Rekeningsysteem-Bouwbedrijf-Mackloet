@@ -12,25 +12,19 @@ import org.rekeningsysteem.ui.Page;
 public class FactuurnummerPane extends Page {
 
 	public enum FactuurnummerType {
-		FACTUUR("Factuurnummer", "factuurnummer", "factuur"),
-		OFFERTE("Offertenummer", "offertenummer", "offerte");
+		FACTUUR("Factuurnummer", "factuur"),
+		OFFERTE("Offertenummer", "offerte");
 
 		private final String name;
-		private final String name_lowercase;
 		private final String type;
 
-		FactuurnummerType(String name, String name_lowercase, String type) {
+		FactuurnummerType(String name, String type) {
 			this.name = name;
-			this.name_lowercase = name_lowercase;
 			this.type = type;
 		}
 
 		public String getName() {
 			return this.name;
-		}
-
-		public String getNameLowercase() {
-			return this.name_lowercase;
 		}
 
 		public String getType() {
@@ -46,7 +40,7 @@ public class FactuurnummerPane extends Page {
 	public FactuurnummerPane(FactuurnummerType type) {
 		super(type.getName());
 
-		this.emptyText = String.format("Er is nog geen %s toegekend aan deze %s", type.getNameLowercase(), type.getType());
+		this.emptyText = String.format("Er is nog geen %s toegekend aan deze %s", type.getName().toLowerCase(), type.getType());
 		this.factNrL = new Label(this.emptyText);
 
 		this.getChildren().add(this.factNrL);

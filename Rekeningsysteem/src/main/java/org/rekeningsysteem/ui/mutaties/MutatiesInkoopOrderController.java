@@ -1,14 +1,13 @@
 package org.rekeningsysteem.ui.mutaties;
 
-import java.util.Currency;
-import java.util.Optional;
-
 import io.reactivex.rxjava3.core.Observable;
 import org.rekeningsysteem.data.mutaties.MutatiesInkoopOrder;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.ui.list.AbstractListItemController;
 
-public class MutatiesInkoopOrderController extends AbstractListItemController<MutatiesInkoopOrder> {
+import java.util.Currency;
+
+public class MutatiesInkoopOrderController extends AbstractListItemController<MutatiesInkoopOrder, MutatiesInkoopOrderPane> {
 
 	public MutatiesInkoopOrderController(Currency currency) {
 		this(new MutatiesInkoopOrderPane(currency));
@@ -16,25 +15,15 @@ public class MutatiesInkoopOrderController extends AbstractListItemController<Mu
 	}
 
 	public MutatiesInkoopOrderController(MutatiesInkoopOrderPane ui) {
-		super(ui,
-			getMutatiesInkoopOrderObservable(ui)
-				.sample(ui.getAddButtonEvent())
-				.map(Optional::of)
-				.mergeWith(ui.getCancelButtonEvent().map(event -> Optional.empty()))
-				.firstElement()
-		);
+		super(ui, getMutatiesInkoopOrder(ui));
 	}
 
-	private static Observable<MutatiesInkoopOrder> getMutatiesInkoopOrderObservable(MutatiesInkoopOrderPane ui) {
+	private static Observable<MutatiesInkoopOrder> getMutatiesInkoopOrder(MutatiesInkoopOrderPane ui) {
 		return Observable.combineLatest(
 			ui.getOmschrijving(),
 			ui.getOrdernummer(),
 			ui.getPrijs().map(Geld::new),
 			MutatiesInkoopOrder::new
 		);
-	}
-
-	public MutatiesInkoopOrderPane getUI() {
-		return (MutatiesInkoopOrderPane) super.getUI();
 	}
 }

@@ -25,7 +25,7 @@ public class ItemTabPane extends TabPane {
 		this.getTabs().add(tab);
 	}
 
-	public Observable<? extends ItemType> getType() {
+	public Observable<ItemType> getType() {
 		return this.type;
 	}
 }

@@ -1,8 +1,6 @@
 package org.rekeningsysteem.ui.particulier;
 
-import java.util.Currency;
-import java.util.Optional;
-
+import io.reactivex.rxjava3.core.Observable;
 import org.rekeningsysteem.data.particulier.ParticulierArtikel;
 import org.rekeningsysteem.data.util.BtwPercentages;
 import org.rekeningsysteem.io.database.Database;
@@ -13,7 +11,9 @@ import org.rekeningsysteem.ui.list.AbstractListItemController;
 import org.rekeningsysteem.ui.particulier.loon.InstantLoonController;
 import org.rekeningsysteem.ui.particulier.loon.ProductLoonController;
 
-public class ParticulierArtikelController extends AbstractListItemController<ParticulierArtikel> {
+import java.util.Currency;
+
+public class ParticulierArtikelController extends AbstractListItemController<ParticulierArtikel, ParticulierArtikelPane> {
 
 	private final AnderArtikelController anderController;
 	private final GebruiktEsselinkArtikelController gebruiktController;
@@ -39,28 +39,7 @@ public class ParticulierArtikelController extends AbstractListItemController<Par
 		InstantLoonController instantController,
 		ProductLoonController productController
 	) {
-		super(ui,
-			ui.getType()
-				.flatMap(type -> {
-					switch (type) {
-						case ESSELINK:
-							return gebruiktController.getModel();
-						case ANDER:
-							return anderController.getModel();
-						case INSTANT:
-							return instantController.getModel();
-						case PRODUCT:
-							return productController.getModel();
-						default:
-							// Does never happen!!!
-							return null;
-					}
-				})
-				.sample(ui.getAddButtonEvent())
-				.map(Optional::of)
-				.mergeWith(ui.getCancelButtonEvent().map(event -> Optional.empty()))
-				.firstElement()
-		);
+		super(ui, getParticulierArtikel(ui, anderController, gebruiktController, instantController, productController));
 
 		PropertiesWorker properties = PropertiesWorker.getInstance();
 
@@ -69,34 +48,65 @@ public class ParticulierArtikelController extends AbstractListItemController<Par
 		this.instantController = instantController;
 		this.productController = productController;
 
-		properties.getProperty(PropertyModelEnum.FEATURE_PARTICULIER_ESSELINK_ARTIKEL).map(Boolean::parseBoolean)
-			.filter(b -> b)
+		properties.getProperty(PropertyModelEnum.FEATURE_PARTICULIER_ESSELINK_ARTIKEL)
+			.filter(Boolean::parseBoolean)
 			.ifPresent(b -> ui.addContent(ParticulierArtikelType.ESSELINK, this.gebruiktController.getUI()));
 
-		properties.getProperty(PropertyModelEnum.FEATURE_PARTICULIER_EIGEN_ARTIKEL).map(Boolean::parseBoolean)
-			.filter(b -> b)
+		properties.getProperty(PropertyModelEnum.FEATURE_PARTICULIER_EIGEN_ARTIKEL)
+			.filter(Boolean::parseBoolean)
 			.ifPresent(b -> ui.addContent(ParticulierArtikelType.ANDER, this.anderController.getUI()));
 
-		properties.getProperty(PropertyModelEnum.FEATURE_PARTICULIER_LOON).map(Boolean::parseBoolean)
-			.filter(b -> b)
+		properties.getProperty(PropertyModelEnum.FEATURE_PARTICULIER_LOON)
+			.filter(Boolean::parseBoolean)
 			.ifPresent(b -> ui.addContent(ParticulierArtikelType.INSTANT, this.instantController.getUI()));
 
-		properties.getProperty(PropertyModelEnum.FEATURE_PARTICULIER_LOON_PER_UUR).map(Boolean::parseBoolean)
-			.filter(b -> b)
+		properties.getProperty(PropertyModelEnum.FEATURE_PARTICULIER_LOON_PER_UUR)
+			.filter(Boolean::parseBoolean)
 			.ifPresent(b -> ui.addContent(ParticulierArtikelType.PRODUCT, this.productController.getUI()));
 
 		this.setBtwPercentage(defaultBtw);
 	}
 
-	@Override
-	public ParticulierArtikelPane getUI() {
-		return (ParticulierArtikelPane) super.getUI();
+	private static Observable<ParticulierArtikel> getParticulierArtikel(
+		ParticulierArtikelPane ui,
+		AnderArtikelController anderController,
+		GebruiktEsselinkArtikelController gebruiktController,
+		InstantLoonController instantController,
+		ProductLoonController productController
+	) {
+		return ui.getType()
+			.flatMap(type -> {
+				switch (type) {
+					case ESSELINK:
+						return gebruiktController.getModel();
+					case ANDER:
+						return anderController.getModel();
+					case INSTANT:
+						return instantController.getModel();
+					case PRODUCT:
+						return productController.getModel();
+					default:
+						// Does never happen!!!
+						return null;
+				}
+			});
 	}
 
 	public void setBtwPercentage(BtwPercentages btwPercentages) {
-		this.anderController.getUI().setBtwPercentage(btwPercentages.getMateriaalPercentage());
-		this.gebruiktController.getUI().setBtwPercentage(btwPercentages.getMateriaalPercentage());
-		this.instantController.getUI().setBtwPercentage(btwPercentages.getLoonPercentage());
-		this.productController.getUI().setBtwPercentage(btwPercentages.getLoonPercentage());
+		this.anderController.setBtwPercentage(btwPercentages.getMateriaalPercentage());
+		this.gebruiktController.setBtwPercentage(btwPercentages.getMateriaalPercentage());
+		this.instantController.setBtwPercentage(btwPercentages.getLoonPercentage());
+		this.productController.setBtwPercentage(btwPercentages.getLoonPercentage());
+	}
+
+	@Override
+	public boolean isDisposed() {
+		return super.isDisposed() && this.gebruiktController.isDisposed();
+	}
+
+	@Override
+	public void dispose() {
+		super.dispose();
+		this.gebruiktController.dispose();
 	}
 }

@@ -1,44 +1,27 @@
 package org.rekeningsysteem.application.settings.debiteur;
 
-import java.util.Optional;
-
 import io.reactivex.rxjava3.core.Observable;
 import org.rekeningsysteem.data.util.header.Debiteur;
 import org.rekeningsysteem.ui.list.AbstractListItemController;
 
-public class DebiteurItemPaneController extends AbstractListItemController<Debiteur> {
+import java.util.Optional;
+
+public class DebiteurItemPaneController extends AbstractListItemController<Debiteur, DebiteurItemPane> {
 
 	public DebiteurItemPaneController() {
 		this(Optional.empty(), new DebiteurItemPane());
 	}
 
-	public DebiteurItemPaneController(Optional<Integer> debiteurID) {
-		this(debiteurID, new DebiteurItemPane());
-	}
-
-	public DebiteurItemPaneController(Debiteur input) {
-		this(input.getDebiteurID());
-		this.getUI().setNaam(input.getNaam());
-		this.getUI().setStraat(input.getStraat());
-		this.getUI().setNummer(input.getNummer());
-		this.getUI().setPostcode(input.getPostcode());
-		this.getUI().setPlaats(input.getPlaats());
-		this.getUI().setBtwNummer(input.getBtwNummer().orElse(""));
-		this.getUI().setAsUpdate();
+	public DebiteurItemPaneController(Debiteur debiteur) {
+		this(debiteur.getDebiteurID(), new DebiteurItemPane());
+		setDebiteur(debiteur, this.getUI());
 	}
 
 	public DebiteurItemPaneController(Optional<Integer> debiteurID, DebiteurItemPane ui) {
-		super(
-			ui,
-			getDebiteurObservable(debiteurID, ui)
-				.sample(ui.getAddButtonEvent())
-				.map(Optional::of)
-				.mergeWith(ui.getCancelButtonEvent().map(event -> Optional.empty()))
-				.firstElement()
-		);
+		super(ui, getDebiteur(debiteurID, ui));
 	}
 
-	private static Observable<Debiteur> getDebiteurObservable(Optional<Integer> debiteurID, DebiteurItemPane ui) {
+	private static Observable<Debiteur> getDebiteur(Optional<Integer> debiteurID, DebiteurItemPane ui) {
 		return Observable.combineLatest(
 			ui.getNaam(),
 			ui.getStraat(),
@@ -50,7 +33,13 @@ public class DebiteurItemPaneController extends AbstractListItemController<Debit
 		);
 	}
 
-	public DebiteurItemPane getUI() {
-		return (DebiteurItemPane) super.getUI();
+	private static void setDebiteur(Debiteur debiteur, DebiteurItemPane ui) {
+		ui.setNaam(debiteur.getNaam());
+		ui.setStraat(debiteur.getStraat());
+		ui.setNummer(debiteur.getNummer());
+		ui.setPostcode(debiteur.getPostcode());
+		ui.setPlaats(debiteur.getPlaats());
+		ui.setBtwNummer(debiteur.getBtwNummer().orElse(""));
+		ui.setAsUpdate();
 	}
 }

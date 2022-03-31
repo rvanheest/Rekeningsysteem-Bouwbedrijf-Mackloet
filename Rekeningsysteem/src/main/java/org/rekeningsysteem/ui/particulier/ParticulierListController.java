@@ -15,7 +15,7 @@ import org.rekeningsysteem.io.database.Database;
 import org.rekeningsysteem.ui.list.AbstractListController;
 import org.rekeningsysteem.ui.particulier.ParticulierListPane.ParticulierModel;
 
-public class ParticulierListController extends AbstractListController<ParticulierArtikel, ParticulierModel> {
+public class ParticulierListController extends AbstractListController<ParticulierArtikel, ParticulierModel, ParticulierArtikelController> {
 
 	public ParticulierListController(Currency currency, Database db, BtwPercentages defaultBtw) {
 		this(currency, db, defaultBtw, new ParticulierListPane());
@@ -23,7 +23,7 @@ public class ParticulierListController extends AbstractListController<Particulie
 
 	public ParticulierListController(Currency currency, Database db, BtwPercentages defaultBtw, List<ParticulierArtikel> input) {
 		this(currency, db, defaultBtw);
-		this.getUI().setData(this.modelToUI(input));
+		this.setData(this.modelToUI(input));
 	}
 
 	public ParticulierListController(Currency currency, Database db, BtwPercentages defaultBtw, ParticulierListPane ui) {

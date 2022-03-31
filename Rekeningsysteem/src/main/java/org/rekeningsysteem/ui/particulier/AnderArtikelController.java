@@ -4,6 +4,7 @@ import java.util.Currency;
 
 import io.reactivex.rxjava3.core.Observable;
 import org.rekeningsysteem.data.particulier.AnderArtikel;
+import org.rekeningsysteem.data.util.BtwPercentage;
 import org.rekeningsysteem.data.util.Geld;
 
 public class AnderArtikelController {
@@ -17,8 +18,7 @@ public class AnderArtikelController {
 
 	public AnderArtikelController(AnderArtikelPane ui) {
 		this.ui = ui;
-		this.model = Observable.combineLatest(ui.getOmschrijving(), ui.getPrijs().map(Geld::new),
-				ui.getBtwPercentage(), AnderArtikel::new);
+		this.model = Observable.combineLatest(ui.getOmschrijving(), ui.getPrijs().map(Geld::new), ui.getBtwPercentage(), AnderArtikel::new);
 	}
 
 	public AnderArtikelPane getUI() {
@@ -27,5 +27,9 @@ public class AnderArtikelController {
 
 	public Observable<AnderArtikel> getModel() {
 		return this.model;
+	}
+
+	public void setBtwPercentage(BtwPercentage btwPercentage) {
+		this.ui.setBtwPercentage(btwPercentage);
 	}
 }

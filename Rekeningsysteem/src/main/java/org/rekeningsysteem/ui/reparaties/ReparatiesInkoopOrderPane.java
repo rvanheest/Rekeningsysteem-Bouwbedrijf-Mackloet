@@ -35,12 +35,8 @@ public class ReparatiesInkoopOrderPane extends ItemPane {
 
 		this.omschrijving = Observables.fromProperty(this.omschrTF.textProperty());
 		this.ordernummer = Observables.fromProperty(this.ordernrTF.textProperty());
-		this.loon = Observables.fromProperty(this.loonTF.valueProperty())
-				.filter(Objects::nonNull)
-				.map(BigDecimal::doubleValue);
-		this.materiaal = Observables.fromProperty(this.materiaalTF.valueProperty())
-				.filter(Objects::nonNull)
-				.map(BigDecimal::doubleValue);
+		this.loon = Observables.fromProperty(this.loonTF.valueProperty()).filter(Objects::nonNull).map(BigDecimal::doubleValue);
+		this.materiaal = Observables.fromProperty(this.materiaalTF.valueProperty()).filter(Objects::nonNull).map(BigDecimal::doubleValue);
 		
 		this.omschrTF.setPrefColumnCount(20);
 

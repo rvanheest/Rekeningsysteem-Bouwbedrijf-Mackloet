@@ -5,7 +5,9 @@ import java.util.Optional;
 
 import io.reactivex.rxjava3.core.Maybe;
 import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import org.rekeningsysteem.application.working.RekeningSplitPane;
+import org.rekeningsysteem.data.particulier.ParticulierArtikel;
 import org.rekeningsysteem.data.particulier.ParticulierFactuur;
 import org.rekeningsysteem.data.util.BtwPercentages;
 import org.rekeningsysteem.io.database.Database;
@@ -13,11 +15,12 @@ import org.rekeningsysteem.properties.PropertiesWorker;
 import org.rekeningsysteem.properties.PropertyModelEnum;
 import org.rekeningsysteem.ui.AbstractRekeningController;
 import org.rekeningsysteem.ui.header.OmschrFactuurHeaderController;
+import org.rekeningsysteem.ui.list.ListPaneController;
 
 public class ParticulierController extends AbstractRekeningController<ParticulierFactuur> {
 
 	private final OmschrFactuurHeaderController header;
-	private final ParticulierListPaneController list;
+	private final CompositeDisposable disposable = new CompositeDisposable();
 
 	public ParticulierController(Database database) {
 		this(PropertiesWorker.getInstance(), database);
@@ -30,18 +33,18 @@ public class ParticulierController extends AbstractRekeningController<Particulie
 	public ParticulierController(Currency currency, BtwPercentages defaultBtw, Database database) {
 		this(
 			new OmschrFactuurHeaderController(database),
-			new ParticulierListPaneController(currency, database, defaultBtw)
+			new ListPaneController<>(new ParticulierListController(currency, database, defaultBtw), currency)
 		);
 	}
 
 	public ParticulierController(ParticulierFactuur input, PropertiesWorker properties, Database database) {
 		this(
 			new OmschrFactuurHeaderController(input.getFactuurHeader(), database),
-			new ParticulierListPaneController(input.getCurrency(), database, getDefaultBtwPercentage(properties), input.getItemList())
+			new ListPaneController<>(new ParticulierListController(input.getCurrency(), database, getDefaultBtwPercentage(properties), input.getItemList()), input.getCurrency())
 		);
 	}
 
-	public ParticulierController(OmschrFactuurHeaderController header, ParticulierListPaneController body) {
+	public ParticulierController(OmschrFactuurHeaderController header, ListPaneController<ParticulierArtikel> body) {
 		super(
 			new RekeningSplitPane(header.getUI(), body.getUI()),
 			Observable.combineLatest(
@@ -51,15 +54,7 @@ public class ParticulierController extends AbstractRekeningController<Particulie
 			)
 		);
 		this.header = header;
-		this.list = body;
-	}
-
-	public OmschrFactuurHeaderController getHeaderController() {
-		return this.header;
-	}
-
-	public ParticulierListPaneController getListController() {
-		return this.list;
+		this.disposable.addAll(header, body);
 	}
 
 	@Override
@@ -67,13 +62,22 @@ public class ParticulierController extends AbstractRekeningController<Particulie
 		String factuurnummer = this.getFactuurnummerFactory()
 			.apply(PropertyModelEnum.FACTUURNUMMER, PropertyModelEnum.FACTUURNUMMER_KENMERK)
 			.getFactuurnummer();
-		this.header.getFactuurnummerController()
-			.getUI()
-			.setFactuurnummer(Optional.ofNullable(factuurnummer));
+		this.header.setFactuurnummer(Optional.ofNullable(factuurnummer));
 	}
 
 	@Override
 	public Maybe<Boolean> getSaveSelected() {
-		return this.header.getDebiteurController().isSaveSelected().firstElement();
+		return this.header.isDebiteurSaveSelected().firstElement();
+	}
+
+	@Override
+	public boolean isDisposed() {
+		return super.isDisposed() && this.disposable.isDisposed();
+	}
+
+	@Override
+	public void dispose() {
+		super.dispose();
+		this.disposable.dispose();
 	}
 }

@@ -1,21 +1,22 @@
 package org.rekeningsysteem.ui.header;
 
 import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.disposables.Disposable;
 import org.rekeningsysteem.data.util.header.OmschrFactuurHeader;
 import org.rekeningsysteem.io.database.Database;
 import org.rekeningsysteem.logic.database.DebiteurDBInteraction;
-import org.rekeningsysteem.ui.WorkingPaneController;
 import org.rekeningsysteem.ui.header.FactuurnummerPane.FactuurnummerType;
 
-public class OmschrFactuurHeaderController extends WorkingPaneController {
+import java.util.Optional;
+
+public class OmschrFactuurHeaderController implements Disposable {
 
 	private final Observable<OmschrFactuurHeader> model;
+	private final FactuurHeaderPane ui;
 
 	// subcontrollers
 	private final DebiteurController debiteur;
-	private final DatumController datum;
 	private final FactuurnummerController factuurnummer;
-	private final OmschrijvingController omschrijving;
 
 	public OmschrFactuurHeaderController(Database database) {
 		this(
@@ -35,13 +36,14 @@ public class OmschrFactuurHeaderController extends WorkingPaneController {
 		);
 	}
 
-	public OmschrFactuurHeaderController(DebiteurController debiteur, DatumController datum,
-		FactuurnummerController factuurnummer, OmschrijvingController omschrijving) {
-		super(new FactuurHeaderPane(debiteur.getUI(), datum.getUI(), factuurnummer.getUI(), omschrijving.getUI()));
+	private OmschrFactuurHeaderController(
+		DebiteurController debiteur,
+		DatumController datum,
+		FactuurnummerController factuurnummer,
+		OmschrijvingController omschrijving
+	) {
 		this.debiteur = debiteur;
-		this.datum = datum;
 		this.factuurnummer = factuurnummer;
-		this.omschrijving = omschrijving;
 
 		this.model = Observable.combineLatest(
 			debiteur.getModel(),
@@ -50,25 +52,32 @@ public class OmschrFactuurHeaderController extends WorkingPaneController {
 			omschrijving.getModel(),
 			OmschrFactuurHeader::new
 		);
+		this.ui = new FactuurHeaderPane(debiteur.getUI(), datum.getUI(), factuurnummer.getUI(), omschrijving.getUI());
 	}
 
 	public Observable<OmschrFactuurHeader> getModel() {
 		return this.model;
 	}
 
-	public DebiteurController getDebiteurController() {
-		return this.debiteur;
+	public FactuurHeaderPane getUI() {
+		return this.ui;
 	}
 
-	public DatumController getDatumController() {
-		return this.datum;
+	public Observable<Boolean> isDebiteurSaveSelected() {
+		return this.debiteur.isSaveSelected();
 	}
 
-	public FactuurnummerController getFactuurnummerController() {
-		return this.factuurnummer;
+	public void setFactuurnummer(Optional<String> factuurnummer) {
+		this.factuurnummer.setFactuurnummer(factuurnummer);
 	}
 
-	public OmschrijvingController getOmschrijvingController() {
-		return this.omschrijving;
+	@Override
+	public boolean isDisposed() {
+		return this.debiteur.isDisposed();
+	}
+
+	@Override
+	public void dispose() {
+		this.debiteur.dispose();
 	}
 }

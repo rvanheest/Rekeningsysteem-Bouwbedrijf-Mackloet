@@ -1,15 +1,13 @@
 package org.rekeningsysteem.ui.reparaties;
 
-import java.util.Currency;
-import java.util.Optional;
-
-import io.reactivex.rxjava3.core.Maybe;
 import io.reactivex.rxjava3.core.Observable;
 import org.rekeningsysteem.data.reparaties.ReparatiesInkoopOrder;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.ui.list.AbstractListItemController;
 
-public class ReparatiesInkoopOrderController extends AbstractListItemController<ReparatiesInkoopOrder> {
+import java.util.Currency;
+
+public class ReparatiesInkoopOrderController extends AbstractListItemController<ReparatiesInkoopOrder, ReparatiesInkoopOrderPane> {
 
 	public ReparatiesInkoopOrderController(Currency currency) {
 		this(new ReparatiesInkoopOrderPane(currency));
@@ -17,16 +15,10 @@ public class ReparatiesInkoopOrderController extends AbstractListItemController<
 	}
 
 	public ReparatiesInkoopOrderController(ReparatiesInkoopOrderPane ui) {
-		super(ui,
-			getReparatiesInkoopOrderObservable(ui)
-				.sample(ui.getAddButtonEvent())
-				.map(Optional::of)
-				.mergeWith(ui.getCancelButtonEvent().map(event -> Optional.empty()))
-				.firstElement()
-		);
+		super(ui, getReparatiesInkoopOrder(ui));
 	}
 
-	private static Observable<ReparatiesInkoopOrder> getReparatiesInkoopOrderObservable(ReparatiesInkoopOrderPane ui) {
+	private static Observable<ReparatiesInkoopOrder> getReparatiesInkoopOrder(ReparatiesInkoopOrderPane ui) {
 		return Observable.combineLatest(
 			ui.getOmschrijving(),
 			ui.getOrdernummer(),
@@ -34,9 +26,5 @@ public class ReparatiesInkoopOrderController extends AbstractListItemController<
 			ui.getMateriaal().map(Geld::new),
 			ReparatiesInkoopOrder::new
 		);
-	}
-
-	public ReparatiesInkoopOrderPane getUI() {
-		return (ReparatiesInkoopOrderPane) super.getUI();
 	}
 }

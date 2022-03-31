@@ -28,6 +28,10 @@ public class FactuurnummerController {
 		return this.ui;
 	}
 
+	public void setFactuurnummer(Optional<String> factuurnummer) {
+		this.ui.setFactuurnummer(factuurnummer);
+	}
+
 	public Observable<Optional<String>> getModel() {
 		return this.model;
 	}

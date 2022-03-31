@@ -3,6 +3,8 @@ package org.rekeningsysteem.ui.list;
 import java.util.List;
 
 import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
+import io.reactivex.rxjava3.disposables.Disposable;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -18,10 +20,11 @@ import javafx.scene.layout.VBox;
 import org.rekeningsysteem.rxjavafx.Observables;
 import org.rekeningsysteem.ui.Page;
 
-public abstract class AbstractListPane<T> extends Page {
+public abstract class AbstractListPane<T> extends Page implements Disposable {
 
 	private final TableView<T> table = new TableView<>();
 	private final ObservableList<T> data = FXCollections.observableArrayList();
+	private final CompositeDisposable disposable = new CompositeDisposable();
 
 	private final Button up = new Button();
 	private final Button down = new Button();
@@ -43,9 +46,9 @@ public abstract class AbstractListPane<T> extends Page {
 
 		this.getChildren().add(new HBox(20, this.table, this.initNavigationPane()));
 
-		Observables.fromProperty(this.heightProperty())
-			.map(Number::doubleValue)
-			.subscribe(this.table::setPrefHeight);
+		this.disposable.add(
+			Observables.fromProperty(this.heightProperty()).map(Number::doubleValue).subscribe(this.table::setPrefHeight)
+		);
 	}
 
 	protected abstract List<TableColumn<T, ?>> initTableColumns();
@@ -57,9 +60,11 @@ public abstract class AbstractListPane<T> extends Page {
 		deleteCol.setCellFactory(param -> {
 			Button button = new Button();
 			ButtonCell<T> buttonCell = new ButtonCell<>(button);
-			Observables.fromNodeEvents(button, ActionEvent.ACTION)
-				.map(event -> buttonCell.getTableView().getItems().get(buttonCell.getIndex()))
-				.subscribe(this.data::remove);
+			this.disposable.add(
+				Observables.fromNodeEvents(button, ActionEvent.ACTION)
+					.map(event -> buttonCell.getTableView().getItems().get(buttonCell.getIndex()))
+					.subscribe(this.data::remove)
+			);
 			return buttonCell;
 		});
 
@@ -71,24 +76,26 @@ public abstract class AbstractListPane<T> extends Page {
 		nav.setId("nav-pane");
 		nav.setAlignment(Pos.CENTER);
 
-		Observables.fromProperty(this.table.getSelectionModel().selectedIndexProperty())
-			.map(Number::intValue)
-			.subscribe(i -> {
-				int size = this.data.size();
-				int max = Math.max(0, size - 1);
-				if (size > 1 && i == 0) {
-					this.setUpDownDisabled(true, false);
-				}
-				else if (size > 1 && i == max) {
-					this.setUpDownDisabled(false, true);
-				}
-				else if (size > 0 && i > 0 && i < max) {
-					this.setUpDownDisabled(false, false);
-				}
-				else if (i == -1 || size == 0 || size == 1) {
-					this.setUpDownDisabled(true, true);
-				}
-			});
+		this.disposable.add(
+			Observables.fromProperty(this.table.getSelectionModel().selectedIndexProperty())
+				.map(Number::intValue)
+				.subscribe(i -> {
+					int size = this.data.size();
+					int max = Math.max(0, size - 1);
+					if (size > 1 && i == 0) {
+						this.setUpDownDisabled(true, false);
+					}
+					else if (size > 1 && i == max) {
+						this.setUpDownDisabled(false, true);
+					}
+					else if (size > 0 && i > 0 && i < max) {
+						this.setUpDownDisabled(false, false);
+					}
+					else if (i == -1 || size == 0 || size == 1) {
+						this.setUpDownDisabled(true, true);
+					}
+				})
+		);
 
 		return nav;
 	}
@@ -119,5 +126,15 @@ public abstract class AbstractListPane<T> extends Page {
 
 	public Observable<ActionEvent> getAddButtonEvent() {
 		return Observables.fromNodeEvents(this.add, ActionEvent.ACTION);
+	}
+
+	@Override
+	public boolean isDisposed() {
+		return this.disposable.isDisposed();
+	}
+
+	@Override
+	public void dispose() {
+		this.disposable.dispose();
 	}
 }
