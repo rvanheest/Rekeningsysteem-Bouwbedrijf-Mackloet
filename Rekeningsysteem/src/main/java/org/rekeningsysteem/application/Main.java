@@ -1,14 +1,16 @@
 package org.rekeningsysteem.application;
 
 import java.io.File;
-import java.sql.SQLException;
+import java.util.Objects;
 
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.application.Application;
-import javafx.event.Event;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -21,16 +23,13 @@ import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
 import javafx.util.Duration;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.core.Logger;
 import org.rekeningsysteem.application.versioning.VersionControl;
 import org.rekeningsysteem.io.database.Database;
 import org.rekeningsysteem.logging.ApplicationLogger;
 import org.rekeningsysteem.properties.PropertiesWorker;
 import org.rekeningsysteem.properties.PropertyModelEnum;
 import org.rekeningsysteem.rxjavafx.Observables;
-
-import rx.Observable;
-import rx.schedulers.Schedulers;
 
 public class Main extends Application {
 
@@ -39,6 +38,7 @@ public class Main extends Application {
 	public static final double screenHeight = 728;
 
 	private final StackPane popup = new StackPane();
+	private final CompositeDisposable disposable = new CompositeDisposable();
 
 	public static void main(String[] args) {
 		Application.launch();
@@ -49,7 +49,7 @@ public class Main extends Application {
 	}
 
 	public static String getResource(String s) {
-		return Main.class.getResource(s).toExternalForm();
+		return Objects.requireNonNull(Main.class.getResource(s)).toExternalForm();
 	}
 
 	public static String getExternalResource(String path) {
@@ -63,20 +63,29 @@ public class Main extends Application {
 		try {
 			Database database = Database.getInstance();
 			VersionControl vc = new VersionControl(database);
-			vc.checkDBVersioning().subscribeOn(Schedulers.io()).subscribe();
+			this.disposable.add(
+				vc.checkDBVersioning().subscribeOn(Schedulers.io()).subscribe()
+			);
 
 			main = this;
 			this.popup.setId("modalDimmer");
 
-			Observable.merge(Observables.fromNodeEvents(this.popup, MouseEvent.MOUSE_CLICKED),
-					Observables.fromNodeEvents(this.popup, KeyEvent.KEY_PRESSED)
-							.filter(event -> event.getCode() == KeyCode.ESCAPE))
-					.doOnNext(Event::consume)
-					.forEach(event -> this.hideModalMessage());
+			this.disposable.add(
+				Observable.merge(
+						Observables.fromNodeEvents(this.popup, MouseEvent.MOUSE_CLICKED),
+						Observables.fromNodeEvents(this.popup, KeyEvent.KEY_PRESSED).filter(event -> event.getCode() == KeyCode.ESCAPE)
+					)
+					.subscribe(event -> {
+						event.consume();
+						this.hideModalMessage();
+					})
+			);
 
 			this.popup.setVisible(false);
 
-			StackPane layerPane = new StackPane(new Root(stage, database, logger), this.popup);
+			Root root = new Root(stage, database, logger);
+			this.disposable.add(root);
+			StackPane layerPane = new StackPane(root, this.popup);
 
 			Scene scene = new Scene(layerPane, screenWidth, screenHeight);
 			scene.getStylesheets().add(getResource("/layout.css"));
@@ -84,8 +93,9 @@ public class Main extends Application {
 			stage.addEventHandler(WindowEvent.WINDOW_HIDDEN, event -> {
 				try {
 					database.close();
+					this.disposable.dispose();
 				}
-				catch (SQLException e) {
+				catch (Exception e) {
 					logger.error("Could not close database.", e);
 				}
 			});
@@ -110,7 +120,7 @@ public class Main extends Application {
 
 		KeyValue kv = new KeyValue(this.popup.opacityProperty(), 1, Interpolator.EASE_BOTH);
 		KeyFrame kf = new KeyFrame(Duration.millis(250),
-				event -> this.popup.setCache(false), kv);
+			event -> this.popup.setCache(false), kv);
 		Timeline timeline = new Timeline(kf);
 		timeline.play();
 	}

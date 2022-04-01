@@ -13,7 +13,6 @@ import org.rekeningsysteem.data.particulier.loon.ProductLoon;
 import org.rekeningsysteem.data.util.BtwPercentage;
 import org.rekeningsysteem.ui.list.AbstractListPane;
 import org.rekeningsysteem.ui.list.BtwPercentageCell;
-import org.rekeningsysteem.ui.list.DoubleCell;
 import org.rekeningsysteem.ui.list.MoneyCell;
 import org.rekeningsysteem.ui.particulier.ParticulierListPane.ParticulierModel;
 
@@ -48,8 +47,7 @@ public class ParticulierListPane extends AbstractListPane<ParticulierModel> {
 		materiaalCol.setCellFactory(c -> new MoneyCell<>());
 		materiaalBtwCol.setCellFactory(c -> new BtwPercentageCell<>());
 
-		return Arrays.asList(omschrCol, loonCol, loonBtwCol, materiaalCol, materiaalBtwCol,
-				this.getDeleteCol());
+		return Arrays.asList(omschrCol, loonCol, loonBtwCol, materiaalCol, materiaalBtwCol, this.getDeleteCol());
 	}
 
 	public static class ParticulierModel {

@@ -3,13 +3,12 @@ package org.rekeningsysteem.ui.header;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
+import io.reactivex.rxjava3.core.Observable;
 import javafx.scene.control.DatePicker;
 import javafx.util.StringConverter;
 
 import org.rekeningsysteem.rxjavafx.Observables;
 import org.rekeningsysteem.ui.Page;
-
-import rx.Observable;
 
 public class DatumPane extends Page {
 
@@ -31,9 +30,9 @@ public class DatumPane extends Page {
 		this.datePicker.setValue(datum);
 	}
 
-	private class DatumStringConverter extends StringConverter<LocalDate> {
+	private static class DatumStringConverter extends StringConverter<LocalDate> {
 
-		private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy");
+		private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy");
 
 		@Override
 		public String toString(LocalDate date) {

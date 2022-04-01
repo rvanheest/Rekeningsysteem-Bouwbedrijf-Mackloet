@@ -8,7 +8,7 @@ import java.util.Optional;
 import java.util.Properties;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.core.Logger;
 import org.rekeningsysteem.logging.ApplicationLogger;
 
 public class PropertiesWorker {

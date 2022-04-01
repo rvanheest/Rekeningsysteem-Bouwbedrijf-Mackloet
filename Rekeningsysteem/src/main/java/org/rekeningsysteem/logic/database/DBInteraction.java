@@ -2,12 +2,13 @@ package org.rekeningsysteem.logic.database;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.function.Function;
 
+import io.reactivex.rxjava3.core.Completable;
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.core.Single;
 import org.rekeningsysteem.io.database.Database;
 import org.rekeningsysteem.io.database.QueryEnumeration;
-
-import rx.Observable;
-import rx.functions.Func1;
 
 public abstract class DBInteraction<T> {
 
@@ -17,8 +18,8 @@ public abstract class DBInteraction<T> {
 		this.database = database;
 	}
 
-	Observable<T> getFromDatabase(Func1<String, QueryEnumeration> factory, String text) {
-		return this.getFromDatabase(factory.call(text.replace("\'", "\'\'")));
+	Observable<T> getFromDatabase(Function<String, QueryEnumeration> factory, String text) {
+		return this.getFromDatabase(factory.apply(text.replace("\'", "\'\'")));
 	}
 
 	Observable<T> getFromDatabase(QueryEnumeration query) {
@@ -27,7 +28,11 @@ public abstract class DBInteraction<T> {
 
 	abstract T resultExtractor(ResultSet result) throws SQLException;
 
-	Observable<Integer> update(QueryEnumeration query) {
+	Completable update(QueryEnumeration query) {
 		return this.database.update(query);
+	}
+
+	Single<Integer> updateAndCount(QueryEnumeration query) {
+		return this.database.updateAndCount(query);
 	}
 }

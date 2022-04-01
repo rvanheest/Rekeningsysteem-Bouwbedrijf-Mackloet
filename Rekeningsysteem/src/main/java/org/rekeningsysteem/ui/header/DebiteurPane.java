@@ -2,6 +2,7 @@ package org.rekeningsysteem.ui.header;
 
 import java.util.Optional;
 
+import io.reactivex.rxjava3.core.Observable;
 import javafx.geometry.Pos;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
@@ -16,13 +17,10 @@ import org.rekeningsysteem.ui.textfields.PostcodeTextField;
 import org.rekeningsysteem.ui.textfields.searchbox.AbstractSearchBox;
 import org.rekeningsysteem.util.OptionalUtils;
 
-import rx.Observable;
-
 public class DebiteurPane extends Page {
 
 	private final GridPane grid = new GridPane();
 
-	private final AbstractSearchBox<Debiteur> naamSearchBox;
 	private final TextField naamTF = new TextField();
 	private final TextField straatTF = new TextField();
 	private final TextField nummerTF = new TextField();
@@ -42,15 +40,13 @@ public class DebiteurPane extends Page {
 	public DebiteurPane(AbstractSearchBox<Debiteur> naamSearchBox) {
 		super("Debiteur");
 
-		this.naamSearchBox = naamSearchBox;
-
 		this.grid.setHgap(10);
 		this.grid.setVgap(1);
 		this.grid.setAlignment(Pos.TOP_CENTER);
 		
 		this.setSaveSelected(false);
 
-		VBox box = new VBox(1, this.naamSearchBox, new VBox(10, this.grid, this.saveDebiteur));
+		VBox box = new VBox(1, naamSearchBox, new VBox(10, this.grid, this.saveDebiteur));
 
 		this.initLabels();
 		this.initTextFields();

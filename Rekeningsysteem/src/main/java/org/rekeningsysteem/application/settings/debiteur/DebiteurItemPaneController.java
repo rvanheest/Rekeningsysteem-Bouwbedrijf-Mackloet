@@ -1,45 +1,45 @@
 package org.rekeningsysteem.application.settings.debiteur;
 
-import java.util.Optional;
-
+import io.reactivex.rxjava3.core.Observable;
 import org.rekeningsysteem.data.util.header.Debiteur;
 import org.rekeningsysteem.ui.list.AbstractListItemController;
 
-import rx.Observable;
+import java.util.Optional;
 
-public class DebiteurItemPaneController extends AbstractListItemController<Debiteur> {
+public class DebiteurItemPaneController extends AbstractListItemController<Debiteur, DebiteurItemPane> {
 
 	public DebiteurItemPaneController() {
 		this(Optional.empty(), new DebiteurItemPane());
 	}
 
-	public DebiteurItemPaneController(Optional<Integer> debiteurID) {
-		this(debiteurID, new DebiteurItemPane());
-	}
-
-	public DebiteurItemPaneController(Debiteur input) {
-		this(input.getDebiteurID());
-		this.getUI().setNaam(input.getNaam());
-		this.getUI().setStraat(input.getStraat());
-		this.getUI().setNummer(input.getNummer());
-		this.getUI().setPostcode(input.getPostcode());
-		this.getUI().setPlaats(input.getPlaats());
-		this.getUI().setBtwNummer(input.getBtwNummer().orElse(""));
-		this.getUI().setAsUpdate();
+	public DebiteurItemPaneController(Debiteur debiteur) {
+		this(debiteur.getDebiteurID(), new DebiteurItemPane());
+		setDebiteur(debiteur, this.getUI());
 	}
 
 	public DebiteurItemPaneController(Optional<Integer> debiteurID, DebiteurItemPane ui) {
-		super(ui, Observable.combineLatest(ui.getNaam(), ui.getStraat(), ui.getNummer(),
-				ui.getPostcode(), ui.getPlaats(), ui.getBtwnummer(),
-				(naam, straat, nummer, postcode, plaats, btw) -> new Debiteur(debiteurID,
-						naam, straat, nummer, postcode, plaats, btw))
-				.sample(ui.getAddButtonEvent())
-				.map(Optional::of)
-				.mergeWith(ui.getCancelButtonEvent().map(event -> Optional.empty()))
-				.first());
+		super(ui, getDebiteur(debiteurID, ui));
 	}
 
-	public DebiteurItemPane getUI() {
-		return (DebiteurItemPane) super.getUI();
+	private static Observable<Debiteur> getDebiteur(Optional<Integer> debiteurID, DebiteurItemPane ui) {
+		return Observable.combineLatest(
+			ui.getNaam(),
+			ui.getStraat(),
+			ui.getNummer(),
+			ui.getPostcode(),
+			ui.getPlaats(),
+			ui.getBtwnummer(),
+			(naam, straat, nummer, postcode, plaats, btw) -> new Debiteur(debiteurID, naam, straat, nummer, postcode, plaats, btw)
+		);
+	}
+
+	private static void setDebiteur(Debiteur debiteur, DebiteurItemPane ui) {
+		ui.setNaam(debiteur.getNaam());
+		ui.setStraat(debiteur.getStraat());
+		ui.setNummer(debiteur.getNummer());
+		ui.setPostcode(debiteur.getPostcode());
+		ui.setPlaats(debiteur.getPlaats());
+		ui.setBtwNummer(debiteur.getBtwNummer().orElse(""));
+		ui.setAsUpdate();
 	}
 }

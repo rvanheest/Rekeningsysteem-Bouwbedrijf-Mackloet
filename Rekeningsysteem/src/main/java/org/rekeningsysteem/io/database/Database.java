@@ -7,10 +7,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import io.reactivex.rxjava3.core.Completable;
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.core.Single;
+import io.reactivex.rxjava3.functions.Function;
 import org.rekeningsysteem.properties.PropertiesWorker;
 import org.rekeningsysteem.properties.PropertyModelEnum;
-
-import rx.Observable;
 
 public class Database implements AutoCloseable {
 
@@ -31,8 +33,8 @@ public class Database implements AutoCloseable {
 
 	private Database(PropertiesWorker worker) throws SQLException {
 		this(worker.getProperty(PropertyModelEnum.DATABASE)
-				.map(File::new)
-				.orElseThrow(() -> new SQLException("Did not find the database location.")));
+			.map(File::new)
+			.orElseThrow(() -> new SQLException("Did not find the database location.")));
 	}
 
 	public Database(File file) throws SQLException {
@@ -51,30 +53,35 @@ public class Database implements AutoCloseable {
 		this.connection.close();
 	}
 
-	public Observable<Integer> update(QueryEnumeration query) {
-		return Observable.<Integer> create(subscriber -> {
-			try (Statement statement = this.connection.createStatement()) {
-				subscriber.onNext(statement.executeUpdate(query.getQuery()));
-				subscriber.onCompleted();
-			}
-			catch (SQLException e) {
-				subscriber.onError(e);
-			}
-		});
+	public Completable update(QueryEnumeration query) {
+		return this.updateAndCount(query).ignoreElement();
 	}
 
-	public <A> Observable<A> query(QueryEnumeration query, ExFunc1<ResultSet, A> resultComposer) {
-		return Observable.<A> create(subscriber -> {
-			try (Statement statement = this.connection.createStatement();
-					ResultSet result = statement.executeQuery(query.getQuery())) {
-				while (!subscriber.isUnsubscribed() && result.next()) {
-					subscriber.onNext(resultComposer.call(result));
-				}
-				subscriber.onCompleted();
-			}
-			catch (Exception e) {
-				subscriber.onError(e);
-			}
-		});
+	public Single<Integer> updateAndCount(QueryEnumeration query) {
+		return Single.using(
+			this.connection::createStatement,
+			statement -> Single.just(statement.executeUpdate(query.getQuery())),
+			Statement::close
+		);
+	}
+
+	public <A> Observable<A> query(QueryEnumeration query, Function<ResultSet, A> resultComposer) {
+		return Observable.using(
+			this.connection::createStatement,
+			statement -> Observable.using(
+				() -> statement.executeQuery(query.getQuery()),
+				resultSet -> Observable.generate(
+					() -> resultSet,
+					(result, emitter) -> {
+						if (result.next())
+							emitter.onNext(resultComposer.apply(result));
+						else
+							emitter.onComplete();
+					}
+				),
+				ResultSet::close
+			),
+			Statement::close
+		);
 	}
 }

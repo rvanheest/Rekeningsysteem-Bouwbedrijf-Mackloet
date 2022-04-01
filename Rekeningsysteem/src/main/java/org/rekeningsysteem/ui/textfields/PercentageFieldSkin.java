@@ -12,8 +12,6 @@ import org.rekeningsysteem.logging.ApplicationLogger;
 
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Skin;
@@ -95,16 +93,12 @@ public class PercentageFieldSkin implements Skin<PercentageField> {
 		this.textField.setFocusTraversable(false);
 		this.control.focusedProperty().addListener(this.percentageFieldFocusListener);
 
-		this.textField.setOnAction(new EventHandler<ActionEvent>() {
-
-			@Override
-			public void handle(ActionEvent actionEvent) {
-				// Because TextFieldBehavior fires an action event on the parent of the TextField
-				// (maybe a misfeature?) I don't need to do this. But I think this is
-				// a bug, because having to add an empty event handler to get an
-				// event on the control is odd to say the least!
-				// control.fireEvent(new ActionEvent(textField, textField));
-			}
+		this.textField.setOnAction(actionEvent -> {
+			// Because TextFieldBehavior fires an action event on the parent of the TextField
+			// (maybe a misfeature?) I don't need to do this. But I think this is
+			// a bug, because having to add an empty event handler to get an
+			// event on the control is odd to say the least!
+			// control.fireEvent(new ActionEvent(textField, textField));
 		});
 
 		// Make sure the text is updated to the initial state of the PercentageField value
@@ -206,11 +200,9 @@ public class PercentageFieldSkin implements Skin<PercentageField> {
 					text = text + symbol;
 					updateText = true;
 				}
-				
+
 				Number n = this.formatter.parse(text);
-				newValue = n instanceof BigDecimal
-						? (BigDecimal) n
-								: new BigDecimal(n.doubleValue());
+				newValue = n instanceof BigDecimal ? (BigDecimal) n : BigDecimal.valueOf(n.doubleValue());
 				newValue = newValue.multiply(BigDecimal.valueOf(100));
 			}
 			if (value != newValue && (value == null || newValue == null || !value.equals(newValue))) {

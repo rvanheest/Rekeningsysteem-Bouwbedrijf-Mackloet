@@ -14,18 +14,12 @@ import org.rekeningsysteem.data.util.header.Debiteur;
 import org.rekeningsysteem.io.database.Database;
 import org.rekeningsysteem.logic.database.DebiteurDBInteraction;
 
-import rx.observers.TestSubscriber;
-
 public class DebiteurDBInteractionTest {
 
-	private static Debiteur simplePreDebiteur = new Debiteur("name1", "street1", "number1",
-			"zipcode1", "place1");
-	private static Debiteur complexPreDebiteur = new Debiteur("name2", "street2", "number2",
-			"zipcode2", "place2", "test2");
-	private static Debiteur simplePostDebiteur = new Debiteur(1, "name1", "street1", "number1",
-			"zipcode1", "place1");
-	private static Debiteur complexPostDebiteur = new Debiteur(1, "name2", "street2", "number2",
-			"zipcode2", "place2", "test2");
+	private final static Debiteur simplePreDebiteur = new Debiteur("name1", "street1", "number1", "zipcode1", "place1");
+	private final static Debiteur complexPreDebiteur = new Debiteur("name2", "street2", "number2", "zipcode2", "place2", "test2");
+	private final static Debiteur simplePostDebiteur = new Debiteur(1, "name1", "street1", "number1", "zipcode1", "place1");
+	private final static Debiteur complexPostDebiteur = new Debiteur(1, "name2", "street2", "number2", "zipcode2", "place2", "test2");
 
 	@Rule public TemporaryFolder folder = new TemporaryFolder();
 	private Database database;
@@ -37,46 +31,43 @@ public class DebiteurDBInteractionTest {
 		this.database = new Database(this.folder.newFile("database.db"));
 		this.deb = new DebiteurDBInteraction(this.database);
 		new VersionControl(this.database)
-				.checkDBVersioning()
-				.doOnCompleted(latch::countDown)
-				.subscribe();
+			.checkDBVersioning()
+			.doOnComplete(latch::countDown)
+			.subscribe();
 		latch.await();
 	}
 
 	@After
-	public void tearDown() throws SQLException {
+	public void tearDown() throws Exception {
 		this.database.close();
 	}
 
 	private void assertDebiteurs(Debiteur... expected) {
-		TestSubscriber<Debiteur> testDebiteurObserver = new TestSubscriber<>();
-		this.deb.getAll().subscribe(testDebiteurObserver);
-
-		testDebiteurObserver.assertValues(expected);
-		testDebiteurObserver.assertNoErrors();
-		testDebiteurObserver.assertCompleted();
+		this.deb.getAll()
+			.test()
+			.assertValues(expected)
+			.assertNoErrors()
+			.assertComplete();
 	}
 
 	@Test
 	public void testAddDebiteurSimpleDebiteur() {
-		TestSubscriber<Integer> testAddObserver = new TestSubscriber<>();
-		this.deb.addDebiteur(simplePreDebiteur).subscribe(testAddObserver);
-
-		testAddObserver.assertValue(1);
-		testAddObserver.assertNoErrors();
-		testAddObserver.assertCompleted();
+		this.deb.addDebiteur(simplePreDebiteur)
+			.test()
+			.assertNoValues()
+			.assertNoErrors()
+			.assertComplete();
 
 		this.assertDebiteurs(simplePostDebiteur);
 	}
 
 	@Test
 	public void testAddDebiteurComplexDebiteur() {
-		TestSubscriber<Integer> testAddObserver = new TestSubscriber<>();
-		this.deb.addDebiteur(complexPreDebiteur).subscribe(testAddObserver);
-
-		testAddObserver.assertValue(2); // updated 2 tables
-		testAddObserver.assertNoErrors();
-		testAddObserver.assertCompleted();
+		this.deb.addDebiteur(complexPreDebiteur)
+			.test()
+			.assertNoValues()
+			.assertNoErrors()
+			.assertComplete();
 
 		this.assertDebiteurs(complexPostDebiteur);
 	}
@@ -85,12 +76,11 @@ public class DebiteurDBInteractionTest {
 	public void testAddDebiteurThatAlreadyIsInTheDatabase() {
 		this.testAddDebiteurSimpleDebiteur();
 
-		TestSubscriber<Integer> testAddObserver = new TestSubscriber<>();
-		this.deb.addDebiteur(simplePreDebiteur).subscribe(testAddObserver);
-
-		testAddObserver.assertValue(0);
-		testAddObserver.assertNoErrors();
-		testAddObserver.assertCompleted();
+		this.deb.addDebiteur(simplePreDebiteur)
+			.test()
+			.assertNoValues()
+			.assertNoErrors()
+			.assertComplete();
 
 		this.assertDebiteurs(simplePostDebiteur);
 	}
@@ -99,38 +89,36 @@ public class DebiteurDBInteractionTest {
 	public void testAddMultipleDebiteurs() {
 		this.testAddDebiteurSimpleDebiteur();
 
-		TestSubscriber<Integer> testAddObserver = new TestSubscriber<>();
-		this.deb.addDebiteur(complexPreDebiteur).subscribe(testAddObserver);
-
-		testAddObserver.assertValue(2); // updated 2 tables
-		testAddObserver.assertNoErrors();
-		testAddObserver.assertCompleted();
+		this.deb.addDebiteur(complexPreDebiteur)
+			.test()
+			.assertNoValues()
+			.assertNoErrors()
+			.assertComplete();
 
 		this.assertDebiteurs(
-				new Debiteur(1, "name1", "street1", "number1", "zipcode1", "place1"),
-				new Debiteur(2, "name2", "street2", "number2", "zipcode2", "place2", "test2"));
+			new Debiteur(1, "name1", "street1", "number1", "zipcode1", "place1"),
+			new Debiteur(2, "name2", "street2", "number2", "zipcode2", "place2", "test2")
+		);
 	}
 
 	@Test
 	public void testAddAndGetDebiteurSimpleDebiteur() {
-		TestSubscriber<Debiteur> testAddObserver = new TestSubscriber<>();
-		this.deb.addAndGetDebiteur(simplePreDebiteur).subscribe(testAddObserver);
-
-		testAddObserver.assertValue(simplePostDebiteur);
-		testAddObserver.assertNoErrors();
-		testAddObserver.assertCompleted();
+		this.deb.addAndGetDebiteur(simplePreDebiteur)
+			.test()
+			.assertValue(simplePostDebiteur)
+			.assertNoErrors()
+			.assertComplete();
 
 		this.assertDebiteurs(simplePostDebiteur);
 	}
 
 	@Test
 	public void testAddAndGetDebiteurComplexDebiteur() {
-		TestSubscriber<Debiteur> testAddObserver = new TestSubscriber<>();
-		this.deb.addAndGetDebiteur(complexPreDebiteur).subscribe(testAddObserver);
-
-		testAddObserver.assertValue(complexPostDebiteur);
-		testAddObserver.assertNoErrors();
-		testAddObserver.assertCompleted();
+		this.deb.addAndGetDebiteur(complexPreDebiteur)
+			.test()
+			.assertValue(complexPostDebiteur)
+			.assertNoErrors()
+			.assertComplete();
 
 		this.assertDebiteurs(complexPostDebiteur);
 	}
@@ -139,12 +127,11 @@ public class DebiteurDBInteractionTest {
 	public void testDeleteDebiteurSimpleDebiteur() {
 		this.testAddDebiteurSimpleDebiteur();
 
-		TestSubscriber<Integer> testRemoveObserver = new TestSubscriber<>();
-		this.deb.deleteDebiteur(simplePostDebiteur).subscribe(testRemoveObserver);
-
-		testRemoveObserver.assertValue(1);
-		testRemoveObserver.assertNoErrors();
-		testRemoveObserver.assertCompleted();
+		this.deb.deleteDebiteur(simplePostDebiteur)
+			.test()
+			.assertNoValues()
+			.assertNoErrors()
+			.assertComplete();
 
 		this.assertDebiteurs(); // table is now empty
 	}
@@ -153,12 +140,11 @@ public class DebiteurDBInteractionTest {
 	public void testDeleteDebiteurComplexDebiteur() {
 		this.testAddDebiteurComplexDebiteur();
 
-		TestSubscriber<Integer> testRemoveObserver = new TestSubscriber<>();
-		this.deb.deleteDebiteur(complexPostDebiteur).subscribe(testRemoveObserver);
-
-		testRemoveObserver.assertValue(2);
-		testRemoveObserver.assertNoErrors();
-		testRemoveObserver.assertCompleted();
+		this.deb.deleteDebiteur(complexPostDebiteur)
+			.test()
+			.assertNoValues()
+			.assertNoErrors()
+			.assertComplete();
 
 		this.assertDebiteurs(); // table is now empty
 	}
@@ -167,17 +153,16 @@ public class DebiteurDBInteractionTest {
 	public void testDeleteDebiteurThatIsNotInTheDatabase() {
 		this.assertDebiteurs(); // table is now empty
 
-		TestSubscriber<Integer> testRemoveObserver = new TestSubscriber<>();
-		this.deb.deleteDebiteur(simplePostDebiteur).subscribe(testRemoveObserver);
-
-		testRemoveObserver.assertValue(0);
-		testRemoveObserver.assertNoErrors();
-		testRemoveObserver.assertCompleted();
+		this.deb.deleteDebiteur(simplePostDebiteur)
+			.test()
+			.assertNoValues()
+			.assertNoErrors()
+			.assertComplete();
 
 		this.assertDebiteurs(); // table is now empty
 	}
 
-	@Test (expected = IllegalArgumentException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void testDeleteDebiteurWithoutID() {
 		this.deb.deleteDebiteur(new Debiteur("naam", "straat", "nummer", "postcode", "plaats"));
 	}
@@ -186,13 +171,11 @@ public class DebiteurDBInteractionTest {
 	public void testUpdateSimpleDebiteurWithSimpleDebiteur() {
 		this.testAddDebiteurSimpleDebiteur();
 
-		TestSubscriber<Integer> testUpdateObserver = new TestSubscriber<>();
 		this.deb.updateDebiteur(simplePostDebiteur, new Debiteur("1", "2", "3", "4", "5"))
-				.subscribe(testUpdateObserver);
-
-		testUpdateObserver.assertValue(1);
-		testUpdateObserver.assertNoErrors();
-		testUpdateObserver.assertCompleted();
+			.test()
+			.assertNoValues()
+			.assertNoErrors()
+			.assertComplete();
 
 		this.assertDebiteurs(new Debiteur(1, "1", "2", "3", "4", "5"));
 	}
@@ -201,13 +184,11 @@ public class DebiteurDBInteractionTest {
 	public void testUpdateComplexDebiteurWithComplexDebiteur() {
 		this.testAddDebiteurComplexDebiteur();
 
-		TestSubscriber<Integer> testUpdateObserver = new TestSubscriber<>();
 		this.deb.updateDebiteur(complexPostDebiteur, new Debiteur("1", "2", "3", "4", "5", "6"))
-				.subscribe(testUpdateObserver);
-
-		testUpdateObserver.assertValue(2);
-		testUpdateObserver.assertNoErrors();
-		testUpdateObserver.assertCompleted();
+			.test()
+			.assertNoValues()
+			.assertNoErrors()
+			.assertComplete();
 
 		this.assertDebiteurs(new Debiteur(1, "1", "2", "3", "4", "5", "6"));
 	}
@@ -216,13 +197,11 @@ public class DebiteurDBInteractionTest {
 	public void testUpdateSimpleDebiteurWithComplexDebiteur() {
 		this.testAddDebiteurSimpleDebiteur();
 
-		TestSubscriber<Integer> testUpdateObserver = new TestSubscriber<>();
 		this.deb.updateDebiteur(simplePostDebiteur, new Debiteur("1", "2", "3", "4", "5", "6"))
-				.subscribe(testUpdateObserver);
-
-		testUpdateObserver.assertValue(4); // not sure why this is 4...
-		testUpdateObserver.assertNoErrors();
-		testUpdateObserver.assertCompleted();
+			.test()
+			.assertNoValues()
+			.assertNoErrors()
+			.assertComplete();
 
 		this.assertDebiteurs(new Debiteur(1, "1", "2", "3", "4", "5", "6"));
 	}
@@ -231,13 +210,11 @@ public class DebiteurDBInteractionTest {
 	public void testUpdateComplexDebiteurWithSimpleDebiteur() {
 		this.testAddDebiteurComplexDebiteur();
 
-		TestSubscriber<Integer> testUpdateObserver = new TestSubscriber<>();
 		this.deb.updateDebiteur(complexPostDebiteur, new Debiteur("1", "2", "3", "4", "5"))
-				.subscribe(testUpdateObserver);
-
-		testUpdateObserver.assertValue(2);
-		testUpdateObserver.assertNoErrors();
-		testUpdateObserver.assertCompleted();
+			.test()
+			.assertNoValues()
+			.assertNoErrors()
+			.assertComplete();
 
 		this.assertDebiteurs(new Debiteur(1, "1", "2", "3", "4", "5"));
 	}
@@ -248,18 +225,16 @@ public class DebiteurDBInteractionTest {
 
 		Debiteur newDebiteur = new Debiteur("1", "2", "3", "4", "5");
 
-		TestSubscriber<Integer> testUpdateObserver = new TestSubscriber<>();
 		this.deb.updateDebiteur(new Debiteur(2, "1", "2", "3", "4", "5"), newDebiteur)
-				.subscribe(testUpdateObserver);
-
-		testUpdateObserver.assertValue(0);
-		testUpdateObserver.assertNoErrors();
-		testUpdateObserver.assertCompleted();
+			.test()
+			.assertNoValues()
+			.assertNoErrors()
+			.assertComplete();
 
 		this.assertDebiteurs(simplePostDebiteur);
 	}
 
-	@Test (expected = IllegalArgumentException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void testUpdateDebiteurWithoutID() {
 		this.deb.updateDebiteur(new Debiteur("naam", "straat", "nummer", "postcode", "plaats"), simplePreDebiteur);
 	}
@@ -268,37 +243,35 @@ public class DebiteurDBInteractionTest {
 	public void testGetWithNameOneFound() {
 		this.testAddMultipleDebiteurs();
 
-		TestSubscriber<Debiteur> testQueryObserver = new TestSubscriber<>();
-		this.deb.getWithNaam("name1").subscribe(testQueryObserver);
-
-		testQueryObserver.assertValue(simplePostDebiteur);
-		testQueryObserver.assertNoErrors();
-		testQueryObserver.assertCompleted();
+		this.deb.getWithNaam("name1")
+			.test()
+			.assertValue(simplePostDebiteur)
+			.assertNoErrors()
+			.assertComplete();
 	}
 
 	@Test
 	public void testGetWithNameMultipleFound() {
 		this.testAddMultipleDebiteurs();
 
-		TestSubscriber<Debiteur> testQueryObserver = new TestSubscriber<>();
-		this.deb.getWithNaam("ame").subscribe(testQueryObserver);
-
-		testQueryObserver.assertValues(
+		this.deb.getWithNaam("ame")
+			.test()
+			.assertValues(
 				new Debiteur(1, "name1", "street1", "number1", "zipcode1", "place1"),
-				new Debiteur(2, "name2", "street2", "number2", "zipcode2", "place2", "test2"));
-		testQueryObserver.assertNoErrors();
-		testQueryObserver.assertCompleted();
+				new Debiteur(2, "name2", "street2", "number2", "zipcode2", "place2", "test2")
+			)
+			.assertNoErrors()
+			.assertComplete();
 	}
 
 	@Test
 	public void testGetWithNameNoFound() {
 		this.testAddMultipleDebiteurs();
 
-		TestSubscriber<Debiteur> testQueryObserver = new TestSubscriber<>();
-		this.deb.getWithNaam("foo").subscribe(testQueryObserver);
-
-		testQueryObserver.assertNoValues();
-		testQueryObserver.assertNoErrors();
-		testQueryObserver.assertCompleted();
+		this.deb.getWithNaam("foo")
+			.test()
+			.assertNoValues()
+			.assertNoErrors()
+			.assertComplete();
 	}
 }

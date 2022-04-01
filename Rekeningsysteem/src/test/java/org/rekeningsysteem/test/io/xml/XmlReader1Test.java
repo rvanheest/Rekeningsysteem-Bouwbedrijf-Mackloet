@@ -1,7 +1,5 @@
 package org.rekeningsysteem.test.io.xml;
 
-import static org.junit.Assert.assertEquals;
-
 import java.io.File;
 import java.time.LocalDate;
 import java.util.Currency;
@@ -63,7 +61,11 @@ public class XmlReader1Test {
 		ParticulierFactuur expected = new ParticulierFactuur(factuurHeader,
 				Currency.getInstance("EUR"), itemList);
 
-		this.reader.load(file).forEach(rek -> assertEquals(expected, rek));
+		this.reader.load(file)
+			.test()
+			.assertValue(expected)
+			.assertNoErrors()
+			.assertComplete();
 	}
 
 	@Test
@@ -85,7 +87,11 @@ public class XmlReader1Test {
 		ParticulierFactuur expected = new ParticulierFactuur(factuurHeader,
 				Currency.getInstance("EUR"), itemList);
 
-		this.reader.load(file).forEach(rek -> assertEquals(expected, rek));
+		this.reader.load(file)
+			.test()
+			.assertValue(expected)
+			.assertNoErrors()
+			.assertComplete();
 	}
 
 	@Test
@@ -106,7 +112,11 @@ public class XmlReader1Test {
 		ParticulierFactuur expected = new ParticulierFactuur(factuurHeader,
 				Currency.getInstance("EUR"), itemList);
 
-		this.reader.load(file).forEach(rek -> assertEquals(expected, rek));
+		this.reader.load(file)
+			.test()
+			.assertValue(expected)
+			.assertNoErrors()
+			.assertComplete();
 	}
 
 	@Test
@@ -123,7 +133,11 @@ public class XmlReader1Test {
 		MutatiesFactuur expected = new MutatiesFactuur(factuurHeader,
 				Currency.getInstance("EUR"), itemList);
 
-		this.reader.load(file).forEach(rek -> assertEquals(expected, rek));
+		this.reader.load(file)
+			.test()
+			.assertValue(expected)
+			.assertNoErrors()
+			.assertComplete();
 	}
 
 	@Test
@@ -140,7 +154,11 @@ public class XmlReader1Test {
 		ReparatiesFactuur expected = new ReparatiesFactuur(factuurHeader,
 				Currency.getInstance("EUR"), itemList);
 
-		this.reader.load(file).forEach(rek -> assertEquals(expected, rek));
+		this.reader.load(file)
+			.test()
+			.assertValue(expected)
+			.assertNoErrors()
+			.assertComplete();
 	}
 
 	@Test
@@ -152,6 +170,10 @@ public class XmlReader1Test {
 				LocalDate.of(2012, 8, 24), "62012");
 		Offerte expected = new Offerte(factuurHeader, "dsafsdkljfaskljfpoj", true);
 
-		this.reader.load(file).forEach(rek -> assertEquals(expected, rek));
+		this.reader.load(file)
+			.test()
+			.assertValue(expected)
+			.assertNoErrors()
+			.assertComplete();
 	}
 }

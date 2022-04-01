@@ -27,8 +27,7 @@ public class EsselinkSearchBox extends AbstractSearchBox<EsselinkArtikel> {
 		this.infoBox.setFillWidth(true);
 		this.infoBox.setMinWidth(Region.USE_PREF_SIZE);
 		this.infoBox.setPrefWidth(200);
-		this.infoBox.getChildren().addAll(this.infoOmschrijving,
-				this.infoArtikelNummer, this.infoPrijsEenheid);
+		this.infoBox.getChildren().addAll(this.infoOmschrijving, this.infoArtikelNummer, this.infoPrijsEenheid);
 
 		this.infoOmschrijving.setId("search-info-name");
 		this.infoOmschrijving.setMinHeight(Region.USE_PREF_SIZE);
@@ -47,9 +46,9 @@ public class EsselinkSearchBox extends AbstractSearchBox<EsselinkArtikel> {
 	void setTextfields(EsselinkArtikel ea) {
 		this.infoOmschrijving.setText(ea.getOmschrijving());
 		this.infoArtikelNummer.setText("Artikelnummer: " + ea.getArtikelNummer());
-		this.infoPrijsEenheid.setText(this.currency.getSymbol() + " "
-				+ ea.getVerkoopPrijs().getBedrag() + " per "
-				+ ea.getPrijsPer() + " " + ea.getEenheid());
+		this.infoPrijsEenheid.setText(
+			String.format("%s %s per %s %s", this.currency.getSymbol(), ea.getVerkoopPrijs().getBedrag(), ea.getPrijsPer(), ea.getEenheid())
+		);
 	}
 
 	@Override

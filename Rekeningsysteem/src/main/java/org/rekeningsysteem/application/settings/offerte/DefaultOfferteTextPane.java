@@ -1,5 +1,6 @@
 package org.rekeningsysteem.application.settings.offerte;
 
+import io.reactivex.rxjava3.core.Observable;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -10,8 +11,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 import org.rekeningsysteem.rxjavafx.Observables;
-
-import rx.Observable;
 
 public class DefaultOfferteTextPane extends VBox {
 

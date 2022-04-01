@@ -1,21 +1,20 @@
 package org.rekeningsysteem.test.integration;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyObject;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.verifyNoInteractions;
 
 import java.io.File;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.core.Logger;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.rekeningsysteem.data.util.AbstractRekening;
 import org.rekeningsysteem.data.util.visitor.RekeningVoidVisitor;
 import org.rekeningsysteem.exception.PdfException;
@@ -25,8 +24,6 @@ import org.rekeningsysteem.io.FactuurSaver;
 import org.rekeningsysteem.io.pdf.PdfExporter;
 import org.rekeningsysteem.io.xml.XmlMaker;
 import org.rekeningsysteem.io.xml.XmlReader;
-
-import rx.observers.TestSubscriber;
 
 @RunWith(MockitoJUnitRunner.class)
 public abstract class AbstractIntegrationTest {
@@ -59,7 +56,7 @@ public abstract class AbstractIntegrationTest {
 	public void testPdf() {
 		this.exporter.export(this.rekening, this.pdfFile);
 
-		verifyZeroInteractions(this.logger);
+		verifyNoInteractions(this.logger);
 	}
 
 	// PdfException expected due to double spaces in filename
@@ -68,14 +65,14 @@ public abstract class AbstractIntegrationTest {
 		File file = new File("src\\test\\resources\\pdf\\File  with double spaces.pdf");
 		this.exporter.export(this.rekening, file);
 
-		verifyZeroInteractions(this.logger);
+		verifyNoInteractions(this.logger);
 	}
 
 	@Test
 	public void testExportWithError() throws Exception {
 		AbstractRekening rekening = mock(AbstractRekening.class);
 		File file = mock(File.class);
-		doThrow(Exception.class).when(rekening).accept((RekeningVoidVisitor) anyObject());
+		doThrow(new Exception("")).when(rekening).accept((RekeningVoidVisitor) any());
 
 		this.exporter.export(rekening, file);
 
@@ -86,12 +83,11 @@ public abstract class AbstractIntegrationTest {
 	public void testXML() {
 		this.saver.save(this.rekening, this.xmlFile);
 
-		TestSubscriber<AbstractRekening> testObserver = new TestSubscriber<>();
-		this.loader.load(this.xmlFile).subscribe(testObserver);
-
-		testObserver.assertValue(this.rekening);
-		testObserver.assertNoErrors();
-		testObserver.assertCompleted();
+		this.loader.load(this.xmlFile)
+			.test()
+			.assertValue(this.rekening)
+			.assertNoErrors()
+			.assertComplete();
 	}
 
 	@Test
@@ -99,7 +95,7 @@ public abstract class AbstractIntegrationTest {
 		AbstractRekening rekening = mock(AbstractRekening.class);
 		File file = mock(File.class);
 
-		doThrow(Exception.class).when(rekening).accept((RekeningVoidVisitor) anyObject());
+		doThrow(new Exception("")).when(rekening).accept((RekeningVoidVisitor) any());
 
 		this.saver.save(rekening, file);
 

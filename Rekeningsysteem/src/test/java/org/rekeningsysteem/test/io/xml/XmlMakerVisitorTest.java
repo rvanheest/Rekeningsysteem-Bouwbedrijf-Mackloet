@@ -1,9 +1,9 @@
 package org.rekeningsysteem.test.io.xml;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.anyObject;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
@@ -20,7 +20,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.rekeningsysteem.data.mutaties.MutatiesFactuur;
 import org.rekeningsysteem.data.offerte.Offerte;
 import org.rekeningsysteem.data.particulier.ParticulierFactuur;
@@ -74,8 +74,8 @@ public class XmlMakerVisitorTest {
 				Currency.getInstance(Locale.US), new ItemList<>());
 		this.visitor.visit(factuur);
 
-		verify(this.mockedMarshaller).setProperty(anyString(), anyObject());
-		verify(this.mockedMarshaller).marshal(anyObject(), eq(this.mockedFile));
+		verify(this.mockedMarshaller).setProperty(anyString(), any());
+		verify(this.mockedMarshaller).marshal(any(), eq(this.mockedFile));
 	}
 
 	@Test
@@ -83,8 +83,8 @@ public class XmlMakerVisitorTest {
 		Offerte factuur = new Offerte(this.testHeader, "", true);
 		this.visitor.visit(factuur);
 
-		verify(this.mockedMarshaller).setProperty(anyString(), anyObject());
-		verify(this.mockedMarshaller).marshal(anyObject(), eq(this.mockedFile));
+		verify(this.mockedMarshaller).setProperty(anyString(), any());
+		verify(this.mockedMarshaller).marshal(any(), eq(this.mockedFile));
 	}
 
 	@Test
@@ -93,8 +93,8 @@ public class XmlMakerVisitorTest {
 				Currency.getInstance(Locale.US), new ItemList<>());
 		this.visitor.visit(factuur);
 
-		verify(this.mockedMarshaller).setProperty(anyString(), anyObject());
-		verify(this.mockedMarshaller).marshal(anyObject(), eq(this.mockedFile));
+		verify(this.mockedMarshaller).setProperty(anyString(), any());
+		verify(this.mockedMarshaller).marshal(any(), eq(this.mockedFile));
 	}
 
 	@Test
@@ -103,7 +103,7 @@ public class XmlMakerVisitorTest {
 				Currency.getInstance(Locale.US), new ItemList<>());
 		this.visitor.visit(factuur);
 
-		verify(this.mockedMarshaller).setProperty(anyString(), anyObject());
-		verify(this.mockedMarshaller).marshal(anyObject(), eq(this.mockedFile));
+		verify(this.mockedMarshaller).setProperty(anyString(), any());
+		verify(this.mockedMarshaller).marshal(any(), eq(this.mockedFile));
 	}
 }

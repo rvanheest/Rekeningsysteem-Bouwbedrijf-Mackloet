@@ -4,7 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
@@ -14,7 +14,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.rekeningsysteem.data.util.AbstractRekening;
 import org.rekeningsysteem.data.util.header.Debiteur;
 import org.rekeningsysteem.data.util.header.FactuurHeader;
@@ -76,7 +76,7 @@ public abstract class AbstractRekeningTest extends EqualsHashCodeTest {
 		this.rekening.initFactuurnummer(this.factuurnummerManager);
 
 		assertEquals(Optional.of("12013"), this.header.getFactuurnummer());
-		verifyZeroInteractions(this.factuurnummerManager);
+		verifyNoInteractions(this.factuurnummerManager);
 	}
 
 	@Test

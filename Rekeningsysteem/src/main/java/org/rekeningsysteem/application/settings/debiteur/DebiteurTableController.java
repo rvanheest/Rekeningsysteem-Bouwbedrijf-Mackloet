@@ -4,6 +4,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import io.reactivex.rxjava3.core.Maybe;
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
+import io.reactivex.rxjava3.disposables.Disposable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 import org.rekeningsysteem.application.Main;
 import org.rekeningsysteem.application.settings.debiteur.DebiteurTable.DebiteurTableModel;
 import org.rekeningsysteem.data.util.header.Debiteur;
@@ -11,13 +16,12 @@ import org.rekeningsysteem.logic.database.DebiteurDBInteraction;
 import org.rekeningsysteem.rxjavafx.JavaFxScheduler;
 import org.rekeningsysteem.util.OptionalUtils;
 
-import rx.Observable;
-import rx.schedulers.Schedulers;
-
-public class DebiteurTableController {
+public class DebiteurTableController implements Disposable {
 
 	private final DebiteurTable ui;
 	private final Observable<List<Debiteur>> model;
+
+	private final CompositeDisposable disposable = new CompositeDisposable();
 
 	public DebiteurTableController(DebiteurDBInteraction db) {
 		this(new DebiteurTable(debModel -> db.deleteDebiteur(uiToModel(debModel))), db);
@@ -26,42 +30,43 @@ public class DebiteurTableController {
 	public DebiteurTableController(DebiteurTable ui, DebiteurDBInteraction db) {
 		this.ui = ui;
 		this.model = this.ui.getData().map(this::uiToModel);
-		db.getAll().toList().map(this::modelToUI).subscribe(this.ui::setData);
 
-		this.ui.getAddButtonEvent()
+		this.disposable.addAll(
+			db.getAll().toList().map(this::modelToUI).subscribe(this.ui::setData),
+
+			this.ui.getAddButtonEvent()
 				.map(event -> new DebiteurItemPaneController())
-				.doOnNext(controller -> Main.getMain().showModalMessage(controller.getUI()))
-				.flatMap(DebiteurItemPaneController::getModel)
-				.doOnNext(optItem -> Main.getMain().hideModalMessage())
-				.filter(Optional::isPresent)
-				.map(Optional::get)
+				.doOnNext(DebiteurItemPaneController::showModalMessage)
+				.flatMapMaybe(DebiteurItemPaneController::getModel)
+				.doOnNext(optDebiteur -> Main.getMain().hideModalMessage())
+				.flatMapMaybe(Maybe::fromOptional)
 				.observeOn(Schedulers.io())
 				.flatMap(db::addAndGetDebiteur)
-				.flatMap(deb -> this.model.first().doOnNext(list -> list.add(deb)))
+				.flatMapMaybe(deb -> this.model.firstElement().doOnSuccess(list -> list.add(deb)))
 				.map(this::modelToUI)
 				.observeOn(JavaFxScheduler.getInstance())
-				.subscribe(this.ui::setData);
+				.subscribe(this.ui::setData),
 
-		this.ui.getModifyButtonEvent()
+			this.ui.getModifyButtonEvent()
 				.map(event -> this.ui.getSelectedIndex())
-				.<List<Debiteur>> flatMap(index -> this.model.first()
-						.map(list -> list.get(index))
-						.<Debiteur> flatMap(old -> {
-							DebiteurItemPaneController controller =
-									new DebiteurItemPaneController(old);
-							Main.getMain().showModalMessage(controller.getUI());
-							return controller.getModel()
-									.doOnNext(optItem -> Main.getMain().hideModalMessage())
-									.filter(Optional::isPresent)
-									.map(Optional::get)
-									.observeOn(Schedulers.io())
-									.flatMap(newDebiteur -> db.updateDebiteur(old, newDebiteur),
-											(newDebiteur, i) -> newDebiteur);
-						})
-						.flatMap(deb -> this.model.first().doOnNext(list -> list.set(index, deb))))
+				.flatMapMaybe(index -> this.model.firstElement()
+					.map(list -> list.get(index))
+					.flatMap(old -> {
+						DebiteurItemPaneController controller = new DebiteurItemPaneController(old);
+						controller.showModalMessage();
+						return controller.getModel()
+							.doOnSuccess(optItem -> Main.getMain().hideModalMessage())
+							.flatMap(Maybe::fromOptional)
+							.observeOn(Schedulers.io())
+							.flatMapSingle(newDebiteur -> db.updateDebiteur(old, newDebiteur).toSingle(() -> newDebiteur));
+					})
+					.flatMap(deb -> this.model.firstElement().doOnSuccess(list -> list.set(index, deb))))
 				.map(this::modelToUI)
 				.observeOn(JavaFxScheduler.getInstance())
-				.subscribe(this.ui::setData);
+				.subscribe(this.ui::setData),
+
+			this.ui
+		);
 	}
 
 	public Observable<List<Debiteur>> getModel() {
@@ -72,14 +77,30 @@ public class DebiteurTableController {
 		return this.ui;
 	}
 
+	@Override
+	public boolean isDisposed() {
+		return this.disposable.isDisposed();
+	}
+
+	@Override
+	public void dispose() {
+		this.disposable.dispose();
+	}
+
 	private List<DebiteurTableModel> modelToUI(List<Debiteur> list) {
 		return list.stream().map(DebiteurTableController::modelToUI).collect(Collectors.toList());
 	}
 
 	private static DebiteurTableModel modelToUI(Debiteur debiteur) {
-		return new DebiteurTableModel(debiteur.getDebiteurID().orElse(null), debiteur.getNaam(),
-				debiteur.getStraat(), debiteur.getNummer(), debiteur.getPostcode(),
-				debiteur.getPlaats(), debiteur.getBtwNummer().orElse(""));
+		return new DebiteurTableModel(
+			debiteur.getDebiteurID().orElse(null),
+			debiteur.getNaam(),
+			debiteur.getStraat(),
+			debiteur.getNummer(),
+			debiteur.getPostcode(),
+			debiteur.getPlaats(),
+			debiteur.getBtwNummer().orElse("")
+		);
 	}
 
 	private List<Debiteur> uiToModel(List<? extends DebiteurTableModel> list) {
@@ -87,8 +108,14 @@ public class DebiteurTableController {
 	}
 
 	private static Debiteur uiToModel(DebiteurTableModel model) {
-		return new Debiteur(Optional.ofNullable(model.getId()), model.getNaam(),
-				model.getStraat(), model.getNummer(), model.getPostcode(),
-				model.getPlaats(), OptionalUtils.fromString(model.getBtwNummer()));
+		return new Debiteur(
+			Optional.ofNullable(model.getId()),
+			model.getNaam(),
+			model.getStraat(),
+			model.getNummer(),
+			model.getPostcode(),
+			model.getPlaats(),
+			OptionalUtils.fromString(model.getBtwNummer())
+		);
 	}
 }

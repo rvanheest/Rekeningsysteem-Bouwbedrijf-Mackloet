@@ -1,16 +1,14 @@
 package org.rekeningsysteem.ui.particulier;
 
-import java.util.Currency;
 import java.util.HashMap;
 import java.util.Map;
 
+import io.reactivex.rxjava3.core.Observable;
 import javafx.scene.Node;
 import javafx.scene.control.TabPane.TabClosingPolicy;
 
 import org.rekeningsysteem.ui.list.ItemPane;
 import org.rekeningsysteem.ui.particulier.tabpane.ItemTabPane;
-
-import rx.Observable;
 
 public class ParticulierArtikelPane extends ItemPane {
 
@@ -19,7 +17,7 @@ public class ParticulierArtikelPane extends ItemPane {
 	private final Map<String, ParticulierArtikelType> lookupTable = new HashMap<>();
 	private final Observable<ParticulierArtikelType> type;
 
-	public ParticulierArtikelPane(Currency currency) {
+	public ParticulierArtikelPane() {
 		super("Nieuw particulier artikel");
 
 		this.content = new ItemTabPane(this.lookupTable::get);

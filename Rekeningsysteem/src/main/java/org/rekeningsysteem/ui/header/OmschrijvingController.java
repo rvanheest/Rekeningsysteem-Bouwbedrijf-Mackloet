@@ -1,6 +1,6 @@
 package org.rekeningsysteem.ui.header;
 
-import rx.Observable;
+import io.reactivex.rxjava3.core.Observable;
 
 public class OmschrijvingController {
 
@@ -8,17 +8,13 @@ public class OmschrijvingController {
 	private final Observable<String> model;
 
 	public OmschrijvingController() {
-		this(new OmschrijvingPane());
+		this.ui = new OmschrijvingPane();
+		this.model = this.ui.getOmschrijving();
 	}
 
 	public OmschrijvingController(String input) {
 		this();
 		this.ui.setOmschrijving(input);
-	}
-
-	public OmschrijvingController(OmschrijvingPane ui) {
-		this.ui = ui;
-		this.model = this.ui.getOmschrijving();
 	}
 
 	public OmschrijvingPane getUI() {

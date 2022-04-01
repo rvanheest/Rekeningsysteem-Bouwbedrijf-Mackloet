@@ -4,13 +4,13 @@ import java.math.BigDecimal;
 import java.util.Currency;
 import java.util.Objects;
 
+import io.reactivex.rxjava3.core.Observable;
 import javafx.scene.control.CheckBox;
 import org.rekeningsysteem.data.util.BtwPercentage;
 import org.rekeningsysteem.rxjavafx.Observables;
 import org.rekeningsysteem.ui.textfields.MoneyField;
 import org.rekeningsysteem.ui.textfields.PercentageField;
 
-import rx.Observable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
@@ -33,14 +33,9 @@ public class InstantLoonPane extends GridPane {
 		this.loonTF = new MoneyField(currency);
 
 		this.omschrijving = Observables.fromProperty(this.omschrTF.textProperty());
-		this.loon = Observables.fromProperty(this.loonTF.valueProperty())
-				.filter(Objects::nonNull)
-				.map(BigDecimal::doubleValue);
-		this.loonBtwPercentage = Observables.fromProperty(this.loonBtwTF.valueProperty())
-				.map(n -> Objects.isNull(n) ? BigDecimal.ZERO : n)
-				.map(BigDecimal::doubleValue);
-		this.verlegd = Observables.fromProperty(this.verlegdCB.selectedProperty())
-				.map(Boolean::booleanValue);
+		this.loon = Observables.fromProperty(this.loonTF.valueProperty()).filter(Objects::nonNull).map(BigDecimal::doubleValue);
+		this.loonBtwPercentage = Observables.fromProperty(this.loonBtwTF.valueProperty()).map(n -> Objects.isNull(n) ? BigDecimal.ZERO : n).map(BigDecimal::doubleValue);
+		this.verlegd = Observables.fromProperty(this.verlegdCB.selectedProperty()).map(Boolean::booleanValue);
 
 		this.omschrTF.setPrefColumnCount(20);
 

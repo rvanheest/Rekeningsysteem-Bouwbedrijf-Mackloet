@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.Currency;
 import java.util.Objects;
 
+import io.reactivex.rxjava3.core.Observable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -14,8 +15,6 @@ import javafx.scene.layout.GridPane;
 import org.rekeningsysteem.rxjavafx.Observables;
 import org.rekeningsysteem.ui.list.ItemPane;
 import org.rekeningsysteem.ui.textfields.MoneyField;
-
-import rx.Observable;
 
 public class ReparatiesInkoopOrderPane extends ItemPane {
 
@@ -36,12 +35,8 @@ public class ReparatiesInkoopOrderPane extends ItemPane {
 
 		this.omschrijving = Observables.fromProperty(this.omschrTF.textProperty());
 		this.ordernummer = Observables.fromProperty(this.ordernrTF.textProperty());
-		this.loon = Observables.fromProperty(this.loonTF.valueProperty())
-				.filter(Objects::nonNull)
-				.map(BigDecimal::doubleValue);
-		this.materiaal = Observables.fromProperty(this.materiaalTF.valueProperty())
-				.filter(Objects::nonNull)
-				.map(BigDecimal::doubleValue);
+		this.loon = Observables.fromProperty(this.loonTF.valueProperty()).filter(Objects::nonNull).map(BigDecimal::doubleValue);
+		this.materiaal = Observables.fromProperty(this.materiaalTF.valueProperty()).filter(Objects::nonNull).map(BigDecimal::doubleValue);
 		
 		this.omschrTF.setPrefColumnCount(20);
 

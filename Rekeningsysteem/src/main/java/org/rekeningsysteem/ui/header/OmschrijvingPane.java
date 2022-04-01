@@ -1,17 +1,15 @@
 package org.rekeningsysteem.ui.header;
 
+import io.reactivex.rxjava3.core.Observable;
 import javafx.scene.control.TextArea;
 
 import org.rekeningsysteem.rxjavafx.Observables;
 import org.rekeningsysteem.ui.Page;
 
-import rx.Observable;
-
 public class OmschrijvingPane extends Page {
 
 	private final TextArea omschrTA = new TextArea();
-	private final Observable<String> omschrijving = Observables
-			.fromProperty(this.omschrTA.textProperty());
+	private final Observable<String> omschrijving = Observables.fromProperty(this.omschrTA.textProperty());
 
 	public OmschrijvingPane() {
 		super("Omschrijving");

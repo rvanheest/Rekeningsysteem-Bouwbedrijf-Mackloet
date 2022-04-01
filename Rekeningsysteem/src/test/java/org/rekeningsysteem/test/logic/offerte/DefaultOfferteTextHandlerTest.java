@@ -3,6 +3,7 @@ package org.rekeningsysteem.test.logic.offerte;
 import java.io.File;
 import java.io.IOException;
 
+import io.reactivex.rxjava3.core.Observable;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -11,15 +12,12 @@ import org.rekeningsysteem.exception.NoSuchFileException;
 import org.rekeningsysteem.io.FileIO;
 import org.rekeningsysteem.logic.offerte.DefaultOfferteTextHandler;
 
-import rx.Observable;
-import rx.observers.TestSubscriber;
-
 public class DefaultOfferteTextHandlerTest {
 
 	private DefaultOfferteTextHandler handler;
 	@Rule public TemporaryFolder folder = new TemporaryFolder();
 	private File file;
-	private FileIO io = new FileIO();
+	private final FileIO io = new FileIO();
 
 	@Before
 	public void setUp() throws IOException {
@@ -28,31 +26,25 @@ public class DefaultOfferteTextHandlerTest {
 	}
 
 	@Test
-	public void testSetDefaultText() {
-		TestSubscriber<Void> observer = new TestSubscriber<>();
+	public void testSetDefaultText() throws InterruptedException {
 		this.handler.setDefaultText(Observable.just("abcdef"))
-				.subscribe(observer);
-
-		observer.awaitTerminalEvent();
-
-		observer.assertNoValues();
-		observer.assertNoErrors();
-		observer.assertCompleted();
+			.test()
+			.await()
+			.assertNoValues()
+			.assertNoErrors()
+			.assertComplete();
 	}
 
 	@Test
-	public void testGetDefaultText() {
+	public void testGetDefaultText() throws InterruptedException {
 		this.testSetDefaultText();
 
-		TestSubscriber<String> observer = new TestSubscriber<>();
 		this.handler.getDefaultText()
-				.subscribe(observer);
-
-		observer.awaitTerminalEvent();
-
-		observer.assertValue("abcdef");
-		observer.assertNoErrors();
-		observer.assertCompleted();
+			.test()
+			.await()
+			.assertValue("abcdef")
+			.assertNoErrors()
+			.assertComplete();
 	}
 
 	@Test
@@ -60,14 +52,10 @@ public class DefaultOfferteTextHandlerTest {
 		this.file = null;
 		this.handler = new DefaultOfferteTextHandler(this.file, this.io);
 
-		TestSubscriber<Void> observer = new TestSubscriber<>();
 		this.handler.setDefaultText(Observable.just("abcdef"))
-				.subscribe(observer);
-
-		observer.awaitTerminalEvent();
-
-		observer.assertNoValues();
-		observer.assertError(NoSuchFileException.class);
-		observer.assertNotCompleted();
+			.test()
+			.assertNoValues()
+			.assertError(NoSuchFileException.class)
+			.assertNotComplete();
 	}
 }

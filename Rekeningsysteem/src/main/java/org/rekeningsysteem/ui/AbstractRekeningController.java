@@ -1,7 +1,11 @@
 package org.rekeningsysteem.ui;
 
 import java.util.Currency;
+import java.util.function.BiFunction;
 
+import io.reactivex.rxjava3.core.Maybe;
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.disposables.Disposable;
 import org.rekeningsysteem.application.working.RekeningSplitPane;
 import org.rekeningsysteem.data.util.AbstractRekening;
 import org.rekeningsysteem.data.util.BtwPercentages;
@@ -11,10 +15,7 @@ import org.rekeningsysteem.properties.PropertiesWorker;
 import org.rekeningsysteem.properties.PropertyKey;
 import org.rekeningsysteem.properties.PropertyModelEnum;
 
-import rx.Observable;
-import rx.functions.Func2;
-
-public abstract class AbstractRekeningController<M extends AbstractRekening> {
+public abstract class AbstractRekeningController<M extends AbstractRekening> implements Disposable {
 
 	private final RekeningSplitPane ui;
 	private final Observable<M> model;
@@ -32,27 +33,37 @@ public abstract class AbstractRekeningController<M extends AbstractRekening> {
 		return this.model;
 	}
 
-	public abstract Observable<Boolean> getSaveSelected();
+	public abstract Maybe<Boolean> getSaveSelected();
 
 	public abstract void initFactuurnummer();
 
-	protected final Func2<PropertyKey, PropertyKey, FactuurnummerManager> getFactuurnummerFactory() {
+	protected final BiFunction<PropertyKey, PropertyKey, FactuurnummerManager> getFactuurnummerFactory() {
 		return PropertyFactuurnummerManager::new;
 	}
 
 	protected static Currency getDefaultCurrency(PropertiesWorker properties) {
 		return properties.getProperty(PropertyModelEnum.VALUTAISO4217)
-				.map(Currency::getInstance)
-				.orElse(Currency.getInstance("EUR"));
+			.map(Currency::getInstance)
+			.orElse(Currency.getInstance("EUR"));
 	}
 
 	protected static BtwPercentages getDefaultBtwPercentage(PropertiesWorker properties) {
 		return properties.getProperty(PropertyModelEnum.LOONBTWPERCENTAGE)
-						.map(Double::parseDouble)
-						.<BtwPercentages> flatMap(l -> properties
-								.getProperty(PropertyModelEnum.MATERIAALBTWPERCENTAGE)
-								.map(Double::parseDouble)
-								.map(m -> new BtwPercentages(l, m)))
-						.orElse(new BtwPercentages(9, 21));
+			.map(Double::parseDouble)
+			.flatMap(l -> properties
+				.getProperty(PropertyModelEnum.MATERIAALBTWPERCENTAGE)
+				.map(Double::parseDouble)
+				.map(m -> new BtwPercentages(l, m)))
+			.orElse(new BtwPercentages(9, 21));
+	}
+
+	@Override
+	public boolean isDisposed() {
+		return this.ui.isDisposed();
+	}
+
+	@Override
+	public void dispose() {
+		this.ui.dispose();
 	}
 }

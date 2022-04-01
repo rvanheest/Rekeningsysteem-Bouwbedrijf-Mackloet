@@ -1,5 +1,6 @@
 package org.rekeningsysteem.application.settings.prijslijst;
 
+import io.reactivex.rxjava3.core.Observable;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
@@ -9,26 +10,23 @@ import javafx.scene.paint.Color;
 
 import org.rekeningsysteem.rxjavafx.Observables;
 
-import rx.Observable;
-
 public class PrijsLijstPane extends GridPane {
 
 	private final Label progressLabel = new Label("nog niet gestart");
-	private final Label warningLabel = new Label("Let op, de huidige data wordt verwijderd "
-			+ "wanneer nieuwe data wordt geimporteerd!");
 	private final Button startButton = new Button("Start");
 
 	public PrijsLijstPane() {
 		this.progressLabel.getStyleClass().add("no-item-found");
-		this.warningLabel.setTextFill(Color.RED);
-		this.warningLabel.setWrapText(true);
+		Label warningLabel = new Label("Let op, de huidige data wordt verwijderd wanneer nieuwe data wordt geimporteerd!");
+		warningLabel.setTextFill(Color.RED);
+		warningLabel.setWrapText(true);
 
 		this.getStyleClass().addAll("working-pane", "page");
 		this.setPadding(new Insets(8));
 		this.setHgap(10);
 		this.setVgap(5);
 
-		this.add(this.warningLabel, 0, 0, 2, 1);
+		this.add(warningLabel, 0, 0, 2, 1);
 		this.add(this.startButton, 0, 1);
 		this.add(this.progressLabel, 1, 1);
 	}

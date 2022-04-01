@@ -22,7 +22,6 @@ import org.rekeningsysteem.data.particulier.loon.InstantLoon;
 import org.rekeningsysteem.data.particulier.loon.ProductLoon;
 import org.rekeningsysteem.data.reparaties.ReparatiesInkoopOrder;
 import org.rekeningsysteem.data.reparaties.ReparatiesFactuur;
-import org.rekeningsysteem.data.util.AbstractRekening;
 import org.rekeningsysteem.data.util.BtwPercentage;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.data.util.ItemList;
@@ -31,19 +30,15 @@ import org.rekeningsysteem.data.util.header.FactuurHeader;
 import org.rekeningsysteem.data.util.header.OmschrFactuurHeader;
 import org.rekeningsysteem.io.xml.XmlReader3;
 
-import rx.observers.TestSubscriber;
-
 public class XmlReader3Test {
 
 	private XmlReader3 reader;
 	private DocumentBuilder builder;
-	private TestSubscriber<? super AbstractRekening> testObserver;
 
 	@Before
 	public void setUp() throws ParserConfigurationException {
 		this.builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 		this.reader = new XmlReader3(this.builder);
-		this.testObserver = new TestSubscriber<>();
 	}
 
 	@Test
@@ -79,11 +74,11 @@ public class XmlReader3Test {
 		ParticulierFactuur expected = new ParticulierFactuur(factuurHeader,
 				Currency.getInstance("EUR"), itemList);
 
-		this.reader.load(file).subscribe(this.testObserver);
-
-		this.testObserver.assertValue(expected);
-		this.testObserver.assertNoErrors();
-		this.testObserver.assertCompleted();
+		this.reader.load(file)
+			.test()
+			.assertValue(expected)
+			.assertNoErrors()
+			.assertComplete();
 	}
 
 	@Test
@@ -102,11 +97,11 @@ public class XmlReader3Test {
 		MutatiesFactuur expected = new MutatiesFactuur(factuurHeader,
 				Currency.getInstance("EUR"), itemList);
 
-		this.reader.load(file).subscribe(this.testObserver);
-
-		this.testObserver.assertValue(expected);
-		this.testObserver.assertNoErrors();
-		this.testObserver.assertCompleted();
+		this.reader.load(file)
+			.test()
+			.assertValue(expected)
+			.assertNoErrors()
+			.assertComplete();
 	}
 
 	@Test
@@ -145,11 +140,11 @@ public class XmlReader3Test {
 		ReparatiesFactuur expected = new ReparatiesFactuur(factuurHeader,
 				Currency.getInstance("EUR"), itemList);
 
-		this.reader.load(file).subscribe(this.testObserver);
-
-		this.testObserver.assertValue(expected);
-		this.testObserver.assertNoErrors();
-		this.testObserver.assertCompleted();
+		this.reader.load(file)
+			.test()
+			.assertValue(expected)
+			.assertNoErrors()
+			.assertComplete();
 	}
 
 	@Test
@@ -162,11 +157,11 @@ public class XmlReader3Test {
 		Offerte expected = new Offerte(factuurHeader, "Lorem ipsum dolor sit amet, consectetur "
 				+ "adipiscing elit. Fusce quis quam tortor.", false);
 
-		this.reader.load(file).subscribe(this.testObserver);
-
-		this.testObserver.assertValue(expected);
-		this.testObserver.assertNoErrors();
-		this.testObserver.assertCompleted();
+		this.reader.load(file)
+			.test()
+			.assertValue(expected)
+			.assertNoErrors()
+			.assertComplete();
 	}
 
 	@Test
@@ -190,10 +185,10 @@ public class XmlReader3Test {
 		ParticulierFactuur expected = new ParticulierFactuur(factuurHeader,
 				Currency.getInstance("EUR"), itemList);
 
-		this.reader.load(file).subscribe(this.testObserver);
-
-		this.testObserver.assertValue(expected);
-		this.testObserver.assertNoErrors();
-		this.testObserver.assertCompleted();
+		this.reader.load(file)
+			.test()
+			.assertValue(expected)
+			.assertNoErrors()
+			.assertComplete();
 	}
 }

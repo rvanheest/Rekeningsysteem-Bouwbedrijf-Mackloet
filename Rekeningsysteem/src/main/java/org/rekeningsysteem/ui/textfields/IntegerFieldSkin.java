@@ -90,16 +90,12 @@ public class IntegerFieldSkin implements Skin<IntegerField> {
 		this.textField.setFocusTraversable(false);
 		this.control.focusedProperty().addListener(this.integerFieldFocusListener);
 
-		this.textField.setOnAction(new EventHandler<ActionEvent>() {
-
-			@Override
-			public void handle(ActionEvent actionEvent) {
-				// Because TextFieldBehavior fires an action event on the parent of the TextField
-				// (maybe a misfeature?) I don't need to do this. But I think this is
-				// a bug, because having to add an empty event handler to get an
-				// event on the control is odd to say the least!
-				// control.fireEvent(new ActionEvent(textField, textField));
-			}
+		this.textField.setOnAction(actionEvent -> {
+			// Because TextFieldBehavior fires an action event on the parent of the TextField
+			// (maybe a misfeature?) I don't need to do this. But I think this is
+			// a bug, because having to add an empty event handler to get an
+			// event on the control is odd to say the least!
+			// control.fireEvent(new ActionEvent(textField, textField));
 		});
 
 		// Make sure the text is updated to the initial state of the PercentageField value

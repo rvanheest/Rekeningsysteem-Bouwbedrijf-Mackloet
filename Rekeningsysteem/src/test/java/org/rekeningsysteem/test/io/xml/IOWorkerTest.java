@@ -1,9 +1,9 @@
 package org.rekeningsysteem.test.io.xml;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.verifyNoInteractions;
 
 import java.io.File;
 import java.time.LocalDate;
@@ -11,12 +11,12 @@ import java.util.Currency;
 
 import javax.management.modelmbean.XMLParseException;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.core.Logger;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.rekeningsysteem.data.mutaties.MutatiesInkoopOrder;
 import org.rekeningsysteem.data.mutaties.MutatiesFactuur;
 import org.rekeningsysteem.data.offerte.Offerte;
@@ -44,8 +44,6 @@ import org.rekeningsysteem.io.xml.XmlReader1;
 import org.rekeningsysteem.io.xml.XmlReader2;
 import org.rekeningsysteem.io.xml.XmlReader3;
 
-import rx.observers.TestSubscriber;
-
 @RunWith(MockitoJUnitRunner.class)
 public class IOWorkerTest {
 
@@ -55,118 +53,109 @@ public class IOWorkerTest {
 	@Before
 	public void setUp() {
 		this.loader = new IOWorker(new XmlMaker(this.logger),
-				new PdfExporter(false, this.logger),
-				new XmlReader(this.logger),
-				new XmlReader1(this.logger),
-				new XmlReader2(this.logger),
-				new XmlReader3(this.logger),
-				this.logger);
+			new PdfExporter(false, this.logger),
+			new XmlReader(this.logger),
+			new XmlReader1(this.logger),
+			new XmlReader2(this.logger),
+			new XmlReader3(this.logger),
+			this.logger);
 	}
 
 	@Test
 	public void testLoadEmptyFile() {
-		TestSubscriber<AbstractRekening> testObserver = new TestSubscriber<>();
 		this.loader.load(new File("src\\test\\resources\\ioWorker\\loadXML\\empty.xml"))
-				.subscribe(testObserver);
-
-		testObserver.assertNoValues();
-		testObserver.assertError(XMLParseException.class);
-		testObserver.assertNotCompleted();
+			.test()
+			.assertNoValues()
+			.assertError(XMLParseException.class)
+			.assertNotComplete();
 		verify(this.logger).error(anyString(), any(XMLParseException.class));
 	}
 
 	@Test
 	public void testLoadAangenomenFactuur2() {
-		TestSubscriber<Class<? extends AbstractRekening>> testObserver = new TestSubscriber<>();
 		this.loader.load(new File("src\\test\\resources\\ioWorker\\loadXML\\2Aangenomen.xml"))
-				.map(AbstractRekening::getClass)
-				.subscribe(testObserver);
-
-		testObserver.assertValue(ParticulierFactuur.class);
-		testObserver.assertNoErrors();
-		testObserver.assertCompleted();
-		verifyZeroInteractions(this.logger);
+			.map(AbstractRekening::getClass)
+			.cast(Class.class)
+			.test()
+			.assertValue(ParticulierFactuur.class)
+			.assertNoErrors()
+			.assertComplete();
+		verifyNoInteractions(this.logger);
 	}
 
 	@Test
 	public void testLoadAangenomenFactuur3() {
-		TestSubscriber<Class<? extends AbstractRekening>> testObserver = new TestSubscriber<>();
 		this.loader.load(new File("src\\test\\resources\\ioWorker\\loadXML\\3Aangenomen.xml"))
-				.map(AbstractRekening::getClass)
-				.subscribe(testObserver);
-
-		testObserver.assertValue(ParticulierFactuur.class);
-		testObserver.assertNoErrors();
-		testObserver.assertCompleted();
-		verifyZeroInteractions(this.logger);
+			.map(AbstractRekening::getClass)
+			.cast(Class.class)
+			.test()
+			.assertValue(ParticulierFactuur.class)
+			.assertNoErrors()
+			.assertComplete();
+		verifyNoInteractions(this.logger);
 	}
 
 	@Test
 	public void testLoadMutatiesFactuur1() {
-		TestSubscriber<Class<? extends AbstractRekening>> testObserver = new TestSubscriber<>();
 		this.loader.load(new File("src\\test\\resources\\ioWorker\\loadXML\\1Mutaties.xml"))
-				.map(AbstractRekening::getClass)
-				.subscribe(testObserver);
-
-		testObserver.assertValue(MutatiesFactuur.class);
-		testObserver.assertNoErrors();
-		testObserver.assertCompleted();
-		verifyZeroInteractions(this.logger);
+			.map(AbstractRekening::getClass)
+			.cast(Class.class)
+			.test()
+			.assertValue(MutatiesFactuur.class)
+			.assertNoErrors()
+			.assertComplete();
+		verifyNoInteractions(this.logger);
 	}
 
 	@Test
 	public void testLoadMutatiesFactuur2() {
-		TestSubscriber<Class<? extends AbstractRekening>> testObserver = new TestSubscriber<>();
 		this.loader.load(new File("src\\test\\resources\\ioWorker\\loadXML\\2Mutaties.xml"))
-				.map(AbstractRekening::getClass)
-				.subscribe(testObserver);
-
-		testObserver.assertValue(MutatiesFactuur.class);
-		testObserver.assertNoErrors();
-		testObserver.assertCompleted();
-		verifyZeroInteractions(this.logger);
+			.map(AbstractRekening::getClass)
+			.cast(Class.class)
+			.test()
+			.assertValue(MutatiesFactuur.class)
+			.assertNoErrors()
+			.assertComplete();
+		verifyNoInteractions(this.logger);
 	}
 
 	@Test
 	public void testLoadMutatiesFactuur3() {
-		TestSubscriber<Class<? extends AbstractRekening>> testObserver = new TestSubscriber<>();
 		this.loader.load(new File("src\\test\\resources\\ioWorker\\loadXML\\3Mutaties.xml"))
-				.map(AbstractRekening::getClass)
-				.subscribe(testObserver);
-
-		testObserver.assertValue(MutatiesFactuur.class);
-		testObserver.assertNoErrors();
-		testObserver.assertCompleted();
-		verifyZeroInteractions(this.logger);
+			.map(AbstractRekening::getClass)
+			.cast(Class.class)
+			.test()
+			.assertValue(MutatiesFactuur.class)
+			.assertNoErrors()
+			.assertComplete();
+		verifyNoInteractions(this.logger);
 	}
 
 	@Test
 	public void testLoadMutatiesFactuur4() {
-		TestSubscriber<Class<? extends AbstractRekening>> testObserver = new TestSubscriber<>();
 		this.loader.load(new File("src\\test\\resources\\ioWorker\\loadXML\\4Mutaties.xml"))
-				.map(AbstractRekening::getClass)
-				.subscribe(testObserver);
-
-		testObserver.assertValue(MutatiesFactuur.class);
-		testObserver.assertNoErrors();
-		testObserver.assertCompleted();
-		verifyZeroInteractions(this.logger);
+			.map(AbstractRekening::getClass)
+			.cast(Class.class)
+			.test()
+			.assertValue(MutatiesFactuur.class)
+			.assertNoErrors()
+			.assertComplete();
+		verifyNoInteractions(this.logger);
 	}
 
 	@Test
 	public void testSaveMutatiesFactuur() {
-		TestSubscriber<AbstractRekening> testObserver = new TestSubscriber<>();
 
 		MutatiesFactuur factuur = this.mutaties();
 		File file = new File("src\\test\\resources\\ioWorker\\saveXML\\Mutaties.xml");
 
 		this.loader.save(factuur, file);
-		this.loader.load(file).subscribe(testObserver);
-
-		testObserver.assertValue(factuur);
-		testObserver.assertNoErrors();
-		testObserver.assertCompleted();
-		verifyZeroInteractions(this.logger);
+		this.loader.load(file)
+			.test()
+			.assertValue(factuur)
+			.assertNoErrors()
+			.assertComplete();
+		verifyNoInteractions(this.logger);
 	}
 
 	@Test
@@ -175,75 +164,69 @@ public class IOWorkerTest {
 		File file = new File("src\\test\\resources\\ioWorker\\savePDF\\Mutaties.pdf");
 
 		this.loader.export(factuur, file);
-		verifyZeroInteractions(this.logger);
+		verifyNoInteractions(this.logger);
 	}
 
 	@Test
 	public void testLoadOfferte1() {
-		TestSubscriber<Class<? extends AbstractRekening>> testObserver = new TestSubscriber<>();
 		this.loader.load(new File("src\\test\\resources\\ioWorker\\loadXML\\1Offerte.xml"))
-				.map(AbstractRekening::getClass)
-				.subscribe(testObserver);
-
-		testObserver.assertValue(Offerte.class);
-		testObserver.assertNoErrors();
-		testObserver.assertCompleted();
-		verifyZeroInteractions(this.logger);
+			.map(AbstractRekening::getClass)
+			.cast(Class.class)
+			.test()
+			.assertValue(Offerte.class)
+			.assertNoErrors()
+			.assertComplete();
+		verifyNoInteractions(this.logger);
 	}
 
 	@Test
 	public void testLoadOfferte2() {
-		TestSubscriber<Class<? extends AbstractRekening>> testObserver = new TestSubscriber<>();
 		this.loader.load(new File("src\\test\\resources\\ioWorker\\loadXML\\2Offerte.xml"))
-				.map(AbstractRekening::getClass)
-				.subscribe(testObserver);
-
-		testObserver.assertValue(Offerte.class);
-		testObserver.assertNoErrors();
-		testObserver.assertCompleted();
-		verifyZeroInteractions(this.logger);
+			.map(AbstractRekening::getClass)
+			.cast(Class.class)
+			.test()
+			.assertValue(Offerte.class)
+			.assertNoErrors()
+			.assertComplete();
+		verifyNoInteractions(this.logger);
 	}
 
 	@Test
 	public void testLoadOfferte3() {
-		TestSubscriber<Class<? extends AbstractRekening>> testObserver = new TestSubscriber<>();
 		this.loader.load(new File("src\\test\\resources\\ioWorker\\loadXML\\3Offerte.xml"))
-				.map(AbstractRekening::getClass)
-				.subscribe(testObserver);
-
-		testObserver.assertValue(Offerte.class);
-		testObserver.assertNoErrors();
-		testObserver.assertCompleted();
-		verifyZeroInteractions(this.logger);
+			.map(AbstractRekening::getClass)
+			.cast(Class.class)
+			.test()
+			.assertValue(Offerte.class)
+			.assertNoErrors()
+			.assertComplete();
+		verifyNoInteractions(this.logger);
 	}
 
 	@Test
 	public void testLoadOfferte4() {
-		TestSubscriber<Class<? extends AbstractRekening>> testObserver = new TestSubscriber<>();
 		this.loader.load(new File("src\\test\\resources\\ioWorker\\loadXML\\4Offerte.xml"))
-				.map(AbstractRekening::getClass)
-				.subscribe(testObserver);
-
-		testObserver.assertValue(Offerte.class);
-		testObserver.assertNoErrors();
-		testObserver.assertCompleted();
-		verifyZeroInteractions(this.logger);
+			.map(AbstractRekening::getClass)
+			.cast(Class.class)
+			.test()
+			.assertValue(Offerte.class)
+			.assertNoErrors()
+			.assertComplete();
+		verifyNoInteractions(this.logger);
 	}
 
 	@Test
 	public void testSaveOfferte() {
-		TestSubscriber<AbstractRekening> testObserver = new TestSubscriber<>();
-
 		Offerte offerte = this.offerte();
 		File file = new File("src\\test\\resources\\ioWorker\\saveXML\\Offerte.xml");
 
 		this.loader.save(offerte, file);
-		this.loader.load(file).subscribe(testObserver);
-
-		testObserver.assertValue(offerte);
-		testObserver.assertNoErrors();
-		testObserver.assertCompleted();
-		verifyZeroInteractions(this.logger);
+		this.loader.load(file)
+			.test()
+			.assertValue(offerte)
+			.assertNoErrors()
+			.assertComplete();
+		verifyNoInteractions(this.logger);
 	}
 
 	@Test
@@ -252,115 +235,106 @@ public class IOWorkerTest {
 		File file = new File("src\\test\\resources\\ioWorker\\savePDF\\Offerte.pdf");
 
 		this.loader.export(factuur, file);
-		verifyZeroInteractions(this.logger);
+		verifyNoInteractions(this.logger);
 	}
 
 	@Test
 	public void testLoadPartFactuur1() {
-		TestSubscriber<Class<? extends AbstractRekening>> testObserver = new TestSubscriber<>();
 		this.loader.load(new File("src\\test\\resources\\ioWorker\\loadXML\\1Part.xml"))
-				.map(AbstractRekening::getClass)
-				.subscribe(testObserver);
-
-		testObserver.assertValue(ParticulierFactuur.class);
-		testObserver.assertNoErrors();
-		testObserver.assertCompleted();
-		verifyZeroInteractions(this.logger);
+			.map(AbstractRekening::getClass)
+			.cast(Class.class)
+			.test()
+			.assertValue(ParticulierFactuur.class)
+			.assertNoErrors()
+			.assertComplete();
+		verifyNoInteractions(this.logger);
 	}
 
 	@Test
 	public void testLoadParticulierFactuur1_1() {
-		TestSubscriber<Class<? extends AbstractRekening>> testObserver = new TestSubscriber<>();
 		this.loader.load(new File("src\\test\\resources\\ioWorker\\loadXML\\1Particulier1.xml"))
-				.map(AbstractRekening::getClass)
-				.subscribe(testObserver);
-
-		testObserver.assertValue(ParticulierFactuur.class);
-		testObserver.assertNoErrors();
-		testObserver.assertCompleted();
-		verifyZeroInteractions(this.logger);
+			.map(AbstractRekening::getClass)
+			.cast(Class.class)
+			.test()
+			.assertValue(ParticulierFactuur.class)
+			.assertNoErrors()
+			.assertComplete();
+		verifyNoInteractions(this.logger);
 	}
 
 	@Test
 	public void testLoadParticulierFactuur1_2() {
-		TestSubscriber<Class<? extends AbstractRekening>> testObserver = new TestSubscriber<>();
 		this.loader.load(new File("src\\test\\resources\\ioWorker\\loadXML\\1Particulier2.xml"))
-				.map(AbstractRekening::getClass)
-				.subscribe(testObserver);
-
-		testObserver.assertValue(ParticulierFactuur.class);
-		testObserver.assertNoErrors();
-		testObserver.assertCompleted();
-		verifyZeroInteractions(this.logger);
+			.map(AbstractRekening::getClass)
+			.cast(Class.class)
+			.test()
+			.assertValue(ParticulierFactuur.class)
+			.assertNoErrors()
+			.assertComplete();
+		verifyNoInteractions(this.logger);
 	}
 
 	@Test
 	public void testLoadParticulierFactuur2() {
-		TestSubscriber<Class<? extends AbstractRekening>> testObserver = new TestSubscriber<>();
 		this.loader.load(new File("src\\test\\resources\\ioWorker\\loadXML\\2Particulier.xml"))
-				.map(AbstractRekening::getClass)
-				.subscribe(testObserver);
-
-		testObserver.assertValue(ParticulierFactuur.class);
-		testObserver.assertNoErrors();
-		testObserver.assertCompleted();
-		verifyZeroInteractions(this.logger);
+			.map(AbstractRekening::getClass)
+			.cast(Class.class)
+			.test()
+			.assertValue(ParticulierFactuur.class)
+			.assertNoErrors()
+			.assertComplete();
+		verifyNoInteractions(this.logger);
 	}
 
 	@Test
 	public void testLoadParticulierFactuur3() {
-		TestSubscriber<Class<? extends AbstractRekening>> testObserver = new TestSubscriber<>();
 		this.loader
-				.load(new File("src\\test\\resources\\ioWorker\\loadXML\\3Particulier.xml"))
-				.map(AbstractRekening::getClass)
-				.subscribe(testObserver);
-
-		testObserver.assertValue(ParticulierFactuur.class);
-		testObserver.assertNoErrors();
-		testObserver.assertCompleted();
-		verifyZeroInteractions(this.logger);
+			.load(new File("src\\test\\resources\\ioWorker\\loadXML\\3Particulier.xml"))
+			.map(AbstractRekening::getClass)
+			.cast(Class.class)
+			.test()
+			.assertValue(ParticulierFactuur.class)
+			.assertNoErrors()
+			.assertComplete();
+		verifyNoInteractions(this.logger);
 	}
 
 	@Test
 	public void testLoadParticulierFactuur4() {
-		TestSubscriber<Class<? extends AbstractRekening>> testObserver = new TestSubscriber<>();
 		this.loader.load(new File("src\\test\\resources\\ioWorker\\loadXML\\4Particulier.xml"))
-				.map(AbstractRekening::getClass)
-				.subscribe(testObserver);
-
-		testObserver.assertValue(ParticulierFactuur.class);
-		testObserver.assertNoErrors();
-		testObserver.assertCompleted();
-		verifyZeroInteractions(this.logger);
+			.map(AbstractRekening::getClass)
+			.cast(Class.class)
+			.test()
+			.assertValue(ParticulierFactuur.class)
+			.assertNoErrors()
+			.assertComplete();
+		verifyNoInteractions(this.logger);
 	}
 
 	@Test
 	public void testLoadParticulierVerlegdFactuur4() {
-		TestSubscriber<Class<? extends AbstractRekening>> testObserver = new TestSubscriber<>();
 		this.loader.load(new File("src\\test\\resources\\ioWorker\\loadXML\\4ParticulierVerlegd.xml"))
-				.map(AbstractRekening::getClass)
-				.subscribe(testObserver);
-
-		testObserver.assertValue(ParticulierFactuur.class);
-		testObserver.assertNoErrors();
-		testObserver.assertCompleted();
-		verifyZeroInteractions(this.logger);
+			.map(AbstractRekening::getClass)
+			.cast(Class.class)
+			.test()
+			.assertValue(ParticulierFactuur.class)
+			.assertNoErrors()
+			.assertComplete();
+		verifyNoInteractions(this.logger);
 	}
 
 	@Test
 	public void testSaveParticulier() {
-		TestSubscriber<AbstractRekening> testObserver = new TestSubscriber<>();
-
 		ParticulierFactuur factuur = this.particulier();
 		File file = new File("src\\test\\resources\\ioWorker\\saveXML\\Particulier.xml");
 
 		this.loader.save(factuur, file);
-		this.loader.load(file).subscribe(testObserver);
-
-		testObserver.assertValue(factuur);
-		testObserver.assertNoErrors();
-		testObserver.assertCompleted();
-		verifyZeroInteractions(this.logger);
+		this.loader.load(file)
+			.test()
+			.assertValue(factuur)
+			.assertNoErrors()
+			.assertComplete();
+		verifyNoInteractions(this.logger);
 	}
 
 	@Test
@@ -369,75 +343,69 @@ public class IOWorkerTest {
 		File file = new File("src\\test\\resources\\ioWorker\\savePDF\\Particulier.pdf");
 
 		this.loader.export(factuur, file);
-		verifyZeroInteractions(this.logger);
+		verifyNoInteractions(this.logger);
 	}
 
 	@Test
 	public void testLoadReparatiesFactuur1() {
-		TestSubscriber<Class<? extends AbstractRekening>> testObserver = new TestSubscriber<>();
 		this.loader.load(new File("src\\test\\resources\\ioWorker\\loadXML\\1Reparaties.xml"))
-				.map(AbstractRekening::getClass)
-				.subscribe(testObserver);
-
-		testObserver.assertValue(ReparatiesFactuur.class);
-		testObserver.assertNoErrors();
-		testObserver.assertCompleted();
-		verifyZeroInteractions(this.logger);
+			.map(AbstractRekening::getClass)
+			.cast(Class.class)
+			.test()
+			.assertValue(ReparatiesFactuur.class)
+			.assertNoErrors()
+			.assertComplete();
+		verifyNoInteractions(this.logger);
 	}
 
 	@Test
 	public void testLoadReparatiesFactuur2() {
-		TestSubscriber<Class<? extends AbstractRekening>> testObserver = new TestSubscriber<>();
 		this.loader.load(new File("src\\test\\resources\\ioWorker\\loadXML\\2Reparaties.xml"))
-				.map(AbstractRekening::getClass)
-				.subscribe(testObserver);
-
-		testObserver.assertValue(ReparatiesFactuur.class);
-		testObserver.assertNoErrors();
-		testObserver.assertCompleted();
-		verifyZeroInteractions(this.logger);
+			.map(AbstractRekening::getClass)
+			.cast(Class.class)
+			.test()
+			.assertValue(ReparatiesFactuur.class)
+			.assertNoErrors()
+			.assertComplete();
+		verifyNoInteractions(this.logger);
 	}
 
 	@Test
 	public void testLoadReparatiesFactuur3() {
-		TestSubscriber<Class<? extends AbstractRekening>> testObserver = new TestSubscriber<>();
 		this.loader.load(new File("src\\test\\resources\\ioWorker\\loadXML\\3Reparaties.xml"))
-				.map(AbstractRekening::getClass)
-				.subscribe(testObserver);
-
-		testObserver.assertValue(ReparatiesFactuur.class);
-		testObserver.assertNoErrors();
-		testObserver.assertCompleted();
-		verifyZeroInteractions(this.logger);
+			.map(AbstractRekening::getClass)
+			.cast(Class.class)
+			.test()
+			.assertValue(ReparatiesFactuur.class)
+			.assertNoErrors()
+			.assertComplete();
+		verifyNoInteractions(this.logger);
 	}
 
 	@Test
 	public void testLoadReparatiesFactuur4() {
-		TestSubscriber<Class<? extends AbstractRekening>> testObserver = new TestSubscriber<>();
 		this.loader.load(new File("src\\test\\resources\\ioWorker\\loadXML\\4Reparaties.xml"))
-				.map(AbstractRekening::getClass)
-				.subscribe(testObserver);
-
-		testObserver.assertValue(ReparatiesFactuur.class);
-		testObserver.assertNoErrors();
-		testObserver.assertCompleted();
-		verifyZeroInteractions(this.logger);
+			.map(AbstractRekening::getClass)
+			.cast(Class.class)
+			.test()
+			.assertValue(ReparatiesFactuur.class)
+			.assertNoErrors()
+			.assertComplete();
+		verifyNoInteractions(this.logger);
 	}
 
 	@Test
 	public void testSaveReparaties() {
-		TestSubscriber<AbstractRekening> testObserver = new TestSubscriber<>();
-
 		ReparatiesFactuur factuur = this.reparaties();
 		File file = new File("src\\test\\resources\\ioWorker\\saveXML\\Reparaties.xml");
 
 		this.loader.save(factuur, file);
-		this.loader.load(file).subscribe(testObserver);
-
-		testObserver.assertValue(factuur);
-		testObserver.assertNoErrors();
-		testObserver.assertCompleted();
-		verifyZeroInteractions(this.logger);
+		this.loader.load(file)
+			.test()
+			.assertValue(factuur)
+			.assertNoErrors()
+			.assertComplete();
+		verifyNoInteractions(this.logger);
 	}
 
 	@Test
@@ -446,12 +414,11 @@ public class IOWorkerTest {
 		File file = new File("src\\test\\resources\\ioWorker\\savePDF\\Reparaties.pdf");
 
 		this.loader.export(factuur, file);
-		verifyZeroInteractions(this.logger);
+		verifyNoInteractions(this.logger);
 	}
 
 	private MutatiesFactuur mutaties() {
-		Debiteur debiteur = new Debiteur("Name", "Street", "Number", "Zipcode",
-				"Place", "BtwNumber");
+		Debiteur debiteur = new Debiteur("Name", "Street", "Number", "Zipcode", "Place", "BtwNumber");
 		LocalDate datum = LocalDate.of(2011, 5, 9);
 		String factuurnummer = "272011";
 		FactuurHeader header = new FactuurHeader(debiteur, datum, factuurnummer);
@@ -479,29 +446,20 @@ public class IOWorkerTest {
 		Debiteur debiteur = new Debiteur("Name", "Street", "Number", "Zipcode", "Place");
 		LocalDate datum = LocalDate.of(2011, 4, 2);
 		String factuurnummer = "22011";
-		String omschrijving = "Voor u verrichte werkzaamheden betreffende renovatie "
-				+ "badkamervloer i.v.m. lekkage";
-		OmschrFactuurHeader header = new OmschrFactuurHeader(debiteur, datum, factuurnummer,
-				omschrijving);
+		String omschrijving = "Voor u verrichte werkzaamheden betreffende renovatie badkamervloer i.v.m. lekkage";
+		OmschrFactuurHeader header = new OmschrFactuurHeader(debiteur, datum, factuurnummer, omschrijving);
 
 		Currency currency = Currency.getInstance("EUR");
 
 		ItemList<ParticulierArtikel> list = new ItemList<>();
 
-		EsselinkArtikel sub1 = new EsselinkArtikel("2018021117", "Product 1", 1, "Zak",
-				new Geld(5.16));
-		EsselinkArtikel sub2 = new EsselinkArtikel("2003131360", "Product 2", 1, "zak",
-				new Geld(129.53));
-		EsselinkArtikel sub3 = new EsselinkArtikel("2003131060", "Product 3", 1, "set",
-				new Geld(35.96));
-		EsselinkArtikel sub4 = new EsselinkArtikel("2003131306", "Product 4", 1, "zak",
-				new Geld(9.47));
-		EsselinkArtikel sub5 = new EsselinkArtikel("4010272112", "Product 5", 1, "Stuks",
-				new Geld(17.18));
-		EsselinkArtikel sub6 = new EsselinkArtikel("2009200131", "Product 6", 1, "Stuks",
-				new Geld(6.84));
-		EsselinkArtikel sub7 = new EsselinkArtikel("2009200105", "Product 7", 1, "Stuks",
-				new Geld(7.44));
+		EsselinkArtikel sub1 = new EsselinkArtikel("2018021117", "Product 1", 1, "Zak", new Geld(5.16));
+		EsselinkArtikel sub2 = new EsselinkArtikel("2003131360", "Product 2", 1, "zak", new Geld(129.53));
+		EsselinkArtikel sub3 = new EsselinkArtikel("2003131060", "Product 3", 1, "set", new Geld(35.96));
+		EsselinkArtikel sub4 = new EsselinkArtikel("2003131306", "Product 4", 1, "zak", new Geld(9.47));
+		EsselinkArtikel sub5 = new EsselinkArtikel("4010272112", "Product 5", 1, "Stuks", new Geld(17.18));
+		EsselinkArtikel sub6 = new EsselinkArtikel("2009200131", "Product 6", 1, "Stuks", new Geld(6.84));
+		EsselinkArtikel sub7 = new EsselinkArtikel("2009200105", "Product 7", 1, "Stuks", new Geld(7.44));
 
 		list.add(new GebruiktEsselinkArtikel(sub1, 8, new BtwPercentage(21, false)));
 		list.add(new GebruiktEsselinkArtikel(sub2, 1, new BtwPercentage(21, true)));
@@ -521,8 +479,7 @@ public class IOWorkerTest {
 	}
 
 	private ReparatiesFactuur reparaties() {
-		Debiteur debiteur = new Debiteur("Name", "Street", "Number", "Zipcode",
-				"Place", "BtwNumber");
+		Debiteur debiteur = new Debiteur("Name", "Street", "Number", "Zipcode", "Place", "BtwNumber");
 		LocalDate datum = LocalDate.of(2011, 4, 5);
 		String factuurnummer = "232011";
 		FactuurHeader header = new FactuurHeader(debiteur, datum, factuurnummer);

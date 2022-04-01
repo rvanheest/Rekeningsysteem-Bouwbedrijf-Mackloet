@@ -6,7 +6,7 @@ public enum V04AlphaQueries implements QueryEnumeration {
 
 	METADATA_EXISTS("SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name='Metadata';"),
 
-	GET_DB_VERSION("SELECT version FROM Metadata"),
+	GET_DB_VERSION("SELECT version FROM Metadata;"),
 
 	TABLE_COUNT("SELECT COUNT(name) AS 'count' FROM sqlite_master WHERE type='table';"),
 

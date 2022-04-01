@@ -1,9 +1,9 @@
 package org.rekeningsysteem.test.properties;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.anyObject;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -16,14 +16,14 @@ import java.io.OutputStream;
 import java.util.Optional;
 import java.util.Properties;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.core.Logger;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.rekeningsysteem.properties.PropertiesWorker;
 import org.rekeningsysteem.properties.PropertyKey;
 
@@ -49,7 +49,7 @@ public class PropertiesWorkerTest {
 	@Before
 	public void setUp() throws IOException {
 		this.worker = PropertiesWorker.getInstance(this.properties, file, this.logger);
-		verify(this.properties).load((InputStream) anyObject());
+		verify(this.properties).load((InputStream) any());
 	}
 
 	@AfterClass
@@ -67,7 +67,7 @@ public class PropertiesWorkerTest {
 
 		verify(this.key).getKey();
 		verify(this.properties).setProperty(eq("key"), eq("value"));
-		verify(this.properties).store((OutputStream) anyObject(), anyString());
+		verify(this.properties).store((OutputStream) any(), anyString());
 	}
 
 	@Test
@@ -88,25 +88,24 @@ public class PropertiesWorkerTest {
 
 	@Test
 	public void testLoadFails() throws IOException {
-		doThrow(new IOException()).when(this.properties).load((InputStream) anyObject());
+		doThrow(new IOException("")).when(this.properties).load((InputStream) any());
 		PropertiesWorker.getInstance(this.properties, file, this.logger);
 
-		verify(this.logger).error(anyString(), (Throwable) anyObject());
+		verify(this.logger).error(anyString(), (Throwable) any());
 	}
 
 	@Test
 	public void testLoadFile_FileNotFound() {
 		PropertiesWorker.getInstance(this.properties, new File("bestaatniet.txt"), this.logger);
 
-		verify(this.logger).error(anyString(), (Throwable) anyObject());
+		verify(this.logger).error(anyString(), (Throwable) any());
 	}
 
 	@Test
 	public void testSaveFails() throws IOException {
-		doThrow(new IOException()).when(this.properties).store((OutputStream) anyObject(),
-				anyString());
+		doThrow(new IOException("")).when(this.properties).store((OutputStream) any(), anyString());
 		this.worker.setProperty("key", "value");
 
-		verify(this.logger).error(anyString(), (Throwable) anyObject());
+		verify(this.logger).error(anyString(), (Throwable) any());
 	}
 }
