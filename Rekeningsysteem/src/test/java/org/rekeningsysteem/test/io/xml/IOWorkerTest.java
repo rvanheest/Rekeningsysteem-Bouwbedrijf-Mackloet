@@ -9,7 +9,10 @@ import java.io.File;
 import java.time.LocalDate;
 import java.util.Currency;
 
-import javax.management.modelmbean.XMLParseException;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerFactory;
 
 import org.apache.logging.log4j.core.Logger;
 import org.junit.Before;
@@ -36,13 +39,15 @@ import org.rekeningsysteem.data.util.ItemList;
 import org.rekeningsysteem.data.util.header.Debiteur;
 import org.rekeningsysteem.data.util.header.FactuurHeader;
 import org.rekeningsysteem.data.util.header.OmschrFactuurHeader;
+import org.rekeningsysteem.exception.XmlParseException;
+import org.rekeningsysteem.exception.XmlWriteException;
 import org.rekeningsysteem.io.pdf.PdfExporter;
 import org.rekeningsysteem.io.xml.IOWorker;
-import org.rekeningsysteem.io.xml.XmlMaker;
-import org.rekeningsysteem.io.xml.XmlReader;
+import org.rekeningsysteem.io.xml.XmlWriter;
 import org.rekeningsysteem.io.xml.XmlReader1;
 import org.rekeningsysteem.io.xml.XmlReader2;
 import org.rekeningsysteem.io.xml.XmlReader3;
+import org.rekeningsysteem.io.xml.XmlReader4;
 
 @RunWith(MockitoJUnitRunner.class)
 public class IOWorkerTest {
@@ -51,14 +56,18 @@ public class IOWorkerTest {
 	@Mock private Logger logger;
 
 	@Before
-	public void setUp() {
-		this.loader = new IOWorker(new XmlMaker(this.logger),
+	public void setUp() throws ParserConfigurationException {
+		DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+		TransformerFactory transformerFactory = TransformerFactory.newInstance();
+		this.loader = new IOWorker(
+			new XmlWriter(documentBuilder, transformerFactory),
 			new PdfExporter(false, this.logger),
-			new XmlReader(this.logger),
-			new XmlReader1(this.logger),
-			new XmlReader2(this.logger),
-			new XmlReader3(this.logger),
-			this.logger);
+			new XmlReader4(documentBuilder),
+			new XmlReader1(documentBuilder),
+			new XmlReader2(documentBuilder),
+			new XmlReader3(documentBuilder),
+			this.logger
+		);
 	}
 
 	@Test
@@ -66,9 +75,9 @@ public class IOWorkerTest {
 		this.loader.load(new File("src\\test\\resources\\ioWorker\\loadXML\\empty.xml"))
 			.test()
 			.assertNoValues()
-			.assertError(XMLParseException.class)
+			.assertError(XmlParseException.class)
 			.assertNotComplete();
-		verify(this.logger).error(anyString(), any(XMLParseException.class));
+		verify(this.logger).error(anyString(), any(XmlParseException.class));
 	}
 
 	@Test
@@ -144,7 +153,7 @@ public class IOWorkerTest {
 	}
 
 	@Test
-	public void testSaveMutatiesFactuur() {
+	public void testSaveMutatiesFactuur() throws XmlWriteException {
 
 		MutatiesFactuur factuur = this.mutaties();
 		File file = new File("src\\test\\resources\\ioWorker\\saveXML\\Mutaties.xml");
@@ -216,7 +225,7 @@ public class IOWorkerTest {
 	}
 
 	@Test
-	public void testSaveOfferte() {
+	public void testSaveOfferte() throws XmlWriteException {
 		Offerte offerte = this.offerte();
 		File file = new File("src\\test\\resources\\ioWorker\\saveXML\\Offerte.xml");
 
@@ -324,7 +333,7 @@ public class IOWorkerTest {
 	}
 
 	@Test
-	public void testSaveParticulier() {
+	public void testSaveParticulier() throws XmlWriteException {
 		ParticulierFactuur factuur = this.particulier();
 		File file = new File("src\\test\\resources\\ioWorker\\saveXML\\Particulier.xml");
 
@@ -395,7 +404,7 @@ public class IOWorkerTest {
 	}
 
 	@Test
-	public void testSaveReparaties() {
+	public void testSaveReparaties() throws XmlWriteException {
 		ReparatiesFactuur factuur = this.reparaties();
 		File file = new File("src\\test\\resources\\ioWorker\\saveXML\\Reparaties.xml");
 

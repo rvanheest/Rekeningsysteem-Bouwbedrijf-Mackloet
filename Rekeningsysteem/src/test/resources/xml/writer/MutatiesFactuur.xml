@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<bestand type="MutatiesFactuur" version="4">
+    <mutaties-factuur>
+        <factuurHeader>
+            <debiteur>
+                <naam>name</naam>
+                <straat>street</straat>
+                <nummer>number</nummer>
+                <postcode>zipcode</postcode>
+                <plaats>city</plaats>
+                <btwNummer>vatNumber</btwNummer>
+            </debiteur>
+            <datum>
+                <dag>30</dag>
+                <maand>7</maand>
+                <jaar>2017</jaar>
+            </datum>
+            <factuurnummer>272011</factuurnummer>
+        </factuurHeader>
+        <currency>EUR</currency>
+        <list>
+            <mutaties-bon>
+                <omschrijving>Bonnummer</omschrijving>
+                <bonnummer>111390</bonnummer>
+                <prijs>4.971,96</prijs>
+            </mutaties-bon>
+            <mutaties-bon>
+                <omschrijving>Bonnummer</omschrijving>
+                <bonnummer>111477</bonnummer>
+                <prijs>4.820,96</prijs>
+            </mutaties-bon>
+            <mutaties-bon>
+                <omschrijving>Bonnummer</omschrijving>
+                <bonnummer>112308</bonnummer>
+                <prijs>5.510,74</prijs>
+            </mutaties-bon>
+        </list>
+    </mutaties-factuur>
+</bestand>

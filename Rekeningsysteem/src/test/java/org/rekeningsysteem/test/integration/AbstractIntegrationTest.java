@@ -13,17 +13,25 @@ import org.apache.logging.log4j.core.Logger;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.rekeningsysteem.data.util.AbstractRekening;
+import org.rekeningsysteem.data.util.visitor.RekeningVisitor;
 import org.rekeningsysteem.data.util.visitor.RekeningVoidVisitor;
 import org.rekeningsysteem.exception.PdfException;
+import org.rekeningsysteem.exception.XmlWriteException;
 import org.rekeningsysteem.io.FactuurExporter;
 import org.rekeningsysteem.io.FactuurLoader;
 import org.rekeningsysteem.io.FactuurSaver;
 import org.rekeningsysteem.io.pdf.PdfExporter;
-import org.rekeningsysteem.io.xml.XmlMaker;
-import org.rekeningsysteem.io.xml.XmlReader;
+import org.rekeningsysteem.io.xml.XmlReader4;
+import org.rekeningsysteem.io.xml.XmlWriter;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerFactory;
 
 @RunWith(MockitoJUnitRunner.class)
 public abstract class AbstractIntegrationTest {
@@ -43,11 +51,13 @@ public abstract class AbstractIntegrationTest {
 	protected abstract File xmlFile();
 
 	@Before
-	public void setUp() {
+	public void setUp() throws ParserConfigurationException {
+		DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+		TransformerFactory transformerFactory = TransformerFactory.newInstance();
 		this.rekening = this.makeRekening();
 		this.exporter = new PdfExporter(false, this.logger);
-		this.loader = new XmlReader(this.logger);
-		this.saver = new XmlMaker(this.logger);
+		this.loader = new XmlReader4(documentBuilder);
+		this.saver = new XmlWriter(documentBuilder, transformerFactory);
 		this.pdfFile = this.pdfFile();
 		this.xmlFile = this.xmlFile();
 	}
@@ -80,7 +90,7 @@ public abstract class AbstractIntegrationTest {
 	}
 
 	@Test
-	public void testXML() {
+	public void testXML() throws XmlWriteException {
 		this.saver.save(this.rekening, this.xmlFile);
 
 		this.loader.load(this.xmlFile)
@@ -90,15 +100,13 @@ public abstract class AbstractIntegrationTest {
 			.assertComplete();
 	}
 
-	@Test
+	@Test(expected = XmlWriteException.class)
 	public void testXmlWithException() throws Exception {
 		AbstractRekening rekening = mock(AbstractRekening.class);
 		File file = mock(File.class);
 
-		doThrow(new Exception("")).when(rekening).accept((RekeningVoidVisitor) any());
+		doThrow(new Exception("")).when(rekening).accept(ArgumentMatchers.<RekeningVisitor<String>>any());
 
 		this.saver.save(rekening, file);
-
-		verify(this.logger).error(anyString(), any(Exception.class));
 	}
 }

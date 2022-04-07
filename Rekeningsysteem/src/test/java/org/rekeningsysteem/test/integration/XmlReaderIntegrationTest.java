@@ -2,40 +2,38 @@ package org.rekeningsysteem.test.integration;
 
 import java.io.File;
 
-import javax.management.modelmbean.XMLParseException;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
-import org.apache.logging.log4j.core.Logger;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
 import org.rekeningsysteem.data.mutaties.MutatiesFactuur;
 import org.rekeningsysteem.data.offerte.Offerte;
 import org.rekeningsysteem.data.particulier.ParticulierFactuur;
 import org.rekeningsysteem.data.reparaties.ReparatiesFactuur;
 import org.rekeningsysteem.data.util.AbstractRekening;
-import org.rekeningsysteem.io.FactuurLoader;
-import org.rekeningsysteem.io.xml.XmlReader;
+import org.rekeningsysteem.exception.XmlParseException;
+import org.rekeningsysteem.io.xml.XmlLoader;
 import org.rekeningsysteem.io.xml.XmlReader1;
 import org.rekeningsysteem.io.xml.XmlReader2;
 import org.rekeningsysteem.io.xml.XmlReader3;
+import org.rekeningsysteem.io.xml.XmlReader4;
 
-@RunWith(MockitoJUnitRunner.class)
 public class XmlReaderIntegrationTest {
 
-	private FactuurLoader loader1;
-	private FactuurLoader loader2;
-	private FactuurLoader loader3;
-	private FactuurLoader loader4;
-	@Mock private Logger logger;
+	private XmlLoader loader1;
+	private XmlLoader loader2;
+	private XmlLoader loader3;
+	private XmlLoader loader4;
 
 	@Before
-	public void setUp() {
-		this.loader1 = new XmlReader1(this.logger);
-		this.loader2 = new XmlReader2(this.logger);
-		this.loader3 = new XmlReader3(this.logger);
-		this.loader4 = new XmlReader(this.logger);
+	public void setUp() throws ParserConfigurationException {
+		DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+		this.loader1 = new XmlReader1(documentBuilder);
+		this.loader2 = new XmlReader2(documentBuilder);
+		this.loader3 = new XmlReader3(documentBuilder);
+		this.loader4 = new XmlReader4(documentBuilder);
 	}
 
 	@Test
@@ -55,7 +53,7 @@ public class XmlReaderIntegrationTest {
 			.map(AbstractRekening::getClass)
 			.test()
 			.assertNoValues()
-			.assertError(XMLParseException.class)
+			.assertError(XmlParseException.class)
 			.assertNotComplete();
 	}
 
@@ -65,7 +63,7 @@ public class XmlReaderIntegrationTest {
 			.map(AbstractRekening::getClass)
 			.test()
 			.assertNoValues()
-			.assertError(XMLParseException.class)
+			.assertError(XmlParseException.class)
 			.assertNotComplete();
 	}
 
@@ -75,7 +73,7 @@ public class XmlReaderIntegrationTest {
 			.map(AbstractRekening::getClass)
 			.test()
 			.assertNoValues()
-			.assertError(IllegalArgumentException.class)
+			.assertError(XmlParseException.class)
 			.assertNotComplete();
 	}
 
@@ -96,7 +94,7 @@ public class XmlReaderIntegrationTest {
 			.map(AbstractRekening::getClass)
 			.test()
 			.assertNoValues()
-			.assertError(XMLParseException.class)
+			.assertError(XmlParseException.class)
 			.assertNotComplete();
 	}
 
@@ -106,7 +104,7 @@ public class XmlReaderIntegrationTest {
 			.map(AbstractRekening::getClass)
 			.test()
 			.assertNoValues()
-			.assertError(XMLParseException.class)
+			.assertError(XmlParseException.class)
 			.assertNotComplete();
 	}
 
@@ -116,7 +114,7 @@ public class XmlReaderIntegrationTest {
 			.map(AbstractRekening::getClass)
 			.test()
 			.assertNoValues()
-			.assertError(IllegalArgumentException.class)
+			.assertError(XmlParseException.class)
 			.assertNotComplete();
 	}
 
@@ -137,7 +135,7 @@ public class XmlReaderIntegrationTest {
 			.map(AbstractRekening::getClass)
 			.test()
 			.assertNoValues()
-			.assertError(XMLParseException.class)
+			.assertError(XmlParseException.class)
 			.assertNotComplete();
 	}
 
@@ -147,7 +145,7 @@ public class XmlReaderIntegrationTest {
 			.map(AbstractRekening::getClass)
 			.test()
 			.assertNoValues()
-			.assertError(XMLParseException.class)
+			.assertError(XmlParseException.class)
 			.assertNotComplete();
 	}
 
@@ -157,7 +155,7 @@ public class XmlReaderIntegrationTest {
 			.map(AbstractRekening::getClass)
 			.test()
 			.assertNoValues()
-			.assertError(IllegalArgumentException.class)
+			.assertError(XmlParseException.class)
 			.assertNotComplete();
 	}
 
@@ -178,7 +176,7 @@ public class XmlReaderIntegrationTest {
 			.map(AbstractRekening::getClass)
 			.test()
 			.assertNoValues()
-			.assertError(XMLParseException.class)
+			.assertError(XmlParseException.class)
 			.assertNotComplete();
 	}
 
@@ -188,7 +186,7 @@ public class XmlReaderIntegrationTest {
 			.map(AbstractRekening::getClass)
 			.test()
 			.assertNoValues()
-			.assertError(XMLParseException.class)
+			.assertError(XmlParseException.class)
 			.assertNotComplete();
 	}
 
@@ -198,7 +196,7 @@ public class XmlReaderIntegrationTest {
 			.map(AbstractRekening::getClass)
 			.test()
 			.assertNoValues()
-			.assertError(IllegalArgumentException.class)
+			.assertError(XmlParseException.class)
 			.assertNotComplete();
 	}
 
@@ -219,7 +217,7 @@ public class XmlReaderIntegrationTest {
 			.map(AbstractRekening::getClass)
 			.test()
 			.assertNoValues()
-			.assertError(XMLParseException.class)
+			.assertError(XmlParseException.class)
 			.assertNotComplete();
 	}
 
@@ -229,7 +227,7 @@ public class XmlReaderIntegrationTest {
 			.map(AbstractRekening::getClass)
 			.test()
 			.assertNoValues()
-			.assertError(XMLParseException.class)
+			.assertError(XmlParseException.class)
 			.assertNotComplete();
 	}
 
@@ -239,7 +237,7 @@ public class XmlReaderIntegrationTest {
 			.map(AbstractRekening::getClass)
 			.test()
 			.assertNoValues()
-			.assertError(IllegalArgumentException.class)
+			.assertError(XmlParseException.class)
 			.assertNotComplete();
 	}
 
@@ -260,7 +258,7 @@ public class XmlReaderIntegrationTest {
 			.map(AbstractRekening::getClass)
 			.test()
 			.assertNoValues()
-			.assertError(XMLParseException.class)
+			.assertError(XmlParseException.class)
 			.assertNotComplete();
 	}
 
@@ -270,7 +268,7 @@ public class XmlReaderIntegrationTest {
 			.map(AbstractRekening::getClass)
 			.test()
 			.assertNoValues()
-			.assertError(XMLParseException.class)
+			.assertError(XmlParseException.class)
 			.assertNotComplete();
 	}
 
@@ -280,7 +278,7 @@ public class XmlReaderIntegrationTest {
 			.map(AbstractRekening::getClass)
 			.test()
 			.assertNoValues()
-			.assertError(IllegalArgumentException.class)
+			.assertError(XmlParseException.class)
 			.assertNotComplete();
 	}
 
@@ -290,7 +288,7 @@ public class XmlReaderIntegrationTest {
 			.map(AbstractRekening::getClass)
 			.test()
 			.assertNoValues()
-			.assertError(XMLParseException.class)
+			.assertError(XmlParseException.class)
 			.assertNotComplete();
 	}
 
@@ -311,7 +309,7 @@ public class XmlReaderIntegrationTest {
 			.map(AbstractRekening::getClass)
 			.test()
 			.assertNoValues()
-			.assertError(XMLParseException.class)
+			.assertError(XmlParseException.class)
 			.assertNotComplete();
 	}
 
@@ -321,7 +319,7 @@ public class XmlReaderIntegrationTest {
 			.map(AbstractRekening::getClass)
 			.test()
 			.assertNoValues()
-			.assertError(IllegalArgumentException.class)
+			.assertError(XmlParseException.class)
 			.assertNotComplete();
 	}
 
@@ -331,7 +329,7 @@ public class XmlReaderIntegrationTest {
 			.map(AbstractRekening::getClass)
 			.test()
 			.assertNoValues()
-			.assertError(XMLParseException.class)
+			.assertError(XmlParseException.class)
 			.assertNotComplete();
 	}
 
@@ -352,7 +350,7 @@ public class XmlReaderIntegrationTest {
 			.map(AbstractRekening::getClass)
 			.test()
 			.assertNoValues()
-			.assertError(XMLParseException.class)
+			.assertError(XmlParseException.class)
 			.assertNotComplete();
 	}
 
@@ -362,7 +360,7 @@ public class XmlReaderIntegrationTest {
 			.map(AbstractRekening::getClass)
 			.test()
 			.assertNoValues()
-			.assertError(IllegalArgumentException.class)
+			.assertError(XmlParseException.class)
 			.assertNotComplete();
 	}
 
@@ -372,7 +370,7 @@ public class XmlReaderIntegrationTest {
 			.map(AbstractRekening::getClass)
 			.test()
 			.assertNoValues()
-			.assertError(XMLParseException.class)
+			.assertError(XmlParseException.class)
 			.assertNotComplete();
 	}
 
@@ -393,7 +391,7 @@ public class XmlReaderIntegrationTest {
 			.map(AbstractRekening::getClass)
 			.test()
 			.assertNoValues()
-			.assertError(XMLParseException.class)
+			.assertError(XmlParseException.class)
 			.assertNotComplete();
 	}
 
@@ -403,7 +401,7 @@ public class XmlReaderIntegrationTest {
 			.map(AbstractRekening::getClass)
 			.test()
 			.assertNoValues()
-			.assertError(IllegalArgumentException.class)
+			.assertError(XmlParseException.class)
 			.assertNotComplete();
 	}
 
@@ -413,7 +411,7 @@ public class XmlReaderIntegrationTest {
 			.map(AbstractRekening::getClass)
 			.test()
 			.assertNoValues()
-			.assertError(XMLParseException.class)
+			.assertError(XmlParseException.class)
 			.assertNotComplete();
 	}
 
@@ -434,7 +432,7 @@ public class XmlReaderIntegrationTest {
 			.map(AbstractRekening::getClass)
 			.test()
 			.assertNoValues()
-			.assertError(XMLParseException.class)
+			.assertError(XmlParseException.class)
 			.assertNotComplete();
 	}
 
@@ -444,7 +442,7 @@ public class XmlReaderIntegrationTest {
 			.map(AbstractRekening::getClass)
 			.test()
 			.assertNoValues()
-			.assertError(IllegalArgumentException.class)
+			.assertError(XmlParseException.class)
 			.assertNotComplete();
 	}
 
@@ -454,7 +452,7 @@ public class XmlReaderIntegrationTest {
 			.map(AbstractRekening::getClass)
 			.test()
 			.assertNoValues()
-			.assertError(XMLParseException.class)
+			.assertError(XmlParseException.class)
 			.assertNotComplete();
 	}
 
@@ -475,7 +473,7 @@ public class XmlReaderIntegrationTest {
 			.map(AbstractRekening::getClass)
 			.test()
 			.assertNoValues()
-			.assertError(XMLParseException.class)
+			.assertError(XmlParseException.class)
 			.assertNotComplete();
 	}
 
@@ -485,7 +483,7 @@ public class XmlReaderIntegrationTest {
 			.map(AbstractRekening::getClass)
 			.test()
 			.assertNoValues()
-			.assertError(IllegalArgumentException.class)
+			.assertError(XmlParseException.class)
 			.assertNotComplete();
 	}
 
@@ -495,7 +493,7 @@ public class XmlReaderIntegrationTest {
 			.map(AbstractRekening::getClass)
 			.test()
 			.assertNoValues()
-			.assertError(XMLParseException.class)
+			.assertError(XmlParseException.class)
 			.assertNotComplete();
 	}
 
@@ -505,7 +503,7 @@ public class XmlReaderIntegrationTest {
 			.map(AbstractRekening::getClass)
 			.test()
 			.assertNoValues()
-			.assertError(IllegalArgumentException.class)
+			.assertError(XmlParseException.class)
 			.assertNotComplete();
 	}
 
@@ -537,7 +535,7 @@ public class XmlReaderIntegrationTest {
 			.map(AbstractRekening::getClass)
 			.test()
 			.assertNoValues()
-			.assertError(XMLParseException.class)
+			.assertError(XmlParseException.class)
 			.assertNotComplete();
 	}
 
@@ -569,7 +567,7 @@ public class XmlReaderIntegrationTest {
 			.map(AbstractRekening::getClass)
 			.test()
 			.assertNoValues()
-			.assertError(IllegalArgumentException.class)
+			.assertError(XmlParseException.class)
 			.assertNotComplete();
 	}
 
@@ -579,7 +577,7 @@ public class XmlReaderIntegrationTest {
 			.map(AbstractRekening::getClass)
 			.test()
 			.assertNoValues()
-			.assertError(XMLParseException.class)
+			.assertError(XmlParseException.class)
 			.assertNotComplete();
 	}
 
@@ -611,7 +609,7 @@ public class XmlReaderIntegrationTest {
 			.map(AbstractRekening::getClass)
 			.test()
 			.assertNoValues()
-			.assertError(IllegalArgumentException.class)
+			.assertError(XmlParseException.class)
 			.assertNotComplete();
 	}
 
@@ -621,7 +619,7 @@ public class XmlReaderIntegrationTest {
 			.map(AbstractRekening::getClass)
 			.test()
 			.assertNoValues()
-			.assertError(XMLParseException.class)
+			.assertError(XmlParseException.class)
 			.assertNotComplete();
 	}
 
@@ -631,7 +629,7 @@ public class XmlReaderIntegrationTest {
 			.map(AbstractRekening::getClass)
 			.test()
 			.assertNoValues()
-			.assertError(IllegalArgumentException.class)
+			.assertError(XmlParseException.class)
 			.assertNotComplete();
 	}
 
@@ -652,7 +650,7 @@ public class XmlReaderIntegrationTest {
 			.map(AbstractRekening::getClass)
 			.test()
 			.assertNoValues()
-			.assertError(IllegalArgumentException.class)
+			.assertError(XmlParseException.class)
 			.assertNotComplete();
 	}
 
@@ -662,7 +660,7 @@ public class XmlReaderIntegrationTest {
 			.map(AbstractRekening::getClass)
 			.test()
 			.assertNoValues()
-			.assertError(XMLParseException.class)
+			.assertError(XmlParseException.class)
 			.assertNotComplete();
 	}
 
@@ -694,7 +692,7 @@ public class XmlReaderIntegrationTest {
 			.map(AbstractRekening::getClass)
 			.test()
 			.assertNoValues()
-			.assertError(IllegalArgumentException.class)
+			.assertError(XmlParseException.class)
 			.assertNotComplete();
 	}
 
@@ -704,7 +702,7 @@ public class XmlReaderIntegrationTest {
 			.map(AbstractRekening::getClass)
 			.test()
 			.assertNoValues()
-			.assertError(XMLParseException.class)
+			.assertError(XmlParseException.class)
 			.assertNotComplete();
 	}
 
@@ -714,9 +712,9 @@ public class XmlReaderIntegrationTest {
 			.map(AbstractRekening::getClass)
 			.cast(Class.class)
 			.test()
-			.assertValue(MutatiesFactuur.class)
-			.assertNoErrors()
-			.assertComplete();
+			.assertNoValues()
+			.assertError(XmlParseException.class)
+			.assertNotComplete();
 	}
 
 	@Test
@@ -725,7 +723,7 @@ public class XmlReaderIntegrationTest {
 			.map(AbstractRekening::getClass)
 			.test()
 			.assertNoValues()
-			.assertError(XMLParseException.class)
+			.assertError(XmlParseException.class)
 			.assertNotComplete();
 	}
 
@@ -746,7 +744,7 @@ public class XmlReaderIntegrationTest {
 			.map(AbstractRekening::getClass)
 			.test()
 			.assertNoValues()
-			.assertError(XMLParseException.class)
+			.assertError(XmlParseException.class)
 			.assertNotComplete();
 	}
 
@@ -756,9 +754,9 @@ public class XmlReaderIntegrationTest {
 			.map(AbstractRekening::getClass)
 			.cast(Class.class)
 			.test()
-			.assertValue(Offerte.class)
-			.assertNoErrors()
-			.assertComplete();
+			.assertNoValues()
+			.assertError(XmlParseException.class)
+			.assertNotComplete();
 	}
 
 	@Test
@@ -768,7 +766,7 @@ public class XmlReaderIntegrationTest {
 			.cast(Class.class)
 			.test()
 			.assertNoValues()
-			.assertError(XMLParseException.class)
+			.assertError(XmlParseException.class)
 			.assertNotComplete();
 	}
 
@@ -789,7 +787,7 @@ public class XmlReaderIntegrationTest {
 			.map(AbstractRekening::getClass)
 			.test()
 			.assertNoValues()
-			.assertError(XMLParseException.class)
+			.assertError(XmlParseException.class)
 			.assertNotComplete();
 	}
 
@@ -799,7 +797,7 @@ public class XmlReaderIntegrationTest {
 			.map(AbstractRekening::getClass)
 			.test()
 			.assertNoValues()
-			.assertError(IllegalArgumentException.class)
+			.assertError(XmlParseException.class)
 			.assertNotComplete();
 	}
 
@@ -809,7 +807,7 @@ public class XmlReaderIntegrationTest {
 			.map(AbstractRekening::getClass)
 			.test()
 			.assertNoValues()
-			.assertError(XMLParseException.class)
+			.assertError(XmlParseException.class)
 			.assertNotComplete();
 	}
 
@@ -830,7 +828,7 @@ public class XmlReaderIntegrationTest {
 			.map(AbstractRekening::getClass)
 			.test()
 			.assertNoValues()
-			.assertError(XMLParseException.class)
+			.assertError(XmlParseException.class)
 			.assertNotComplete();
 	}
 
@@ -840,9 +838,9 @@ public class XmlReaderIntegrationTest {
 			.map(AbstractRekening::getClass)
 			.cast(Class.class)
 			.test()
-			.assertValue(ReparatiesFactuur.class)
-			.assertNoErrors()
-			.assertComplete();
+			.assertNoValues()
+			.assertError(XmlParseException.class)
+			.assertNotComplete();
 	}
 
 	@Test
@@ -851,7 +849,7 @@ public class XmlReaderIntegrationTest {
 			.map(AbstractRekening::getClass)
 			.test()
 			.assertNoValues()
-			.assertError(XMLParseException.class)
+			.assertError(XmlParseException.class)
 			.assertNotComplete();
 	}
 
