@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<bestand type="Offerte" version="4">
+    <offerte>
+        <factuurHeader>
+            <debiteur>
+                <naam>name</naam>
+                <straat>street</straat>
+                <nummer>number</nummer>
+                <postcode>zipcode</postcode>
+                <plaats>city</plaats>
+                <btwNummer>vatNumber</btwNummer>
+            </debiteur>
+            <datum>
+                <dag>30</dag>
+                <maand>7</maand>
+                <jaar>2017</jaar>
+            </datum>
+            <factuurnummer>272011</factuurnummer>
+        </factuurHeader>
+        <tekst>text</tekst>
+        <ondertekenen>true</ondertekenen>
+    </offerte>
+</bestand>

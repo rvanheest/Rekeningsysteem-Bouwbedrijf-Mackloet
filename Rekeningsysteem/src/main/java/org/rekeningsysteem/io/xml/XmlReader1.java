@@ -1,23 +1,11 @@
 package org.rekeningsysteem.io.xml;
 
-import java.io.File;
-import java.io.IOException;
-import java.time.LocalDate;
-import java.util.Collection;
-import java.util.Currency;
-
-import javax.management.modelmbean.XMLParseException;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
 import io.reactivex.rxjava3.core.Maybe;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.functions.Function;
-import org.apache.logging.log4j.core.Logger;
-import org.rekeningsysteem.data.mutaties.MutatiesInkoopOrder;
 import org.rekeningsysteem.data.mutaties.MutatiesFactuur;
+import org.rekeningsysteem.data.mutaties.MutatiesInkoopOrder;
 import org.rekeningsysteem.data.offerte.Offerte;
 import org.rekeningsysteem.data.particulier.AnderArtikel;
 import org.rekeningsysteem.data.particulier.EsselinkArtikel;
@@ -26,8 +14,8 @@ import org.rekeningsysteem.data.particulier.ParticulierArtikel;
 import org.rekeningsysteem.data.particulier.ParticulierFactuur;
 import org.rekeningsysteem.data.particulier.loon.AbstractLoon;
 import org.rekeningsysteem.data.particulier.loon.ProductLoon;
-import org.rekeningsysteem.data.reparaties.ReparatiesInkoopOrder;
 import org.rekeningsysteem.data.reparaties.ReparatiesFactuur;
+import org.rekeningsysteem.data.reparaties.ReparatiesInkoopOrder;
 import org.rekeningsysteem.data.util.AbstractRekening;
 import org.rekeningsysteem.data.util.BtwPercentage;
 import org.rekeningsysteem.data.util.BtwPercentages;
@@ -37,107 +25,43 @@ import org.rekeningsysteem.data.util.header.Debiteur;
 import org.rekeningsysteem.data.util.header.FactuurHeader;
 import org.rekeningsysteem.data.util.header.OmschrFactuurHeader;
 import org.rekeningsysteem.exception.GeldParseException;
-import org.rekeningsysteem.io.FactuurLoader;
+import org.rekeningsysteem.exception.XmlParseException;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
-/**
- * This is the XML reader from the 'old days', where we had 2 types of ParticulierFactuur,
- * no AangenomenFactuur and another model.
- * <p>
- * This XML reader needs to be in here for backwards compatability.
- */
-public class XmlReader1 implements FactuurLoader {
+import javax.xml.parsers.DocumentBuilder;
+import java.time.LocalDate;
+import java.util.Collection;
+import java.util.Currency;
+
+public class XmlReader1 extends XmlLoader {
 
 	private Currency currency;
-	private DocumentBuilder builder;
-
-	public XmlReader1(Logger logger) {
-		try {
-			this.builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-		}
-		catch (ParserConfigurationException e) {
-			// Should not happen
-			logger.fatal("DocumentBuilder could not be made. (should not happen)", e);
-		}
-	}
 
 	public XmlReader1(DocumentBuilder builder) {
-		this.builder = builder;
+		super(builder);
 	}
 
 	@Override
-	public Single<AbstractRekening> load(File file) {
-		try {
-			return this.loadRekening(this.builder.parse(file));
-		}
-		catch (SAXException | IOException exception) {
-			return Single.error(exception);
-		}
-	}
-
-	private Single<AbstractRekening> loadRekening(Document document) throws SAXException, IOException {
-		document.getDocumentElement().normalize();
-		Node factuur = document.getElementsByTagName("bestand").item(0).getFirstChild();
-		String soort = factuur.getNodeName();
+	public Single<AbstractRekening> read(Document document) {
+		Node factuur = document.getElementsByTagName("bestand").item(0);
+		String soort = factuur.getFirstChild().getNodeName();
 		switch (soort) {
 			case "particulierfactuur1":
 			case "partfactuur":
-				return this.parseRekening(factuur, this::makeParticulierFactuur1);
+				return parseRekening(factuur, this::makeParticulierFactuur1, soort);
 			case "particulierfactuur2":
-				return this.parseRekening(factuur, this::makeParticulierFactuur2);
+				return parseRekening(factuur, this::makeParticulierFactuur2, soort);
 			case "reparatiesfactuur":
-				return this.parseRekening(factuur, this::makeReparatiesFactuur);
+				return parseRekening(factuur, this::makeReparatiesFactuur, soort);
 			case "mutatiesfactuur":
-				return this.parseRekening(factuur, this::makeMutatiesFactuur);
+				return parseRekening(factuur, this::makeMutatiesFactuur, soort);
 			case "offerte":
-				return this.parseRekening(factuur, XmlReader1::makeOfferte);
+				return parseRekening(factuur, XmlReader1::makeOfferte, soort);
 			default:
-				return Single.error(new XMLParseException("Geen geschikte Node gevonden. Nodenaam = " + soort + "."));
+				return Single.error(new XmlParseException(String.format("Geen geschikte Node gevonden. Nodenaam = %s.", soort)));
 		}
-	}
-
-	private Single<AbstractRekening> parseRekening(Node bestand, Function<Node, Maybe<? extends AbstractRekening>> parse) {
-		try {
-			return parse.apply(bestand)
-				.cast(AbstractRekening.class)
-				.switchIfEmpty(Single.defer(() -> Single.error(new XMLParseException("Could not parse file to object."))));
-		}
-		catch (Throwable e) {
-			return Single.error(e);
-		}
-	}
-
-	private static NodeList getNodeList(Node node, String name) {
-		return ((Element) node).getElementsByTagName(name);
-	}
-
-	private static Node getElement(Node node, String name) {
-		return getNodeList(node, name).item(0);
-	}
-
-	private static Maybe<String> getNodeValue(Node node, String name) {
-		if (node == null) {
-			return Maybe.error(new IllegalArgumentException("node is null"));
-		}
-		return getNodeValue(getNodeList(node, name));
-	}
-
-	private static Maybe<String> getNodeValue(NodeList list) {
-		Node n = list.item(0);
-		if (n == null) {
-			return Maybe.empty();
-		}
-
-		n = n.getChildNodes().item(0);
-
-		if (n == null) {
-			return Maybe.just("");
-		}
-		return Maybe.just(n.getNodeValue());
 	}
 
 	private Single<Geld> makeGeld(String s) {
@@ -212,7 +136,7 @@ public class XmlReader1 implements FactuurLoader {
 
 	private Maybe<Function<BtwPercentage, AnderArtikel>> makeAnderArtikel(Node node) {
 		Maybe<String> omschrijving = getNodeValue(getElement(node, "artikel"), "omschrijving");
-		Maybe<Geld> prijs = getNodeValue(getNodeList(node, "prijs")).flatMapSingle(this::makeGeld);
+		Maybe<Geld> prijs = getNodeValue(node, "prijs").flatMapSingle(this::makeGeld);
 
 		return Maybe.zip(omschrijving, prijs, (omschr, pr) -> btw -> new AnderArtikel(omschr, pr, btw));
 	}
@@ -260,7 +184,7 @@ public class XmlReader1 implements FactuurLoader {
 		return Maybe.zip(btwLoon, btwArt, BtwPercentages::new);
 	}
 
-	public Maybe<ParticulierFactuur> makeParticulierFactuur1(Node node) {
+	private Maybe<ParticulierFactuur> makeParticulierFactuur1(Node node) {
 		NodeList gal = getElement(getElement(node, "artikellijst"), "gebruiktartikellijst").getChildNodes();
 
 		Maybe<OmschrFactuurHeader> header = makeFactuurHeader(node);

@@ -1,25 +1,12 @@
 package org.rekeningsysteem.io.xml;
 
-import java.io.File;
-import java.io.IOException;
-import java.time.LocalDate;
-import java.util.Collection;
-import java.util.Currency;
-
-import javax.management.modelmbean.XMLParseException;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
 import io.reactivex.rxjava3.core.Maybe;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.functions.BiFunction;
 import io.reactivex.rxjava3.functions.Function;
-import io.reactivex.rxjava3.functions.Supplier;
-import org.apache.logging.log4j.core.Logger;
-import org.rekeningsysteem.data.mutaties.MutatiesInkoopOrder;
 import org.rekeningsysteem.data.mutaties.MutatiesFactuur;
+import org.rekeningsysteem.data.mutaties.MutatiesInkoopOrder;
 import org.rekeningsysteem.data.offerte.Offerte;
 import org.rekeningsysteem.data.particulier.AnderArtikel;
 import org.rekeningsysteem.data.particulier.EsselinkArtikel;
@@ -29,8 +16,8 @@ import org.rekeningsysteem.data.particulier.ParticulierFactuur;
 import org.rekeningsysteem.data.particulier.loon.AbstractLoon;
 import org.rekeningsysteem.data.particulier.loon.InstantLoon;
 import org.rekeningsysteem.data.particulier.loon.ProductLoon;
-import org.rekeningsysteem.data.reparaties.ReparatiesInkoopOrder;
 import org.rekeningsysteem.data.reparaties.ReparatiesFactuur;
+import org.rekeningsysteem.data.reparaties.ReparatiesInkoopOrder;
 import org.rekeningsysteem.data.util.AbstractRekening;
 import org.rekeningsysteem.data.util.BtwPercentage;
 import org.rekeningsysteem.data.util.BtwPercentages;
@@ -39,123 +26,42 @@ import org.rekeningsysteem.data.util.ItemList;
 import org.rekeningsysteem.data.util.header.Debiteur;
 import org.rekeningsysteem.data.util.header.FactuurHeader;
 import org.rekeningsysteem.data.util.header.OmschrFactuurHeader;
-import org.rekeningsysteem.io.FactuurLoader;
+import org.rekeningsysteem.exception.XmlParseException;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
-/**
- * This is the XML reader from the times where an AbstractFactuur had a BtwPercentage.
- * <p>
- * This XML reader needs to be in here for backwards compatibility.
- */
-public class XmlReader2 implements FactuurLoader {
+import javax.xml.parsers.DocumentBuilder;
+import java.time.LocalDate;
+import java.util.Collection;
+import java.util.Currency;
+import java.util.Optional;
 
-	private DocumentBuilder builder;
-
-	public XmlReader2(Logger logger) {
-		try {
-			this.builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-		}
-		catch (ParserConfigurationException e) {
-			// Should not happen
-			logger.fatal("DocumentBuilder could not be made. (should not happen)", e);
-		}
-	}
+public class XmlReader2 extends XmlLoader {
 
 	public XmlReader2(DocumentBuilder builder) {
-		this.builder = builder;
+		super(builder);
 	}
 
 	@Override
-	public Single<AbstractRekening> load(File file) {
-		try {
-			return this.loadRekening(this.builder.parse(file));
-		}
-		catch (SAXException | IOException exception) {
-			return Single.error(exception);
-		}
-	}
-
-	private Single<AbstractRekening> loadRekening(Document document) throws SAXException, IOException {
-		document.getDocumentElement().normalize();
+	public Single<AbstractRekening> read(Document document) {
 		Node bestand = document.getElementsByTagName("bestand").item(0);
-		Node typeNode = bestand.getAttributes().getNamedItem("type");
-		if (typeNode == null) {
-			return Single.error(new XMLParseException("No factuur type is specified"));
-		}
-		else {
-			String type = typeNode.getNodeValue();
+		return Optional.ofNullable(bestand.getAttributes().getNamedItem("type")).map(kindNode -> {
+			String type = kindNode.getNodeValue();
 			switch (type) {
 				case "AangenomenFactuur":
 					return parseRekening(bestand, XmlReader2::makeAangenomenFactuur, "rekening");
 				case "MutatiesFactuur":
-					return parseRekening(bestand, XmlReader2::makeMutatiesFactuur, "rekening", "mutaties-factuur");
+					return parseRekening(bestand, XmlReader2::makeMutatiesFactuur, "rekening");
 				case "Offerte":
-					return parseRekening(bestand, XmlReader2::makeOfferte, "rekening", "offerte");
+					return parseRekening(bestand, XmlReader2::makeOfferte, "rekening");
 				case "ParticulierFactuur":
-					return parseRekening(bestand, XmlReader2::makeParticulierFactuur, "rekening", "particulier-factuur");
+					return parseRekening(bestand, XmlReader2::makeParticulierFactuur, "rekening");
 				case "ReparatiesFactuur":
-					return parseRekening(bestand, XmlReader2::makeReparatiesFactuur, "rekening", "reparaties-factuur");
+					return parseRekening(bestand, XmlReader2::makeReparatiesFactuur, "rekening");
 				default:
-					return Single.error(new XMLParseException("Geen geschikte Node gevonden. Nodenaam = " + type + "."));
+					return Single.<AbstractRekening> error(new XmlParseException(String.format("Geen geschikte Node gevonden. Nodenaam = %s.", type)));
 			}
-		}
-	}
-
-	private static Single<AbstractRekening> parseRekening(Node bestand, Function<Node, Maybe<? extends AbstractRekening>> parse, String... names) {
-		return Observable.fromArray(names)
-			.map(((Element) bestand)::getElementsByTagName)
-			.filter(list -> list.getLength() != 0)
-			.map(list -> list.item(0))
-			.flatMapMaybe(parse)
-			.firstElement()
-			.switchIfEmpty(Single.defer(() -> Single.error(new XMLParseException("Could not parse file to object."))))
-			.cast(AbstractRekening.class);
-	}
-
-	private static NodeList getNodeList(Node node, String name) {
-		return ((Element) node).getElementsByTagName(name);
-	}
-
-	private static Node getElement(Node node, String name) {
-		return getNodeList(node, name).item(0);
-	}
-
-	private static Maybe<String> getNodeValue(Node node, String name) {
-		if (node == null) {
-			return Maybe.error(new IllegalArgumentException("node is null"));
-		}
-		return getNodeValue(getNodeList(node, name));
-	}
-
-	private static Maybe<String> getNodeValue(NodeList list) {
-		Node n = list.item(0);
-		if (n == null) {
-			return Maybe.empty();
-		}
-
-		n = n.getChildNodes().item(0);
-
-		if (n == null) {
-			return Maybe.just("");
-		}
-		return Maybe.just(n.getNodeValue());
-	}
-
-	private static Observable<Node> nodeListOrError(Supplier<NodeList> listSupplier) {
-		return Observable.<NodeList> create(emitter -> {
-			NodeList list = listSupplier.get();
-			if (list == null) {
-				emitter.onError(new IllegalArgumentException("No itemList found."));
-			}
-			else {
-				emitter.onNext(list);
-				emitter.onComplete();
-			}
-		}).flatMap(list -> Observable.range(0, list.getLength()).map(list::item));
+		}).orElseGet(() -> Single.error(new XmlParseException("Geen factuur type gespecificeerd")));
 	}
 
 	private static Maybe<Debiteur> makeDebiteur(Node node) {
@@ -244,7 +150,7 @@ public class XmlReader2 implements FactuurLoader {
 	}
 
 	private static BiFunction<BtwPercentage, BtwPercentage, Single<ItemList<ParticulierArtikel>>> makeAangenomenList(Node node) {
-		return (btwL, btwM) -> nodeListOrError(() -> getNodeList(node, "list-item"))
+		return (btwL, btwM) -> iterate(getNodeList(node, "list-item"))
 			.flatMapMaybe(XmlReader2::makeAangenomenListItem)
 			.flatMap(f -> f.apply(btwL, btwM))
 			.collect(ItemList::new, Collection::add);
@@ -269,7 +175,7 @@ public class XmlReader2 implements FactuurLoader {
 	}
 
 	private static Single<ItemList<MutatiesInkoopOrder>> makeMutatiesList(Node node) {
-		return nodeListOrError(() -> getNodeList(node, "list-item"))
+		return iterate(getNodeList(node, "list-item"))
 			.flatMapMaybe(XmlReader2::makeMutatiesInkoopOrder)
 			.collect(ItemList::new, Collection::add);
 	}
@@ -315,7 +221,7 @@ public class XmlReader2 implements FactuurLoader {
 	}
 
 	private static Function<BtwPercentage, Single<ItemList<ParticulierArtikel>>> makeParticulierList(Node node) {
-		return btw -> nodeListOrError(node::getChildNodes)
+		return btw -> iterate(node.getChildNodes())
 			.filter(item -> !"#text".equals(item.getNodeName()))
 			.flatMapMaybe(item -> {
 				switch (item.getNodeName()) {
@@ -347,7 +253,7 @@ public class XmlReader2 implements FactuurLoader {
 	}
 
 	private static Function<BtwPercentage, Single<ItemList<AbstractLoon>>> makeLoonList(Node node) {
-		return btw -> nodeListOrError(node::getChildNodes)
+		return btw -> iterate(node.getChildNodes())
 			.filter(n -> !"#text".equals(n.getNodeName()))
 			.flatMapMaybe(item -> {
 				switch (item.getNodeName()) {
@@ -369,11 +275,11 @@ public class XmlReader2 implements FactuurLoader {
 		Function<BtwPercentage, Single<ItemList<ParticulierArtikel>>> listFunc = makeParticulierList(getElement(node, "itemList"));
 		Function<BtwPercentage, Single<ItemList<AbstractLoon>>> loonFunc = makeLoonList(getElement(node, "loonList"));
 		Maybe<BtwPercentages> btw = makeBtwPercentage(getElement(node, "btwPercentage"));
-		
+
 		return btw.flatMap(percentage -> {
 			Single<ItemList<ParticulierArtikel>> arts = listFunc.apply(percentage.getMateriaalPercentage());
 			Single<ItemList<AbstractLoon>> loon = loonFunc.apply(percentage.getLoonPercentage());
-			
+
 			return Maybe.zip(header, currency, arts.toMaybe(), loon.toMaybe(), (h, c, li, lo) -> {
 				li.addAll(lo);
 				return new ParticulierFactuur(h, c, li);
@@ -391,7 +297,7 @@ public class XmlReader2 implements FactuurLoader {
 	}
 
 	private static Single<ItemList<ReparatiesInkoopOrder>> makeReparatiesList(Node node) {
-		return nodeListOrError(() -> getNodeList(node, "list-item"))
+		return iterate(getNodeList(node, "list-item"))
 			.flatMapMaybe(XmlReader2::makeReparatiesInkoopOrder)
 			.collect(ItemList::new, Collection::add);
 	}

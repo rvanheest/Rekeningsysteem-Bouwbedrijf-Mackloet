@@ -32,12 +32,11 @@ import org.rekeningsysteem.io.xml.XmlReader1;
 public class XmlReader1Test {
 
 	private XmlReader1 reader;
-	private DocumentBuilder builder;
 
 	@Before
 	public void setUp() throws ParserConfigurationException {
-		this.builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-		this.reader = new XmlReader1(this.builder);
+		DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+		this.reader = new XmlReader1(builder);
 	}
 
 	@Test

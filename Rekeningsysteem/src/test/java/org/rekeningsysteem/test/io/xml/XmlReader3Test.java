@@ -33,12 +33,11 @@ import org.rekeningsysteem.io.xml.XmlReader3;
 public class XmlReader3Test {
 
 	private XmlReader3 reader;
-	private DocumentBuilder builder;
 
 	@Before
 	public void setUp() throws ParserConfigurationException {
-		this.builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-		this.reader = new XmlReader3(this.builder);
+		DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+		this.reader = new XmlReader3(builder);
 	}
 
 	@Test
@@ -47,8 +46,7 @@ public class XmlReader3Test {
 
 		OmschrFactuurHeader factuurHeader = new OmschrFactuurHeader(new Debiteur(
 				"Name", "Street", "Number", "Zipcode", "Place"),
-				LocalDate.of(2011, 4, 2), "22011", "Voor u verrichte werkzaamheden betreffende "
-						+ "renovatie badkamervloer i.v.m. lekkage");
+				LocalDate.of(2011, 4, 2), "22011", "Voor u verrichte werkzaamheden betreffende renovatie badkamervloer i.v.m. lekkage");
 
 		ItemList<ParticulierArtikel> itemList = new ItemList<>();
 		itemList.add(new GebruiktEsselinkArtikel(new EsselinkArtikel("2018021117",
@@ -85,17 +83,18 @@ public class XmlReader3Test {
 	public void testLoadMutatiesFactuur() {
 		File file = new File("src\\test\\resources\\xml\\xml3\\mutatiesFactuurXMLTest.xml");
 
-		FactuurHeader factuurHeader = new FactuurHeader(new Debiteur("Name",
-				"Street", "Number", "ZipCode", "Place", "btw"),
-				LocalDate.of(2011, 5, 9), "272011");
+		FactuurHeader factuurHeader = new FactuurHeader(
+			new Debiteur("Name", "Street", "Number", "ZipCode", "Place", "btw"),
+			LocalDate.of(2011, 5, 9),
+			"272011"
+		);
 
 		ItemList<MutatiesInkoopOrder> itemList = new ItemList<>();
 		itemList.add(new MutatiesInkoopOrder("Ordernummer", "111390", new Geld(4971.96)));
 		itemList.add(new MutatiesInkoopOrder("Ordernummer", "111477", new Geld(4820.96)));
 		itemList.add(new MutatiesInkoopOrder("Ordernummer", "112308", new Geld(5510.74)));
 
-		MutatiesFactuur expected = new MutatiesFactuur(factuurHeader,
-				Currency.getInstance("EUR"), itemList);
+		MutatiesFactuur expected = new MutatiesFactuur(factuurHeader, Currency.getInstance("EUR"), itemList);
 
 		this.reader.load(file)
 			.test()
