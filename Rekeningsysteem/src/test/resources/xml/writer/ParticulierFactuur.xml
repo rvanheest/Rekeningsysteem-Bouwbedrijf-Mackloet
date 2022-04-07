@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<bestand type="ParticulierFactuur" version="4">
+    <particulier-factuur>
+        <factuurHeader>
+            <debiteur>
+                <naam>name</naam>
+                <straat>street</straat>
+                <nummer>number</nummer>
+                <postcode>zipcode</postcode>
+                <plaats>city</plaats>
+                <btwNummer>vatNumber</btwNummer>
+            </debiteur>
+            <datum>
+                <dag>30</dag>
+                <maand>7</maand>
+                <jaar>2017</jaar>
+            </datum>
+            <factuurnummer>272011</factuurnummer>
+            <omschrijving>Voor u verrichte werkzaamheden betreffende renovatie badkamervloer i.v.m. lekkage</omschrijving>
+        </factuurHeader>
+        <currency>EUR</currency>
+        <list>
+            <gebruikt-esselink-artikel>
+                <omschrijving>Product 1</omschrijving>
+                <artikel>
+                    <artikelNummer>2018021117</artikelNummer>
+                    <omschrijving>Product 1</omschrijving>
+                    <prijsPer>1</prijsPer>
+                    <eenheid>Zak</eenheid>
+                    <verkoopPrijs>5,16</verkoopPrijs>
+                </artikel>
+                <aantal>8.0</aantal>
+                <materiaalBtwPercentage verlegd="false">21.0</materiaalBtwPercentage>
+            </gebruikt-esselink-artikel>
+            <gebruikt-esselink-artikel>
+                <omschrijving>Product 2</omschrijving>
+                <artikel>
+                    <artikelNummer>2003131360</artikelNummer>
+                    <omschrijving>Product 2</omschrijving>
+                    <prijsPer>1</prijsPer>
+                    <eenheid>zak</eenheid>
+                    <verkoopPrijs>129,53</verkoopPrijs>
+                </artikel>
+                <aantal>1.0</aantal>
+                <materiaalBtwPercentage verlegd="false">21.0</materiaalBtwPercentage>
+            </gebruikt-esselink-artikel>
+            <gebruikt-esselink-artikel>
+                <omschrijving>Product 3</omschrijving>
+                <artikel>
+                    <artikelNummer>2003131060</artikelNummer>
+                    <omschrijving>Product 3</omschrijving>
+                    <prijsPer>1</prijsPer>
+                    <eenheid>set</eenheid>
+                    <verkoopPrijs>35,96</verkoopPrijs>
+                </artikel>
+                <aantal>1.0</aantal>
+                <materiaalBtwPercentage verlegd="false">21.0</materiaalBtwPercentage>
+            </gebruikt-esselink-artikel>
+            <gebruikt-esselink-artikel>
+                <omschrijving>Product 4</omschrijving>
+                <artikel>
+                    <artikelNummer>2003131306</artikelNummer>
+                    <omschrijving>Product 4</omschrijving>
+                    <prijsPer>1</prijsPer>
+                    <eenheid>zak</eenheid>
+                    <verkoopPrijs>9,47</verkoopPrijs>
+                </artikel>
+                <aantal>1.0</aantal>
+                <materiaalBtwPercentage verlegd="false">21.0</materiaalBtwPercentage>
+            </gebruikt-esselink-artikel>
+            <gebruikt-esselink-artikel>
+                <omschrijving>Product 5</omschrijving>
+                <artikel>
+                    <artikelNummer>4010272112</artikelNummer>
+                    <omschrijving>Product 5</omschrijving>
+                    <prijsPer>1</prijsPer>
+                    <eenheid>Stuks</eenheid>
+                    <verkoopPrijs>17,18</verkoopPrijs>
+                </artikel>
+                <aantal>1.0</aantal>
+                <materiaalBtwPercentage verlegd="false">21.0</materiaalBtwPercentage>
+            </gebruikt-esselink-artikel>
+            <gebruikt-esselink-artikel>
+                <omschrijving>Product 6</omschrijving>
+                <artikel>
+                    <artikelNummer>2009200131</artikelNummer>
+                    <omschrijving>Product 6</omschrijving>
+                    <prijsPer>1</prijsPer>
+                    <eenheid>Stuks</eenheid>
+                    <verkoopPrijs>6,84</verkoopPrijs>
+                </artikel>
+                <aantal>1.0</aantal>
+                <materiaalBtwPercentage verlegd="false">21.0</materiaalBtwPercentage>
+            </gebruikt-esselink-artikel>
+            <gebruikt-esselink-artikel>
+                <omschrijving>Product 7</omschrijving>
+                <artikel>
+                    <artikelNummer>2009200105</artikelNummer>
+                    <omschrijving>Product 7</omschrijving>
+                    <prijsPer>1</prijsPer>
+                    <eenheid>Stuks</eenheid>
+                    <verkoopPrijs>7,44</verkoopPrijs>
+                </artikel>
+                <aantal>1.0</aantal>
+                <materiaalBtwPercentage verlegd="false">21.0</materiaalBtwPercentage>
+            </gebruikt-esselink-artikel>
+            <ander-artikel>
+                <omschrijving>Stucloper + trapfolie</omschrijving>
+                <prijs>15,00</prijs>
+                <materiaalBtwPercentage verlegd="false">21.0</materiaalBtwPercentage>
+            </ander-artikel>
+            <ander-artikel>
+                <omschrijving>Kitwerk</omschrijving>
+                <prijs>149,50</prijs>
+                <materiaalBtwPercentage verlegd="false">21.0</materiaalBtwPercentage>
+            </ander-artikel>
+            <product-loon>
+                <omschrijving>Uurloon à 38.50</omschrijving>
+                <uren>25.0</uren>
+                <uurloon>38,50</uurloon>
+                <loonBtwPercentage verlegd="false">6.0</loonBtwPercentage>
+            </product-loon>
+            <product-loon>
+                <omschrijving>test123</omschrijving>
+                <uren>12.0</uren>
+                <uurloon>12,50</uurloon>
+                <loonBtwPercentage verlegd="false">6.0</loonBtwPercentage>
+            </product-loon>
+            <instant-loon>
+                <omschrijving>foobar</omschrijving>
+                <loon>40,00</loon>
+                <loonBtwPercentage verlegd="false">6.0</loonBtwPercentage>
+            </instant-loon>
+        </list>
+    </particulier-factuur>
+</bestand>
