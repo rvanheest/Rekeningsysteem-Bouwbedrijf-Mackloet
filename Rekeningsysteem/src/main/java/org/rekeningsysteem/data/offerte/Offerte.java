@@ -5,7 +5,6 @@ import java.util.Objects;
 import org.rekeningsysteem.data.util.AbstractRekening;
 import org.rekeningsysteem.data.util.header.FactuurHeader;
 import org.rekeningsysteem.data.util.visitor.RekeningVisitor;
-import org.rekeningsysteem.data.util.visitor.RekeningVoidVisitor;
 
 public class Offerte extends AbstractRekening {
 
@@ -32,16 +31,10 @@ public class Offerte extends AbstractRekening {
 	}
 
 	@Override
-	public void accept(RekeningVoidVisitor visitor) throws Exception {
-		visitor.visit(this);
-	}
-
-	@Override
 	public boolean equals(Object other) {
-		if (super.equals(other) && other instanceof Offerte) {
-			Offerte that = (Offerte) other;
+		if (super.equals(other) && other instanceof Offerte that) {
 			return Objects.equals(this.tekst, that.tekst)
-					&& Objects.equals(this.ondertekenen, that.ondertekenen);
+				&& Objects.equals(this.ondertekenen, that.ondertekenen);
 		}
 		return false;
 	}
@@ -54,7 +47,7 @@ public class Offerte extends AbstractRekening {
 	@Override
 	public String toString() {
 		return "<Offerte[" + String.valueOf(this.getFactuurHeader()) + ", "
-				+ String.valueOf(this.tekst) + ", "
-				+ String.valueOf(this.ondertekenen) + "]>";
+			+ String.valueOf(this.tekst) + ", "
+			+ String.valueOf(this.ondertekenen) + "]>";
 	}
 }

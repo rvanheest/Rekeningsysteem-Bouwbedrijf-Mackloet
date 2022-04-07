@@ -74,11 +74,11 @@ public class PdfConverter extends JLRConverter {
 	}
 
 	public Object prepare(Object value) {
-		if (value instanceof String) {
-			return this.prepareString((String) value);
+		if (value instanceof String s) {
+			return this.prepareString(s);
 		}
-		else if (value instanceof List) {
-			return this.prepareList((List<?>) value);
+		else if (value instanceof List<?> v) {
+			return this.prepareList(v);
 		}
 		return value;
 	}
@@ -86,8 +86,7 @@ public class PdfConverter extends JLRConverter {
 	private String prepareString(String value) {
 		String specials = "\\{}_^#&$%~";
 		return value.chars().parallel()
-				.mapToObj(c -> (char) c)
-				.map(c -> c.toString())
+				.mapToObj(Character::toString)
 				.map(s -> specials.contains(s) ? "\\" + s : s)
 				.map(s -> this.replaceMap.entrySet().stream()
 						.filter(entry -> s.equals(entry.getKey()))
@@ -98,7 +97,7 @@ public class PdfConverter extends JLRConverter {
 				.collect(Collectors.joining());
 	}
 
-	private List<Object> prepareList(List<?> list) {
+	private <T> List<Object> prepareList(List<T> list) {
 		return list.stream().map(this::prepare).collect(Collectors.toList());
 	}
 }

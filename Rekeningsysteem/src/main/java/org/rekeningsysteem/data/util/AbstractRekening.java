@@ -4,10 +4,9 @@ import java.util.Objects;
 
 import org.rekeningsysteem.data.util.header.FactuurHeader;
 import org.rekeningsysteem.data.util.visitor.RekeningVisitable;
-import org.rekeningsysteem.data.util.visitor.RekeningVoidVisitable;
 import org.rekeningsysteem.logic.factuurnummer.FactuurnummerManager;
 
-public abstract class AbstractRekening implements RekeningVisitable, RekeningVoidVisitable {
+public abstract class AbstractRekening implements RekeningVisitable {
 
 	private final FactuurHeader header;
 
@@ -20,14 +19,14 @@ public abstract class AbstractRekening implements RekeningVisitable, RekeningVoi
 	}
 
 	public void initFactuurnummer(FactuurnummerManager manager) {
-		this.header.setFactuurnummer(this.header.getFactuurnummer()
-				.orElseGet(() -> manager.getFactuurnummer()));
+		this.header
+			.setFactuurnummer(this.header.getFactuurnummer()
+			.orElseGet(manager::getFactuurnummer));
 	}
 
 	@Override
 	public boolean equals(Object other) {
-		if (other instanceof AbstractRekening) {
-			AbstractRekening that = (AbstractRekening) other;
+		if (other instanceof AbstractRekening that) {
 			return Objects.equals(this.header, that.header);
 		}
 		return false;

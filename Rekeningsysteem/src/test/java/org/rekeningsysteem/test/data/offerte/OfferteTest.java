@@ -1,7 +1,7 @@
 package org.rekeningsysteem.test.data.offerte;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
@@ -15,7 +15,6 @@ import org.rekeningsysteem.data.offerte.Offerte;
 import org.rekeningsysteem.data.util.AbstractRekening;
 import org.rekeningsysteem.data.util.header.FactuurHeader;
 import org.rekeningsysteem.data.util.visitor.RekeningVisitor;
-import org.rekeningsysteem.data.util.visitor.RekeningVoidVisitor;
 import org.rekeningsysteem.test.data.util.AbstractRekeningTest;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -24,7 +23,6 @@ public final class OfferteTest extends AbstractRekeningTest {
 	private Offerte offerte;
 	private final String tekst = "Lorem ipsum dolor sit amet.";
 	@Mock private RekeningVisitor<Object> visitor;
-	@Mock private RekeningVoidVisitor voidVisitor;
 
 	@Override
 	protected Offerte makeInstance() {
@@ -71,22 +69,15 @@ public final class OfferteTest extends AbstractRekeningTest {
 	}
 
 	@Test
-	public void testAcceptVoid() throws Exception {
-		this.offerte.accept(this.voidVisitor);
-
-		verify(this.voidVisitor).visit(eq(this.offerte));
-	}
-
-	@Test
 	public void testEqualsFalseOtherTekst() {
 		Offerte off = new Offerte(this.offerte.getFactuurHeader(), this.tekst + ".", true);
-		assertFalse(this.offerte.equals(off));
+		assertNotEquals(this.offerte, off);
 	}
 
 	@Test
 	public void testEqualsFalseOtherOndertekenen() {
 		Offerte off = new Offerte(this.offerte.getFactuurHeader(), this.tekst, false);
-		assertFalse(this.offerte.equals(off));
+		assertNotEquals(this.offerte, off);
 	}
 
 	@Test

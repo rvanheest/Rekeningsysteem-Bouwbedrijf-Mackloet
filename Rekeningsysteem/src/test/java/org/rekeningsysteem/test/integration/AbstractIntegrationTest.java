@@ -1,24 +1,12 @@
 package org.rekeningsysteem.test.integration;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
-
-import java.io.File;
-
-import org.apache.logging.log4j.core.Logger;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatchers;
-import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.rekeningsysteem.data.util.AbstractRekening;
 import org.rekeningsysteem.data.util.visitor.RekeningVisitor;
-import org.rekeningsysteem.data.util.visitor.RekeningVoidVisitor;
 import org.rekeningsysteem.exception.PdfException;
 import org.rekeningsysteem.exception.XmlWriteException;
 import org.rekeningsysteem.io.FactuurExporter;
@@ -32,6 +20,10 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerFactory;
+import java.io.File;
+
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
 
 @RunWith(MockitoJUnitRunner.class)
 public abstract class AbstractIntegrationTest {
@@ -42,7 +34,6 @@ public abstract class AbstractIntegrationTest {
 	private FactuurSaver saver;
 	private File pdfFile;
 	private File xmlFile;
-	@Mock private Logger logger;
 
 	protected abstract AbstractRekening makeRekening();
 
@@ -55,7 +46,7 @@ public abstract class AbstractIntegrationTest {
 		DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 		TransformerFactory transformerFactory = TransformerFactory.newInstance();
 		this.rekening = this.makeRekening();
-		this.exporter = new PdfExporter(false, this.logger);
+		this.exporter = new PdfExporter(false);
 		this.loader = new XmlReader4(documentBuilder);
 		this.saver = new XmlWriter(documentBuilder, transformerFactory);
 		this.pdfFile = this.pdfFile();
@@ -63,30 +54,15 @@ public abstract class AbstractIntegrationTest {
 	}
 
 	@Test
-	public void testPdf() {
+	public void testPdf() throws PdfException {
 		this.exporter.export(this.rekening, this.pdfFile);
-
-		verifyNoInteractions(this.logger);
 	}
 
 	// PdfException expected due to double spaces in filename
 	@Test(expected = PdfException.class)
-	public void testPdfWithDoubleSpacesInFileName() {
+	public void testPdfWithDoubleSpacesInFileName() throws PdfException {
 		File file = new File("src\\test\\resources\\pdf\\File  with double spaces.pdf");
 		this.exporter.export(this.rekening, file);
-
-		verifyNoInteractions(this.logger);
-	}
-
-	@Test
-	public void testExportWithError() throws Exception {
-		AbstractRekening rekening = mock(AbstractRekening.class);
-		File file = mock(File.class);
-		doThrow(new Exception("")).when(rekening).accept((RekeningVoidVisitor) any());
-
-		this.exporter.export(rekening, file);
-
-		verify(this.logger).error(anyString(), any(Exception.class));
 	}
 
 	@Test

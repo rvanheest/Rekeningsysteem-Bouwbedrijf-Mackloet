@@ -1,41 +1,40 @@
 package org.rekeningsysteem.io.pdf;
 
-import java.io.File;
-
-import org.apache.logging.log4j.core.Logger;
+import org.rekeningsysteem.data.mutaties.MutatiesFactuur;
+import org.rekeningsysteem.data.offerte.Offerte;
+import org.rekeningsysteem.data.particulier.ParticulierFactuur;
+import org.rekeningsysteem.data.reparaties.ReparatiesFactuur;
 import org.rekeningsysteem.data.util.AbstractRekening;
 import org.rekeningsysteem.exception.PdfException;
 import org.rekeningsysteem.io.FactuurExporter;
 
+import java.io.File;
+
 public class PdfExporter implements FactuurExporter {
 
-	private PdfExporterVisitor visitor;
-	private Logger logger;
-	
-	public PdfExporter(Logger logger) {
-		this(new PdfExporterVisitor(new PdfListItemVisitor()), logger);
-	}
-	
-	public PdfExporter(boolean autoOpen, Logger logger) {
-		this(new PdfExporterVisitor(autoOpen, new PdfListItemVisitor()), logger);
+	private final PdfExporterVisitor visitor;
+
+	public PdfExporter() {
+		this(new PdfExporterVisitor(new PdfListItemVisitor()));
 	}
 
-	public PdfExporter(PdfExporterVisitor visitor, Logger logger) {
+	public PdfExporter(boolean autoOpen) {
+		this(new PdfExporterVisitor(autoOpen, new PdfListItemVisitor()));
+	}
+
+	public PdfExporter(PdfExporterVisitor visitor) {
 		this.visitor = visitor;
-		this.logger = logger;
 	}
 
 	@Override
-	public void export(AbstractRekening rekening, File saveLocation) {
-		try {
-			this.visitor.setSaveLocation(saveLocation);
-			rekening.accept(this.visitor);
-		}
-		catch (PdfException exception) {
-			throw exception;
-		}
-		catch (Exception exception) {
-			this.logger.error(exception.getMessage(), exception);
+	public void export(AbstractRekening rekening, File saveLocation) throws PdfException {
+		this.visitor.setSaveLocation(saveLocation);
+		switch (rekening) {
+			case MutatiesFactuur factuur -> this.visitor.visit(factuur);
+			case Offerte offerte -> this.visitor.visit(offerte);
+			case ParticulierFactuur factuur -> this.visitor.visit(factuur);
+			case ReparatiesFactuur factuur -> this.visitor.visit(factuur);
+			default -> throw new IllegalStateException("Unexpected value: " + rekening);
 		}
 	}
 }

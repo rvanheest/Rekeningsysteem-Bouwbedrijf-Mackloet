@@ -1,60 +1,95 @@
 package org.rekeningsysteem.test.io.pdf;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
-
-import java.io.File;
-
-import org.apache.logging.log4j.core.Logger;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.rekeningsysteem.data.mutaties.MutatiesFactuur;
+import org.rekeningsysteem.data.offerte.Offerte;
+import org.rekeningsysteem.data.particulier.ParticulierFactuur;
+import org.rekeningsysteem.data.reparaties.ReparatiesFactuur;
 import org.rekeningsysteem.data.util.AbstractRekening;
+import org.rekeningsysteem.exception.PdfException;
 import org.rekeningsysteem.io.pdf.PdfExporter;
 import org.rekeningsysteem.io.pdf.PdfExporterVisitor;
+
+import java.io.File;
+
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
 public class PdfExporterTest {
 
 	private PdfExporter exporter;
 	@Mock private PdfExporterVisitor visitor;
-	@Mock private Logger logger;
 
 	@Before
 	public void setUp() {
-		this.exporter = new PdfExporter(this.visitor, this.logger);
+		this.exporter = new PdfExporter(this.visitor);
 	}
 
 	@Test
-	public void testExport() throws Exception {
-		AbstractRekening mockedRekening = mock(AbstractRekening.class);
+	public void testMutatiesFactuurExport() throws Exception {
+		MutatiesFactuur mockedRekening = mock(MutatiesFactuur.class);
 		File mockedFile = mock(File.class);
 
 		this.exporter.export(mockedRekening, mockedFile);
 
 		verify(this.visitor).setSaveLocation(eq(mockedFile));
-		verify(mockedRekening).accept(eq(this.visitor));
-		verifyNoInteractions(this.logger);
+		verify(this.visitor).visit(mockedRekening);
 	}
 
 	@Test
-	public void testExportWithException() throws Exception {
-		AbstractRekening mockedRekening = mock(AbstractRekening.class);
+	public void testOfferteExport() throws Exception {
+		Offerte mockedRekening = mock(Offerte.class);
 		File mockedFile = mock(File.class);
-
-		doThrow(new Exception("")).when(mockedRekening).accept(eq(this.visitor));
 
 		this.exporter.export(mockedRekening, mockedFile);
 
 		verify(this.visitor).setSaveLocation(eq(mockedFile));
-		verify(mockedRekening).accept(eq(this.visitor));
-		verify(this.logger).error(anyString(), (Throwable) any());
+		verify(this.visitor).visit(mockedRekening);
+	}
+
+	@Test
+	public void testParticulierFactuurExport() throws Exception {
+		ParticulierFactuur mockedRekening = mock(ParticulierFactuur.class);
+		File mockedFile = mock(File.class);
+
+		this.exporter.export(mockedRekening, mockedFile);
+
+		verify(this.visitor).setSaveLocation(eq(mockedFile));
+		verify(this.visitor).visit(mockedRekening);
+	}
+
+	@Test
+	public void testReparatiesFactuurExport() throws Exception {
+		ReparatiesFactuur mockedRekening = mock(ReparatiesFactuur.class);
+		File mockedFile = mock(File.class);
+
+		this.exporter.export(mockedRekening, mockedFile);
+
+		verify(this.visitor).setSaveLocation(eq(mockedFile));
+		verify(this.visitor).visit(mockedRekening);
+	}
+
+	@Test(expected = IllegalStateException.class)
+	public void testExportWithException() {
+		File mockedFile = mock(File.class);
+		try {
+			AbstractRekening mockedRekening = mock(AbstractRekening.class);
+
+			this.exporter.export(mockedRekening, mockedFile);
+		}
+		catch (IllegalStateException e) {
+			verify(this.visitor).setSaveLocation(eq(mockedFile));
+			throw e;
+		}
+		catch (PdfException e) {
+			Assert.fail("We verwachten hier een IllegalStateException en geen PdfException - message: " + e.getMessage());
+		}
 	}
 }

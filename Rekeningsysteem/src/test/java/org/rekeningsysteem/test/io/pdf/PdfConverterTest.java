@@ -16,12 +16,11 @@ import org.rekeningsysteem.io.pdf.PdfConverter;
 public class PdfConverterTest {
 
 	private final PdfConverter converter;
-	private final File file = new File("resources\\LaTeX\\Offerte.tex");
 	private final Object input;
 	private final Object expectedOutput;
 
 	public PdfConverterTest(Object input, Object expectedOutput) {
-		this.converter = new PdfConverter(this.file);
+		this.converter = new PdfConverter(new File("resources\\LaTeX\\Offerte.tex"));
 		this.input = input;
 		this.expectedOutput = expectedOutput;
 	}
@@ -29,23 +28,28 @@ public class PdfConverterTest {
 	@Parameters
 	public static Collection<Object[]> data() {
 		Object[][] values = new Object[][] {
-				{ "test123", "test123" },
-				{ "test{1^2$3", "test\\{1\\^2\\$3" },
-				{ "testèn ís nïêt wÀt het lýkt",
-						"test\\`en \\'is n\\\"i\\^et w\\`At het l\\'ykt" },
-				{ "test\ntest123\n\ntest456", "test\\\\test123\\\\\\\\test456" },
-				{ Arrays.asList("123", "456", "{789}", "fôöbàr"),
-						Arrays.asList("123", "456", "\\{789\\}", "f\\^o\\\"ob\\`ar")
-				},
-				{ Arrays.asList(Arrays.asList("123", "456", "{789}", "fôöbàr"),
-						Arrays.asList("123", "456", "{789}", "fôöbàr"),
-						Arrays.asList("123", "456", "{789}", "fôöbàr")),
-						Arrays.asList(Arrays.asList("123", "456", "\\{789\\}", "f\\^o\\\"ob\\`ar"),
-								Arrays.asList("123", "456", "\\{789\\}", "f\\^o\\\"ob\\`ar"),
-								Arrays.asList("123", "456", "\\{789\\}", "f\\^o\\\"ob\\`ar"))
-				},
-				{ "test with € in it", "test with \\euro in it" },
-				{ 14, 14 }
+			{ "test123", "test123" },
+			{ "test{1^2$3", "test\\{1\\^2\\$3" },
+			{ "testèn ís nïêt wÀt het lýkt", "test\\`en \\'is n\\\"i\\^et w\\`At het l\\'ykt" },
+			{ "test\ntest123\n\ntest456", "test\\\\test123\\\\\\\\test456" },
+			{
+				Arrays.asList("123", "456", "{789}", "fôöbàr"),
+				Arrays.asList("123", "456", "\\{789\\}", "f\\^o\\\"ob\\`ar")
+			},
+			{
+				Arrays.asList(
+					Arrays.asList("123", "456", "{789}", "fôöbàr"),
+					Arrays.asList("123", "456", "{789}", "fôöbàr", Arrays.asList("123", "456", "{789}", "fôöbàr")),
+					Arrays.asList("123", "456", "{789}", "fôöbàr")
+				),
+				Arrays.asList(
+					Arrays.asList("123", "456", "\\{789\\}", "f\\^o\\\"ob\\`ar"),
+					Arrays.asList("123", "456", "\\{789\\}", "f\\^o\\\"ob\\`ar", Arrays.asList("123", "456", "\\{789\\}", "f\\^o\\\"ob\\`ar")),
+					Arrays.asList("123", "456", "\\{789\\}", "f\\^o\\\"ob\\`ar")
+				)
+			},
+			{ "test with € in it", "test with \\euro in it" },
+			{ 14, 14 }
 		};
 		return Arrays.asList(values);
 	}

@@ -3,6 +3,7 @@ package org.rekeningsysteem.io.xml;
 import io.reactivex.rxjava3.core.Single;
 import org.apache.logging.log4j.core.Logger;
 import org.rekeningsysteem.data.util.AbstractRekening;
+import org.rekeningsysteem.exception.PdfException;
 import org.rekeningsysteem.io.FactuurExporter;
 import org.rekeningsysteem.io.FactuurLoader;
 import org.rekeningsysteem.io.FactuurSaver;
@@ -30,7 +31,7 @@ public class IOWorker implements FactuurSaver, FactuurExporter, FactuurLoader {
 			DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 			TransformerFactory transformerFactory = TransformerFactory.newInstance();
 			this.saver = new XmlWriter(builder, transformerFactory);
-			this.exporter = new PdfExporter(logger);
+			this.exporter = new PdfExporter();
 			this.loader = new XmlReader4(builder);
 			this.oldLoader1 = new XmlReader1(builder);
 			this.oldLoader2 = new XmlReader2(builder);
@@ -65,17 +66,8 @@ public class IOWorker implements FactuurSaver, FactuurExporter, FactuurLoader {
 						+ file + "\"\n", error));
 	}
 
-//	@Override
-//	public Single<AbstractRekening> read(Document document) {
-//		return Observable.just(this.loader, this.oldLoader3, this.oldLoader2, this.oldLoader1)
-//			.concatMapDelayError(loader -> loader.read(document).toObservable())
-//			.onErrorResumeNext(e -> Observable.empty())
-//			.firstElement()
-//			.switchIfEmpty(Single.defer(() -> Single.error(new XmlParseException("Could not read document to object."))));
-//	}
-
 	@Override
-	public void export(AbstractRekening rekening, File saveLocation) {
+	public void export(AbstractRekening rekening, File saveLocation) throws PdfException {
 		this.exporter.export(rekening, saveLocation);
 	}
 

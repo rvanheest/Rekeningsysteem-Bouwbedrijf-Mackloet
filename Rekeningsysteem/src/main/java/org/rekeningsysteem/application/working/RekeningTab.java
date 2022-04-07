@@ -140,7 +140,7 @@ public class RekeningTab extends Tab implements Disposable {
 		this.modified.onNext(false);
 	}
 
-	public void export(File file) {
+	public void export(File file) throws PdfException {
 		final AtomicReference<PdfException> e = new AtomicReference<>();
 
 		AbstractRekening rekening = this.latest.getValue();

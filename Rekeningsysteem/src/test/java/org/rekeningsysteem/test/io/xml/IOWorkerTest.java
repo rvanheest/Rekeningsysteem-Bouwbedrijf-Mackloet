@@ -39,6 +39,7 @@ import org.rekeningsysteem.data.util.ItemList;
 import org.rekeningsysteem.data.util.header.Debiteur;
 import org.rekeningsysteem.data.util.header.FactuurHeader;
 import org.rekeningsysteem.data.util.header.OmschrFactuurHeader;
+import org.rekeningsysteem.exception.PdfException;
 import org.rekeningsysteem.exception.XmlParseException;
 import org.rekeningsysteem.exception.XmlWriteException;
 import org.rekeningsysteem.io.pdf.PdfExporter;
@@ -61,7 +62,7 @@ public class IOWorkerTest {
 		TransformerFactory transformerFactory = TransformerFactory.newInstance();
 		this.loader = new IOWorker(
 			new XmlWriter(documentBuilder, transformerFactory),
-			new PdfExporter(false, this.logger),
+			new PdfExporter(false),
 			new XmlReader4(documentBuilder),
 			new XmlReader1(documentBuilder),
 			new XmlReader2(documentBuilder),
@@ -168,7 +169,7 @@ public class IOWorkerTest {
 	}
 
 	@Test
-	public void testExportMutatiesFactuur() {
+	public void testExportMutatiesFactuur() throws PdfException {
 		MutatiesFactuur factuur = this.mutaties();
 		File file = new File("src\\test\\resources\\ioWorker\\savePDF\\Mutaties.pdf");
 
@@ -239,7 +240,7 @@ public class IOWorkerTest {
 	}
 
 	@Test
-	public void testExportOfferte() {
+	public void testExportOfferte() throws PdfException {
 		Offerte factuur = this.offerte();
 		File file = new File("src\\test\\resources\\ioWorker\\savePDF\\Offerte.pdf");
 
@@ -347,7 +348,7 @@ public class IOWorkerTest {
 	}
 
 	@Test
-	public void testExportParticulierFactuur() {
+	public void testExportParticulierFactuur() throws PdfException {
 		ParticulierFactuur factuur = this.particulier();
 		File file = new File("src\\test\\resources\\ioWorker\\savePDF\\Particulier.pdf");
 
@@ -418,7 +419,7 @@ public class IOWorkerTest {
 	}
 
 	@Test
-	public void testExportReparatiesFactuur() {
+	public void testExportReparatiesFactuur() throws PdfException {
 		ReparatiesFactuur factuur = this.reparaties();
 		File file = new File("src\\test\\resources\\ioWorker\\savePDF\\Reparaties.pdf");
 

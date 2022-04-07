@@ -21,7 +21,6 @@ import org.rekeningsysteem.data.util.header.Debiteur;
 import org.rekeningsysteem.data.util.header.FactuurHeader;
 import org.rekeningsysteem.data.util.header.OmschrFactuurHeader;
 import org.rekeningsysteem.data.util.visitor.ListItemVisitor;
-import org.rekeningsysteem.data.util.visitor.RekeningVoidVisitor;
 import org.rekeningsysteem.exception.PdfException;
 import org.rekeningsysteem.properties.PropertiesWorker;
 import org.rekeningsysteem.properties.PropertyModelEnum;
@@ -29,7 +28,7 @@ import org.rekeningsysteem.properties.PropertyModelEnum;
 import de.nixosoft.jlr.JLRGenerator;
 import de.nixosoft.jlr.JLROpener;
 
-public class PdfExporterVisitor implements RekeningVoidVisitor {
+public class PdfExporterVisitor {
 
 	private final boolean autoOpen;
 	private final PropertiesWorker properties;
@@ -44,8 +43,7 @@ public class PdfExporterVisitor implements RekeningVoidVisitor {
 		this(autoOpen, PropertiesWorker.getInstance(), itemVisitor);
 	}
 
-	public PdfExporterVisitor(boolean autoOpen, PropertiesWorker properties,
-			ListItemVisitor<List<String>> itemVisitor) {
+	public PdfExporterVisitor(boolean autoOpen, PropertiesWorker properties, ListItemVisitor<List<String>> itemVisitor) {
 		this.autoOpen = autoOpen;
 		this.properties = properties;
 		this.itemVisitor = itemVisitor;
@@ -59,33 +57,36 @@ public class PdfExporterVisitor implements RekeningVoidVisitor {
 		this.saveLocation = saveLocation;
 	}
 
-	private void general(File templateTex, Consumer<PdfConverter> convert)
-			throws PdfException, IOException {
-		String pdfName = this.saveLocation.getName();
-		pdfName = pdfName.substring(0, pdfName.lastIndexOf("."));
+	private void general(File templateTex, Consumer<PdfConverter> convert) throws PdfException {
+		try {
+			String pdfName = this.saveLocation.getName();
+			pdfName = pdfName.substring(0, pdfName.lastIndexOf("."));
 
-		File tempTemplateDir = new File("resources\\LaTeX\\temp");
-		if (!tempTemplateDir.exists()) {
-			tempTemplateDir.mkdir();
+			File tempTemplateDir = new File("resources\\LaTeX\\temp");
+			if (!tempTemplateDir.exists()) {
+				tempTemplateDir.mkdir();
+			}
+			File resultTex = new File(tempTemplateDir.getAbsolutePath() + "\\" + pdfName + ".tex");
+
+			File templateDir = templateTex.getParentFile();
+
+			PdfConverter converter = new PdfConverter(templateDir);
+			convert.accept(converter);
+			this.parse(converter, templateTex, resultTex);
+			this.generate(new JLRGenerator(), resultTex, templateDir);
+
+			FileUtils.deleteDirectory(tempTemplateDir);
+
+			if (this.autoOpen) {
+				JLROpener.open(this.saveLocation);
+			}
 		}
-		File resultTex = new File(tempTemplateDir.getAbsolutePath() + "\\" + pdfName + ".tex");
-
-		File templateDir = templateTex.getParentFile();
-
-		PdfConverter converter = new PdfConverter(templateDir);
-		convert.accept(converter);
-		this.parse(converter, templateTex, resultTex);
-		this.generate(new JLRGenerator(), resultTex, templateDir);
-
-		FileUtils.deleteDirectory(tempTemplateDir);
-
-		if (this.autoOpen) {
-			JLROpener.open(this.saveLocation);
+		catch (IOException e) {
+			throw new PdfException(e.getMessage(), e);
 		}
 	}
 
-	@Override
-	public void visit(MutatiesFactuur factuur) throws Exception {
+	public void visit(MutatiesFactuur factuur) throws PdfException {
 		Optional<File> templateTex = this.properties
 				.getProperty(PropertyModelEnum.PDF_MUTATIES_TEMPLATE)
 				.map(File::new);
@@ -94,8 +95,7 @@ public class PdfExporterVisitor implements RekeningVoidVisitor {
 		}
 	}
 
-	@Override
-	public void visit(Offerte offerte) throws Exception {
+	public void visit(Offerte offerte) throws PdfException {
 		Optional<File> templateTex = this.properties
 				.getProperty(PropertyModelEnum.PDF_OFFERTE_TEMPLATE)
 				.map(File::new);
@@ -104,8 +104,7 @@ public class PdfExporterVisitor implements RekeningVoidVisitor {
 		}
 	}
 
-	@Override
-	public void visit(ParticulierFactuur factuur) throws Exception {
+	public void visit(ParticulierFactuur factuur) throws PdfException {
 		Optional<File> templateTex = this.properties
 				.getProperty(PropertyModelEnum.PDF_PARTICULIER_TEMPLATE)
 				.map(File::new);
@@ -114,8 +113,7 @@ public class PdfExporterVisitor implements RekeningVoidVisitor {
 		}
 	}
 
-	@Override
-	public void visit(ReparatiesFactuur factuur) throws Exception {
+	public void visit(ReparatiesFactuur factuur) throws PdfException {
 		Optional<File> templateTex = this.properties
 				.getProperty(PropertyModelEnum.PDF_REPARATIES_TEMPLATE)
 				.map(File::new);
@@ -210,15 +208,13 @@ public class PdfExporterVisitor implements RekeningVoidVisitor {
 						.formattedString()));
 	}
 
-	private void parse(PdfConverter converter, File templateTex, File resultTex)
-			throws PdfException, IOException {
+	private void parse(PdfConverter converter, File templateTex, File resultTex) throws PdfException, IOException {
 		if (!converter.parse(templateTex, resultTex)) {
 			throw new PdfException(converter.getErrorMessage());
 		}
 	}
 
-	private void generate(JLRGenerator generator, File resultTex, File templateDir)
-			throws PdfException, IOException {
+	private void generate(JLRGenerator generator, File resultTex, File templateDir) throws PdfException, IOException {
 		generator.deleteTempFiles(true, true, true);
 
 		if (!generator.generate(resultTex, this.saveLocation.getParentFile(), templateDir)) {

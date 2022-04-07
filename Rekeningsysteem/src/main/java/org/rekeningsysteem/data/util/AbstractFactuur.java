@@ -5,8 +5,7 @@ import java.util.Objects;
 
 import org.rekeningsysteem.data.util.header.FactuurHeader;
 
-public abstract class AbstractFactuur<E extends ListItem> extends AbstractRekening
-		implements BedragManager {
+public abstract class AbstractFactuur<E extends ListItem> extends AbstractRekening implements BedragManager {
 
 	private final Currency currency;
 	private final ItemList<E> itemList;
@@ -32,8 +31,7 @@ public abstract class AbstractFactuur<E extends ListItem> extends AbstractRekeni
 
 	@Override
 	public boolean equals(Object other) {
-		if (super.equals(other) && other instanceof AbstractFactuur) {
-			AbstractFactuur<?> that = (AbstractFactuur<?>) other;
+		if (super.equals(other) && other instanceof AbstractFactuur<?> that) {
 			return Objects.equals(this.currency, that.currency)
 					&& Objects.equals(this.itemList, that.itemList);
 		}

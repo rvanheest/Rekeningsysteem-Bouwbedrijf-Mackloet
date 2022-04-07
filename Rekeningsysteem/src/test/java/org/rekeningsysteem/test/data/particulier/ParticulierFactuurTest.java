@@ -27,7 +27,6 @@ import org.rekeningsysteem.data.util.header.Debiteur;
 import org.rekeningsysteem.data.util.header.FactuurHeader;
 import org.rekeningsysteem.data.util.header.OmschrFactuurHeader;
 import org.rekeningsysteem.data.util.visitor.RekeningVisitor;
-import org.rekeningsysteem.data.util.visitor.RekeningVoidVisitor;
 import org.rekeningsysteem.logic.factuurnummer.FactuurnummerManager;
 import org.rekeningsysteem.test.data.util.AbstractFactuurTest;
 
@@ -38,7 +37,6 @@ public class ParticulierFactuurTest extends AbstractFactuurTest<ParticulierArtik
 	private final OmschrFactuurHeader header = new OmschrFactuurHeader(
 			new Debiteur("a", "b", "c", "d", "e"), LocalDate.of(1992, 7, 30), "g");
 	@Mock private RekeningVisitor<Object> visitor;
-	@Mock private RekeningVoidVisitor voidVisitor;
 
 	@Override
 	protected ParticulierFactuur makeInstance() {
@@ -116,13 +114,6 @@ public class ParticulierFactuurTest extends AbstractFactuurTest<ParticulierArtik
 		this.factuur.accept(this.visitor);
 
 		verify(this.visitor).visit(eq(this.factuur));
-	}
-
-	@Test
-	public void testAcceptVoid() throws Exception {
-		this.factuur.accept(this.voidVisitor);
-
-		verify(this.voidVisitor).visit(eq(this.factuur));
 	}
 
 	@Test
