@@ -72,7 +72,7 @@ public class ParticulierListPane extends AbstractListPane<ParticulierModel> {
 			this.omschrijving = epa.getOmschrijving();
 			this.loon = null;
 			this.loonBtwPercentage = null;
-			this.materiaal = epa.getMateriaal().getBedrag();
+			this.materiaal = epa.materiaal().bedrag();
 			this.materiaalBtwPercentage = epa.getMateriaalBtwPercentage();
 		}
 
@@ -85,7 +85,7 @@ public class ParticulierListPane extends AbstractListPane<ParticulierModel> {
 			this.omschrijving = pa2i.getOmschrijving();
 			this.loon = null;
 			this.loonBtwPercentage = null;
-			this.materiaal = pa2i.getMateriaal().getBedrag();
+			this.materiaal = pa2i.materiaal().bedrag();
 			this.materiaalBtwPercentage = pa2i.getMateriaalBtwPercentage();
 		}
 
@@ -96,7 +96,7 @@ public class ParticulierListPane extends AbstractListPane<ParticulierModel> {
 			this.product = null;
 
 			this.omschrijving = il2.getOmschrijving();
-			this.loon = il2.getLoon().getBedrag();
+			this.loon = il2.loon().bedrag();
 			this.loonBtwPercentage = il2.getLoonBtwPercentage();
 			this.materiaal = null;
 			this.materiaalBtwPercentage = null;
@@ -109,7 +109,7 @@ public class ParticulierListPane extends AbstractListPane<ParticulierModel> {
 			this.product = pl2;
 
 			this.omschrijving = pl2.getOmschrijving();
-			this.loon = pl2.getLoon().getBedrag();
+			this.loon = pl2.loon().bedrag();
 			this.loonBtwPercentage = pl2.getLoonBtwPercentage();
 			this.materiaal = null;
 			this.materiaalBtwPercentage = null;

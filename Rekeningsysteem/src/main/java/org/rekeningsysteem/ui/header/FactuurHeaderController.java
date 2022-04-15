@@ -20,9 +20,9 @@ public class FactuurHeaderController implements Disposable {
 
 	public FactuurHeaderController(FactuurHeader input, Database database) {
 		this(
-			new DebiteurController(input.getDebiteur(), new DebiteurDBInteraction(database)),
-			new DatumController(input.getDatum()),
-			new FactuurnummerController(FactuurnummerType.FACTUUR, input.getFactuurnummer())
+			new DebiteurController(input.debiteur(), new DebiteurDBInteraction(database)),
+			new DatumController(input.datum()),
+			new FactuurnummerController(FactuurnummerType.FACTUUR, input.factuurnummer())
 		);
 	}
 

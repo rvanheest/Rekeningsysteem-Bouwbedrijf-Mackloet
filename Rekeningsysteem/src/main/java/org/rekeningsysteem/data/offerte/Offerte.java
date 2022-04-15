@@ -46,7 +46,8 @@ public class Offerte extends AbstractRekening {
 
 	@Override
 	public String toString() {
-		return "<Offerte[" + String.valueOf(this.getFactuurHeader()) + ", "
+		return "<Offerte["
+			+ String.valueOf(this.getFactuurHeader()) + ", "
 			+ String.valueOf(this.tekst) + ", "
 			+ String.valueOf(this.ondertekenen) + "]>";
 	}

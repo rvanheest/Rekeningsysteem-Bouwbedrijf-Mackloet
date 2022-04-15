@@ -29,12 +29,6 @@ public class PdfExporter implements FactuurExporter {
 	@Override
 	public void export(AbstractRekening rekening, File saveLocation) throws PdfException {
 		this.visitor.setSaveLocation(saveLocation);
-		switch (rekening) {
-			case MutatiesFactuur factuur -> this.visitor.visit(factuur);
-			case Offerte offerte -> this.visitor.visit(offerte);
-			case ParticulierFactuur factuur -> this.visitor.visit(factuur);
-			case ReparatiesFactuur factuur -> this.visitor.visit(factuur);
-			default -> throw new IllegalStateException("Unexpected value: " + rekening);
-		}
+		this.visitor.visit(rekening);
 	}
 }

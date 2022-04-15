@@ -129,7 +129,7 @@ public class RekeningTab extends Tab implements Disposable {
 		this.saveFile.ifPresent(file -> ioWorker.save(rekening, file));
 
 		if (this.controller.getSaveSelected().blockingGet()) {
-			this.debiteurDB.addDebiteur(rekening.getFactuurHeader().getDebiteur()).blockingAwait();
+			this.debiteurDB.addDebiteur(rekening.getFactuurHeader().debiteur()).blockingAwait();
 		}
 		
 		String text = this.getText();

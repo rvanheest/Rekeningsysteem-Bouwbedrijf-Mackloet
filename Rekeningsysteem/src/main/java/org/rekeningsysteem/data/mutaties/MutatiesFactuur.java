@@ -20,8 +20,9 @@ public class MutatiesFactuur extends AbstractFactuur<MutatiesInkoopOrder> {
 
 	@Override
 	public String toString() {
-		return "<MutatiesFactuur[" + String.valueOf(this.getFactuurHeader()) + ", "
-				+ String.valueOf(this.getCurrency()) + ", "
-				+ String.valueOf(this.getItemList()) + "]>";
+		return "<MutatiesFactuur["
+			+ String.valueOf(this.getFactuurHeader()) + ", "
+			+ String.valueOf(this.getCurrency()) + ", "
+			+ String.valueOf(this.getItemList()) + "]>";
 	}
 }

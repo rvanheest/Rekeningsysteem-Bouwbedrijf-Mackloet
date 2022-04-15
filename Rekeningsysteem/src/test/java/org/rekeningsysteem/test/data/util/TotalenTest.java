@@ -102,7 +102,6 @@ public class TotalenTest extends EqualsHashCodeTest {
 
 	@Test
 	public void testToString() {
-		assertEquals("<Totalen[{<BtwPercentage[50.0, false]>=<NettoBtwTuple[<Geld[2,00]>, <Geld[16,00]>]>}]>",
-				this.totalen.toString());
+		assertEquals("<Totalen[{BtwPercentage[percentage=50.0, verlegd=false]=NettoBtwTuple[netto=Geld[bedrag=2.0], btw=Geld[bedrag=16.0]]}]>", this.totalen.toString());
 	}
 }

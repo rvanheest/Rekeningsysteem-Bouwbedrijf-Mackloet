@@ -57,29 +57,6 @@ public abstract class AbstractRekeningTest extends EqualsHashCodeTest {
 	}
 
 	@Test
-	public void testInitFactuurnummer() {
-		assertFalse(this.header.getFactuurnummer().isPresent());
-
-		when(this.factuurnummerManager.getFactuurnummer()).thenReturn("12014");
-
-		this.rekening.initFactuurnummer(this.factuurnummerManager);
-
-		assertEquals(Optional.of("12014"), this.header.getFactuurnummer());
-		verify(this.factuurnummerManager).getFactuurnummer();
-	}
-
-	@Test
-	public void testSameFactuurnummer() {
-		this.header.setFactuurnummer("12013");
-		assertTrue(this.header.getFactuurnummer().isPresent());
-
-		this.rekening.initFactuurnummer(this.factuurnummerManager);
-
-		assertEquals(Optional.of("12013"), this.header.getFactuurnummer());
-		verifyNoInteractions(this.factuurnummerManager);
-	}
-
-	@Test
 	public void testEqualsFalseOtherFactuurHeader() {
 		FactuurHeader header2 = new FactuurHeader(new Debiteur("", "", "", "", ""),
 				LocalDate.now(), "test");

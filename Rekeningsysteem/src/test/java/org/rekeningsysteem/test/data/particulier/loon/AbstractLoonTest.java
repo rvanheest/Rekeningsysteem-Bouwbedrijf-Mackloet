@@ -25,7 +25,7 @@ public abstract class AbstractLoonTest extends ParticulierArtikelTest {
 
 	@Test
 	public void testGetMateriaal() {
-		assertEquals(new Geld(0), this.loon.getMateriaal());
+		assertEquals(new Geld(0), this.loon.materiaal());
 	}
 
 	@Test

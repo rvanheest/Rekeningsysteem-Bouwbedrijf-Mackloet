@@ -36,23 +36,23 @@ public class OmschrFactuurHeaderTest extends FactuurHeaderTest {
 
 	@Test
 	public void testSecondConstructorWithOmschrijving() {
-		OmschrFactuurHeader header = new OmschrFactuurHeader(this.getInstance().getDebiteur(), this
-				.getInstance().getDatum(), this.omschrijving);
+		OmschrFactuurHeader header = new OmschrFactuurHeader(this.getInstance().debiteur(), this
+				.getInstance().datum(), this.omschrijving);
 
-		assertEquals(this.getInstance().getDebiteur(), header.getDebiteur());
-		assertEquals(this.getInstance().getDatum(), header.getDatum());
-		assertEquals(Optional.empty(), header.getFactuurnummer());
+		assertEquals(this.getInstance().debiteur(), header.debiteur());
+		assertEquals(this.getInstance().datum(), header.datum());
+		assertEquals(Optional.empty(), header.factuurnummer());
 		assertEquals(this.omschrijving, header.getOmschrijving());
 	}
 
 	@Test
 	public void testThirdConstructorWithOptionalFactuurnummer() {
-		OmschrFactuurHeader header = new OmschrFactuurHeader(this.getInstance().getDebiteur(),
-				this.getInstance().getDatum(), this.getInstance().getFactuurnummer(), this.omschrijving);
+		OmschrFactuurHeader header = new OmschrFactuurHeader(this.getInstance().debiteur(),
+				this.getInstance().datum(), this.getInstance().factuurnummer(), this.omschrijving);
 		
-		assertEquals(this.getInstance().getDebiteur(), header.getDebiteur());
-		assertEquals(this.getInstance().getDatum(), header.getDatum());
-		assertEquals(Optional.of("32013"), header.getFactuurnummer());
+		assertEquals(this.getInstance().debiteur(), header.debiteur());
+		assertEquals(this.getInstance().datum(), header.datum());
+		assertEquals(Optional.of("32013"), header.factuurnummer());
 		assertEquals(this.omschrijving, header.getOmschrijving());
 	}
 
@@ -66,8 +66,8 @@ public class OmschrFactuurHeaderTest extends FactuurHeaderTest {
 	@Test
 	@Override
 	public void testToString() {
-		assertEquals("<FactuurHeader[<Debiteur[Optional.empty, RvH, PB, 116, 3241TA, MH, "
-				+ "Optional.empty]>, " + this.getTestDatum().toString() + ", Optional[32013], "
+		assertEquals("<FactuurHeader[Debiteur[debiteurID=Optional.empty, naam=RvH, straat=PB, " 
+			+ "nummer=116, postcode=3241TA, plaats=MH, btwNummer=Optional.empty], " + this.getTestDatum().toString() + ", Optional[32013], "
 				+ "voor u uitgevoerde werkzaamheden]>", this.getInstance().toString());
 	}
 }

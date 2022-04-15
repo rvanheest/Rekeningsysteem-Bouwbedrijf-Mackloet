@@ -161,7 +161,7 @@ public class XmlReader2 extends XmlLoader {
 		Maybe<Currency> currency = makeCurrency(node);
 		BiFunction<BtwPercentage, BtwPercentage, Single<ItemList<ParticulierArtikel>>> listFunc = makeAangenomenList(getElement(node, "list"));
 		Maybe<ItemList<ParticulierArtikel>> list = makeBtwPercentage(getElement(node, "btwPercentage"))
-			.flatMapSingle(b -> listFunc.apply(b.getLoonPercentage(), b.getMateriaalPercentage()));
+			.flatMapSingle(b -> listFunc.apply(b.loonPercentage(), b.materiaalPercentage()));
 
 		return Maybe.zip(header, currency, list, ParticulierFactuur::new);
 	}
@@ -277,8 +277,8 @@ public class XmlReader2 extends XmlLoader {
 		Maybe<BtwPercentages> btw = makeBtwPercentage(getElement(node, "btwPercentage"));
 
 		return btw.flatMap(percentage -> {
-			Single<ItemList<ParticulierArtikel>> arts = listFunc.apply(percentage.getMateriaalPercentage());
-			Single<ItemList<AbstractLoon>> loon = loonFunc.apply(percentage.getLoonPercentage());
+			Single<ItemList<ParticulierArtikel>> arts = listFunc.apply(percentage.materiaalPercentage());
+			Single<ItemList<AbstractLoon>> loon = loonFunc.apply(percentage.loonPercentage());
 
 			return Maybe.zip(header, currency, arts.toMaybe(), loon.toMaybe(), (h, c, li, lo) -> {
 				li.addAll(lo);

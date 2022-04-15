@@ -31,36 +31,36 @@ class XmlWriterItemVisitor implements ListItemVisitor<Function<Document, Node>> 
 
 	private Consumer<Document> visit(Node root, String key, BtwPercentage btw) {
 		SortedMap<String, String> attributes = new TreeMap<>();
-		attributes.put("verlegd", String.valueOf(btw.isVerlegd()));
-		return stringNodeWithAttributes(root, key, String.valueOf(btw.getPercentage()), attributes);
+		attributes.put("verlegd", String.valueOf(btw.verlegd()));
+		return stringNodeWithAttributes(root, key, String.valueOf(btw.percentage()), attributes);
 	}
 
 	private Function<Document, Node> visit(EsselinkArtikel item) {
 		return createElement("artikel",
-			xml -> stringNode(xml, "artikelNummer", item.getArtikelNummer())
-				.andThen(stringNode(xml, "omschrijving", item.getOmschrijving()))
-				.andThen(stringNode(xml, "prijsPer", String.valueOf(item.getPrijsPer())))
-				.andThen(stringNode(xml, "eenheid", item.getEenheid()))
-				.andThen(visit(xml, "verkoopPrijs", item.getVerkoopPrijs()))
+			xml -> stringNode(xml, "artikelNummer", item.artikelNummer())
+				.andThen(stringNode(xml, "omschrijving", item.omschrijving()))
+				.andThen(stringNode(xml, "prijsPer", String.valueOf(item.prijsPer())))
+				.andThen(stringNode(xml, "eenheid", item.eenheid()))
+				.andThen(visit(xml, "verkoopPrijs", item.verkoopPrijs()))
 		);
 	}
 
 	@Override
 	public Function<Document, Node> visit(MutatiesInkoopOrder item) {
 		return createElement("mutaties-bon",
-			xml -> stringNode(xml, "omschrijving", item.getOmschrijving())
-				.andThen(stringNode(xml, "bonnummer", item.getInkoopOrderNummer()))
-				.andThen(visit(xml, "prijs", item.getMateriaal()))
+			xml -> stringNode(xml, "omschrijving", item.omschrijving())
+				.andThen(stringNode(xml, "bonnummer", item.inkoopOrderNummer()))
+				.andThen(visit(xml, "prijs", item.materiaal()))
 		);
 	}
 
 	@Override
 	public Function<Document, Node> visit(ReparatiesInkoopOrder item) {
 		return createElement("reparaties-bon",
-			xml -> stringNode(xml, "omschrijving", item.getOmschrijving())
-				.andThen(stringNode(xml, "bonnummer", item.getInkoopOrderNummer()))
-				.andThen(visit(xml, "loon", item.getLoon()))
-				.andThen(visit(xml, "materiaal", item.getMateriaal()))
+			xml -> stringNode(xml, "omschrijving", item.omschrijving())
+				.andThen(stringNode(xml, "bonnummer", item.inkoopOrderNummer()))
+				.andThen(visit(xml, "loon", item.loon()))
+				.andThen(visit(xml, "materiaal", item.materiaal()))
 		);
 	}
 
@@ -68,7 +68,7 @@ class XmlWriterItemVisitor implements ListItemVisitor<Function<Document, Node>> 
 	public Function<Document, Node> visit(AnderArtikel item) {
 		return createElement("ander-artikel",
 			xml -> stringNode(xml, "omschrijving", item.getOmschrijving())
-				.andThen(visit(xml, "prijs", item.getMateriaal()))
+				.andThen(visit(xml, "prijs", item.materiaal()))
 				.andThen(visit(xml, "materiaalBtwPercentage", item.getMateriaalBtwPercentage()))
 		);
 	}
@@ -87,7 +87,7 @@ class XmlWriterItemVisitor implements ListItemVisitor<Function<Document, Node>> 
 	public Function<Document, Node> visit(InstantLoon item) {
 		return createElement("instant-loon",
 			xml -> stringNode(xml, "omschrijving", item.getOmschrijving())
-				.andThen(visit(xml, "loon", item.getLoon()))
+				.andThen(visit(xml, "loon", item.loon()))
 				.andThen(visit(xml, "loonBtwPercentage", item.getLoonBtwPercentage()))
 		);
 	}

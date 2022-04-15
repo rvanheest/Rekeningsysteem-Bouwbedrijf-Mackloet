@@ -29,10 +29,10 @@ public class ReparatiesListController extends AbstractListController<ReparatiesI
 	protected List<ReparatiesModel> modelToUI(List<ReparatiesInkoopOrder> list) {
 		return list.stream()
 			.map(item -> new ReparatiesModel(
-				item.getOmschrijving(),
-				item.getInkoopOrderNummer(),
-				item.getLoon().getBedrag(),
-				item.getMateriaal().getBedrag()
+				item.omschrijving(),
+				item.inkoopOrderNummer(),
+				item.loon().bedrag(),
+				item.materiaal().bedrag()
 			))
 			.collect(Collectors.toList());
 	}

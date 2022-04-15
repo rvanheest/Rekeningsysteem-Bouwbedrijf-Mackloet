@@ -18,8 +18,7 @@ public abstract class ParticulierArtikel implements BtwListItem {
 
 	@Override
 	public boolean equals(Object other) {
-		if (other instanceof ParticulierArtikel) {
-			ParticulierArtikel that = (ParticulierArtikel) other;
+		if (other instanceof ParticulierArtikel that) {
 			return Objects.equals(this.omschrijving, that.omschrijving);
 		}
 		return false;

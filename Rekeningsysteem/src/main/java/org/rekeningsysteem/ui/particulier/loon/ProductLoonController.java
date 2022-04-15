@@ -31,7 +31,7 @@ public class ProductLoonController {
 			ui.getUren(),
 			ui.getUurloon().map(Geld::new),
 			ui.getLoonBtwPercentage(),
-			(uren, uurloon, percentage) -> new ProductLoon("Uurloon à " + uurloon.getBedrag(), uren, uurloon, percentage)
+			(uren, uurloon, percentage) -> new ProductLoon("Uurloon à " + uurloon.bedrag(), uren, uurloon, percentage)
 		);
 	}
 

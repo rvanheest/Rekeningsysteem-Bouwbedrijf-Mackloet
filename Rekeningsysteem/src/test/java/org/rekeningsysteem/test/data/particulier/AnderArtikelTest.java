@@ -42,7 +42,7 @@ public class AnderArtikelTest extends ParticulierArtikelTest {
 
 	@Test
 	public void testGetMateriaal() {
-		assertEquals(this.prijs, this.artikel.getMateriaal());
+		assertEquals(this.prijs, this.artikel.materiaal());
 	}
 
 	@Test
@@ -67,13 +67,12 @@ public class AnderArtikelTest extends ParticulierArtikelTest {
 	@Test
 	public void testEqualsFalseOtherBtw() {
 		AnderArtikel aa2 = new AnderArtikel(this.getTestOmschrijving(), this.prijs,
-				new BtwPercentage(this.btwPercentage.getPercentage() + 1, false));
+				new BtwPercentage(this.btwPercentage.percentage() + 1, false));
 		assertFalse(this.artikel.equals(aa2));
 	}
 
 	@Test
 	public void testToString() {
-		assertEquals("<AnderArtikel[omschrijving, <Geld[21,00]>, <BtwPercentage[10.0, false]>]>",
-				this.artikel.toString());
+		assertEquals("<AnderArtikel[omschrijving, Geld[bedrag=21.0], BtwPercentage[percentage=10.0, verlegd=false]]>", this.artikel.toString());
 	}
 }

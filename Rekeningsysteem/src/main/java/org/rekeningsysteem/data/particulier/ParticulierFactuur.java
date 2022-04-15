@@ -25,8 +25,9 @@ public class ParticulierFactuur extends AbstractFactuur<ParticulierArtikel> {
 
 	@Override
 	public String toString() {
-		return "<ParticulierFactuur[" + String.valueOf(this.getFactuurHeader()) + ", "
-				+ String.valueOf(this.getCurrency()) + ", "
-				+ String.valueOf(this.getItemList()) + "]>";
+		return "<ParticulierFactuur["
+			+ String.valueOf(this.getFactuurHeader()) + ", "
+			+ String.valueOf(this.getCurrency()) + ", "
+			+ String.valueOf(this.getItemList()) + "]>";
 	}
 }

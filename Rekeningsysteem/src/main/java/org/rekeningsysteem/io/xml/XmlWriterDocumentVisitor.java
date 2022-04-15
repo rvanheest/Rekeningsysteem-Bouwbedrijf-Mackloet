@@ -33,12 +33,12 @@ class XmlWriterDocumentVisitor implements RekeningVisitor<Function<Document, Nod
 
 	private Function<Document, Node> visit(Debiteur debiteur) {
 		return createElement("debiteur",
-			xml -> stringNode(xml, "naam", debiteur.getNaam())
-				.andThen(stringNode(xml, "straat", debiteur.getStraat()))
-				.andThen(stringNode(xml, "nummer", debiteur.getNummer()))
-				.andThen(stringNode(xml, "postcode", debiteur.getPostcode()))
-				.andThen(stringNode(xml, "plaats", debiteur.getPlaats()))
-				.andThen(optionalStringNode(xml, "btwNummer", debiteur.getBtwNummer())));
+			xml -> stringNode(xml, "naam", debiteur.naam())
+				.andThen(stringNode(xml, "straat", debiteur.straat()))
+				.andThen(stringNode(xml, "nummer", debiteur.nummer()))
+				.andThen(stringNode(xml, "postcode", debiteur.postcode()))
+				.andThen(stringNode(xml, "plaats", debiteur.plaats()))
+				.andThen(optionalStringNode(xml, "btwNummer", debiteur.btwNummer())));
 	}
 
 	private Function<Document, Node> visit(LocalDate date) {
@@ -50,9 +50,9 @@ class XmlWriterDocumentVisitor implements RekeningVisitor<Function<Document, Nod
 
 	private Function<Document, Node> visit(FactuurHeader header) {
 		return createElement("factuurHeader",
-			xml -> appendNode(xml, visit(header.getDebiteur()))
-				.andThen(appendNode(xml, visit(header.getDatum())))
-				.andThen(optionalStringNode(xml, "factuurnummer", header.getFactuurnummer())));
+			xml -> appendNode(xml, visit(header.debiteur()))
+				.andThen(appendNode(xml, visit(header.datum())))
+				.andThen(optionalStringNode(xml, "factuurnummer", header.factuurnummer())));
 	}
 
 	private Function<Document, Node> visit(Currency currency) {

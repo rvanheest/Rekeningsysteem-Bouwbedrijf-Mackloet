@@ -36,16 +36,6 @@ public class BtwPercentageTest extends EqualsHashCodeTest {
   }
 
   @Test
-  public void testGetPercentage() {
-    assertEquals(this.percentage, this.btwPercentage.getPercentage(), 0.0);
-  }
-
-  @Test
-  public void testIsVerlegd() {
-    assertEquals(this.verlegd, this.btwPercentage.isVerlegd());
-  }
-
-  @Test
   public void testFormattedStringWithVerlegd() {
     assertEquals("21.0%, verlegd", new BtwPercentage(21.0, true).formattedString());
   }
@@ -53,23 +43,6 @@ public class BtwPercentageTest extends EqualsHashCodeTest {
   @Test
   public void testFormattedStringWithoutVerlegd() {
     assertEquals("6.0%", new BtwPercentage(6.0, false).formattedString());
-  }
-
-  @Test
-  public void testEqualsFalseOtherPercentage() {
-    BtwPercentage p = new BtwPercentage(this.percentage + 1, this.verlegd);
-    assertFalse(this.btwPercentage.equals(p));
-  }
-
-  @Test
-  public void testEqualsFalseOtherVerlegd() {
-    BtwPercentage p = new BtwPercentage(this.percentage, !this.verlegd);
-    assertFalse(this.btwPercentage.equals(p));
-  }
-
-  @Test
-  public void testToString() {
-    assertEquals("<BtwPercentage[21.0, false]>", this.btwPercentage.toString());
   }
 
   @Test

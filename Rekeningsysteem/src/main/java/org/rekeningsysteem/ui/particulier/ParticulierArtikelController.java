@@ -93,10 +93,10 @@ public class ParticulierArtikelController extends AbstractListItemController<Par
 	}
 
 	public void setBtwPercentage(BtwPercentages btwPercentages) {
-		this.anderController.setBtwPercentage(btwPercentages.getMateriaalPercentage());
-		this.gebruiktController.setBtwPercentage(btwPercentages.getMateriaalPercentage());
-		this.instantController.setBtwPercentage(btwPercentages.getLoonPercentage());
-		this.productController.setBtwPercentage(btwPercentages.getLoonPercentage());
+		this.anderController.setBtwPercentage(btwPercentages.materiaalPercentage());
+		this.gebruiktController.setBtwPercentage(btwPercentages.materiaalPercentage());
+		this.instantController.setBtwPercentage(btwPercentages.loonPercentage());
+		this.productController.setBtwPercentage(btwPercentages.loonPercentage());
 	}
 
 	@Override

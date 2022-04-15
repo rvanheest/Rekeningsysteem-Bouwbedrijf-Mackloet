@@ -23,19 +23,19 @@ public abstract class BtwListItemTest extends ListItemTest {
 
 	@Test
 	public void testGetLoonBtw() {
-		Geld loon = this.item.getLoon();
-		double percentage = this.item.getLoonBtwPercentage().getPercentage();
+		Geld loon = this.item.loon();
+		double percentage = this.item.getLoonBtwPercentage().percentage();
 
-		Geld expected = new Geld(loon.getBedrag() * percentage / 100);
+		Geld expected = new Geld(loon.bedrag() * percentage / 100);
 		assertEquals(expected, this.item.getLoonBtw());
 	}
 
 	@Test
 	public void testGetMateriaalBtw() {
-		Geld materiaal = this.item.getMateriaal();
-		double percentage = this.item.getMateriaalBtwPercentage().getPercentage();
+		Geld materiaal = this.item.materiaal();
+		double percentage = this.item.getMateriaalBtwPercentage().percentage();
 
-		Geld expected = new Geld(materiaal.getBedrag() * percentage / 100);
+		Geld expected = new Geld(materiaal.bedrag() * percentage / 100);
 		assertEquals(expected, this.item.getMateriaalBtw());
 	}
 }

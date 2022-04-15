@@ -1,49 +1,51 @@
 package org.rekeningsysteem.io.pdf;
 
+import de.nixosoft.jlr.JLRGenerator;
+import de.nixosoft.jlr.JLROpener;
+import org.apache.commons.io.FileUtils;
+import org.rekeningsysteem.data.mutaties.MutatiesFactuur;
+import org.rekeningsysteem.data.offerte.Offerte;
+import org.rekeningsysteem.data.particulier.AnderArtikel;
+import org.rekeningsysteem.data.particulier.GebruiktEsselinkArtikel;
+import org.rekeningsysteem.data.particulier.ParticulierFactuur;
+import org.rekeningsysteem.data.particulier.loon.InstantLoon;
+import org.rekeningsysteem.data.particulier.loon.ProductLoon;
+import org.rekeningsysteem.data.reparaties.ReparatiesFactuur;
+import org.rekeningsysteem.data.util.AbstractRekening;
+import org.rekeningsysteem.data.util.Totalen;
+import org.rekeningsysteem.data.util.header.Debiteur;
+import org.rekeningsysteem.data.util.header.FactuurHeader;
+import org.rekeningsysteem.data.util.header.OmschrFactuurHeader;
+import org.rekeningsysteem.exception.PdfException;
+import org.rekeningsysteem.properties.PropertiesWorker;
+import org.rekeningsysteem.properties.PropertyModelEnum;
+
 import java.io.File;
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-import org.apache.commons.io.FileUtils;
-import org.rekeningsysteem.data.mutaties.MutatiesFactuur;
-import org.rekeningsysteem.data.offerte.Offerte;
-import org.rekeningsysteem.data.particulier.ParticulierFactuur;
-import org.rekeningsysteem.data.reparaties.ReparatiesFactuur;
-import org.rekeningsysteem.data.util.Totalen;
-import org.rekeningsysteem.data.util.header.Debiteur;
-import org.rekeningsysteem.data.util.header.FactuurHeader;
-import org.rekeningsysteem.data.util.header.OmschrFactuurHeader;
-import org.rekeningsysteem.data.util.visitor.ListItemVisitor;
-import org.rekeningsysteem.exception.PdfException;
-import org.rekeningsysteem.properties.PropertiesWorker;
-import org.rekeningsysteem.properties.PropertyModelEnum;
-
-import de.nixosoft.jlr.JLRGenerator;
-import de.nixosoft.jlr.JLROpener;
-
 public class PdfExporterVisitor {
 
 	private final boolean autoOpen;
 	private final PropertiesWorker properties;
-	private final ListItemVisitor<List<String>> itemVisitor;
+	private final PdfListItemVisitor itemVisitor;
 	private File saveLocation;
 
-	public PdfExporterVisitor(ListItemVisitor<List<String>> itemVisitor) {
+	public PdfExporterVisitor(PdfListItemVisitor itemVisitor) {
 		this(true, PropertiesWorker.getInstance(), itemVisitor);
 	}
 
-	public PdfExporterVisitor(boolean autoOpen, ListItemVisitor<List<String>> itemVisitor) {
+	public PdfExporterVisitor(boolean autoOpen, PdfListItemVisitor itemVisitor) {
 		this(autoOpen, PropertiesWorker.getInstance(), itemVisitor);
 	}
 
-	public PdfExporterVisitor(boolean autoOpen, PropertiesWorker properties, ListItemVisitor<List<String>> itemVisitor) {
+	public PdfExporterVisitor(boolean autoOpen, PropertiesWorker properties, PdfListItemVisitor itemVisitor) {
 		this.autoOpen = autoOpen;
 		this.properties = properties;
 		this.itemVisitor = itemVisitor;
@@ -86,126 +88,108 @@ public class PdfExporterVisitor {
 		}
 	}
 
-	public void visit(MutatiesFactuur factuur) throws PdfException {
-		Optional<File> templateTex = this.properties
-				.getProperty(PropertyModelEnum.PDF_MUTATIES_TEMPLATE)
-				.map(File::new);
-		if (templateTex.isPresent()) {
-			this.general(templateTex.get(), this.convert(factuur));
+	private Optional<File> getTemplate(PropertyModelEnum key) {
+		return this.properties.getProperty(key).map(File::new);
+	}
+
+	public void visit(AbstractRekening rekening) throws PdfException {
+		switch (rekening) {
+			case MutatiesFactuur factuur -> this.visit(PropertyModelEnum.PDF_MUTATIES_TEMPLATE, this.convert(factuur));
+			case Offerte offerte -> this.visit(PropertyModelEnum.PDF_OFFERTE_TEMPLATE, this.convert(offerte));
+			case ParticulierFactuur factuur -> this.visit(PropertyModelEnum.PDF_PARTICULIER_TEMPLATE, this.convert(factuur));
+			case ReparatiesFactuur factuur -> this.visit(PropertyModelEnum.PDF_REPARATIES_TEMPLATE, this.convert(factuur));
+			default -> throw new IllegalStateException("Unexpected value: " + rekening);
 		}
 	}
 
-	public void visit(Offerte offerte) throws PdfException {
-		Optional<File> templateTex = this.properties
-				.getProperty(PropertyModelEnum.PDF_OFFERTE_TEMPLATE)
-				.map(File::new);
-		if (templateTex.isPresent()) {
-			this.general(templateTex.get(), this.convert(offerte));
-		}
-	}
-
-	public void visit(ParticulierFactuur factuur) throws PdfException {
-		Optional<File> templateTex = this.properties
-				.getProperty(PropertyModelEnum.PDF_PARTICULIER_TEMPLATE)
-				.map(File::new);
-		if (templateTex.isPresent()) {
-			this.general(templateTex.get(), this.convert(factuur));
-		}
-	}
-
-	public void visit(ReparatiesFactuur factuur) throws PdfException {
-		Optional<File> templateTex = this.properties
-				.getProperty(PropertyModelEnum.PDF_REPARATIES_TEMPLATE)
-				.map(File::new);
-		if (templateTex.isPresent()) {
-			this.general(templateTex.get(), this.convert(factuur));
-		}
+	private void visit(PropertyModelEnum key, Consumer<PdfConverter> converter) throws PdfException {
+		Optional<File> templateTex = this.getTemplate(key);
+		if (templateTex.isPresent()) this.general(templateTex.get(), converter);
 	}
 
 	private Consumer<PdfConverter> convertFactuurHeader(FactuurHeader header) {
 		return converter -> {
-			Debiteur debiteur = header.getDebiteur();
-			converter.replace("DebiteurNaam", debiteur.getNaam());
-			converter.replace("DebiteurStraat", debiteur.getStraat());
-			converter.replace("DebiteurNummer", debiteur.getNummer());
-			converter.replace("DebiteurPostcode", debiteur.getPostcode());
-			converter.replace("DebiteurPlaats", debiteur.getPlaats());
-			converter.replace("HasDebiteurBtwNummer", debiteur.getBtwNummer().isPresent());
-			converter.replace("DebiteurBtwNummer", debiteur.getBtwNummer().orElse(""));
+			Debiteur debiteur = header.debiteur();
+			converter.replace("DebiteurNaam", debiteur.naam());
+			converter.replace("DebiteurStraat", debiteur.straat());
+			converter.replace("DebiteurNummer", debiteur.nummer());
+			converter.replace("DebiteurPostcode", debiteur.postcode());
+			converter.replace("DebiteurPlaats", debiteur.plaats());
+			converter.replace("HasDebiteurBtwNummer", debiteur.btwNummer().isPresent());
+			converter.replace("DebiteurBtwNummer", debiteur.btwNummer().orElse(""));
 
-			converter.replace("Factuurnummer", header.getFactuurnummer().orElse(""));
+			converter.replace("Factuurnummer", header.factuurnummer().orElse(""));
 			this.properties.getProperty(PropertyModelEnum.DATE_FORMAT)
-					.map(format -> header.getDatum().format(DateTimeFormatter.ofPattern(format)))
-					.ifPresent(datum -> converter.replace("Datum", datum));
+				.map(format -> header.datum().format(DateTimeFormatter.ofPattern(format)))
+				.ifPresent(datum -> converter.replace("Datum", datum));
 		};
 	}
 
 	private Consumer<PdfConverter> convertOmschrFactuurHeader(OmschrFactuurHeader header) {
 		return this.convertFactuurHeader(header)
-				.andThen(converter -> converter.replace("Omschrijving", header.getOmschrijving()));
+			.andThen(converter -> converter.replace("Omschrijving", header.getOmschrijving()));
 	}
 
 	private Consumer<PdfConverter> convertTotalen(Totalen totalen) {
 		return converter -> {
 			converter.replace("SubTotaalBedrag",
-					totalen.getBtwPercentages().stream().anyMatch(btw -> btw.getPercentage() != 0.0)
-							? Collections.singletonList(totalen.getSubtotaal().formattedString())
-							: Collections.emptyList()
+				totalen.getBtwPercentages().stream().anyMatch(btw -> btw.percentage() != 0.0)
+					? Collections.singletonList(totalen.getSubtotaal().formattedString())
+					: Collections.emptyList()
 			);
 			converter.replace("btwList", totalen.getNettoBtwTuple().entrySet()
-					.stream()
-					.sorted(Map.Entry.comparingByKey())
-					.map(entry -> Arrays.asList(
-							entry.getKey().formattedString(),
-							entry.getValue().getNetto().formattedString(),
-							entry.getValue().getBtw().formattedString() + (entry.getKey().isVerlegd() ? " (verlegd)" : "")))
-					.collect(Collectors.toList()));
+				.stream()
+				.sorted(Map.Entry.comparingByKey())
+				.map(entry -> Arrays.asList(
+					entry.getKey().formattedString(),
+					entry.getValue().netto().formattedString(),
+					entry.getValue().btw().formattedString() + (entry.getKey().verlegd() ? " (verlegd)" : "")))
+				.collect(Collectors.toList()));
 			converter.replace("TotaalBedrag", totalen.getTotaal().formattedString());
 		};
 	}
 
 	private Consumer<PdfConverter> convert(MutatiesFactuur factuur) {
 		return this.convertFactuurHeader(factuur.getFactuurHeader())
-				.andThen(converter -> converter.replace("Valuta", factuur.getCurrency()
-						.getSymbol()))
-				.andThen(converter -> converter.replace("orderList", factuur.getItemList()
-						.stream()
-						.map(item -> item.accept(this.itemVisitor))
-						.collect(Collectors.toList())))
-				.andThen(converter -> converter.replace("TotaalBedrag", factuur.getTotalen()
-						.getTotaal()
-						.formattedString()));
+			.andThen(converter -> converter.replace("Valuta", factuur.getCurrency().getSymbol()))
+			.andThen(converter -> converter.replace("orderList", factuur.getItemList()
+				.stream()
+				.map(this.itemVisitor::visit)
+				.collect(Collectors.toList())))
+			.andThen(converter -> converter.replace("TotaalBedrag", factuur.getTotalen().getTotaal().formattedString()));
 	}
 
 	private Consumer<PdfConverter> convert(Offerte offerte) {
 		return this.convertFactuurHeader(offerte.getFactuurHeader())
-				.andThen(converter -> converter.replace("Tekst", offerte.getTekst()))
-				.andThen(converter -> converter.replace("Ondertekenen",
-						String.valueOf(offerte.isOndertekenen())));
+			.andThen(converter -> converter.replace("Tekst", offerte.getTekst()))
+			.andThen(converter -> converter.replace("Ondertekenen",
+				String.valueOf(offerte.isOndertekenen())));
 	}
 
 	private Consumer<PdfConverter> convert(ParticulierFactuur factuur) {
 		return this.convertOmschrFactuurHeader(factuur.getFactuurHeader())
-				.andThen(converter -> converter.replace("Valuta", factuur.getCurrency()
-						.getSymbol()))
-				.andThen(converter -> converter.replace("artikelList", factuur.getItemList()
-						.stream()
-						.map(artikel -> artikel.accept(this.itemVisitor))
-						.collect(Collectors.toList())))
-				.andThen(this.convertTotalen(factuur.getTotalen()));
+			.andThen(converter -> converter.replace("Valuta", factuur.getCurrency().getSymbol()))
+			.andThen(converter -> converter.replace("artikelList", factuur.getItemList()
+				.stream()
+				.map(particulierArtikel -> switch (particulierArtikel) {
+					case AnderArtikel a -> this.itemVisitor.visit(a);
+					case GebruiktEsselinkArtikel a -> this.itemVisitor.visit(a);
+					case InstantLoon l -> this.itemVisitor.visit(l);
+					case ProductLoon l -> this.itemVisitor.visit(l);
+					default -> throw new IllegalStateException("Unexpected value: " + particulierArtikel);
+				})
+				.collect(Collectors.toList())))
+			.andThen(this.convertTotalen(factuur.getTotalen()));
 	}
 
 	private Consumer<PdfConverter> convert(ReparatiesFactuur factuur) {
 		return this.convertFactuurHeader(factuur.getFactuurHeader())
-				.andThen(converter -> converter.replace("Valuta", factuur.getCurrency()
-						.getSymbol()))
-				.andThen(converter -> converter.replace("orderList", factuur.getItemList()
-						.stream()
-						.map(item -> item.accept(this.itemVisitor))
-						.collect(Collectors.toList())))
-				.andThen(converter -> converter.replace("TotaalBedrag", factuur.getTotalen()
-						.getTotaal()
-						.formattedString()));
+			.andThen(converter -> converter.replace("Valuta", factuur.getCurrency().getSymbol()))
+			.andThen(converter -> converter.replace("orderList", factuur.getItemList()
+				.stream()
+				.map(this.itemVisitor::visit)
+				.collect(Collectors.toList())))
+			.andThen(converter -> converter.replace("TotaalBedrag", factuur.getTotalen().getTotaal().formattedString()));
 	}
 
 	private void parse(PdfConverter converter, File templateTex, File resultTex) throws PdfException, IOException {

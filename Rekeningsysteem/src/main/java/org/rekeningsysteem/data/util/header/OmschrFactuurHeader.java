@@ -8,8 +8,7 @@ public class OmschrFactuurHeader extends FactuurHeader {
 
 	private final String omschrijving;
 
-	public OmschrFactuurHeader(Debiteur debiteur, LocalDate datum, String factuurnummer,
-			String omschrijving) {
+	public OmschrFactuurHeader(Debiteur debiteur, LocalDate datum, String factuurnummer, String omschrijving) {
 		super(debiteur, datum, factuurnummer);
 		this.omschrijving = omschrijving;
 	}
@@ -19,8 +18,7 @@ public class OmschrFactuurHeader extends FactuurHeader {
 		this.omschrijving = omschrijving;
 	}
 
-	public OmschrFactuurHeader(Debiteur debiteur, LocalDate datum, Optional<String> factuurnummer,
-			String omschrijving) {
+	public OmschrFactuurHeader(Debiteur debiteur, LocalDate datum, Optional<String> factuurnummer, String omschrijving) {
 		super(debiteur, datum, factuurnummer);
 		this.omschrijving = omschrijving;
 	}
@@ -31,10 +29,9 @@ public class OmschrFactuurHeader extends FactuurHeader {
 
 	@Override
 	public boolean equals(Object other) {
-		if (other instanceof OmschrFactuurHeader) {
-			OmschrFactuurHeader that = (OmschrFactuurHeader) other;
+		if (other instanceof OmschrFactuurHeader that) {
 			return super.equals(that)
-					&& Objects.equals(this.omschrijving, that.omschrijving);
+				&& Objects.equals(this.omschrijving, that.omschrijving);
 		}
 		return false;
 	}
@@ -46,9 +43,10 @@ public class OmschrFactuurHeader extends FactuurHeader {
 
 	@Override
 	public String toString() {
-		return "<FactuurHeader[" + String.valueOf(this.getDebiteur()) + ", "
-				+ String.valueOf(this.getDatum()) + ", "
-				+ String.valueOf(this.getFactuurnummer()) + ", "
-				+ String.valueOf(this.omschrijving) + "]>";
+		return "<FactuurHeader["
+			+ String.valueOf(this.debiteur()) + ", "
+			+ String.valueOf(this.datum()) + ", "
+			+ String.valueOf(this.factuurnummer()) + ", "
+			+ String.valueOf(this.omschrijving) + "]>";
 	}
 }

@@ -90,7 +90,7 @@ public class AnderArtikelPane extends GridPane {
 	}
 
 	public void setBtwPercentage(BtwPercentage btwPercentage) {
-		this.btwPercentageTF.setValue(BigDecimal.valueOf(btwPercentage.getPercentage()));
-		this.verlegdCB.setSelected(btwPercentage.isVerlegd());
+		this.btwPercentageTF.setValue(BigDecimal.valueOf(btwPercentage.percentage()));
+		this.verlegdCB.setSelected(btwPercentage.verlegd());
 	}
 }

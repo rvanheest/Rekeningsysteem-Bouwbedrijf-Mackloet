@@ -85,7 +85,7 @@ public class InstantLoonPane extends GridPane {
 	}
 
 	public void setBtwPercentage(BtwPercentage btwPercentage) {
-		this.loonBtwTF.setValue(BigDecimal.valueOf(btwPercentage.getPercentage()));
-		this.verlegdCB.setSelected(btwPercentage.isVerlegd());
+		this.loonBtwTF.setValue(BigDecimal.valueOf(btwPercentage.percentage()));
+		this.verlegdCB.setSelected(btwPercentage.verlegd());
 	}
 }

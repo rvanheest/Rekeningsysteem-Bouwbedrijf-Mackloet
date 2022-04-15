@@ -55,7 +55,7 @@ public class ProductLoonTest extends AbstractLoonTest {
 
 	@Test
 	public void testGetLoon() {
-		assertEquals(new Geld(40), this.item.getLoon());
+		assertEquals(new Geld(40), this.item.loon());
 	}
 
 	@Test
@@ -89,13 +89,12 @@ public class ProductLoonTest extends AbstractLoonTest {
 	@Test
 	public void testEqualsFalseOtherLoonBtwPercentage() {
 		ProductLoon loon2 = new ProductLoon(this.getTestOmschrijving(), this.uren,
-				this.uurloon, new BtwPercentage(this.loonBtwPercentage.getPercentage() + 1.0, false));
+				this.uurloon, new BtwPercentage(this.loonBtwPercentage.percentage() + 1.0, false));
 		assertFalse(this.item.equals(loon2));
 	}
 
 	@Test
 	public void testToString() {
-		assertEquals("<ProductLoon[omschrijving, 10.0, <Geld[4,00]>, <BtwPercentage[10.0, false]>]>",
-				this.item.toString());
+		assertEquals("<ProductLoon[omschrijving, 10.0, Geld[bedrag=4.0], BtwPercentage[percentage=10.0, verlegd=false]]>", this.item.toString());
 	}
 }

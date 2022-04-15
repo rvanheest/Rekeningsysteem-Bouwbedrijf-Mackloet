@@ -18,7 +18,7 @@ public class AnderArtikel extends ParticulierArtikel {
 	}
 
 	@Override
-	public Geld getMateriaal() {
+	public Geld materiaal() {
 		return this.prijs;
 	}
 
@@ -28,13 +28,13 @@ public class AnderArtikel extends ParticulierArtikel {
 	}
 
 	@Override
-	public final Geld getLoon() {
+	public final Geld loon() {
 		return new Geld(0);
 	}
 
 	@Override
 	public final BtwPercentage getLoonBtwPercentage() {
-		return new BtwPercentage(0, this.btwPercentage.isVerlegd());
+		return new BtwPercentage(0, this.btwPercentage.verlegd());
 	}
 
 	@Override
@@ -49,11 +49,10 @@ public class AnderArtikel extends ParticulierArtikel {
 
 	@Override
 	public boolean equals(Object other) {
-		if (other instanceof AnderArtikel) {
-			AnderArtikel that = (AnderArtikel) other;
+		if (other instanceof AnderArtikel that) {
 			return super.equals(that)
-					&& Objects.equals(this.prijs, that.prijs)
-					&& Objects.equals(this.btwPercentage, that.btwPercentage);
+				&& Objects.equals(this.prijs, that.prijs)
+				&& Objects.equals(this.btwPercentage, that.btwPercentage);
 		}
 		return false;
 	}
@@ -65,8 +64,9 @@ public class AnderArtikel extends ParticulierArtikel {
 
 	@Override
 	public String toString() {
-		return "<AnderArtikel[" + String.valueOf(this.getOmschrijving()) + ", "
-				+ String.valueOf(this.prijs) + ", "
-				+ String.valueOf(this.btwPercentage) + "]>";
+		return "<AnderArtikel["
+			+ String.valueOf(this.getOmschrijving()) + ", "
+			+ String.valueOf(this.prijs) + ", "
+			+ String.valueOf(this.btwPercentage) + "]>";
 	}
 }

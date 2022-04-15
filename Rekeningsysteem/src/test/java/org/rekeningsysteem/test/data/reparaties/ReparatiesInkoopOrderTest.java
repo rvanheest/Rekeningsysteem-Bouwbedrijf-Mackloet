@@ -1,7 +1,6 @@
 package org.rekeningsysteem.test.data.reparaties;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 
@@ -32,8 +31,7 @@ public class ReparatiesInkoopOrderTest extends ListItemTest {
 
 	@Override
 	protected ReparatiesInkoopOrder makeNotInstance() {
-		return new ReparatiesInkoopOrder(this.omschrijving + ".", this.ordernummer, this.loon,
-				this.materiaal);
+		return new ReparatiesInkoopOrder(this.omschrijving + ".", this.ordernummer, this.loon, this.materiaal);
 	}
 
 	@Before
@@ -44,23 +42,8 @@ public class ReparatiesInkoopOrderTest extends ListItemTest {
 	}
 
 	@Test
-	public void testGetOmschrijving() {
-		assertEquals(this.omschrijving, this.order.getOmschrijving());
-	}
-
-	@Test
-	public void testGetInkoopOrderNummer() {
-		assertEquals(this.ordernummer, this.order.getInkoopOrderNummer());
-	}
-
-	@Test
-	public void testGetLoon() {
-		assertEquals(this.loon, this.order.getLoon());
-	}
-
-	@Test
-	public void testGetMateriaal() {
-		assertEquals(this.materiaal, this.order.getMateriaal());
+	public void testGetTotaal() {
+		assertEquals(this.materiaal.bedrag() + this.loon.bedrag(), this.order.getTotaal().bedrag(), 0.0);
 	}
 
 	@Test
@@ -68,39 +51,5 @@ public class ReparatiesInkoopOrderTest extends ListItemTest {
 		this.order.accept(this.visitor);
 
 		verify(this.visitor).visit(eq(this.order));
-	}
-
-	@Test
-	public void testEqualsFalseOtherOmschrijving() {
-		ReparatiesInkoopOrder mb = new ReparatiesInkoopOrder(this.omschrijving + ".", this.ordernummer, this.loon,
-				this.materiaal);
-		assertFalse(this.order.equals(mb));
-	}
-
-	@Test
-	public void testEqualsFalseOtherInkoopOrderNummer() {
-		ReparatiesInkoopOrder mb = new ReparatiesInkoopOrder(this.omschrijving, this.ordernummer + ".", this.loon,
-				this.materiaal);
-		assertFalse(this.order.equals(mb));
-	}
-
-	@Test
-	public void testEqualsFalseOtherLoon() {
-		ReparatiesInkoopOrder mb = new ReparatiesInkoopOrder(this.omschrijving, this.ordernummer, new Geld(3),
-				this.materiaal);
-		assertFalse(this.order.equals(mb));
-	}
-
-	@Test
-	public void testEqualsFalseOtherMateriaal() {
-		ReparatiesInkoopOrder mb = new ReparatiesInkoopOrder(this.omschrijving, this.ordernummer, this.loon,
-				new Geld(3));
-		assertFalse(this.order.equals(mb));
-	}
-
-	@Test
-	public void testToString() {
-		assertEquals("<ReparatiesInkoopOrder[omschrijving, ordernummer, <Geld[1,00]>, <Geld[12,00]>]>",
-				this.order.toString());
 	}
 }

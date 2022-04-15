@@ -33,9 +33,9 @@ public class OfferteHeaderController implements Disposable {
 
 	public OfferteHeaderController(FactuurHeader headerInput, Boolean ondertekenenInput, Database database) {
 		this(
-			new DebiteurController(headerInput.getDebiteur(), new DebiteurDBInteraction(database)),
-			new DatumController(headerInput.getDatum()),
-			new FactuurnummerController(FactuurnummerType.OFFERTE, headerInput.getFactuurnummer()),
+			new DebiteurController(headerInput.debiteur(), new DebiteurDBInteraction(database)),
+			new DatumController(headerInput.datum()),
+			new FactuurnummerController(FactuurnummerType.OFFERTE, headerInput.factuurnummer()),
 			new OndertekenenController(ondertekenenInput)
 		);
 	}

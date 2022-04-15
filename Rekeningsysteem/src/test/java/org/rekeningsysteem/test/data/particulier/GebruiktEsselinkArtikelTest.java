@@ -55,7 +55,7 @@ public class GebruiktEsselinkArtikelTest extends ParticulierArtikelTest {
 
 	@Test
 	public void testGetMateriaal() {
-		assertEquals(new Geld(2.5), this.gebruiktArtikel.getMateriaal());
+		assertEquals(new Geld(2.5), this.gebruiktArtikel.materiaal());
 	}
 
 	@Test
@@ -88,14 +88,14 @@ public class GebruiktEsselinkArtikelTest extends ParticulierArtikelTest {
 	@Test
 	public void testEqualsFalseOtherMateriaalBtwPercentage() {
 		GebruiktEsselinkArtikel gea = new GebruiktEsselinkArtikel(this.artikel, this.aantal,
-				new BtwPercentage(this.btwPercentage.getPercentage() + 1, false));
+				new BtwPercentage(this.btwPercentage.percentage() + 1, false));
 		assertFalse(this.gebruiktArtikel.equals(gea));
 	}
 
 	@Test
 	public void testToString() {
-		assertEquals("<GebruiktEsselinkArtikel[omschrijving, <Geld[2,50]>, <BtwPercentage[10.0, false]>, 5.0, "
-				+ "<EsselinkArtikel[artikelnummer, omschrijving, 2, eenheid, <Geld[1,00]>]>]>",
+		assertEquals("<GebruiktEsselinkArtikel[omschrijving, Geld[bedrag=2.5], BtwPercentage[percentage=10.0, verlegd=false], 5.0, "
+				+ "EsselinkArtikel[artikelNummer=artikelnummer, omschrijving=omschrijving, prijsPer=2, eenheid=eenheid, verkoopPrijs=Geld[bedrag=1.0]]]>",
 				this.gebruiktArtikel.toString());
 	}
 }

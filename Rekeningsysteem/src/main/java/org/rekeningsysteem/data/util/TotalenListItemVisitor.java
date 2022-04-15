@@ -14,35 +14,31 @@ public class TotalenListItemVisitor implements ListItemVisitor<Function<Totalen,
 
 	@Override
 	public Function<Totalen, Totalen> visit(MutatiesInkoopOrder item) {
-		return t -> t.add(item.getMateriaal());
+		return t -> t.add(item.materiaal());
 	}
 
 	@Override
 	public Function<Totalen, Totalen> visit(GebruiktEsselinkArtikel item) {
-		return t -> t.add(item.getMateriaalBtwPercentage(),
-				item.getMateriaal(), item.getMateriaalBtw());
+		return t -> t.add(item.getMateriaalBtwPercentage(), item.materiaal(), item.getMateriaalBtw());
 	}
 
 	@Override
 	public Function<Totalen, Totalen> visit(AnderArtikel item) {
-		return t -> t.add(item.getMateriaalBtwPercentage(),
-				item.getMateriaal(), item.getMateriaalBtw());
+		return t -> t.add(item.getMateriaalBtwPercentage(), item.materiaal(), item.getMateriaalBtw());
 	}
 
 	@Override
 	public Function<Totalen, Totalen> visit(ReparatiesInkoopOrder item) {
-		return t -> t.add(item.getMateriaal());
+		return t -> t.add(item.materiaal());
 	}
 
 	@Override
 	public Function<Totalen, Totalen> visit(InstantLoon item) {
-		return t -> t.add(item.getLoonBtwPercentage(),
-				item.getLoon(), item.getLoonBtw());
+		return t -> t.add(item.getLoonBtwPercentage(), item.loon(), item.getLoonBtw());
 	}
 
 	@Override
 	public Function<Totalen, Totalen> visit(ProductLoon item) {
-		return t -> t.add(item.getLoonBtwPercentage(),
-				item.getLoon(), item.getLoonBtw());
+		return t -> t.add(item.getLoonBtwPercentage(), item.loon(), item.getLoonBtw());
 	}
 }

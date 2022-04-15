@@ -29,9 +29,9 @@ public class MutatiesListController extends AbstractListController<MutatiesInkoo
 	protected List<MutatiesModel> modelToUI(List<MutatiesInkoopOrder> list) {
 		return list.stream()
 			.map(item -> new MutatiesModel(
-				item.getOmschrijving(),
-				item.getInkoopOrderNummer(),
-				item.getMateriaal().getBedrag()
+				item.omschrijving(),
+				item.inkoopOrderNummer(),
+				item.materiaal().bedrag()
 			))
 			.collect(Collectors.toList());
 	}

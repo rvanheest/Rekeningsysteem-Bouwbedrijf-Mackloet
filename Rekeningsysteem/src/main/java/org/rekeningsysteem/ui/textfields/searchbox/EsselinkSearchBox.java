@@ -44,22 +44,22 @@ public class EsselinkSearchBox extends AbstractSearchBox<EsselinkArtikel> {
 
 	@Override
 	void setTextfields(EsselinkArtikel ea) {
-		this.infoOmschrijving.setText(ea.getOmschrijving());
-		this.infoArtikelNummer.setText("Artikelnummer: " + ea.getArtikelNummer());
+		this.infoOmschrijving.setText(ea.omschrijving());
+		this.infoArtikelNummer.setText("Artikelnummer: " + ea.artikelNummer());
 		this.infoPrijsEenheid.setText(
-			String.format("%s %s per %s %s", this.currency.getSymbol(), ea.getVerkoopPrijs().getBedrag(), ea.getPrijsPer(), ea.getEenheid())
+			String.format("%s %s per %s %s", this.currency.getSymbol(), ea.verkoopPrijs().bedrag(), ea.prijsPer(), ea.eenheid())
 		);
 	}
 
 	@Override
 	HBox getHBox(EsselinkArtikel ea) {
-		Label artNrLabel = new Label(ea.getArtikelNummer());
+		Label artNrLabel = new Label(ea.artikelNummer());
 		artNrLabel.getStyleClass().add("artikelnummer-label");
 		artNrLabel.setAlignment(Pos.CENTER_RIGHT);
 		artNrLabel.setMinWidth(USE_PREF_SIZE);
 		artNrLabel.setPrefWidth(70);
 
-		Label omschrLabel = new Label(ea.getOmschrijving());
+		Label omschrLabel = new Label(ea.omschrijving());
 
 		return new HBox(artNrLabel, omschrLabel);
 	}

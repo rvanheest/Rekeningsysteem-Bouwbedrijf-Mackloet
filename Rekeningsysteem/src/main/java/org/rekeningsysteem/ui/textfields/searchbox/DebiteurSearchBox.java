@@ -45,11 +45,11 @@ public class DebiteurSearchBox extends AbstractSearchBox<Debiteur> {
 
 	@Override
 	void setTextfields(Debiteur debiteur) {
-		Optional<String> btwNummer = debiteur.getBtwNummer().map(s -> "BTW nummer: " + s);
+		Optional<String> btwNummer = debiteur.btwNummer().map(s -> "BTW nummer: " + s);
 
-		this.infoNaam.setText(debiteur.getNaam());
-		this.infoAdres.setText(debiteur.getStraat() + " " + debiteur.getNummer());
-		this.infoPostcodePlaats.setText(debiteur.getPostcode() + "  " + debiteur.getPlaats().toUpperCase());
+		this.infoNaam.setText(debiteur.naam());
+		this.infoAdres.setText(debiteur.straat() + " " + debiteur.nummer());
+		this.infoPostcodePlaats.setText(debiteur.postcode() + "  " + debiteur.plaats().toUpperCase());
 		this.infoBtwNummer.setText(btwNummer.orElse(""));
 
 		ObservableList<Node> infoBoxChildren = this.infoBox.getChildren();
@@ -65,6 +65,6 @@ public class DebiteurSearchBox extends AbstractSearchBox<Debiteur> {
 
 	@Override
 	HBox getHBox(Debiteur debiteur) {
-		return new HBox(new Label(debiteur.getNaam()));
+		return new HBox(new Label(debiteur.naam()));
 	}
 }

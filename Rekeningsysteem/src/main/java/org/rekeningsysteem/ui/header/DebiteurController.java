@@ -28,12 +28,12 @@ public class DebiteurController implements Disposable {
 
 	public DebiteurController(Debiteur input, DebiteurDBInteraction db) {
 		this(db);
-		this.ui.setNaam(input.getNaam());
-		this.ui.setStraat(input.getStraat());
-		this.ui.setNummer(input.getNummer());
-		this.ui.setPostcode(input.getPostcode());
-		this.ui.setPlaats(input.getPlaats());
-		this.ui.setBtwNummer(input.getBtwNummer().orElse(""));
+		this.ui.setNaam(input.naam());
+		this.ui.setStraat(input.straat());
+		this.ui.setNummer(input.nummer());
+		this.ui.setPostcode(input.postcode());
+		this.ui.setPlaats(input.plaats());
+		this.ui.setBtwNummer(input.btwNummer().orElse(""));
 		this.ui.setSaveSelected(false);
 	}
 
@@ -74,12 +74,12 @@ public class DebiteurController implements Disposable {
 
 	private Consumer<Debiteur> setDebiteur(AbstractSearchBox<Debiteur> searchBox) {
 		return debiteur -> {
-			this.ui.setNaam(debiteur.getNaam());
-			this.ui.setStraat(debiteur.getStraat());
-			this.ui.setNummer(debiteur.getNummer());
-			this.ui.setPostcode(debiteur.getPostcode());
-			this.ui.setPlaats(debiteur.getPlaats());
-			this.ui.setBtwNummer(debiteur.getBtwNummer().orElse(""));
+			this.ui.setNaam(debiteur.naam());
+			this.ui.setStraat(debiteur.straat());
+			this.ui.setNummer(debiteur.nummer());
+			this.ui.setPostcode(debiteur.postcode());
+			this.ui.setPlaats(debiteur.plaats());
+			this.ui.setBtwNummer(debiteur.btwNummer().orElse(""));
 
 			searchBox.clear();
 			this.ui.setSaveSelected(false);

@@ -29,9 +29,9 @@ public class OmschrFactuurHeaderController implements Disposable {
 
 	public OmschrFactuurHeaderController(OmschrFactuurHeader input, Database database) {
 		this(
-			new DebiteurController(input.getDebiteur(), new DebiteurDBInteraction(database)),
-			new DatumController(input.getDatum()),
-			new FactuurnummerController(FactuurnummerType.FACTUUR, input.getFactuurnummer()),
+			new DebiteurController(input.debiteur(), new DebiteurDBInteraction(database)),
+			new DatumController(input.datum()),
+			new FactuurnummerController(FactuurnummerType.FACTUUR, input.factuurnummer()),
 			new OmschrijvingController(input.getOmschrijving())
 		);
 	}

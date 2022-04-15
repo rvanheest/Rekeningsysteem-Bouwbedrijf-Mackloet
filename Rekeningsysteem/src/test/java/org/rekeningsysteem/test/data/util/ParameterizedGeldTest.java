@@ -93,7 +93,7 @@ public final class ParameterizedGeldTest {
 
 	@Test
 	public void testGetBedrag() {
-		assertEquals(this.bedrag, this.geld.getBedrag(), 0);
+		assertEquals(this.bedrag, this.geld.bedrag(), 0);
 	}
 
 	@Test
@@ -104,10 +104,5 @@ public final class ParameterizedGeldTest {
 	@Test
 	public void testIsZero() {
 		assertEquals(this.zero, this.geld.isZero());
-	}
-
-	@Test
-	public void testToString() {
-		assertEquals("<Geld[" + this.formattedString + "]>", this.geld.toString());
 	}
 }

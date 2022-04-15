@@ -33,7 +33,7 @@ public abstract class AbstractFactuur<E extends ListItem> extends AbstractRekeni
 	public boolean equals(Object other) {
 		if (super.equals(other) && other instanceof AbstractFactuur<?> that) {
 			return Objects.equals(this.currency, that.currency)
-					&& Objects.equals(this.itemList, that.itemList);
+				&& Objects.equals(this.itemList, that.itemList);
 		}
 		return false;
 	}

@@ -43,7 +43,7 @@ public class InstantLoonTest extends AbstractLoonTest {
 
 	@Test
 	public void testGetLoon() {
-		assertEquals(this.loon, this.item.getLoon());
+		assertEquals(this.loon, this.item.loon());
 	}
 
 	@Test
@@ -75,12 +75,12 @@ public class InstantLoonTest extends AbstractLoonTest {
 	@Test
 	public void testEqualsFalseOtherLoonBtwPercentage() {
 		InstantLoon loon2 = new InstantLoon(this.getTestOmschrijving(),
-				this.loon, new BtwPercentage(this.loonBtwPercentage.getPercentage() + 1.0, false));
+				this.loon, new BtwPercentage(this.loonBtwPercentage.percentage() + 1.0, false));
 		assertFalse(this.item.equals(loon2));
 	}
 
 	@Test
 	public void testToString() {
-		assertEquals("<InstantLoon[omschrijving, <Geld[12,00]>, <BtwPercentage[10.0, false]>]>", this.item.toString());
+		assertEquals("<InstantLoon[omschrijving, Geld[bedrag=12.0], BtwPercentage[percentage=10.0, verlegd=false]]>", this.item.toString());
 	}
 }

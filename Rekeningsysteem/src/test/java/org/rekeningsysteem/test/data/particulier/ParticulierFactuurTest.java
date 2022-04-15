@@ -1,18 +1,5 @@
 package org.rekeningsysteem.test.data.particulier;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
-import static org.mockito.Mockito.when;
-
-import java.time.LocalDate;
-import java.util.Currency;
-import java.util.Optional;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,8 +14,15 @@ import org.rekeningsysteem.data.util.header.Debiteur;
 import org.rekeningsysteem.data.util.header.FactuurHeader;
 import org.rekeningsysteem.data.util.header.OmschrFactuurHeader;
 import org.rekeningsysteem.data.util.visitor.RekeningVisitor;
-import org.rekeningsysteem.logic.factuurnummer.FactuurnummerManager;
 import org.rekeningsysteem.test.data.util.AbstractFactuurTest;
+
+import java.time.LocalDate;
+import java.util.Currency;
+
+import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ParticulierFactuurTest extends AbstractFactuurTest<ParticulierArtikel> {
@@ -71,35 +65,6 @@ public class ParticulierFactuurTest extends AbstractFactuurTest<ParticulierArtik
 
 	@Test
 	@Override
-	public void testInitFactuurnummer() {
-		// this test is overriden because we have another factuurheader here
-		assertFalse(this.header.getFactuurnummer().isPresent());
-
-		FactuurnummerManager manager = mock(FactuurnummerManager.class);
-		when(manager.getFactuurnummer()).thenReturn("12014");
-
-		this.factuur.initFactuurnummer(manager);
-
-		assertEquals(Optional.of("12014"), this.header.getFactuurnummer());
-		verify(manager).getFactuurnummer();
-	}
-
-	@Test
-	@Override
-	public void testSameFactuurnummer() {
-		// this test is overriden because we have another factuurheader here
-		this.header.setFactuurnummer("12013");
-		assertTrue(this.header.getFactuurnummer().isPresent());
-
-		FactuurnummerManager manager = mock(FactuurnummerManager.class);
-		this.factuur.initFactuurnummer(manager);
-
-		assertEquals(Optional.of("12013"), this.header.getFactuurnummer());
-		verifyNoInteractions(manager);
-	}
-
-	@Test
-	@Override
 	public void testGetTotalen() {
 		Totalen t1 = new Totalen();
 		Totalen expected = new Totalen();
@@ -118,8 +83,8 @@ public class ParticulierFactuurTest extends AbstractFactuurTest<ParticulierArtik
 
 	@Test
 	public void testToString() {
-		assertEquals("<ParticulierFactuur[<FactuurHeader[<Debiteur[Optional.empty, a, b, c, "
-				+ "d, e, Optional.empty]>, 1992-07-30, Optional.empty, g]>, EUR, itemList]>",
+		assertEquals("<ParticulierFactuur[<FactuurHeader[Debiteur[debiteurID=Optional.empty, naam=a, straat=b, " 
+				+ "nummer=c, postcode=d, plaats=e, btwNummer=Optional.empty], 1992-07-30, Optional.empty, g]>, EUR, itemList]>",
 				this.factuur.toString());
 	}
 }

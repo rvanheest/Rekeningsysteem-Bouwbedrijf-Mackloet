@@ -18,12 +18,12 @@ public final class InstantLoon extends AbstractLoon {
 	}
 
 	@Override
-	public final BtwPercentage getMateriaalBtwPercentage() {
-		return new BtwPercentage(0, this.loonBtwPercentage.isVerlegd());
+	public BtwPercentage getMateriaalBtwPercentage() {
+		return new BtwPercentage(0, this.loonBtwPercentage.verlegd());
 	}
 
 	@Override
-	public Geld getLoon() {
+	public Geld loon() {
 		return this.loon;
 	}
 
@@ -31,7 +31,7 @@ public final class InstantLoon extends AbstractLoon {
 	public BtwPercentage getLoonBtwPercentage() {
 		return this.loonBtwPercentage;
 	}
-	
+
 	@Override
 	public <T> T accept(ListItemVisitor<T> visitor) {
 		return visitor.visit(this);
@@ -39,10 +39,9 @@ public final class InstantLoon extends AbstractLoon {
 
 	@Override
 	public boolean equals(Object other) {
-		if (super.equals(other) && other instanceof InstantLoon) {
-			InstantLoon that = (InstantLoon) other;
+		if (super.equals(other) && other instanceof InstantLoon that) {
 			return Objects.equals(this.loon, that.loon)
-					&& Objects.equals(this.loonBtwPercentage, that.loonBtwPercentage);
+				&& Objects.equals(this.loonBtwPercentage, that.loonBtwPercentage);
 		}
 		return false;
 	}
@@ -54,8 +53,9 @@ public final class InstantLoon extends AbstractLoon {
 
 	@Override
 	public String toString() {
-		return "<InstantLoon[" + String.valueOf(this.getOmschrijving()) + ", "
-				+ String.valueOf(this.loon) + ", "
-				+ String.valueOf(this.loonBtwPercentage) + "]>";
+		return "<InstantLoon["
+			+ String.valueOf(this.getOmschrijving()) + ", "
+			+ String.valueOf(this.loon) + ", "
+			+ String.valueOf(this.loonBtwPercentage) + "]>";
 	}
 }

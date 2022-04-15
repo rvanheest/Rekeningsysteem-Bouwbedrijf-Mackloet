@@ -16,25 +16,25 @@ public class DebiteurDBInteraction extends DBInteraction<Debiteur> {
 	private static final Function<String, QueryEnumeration> naamQuery = s -> () ->
 		"SELECT * FROM TotaalDebiteur WHERE naam LIKE '%" + s + "%';";
 	private static final Function<Debiteur, QueryEnumeration> debQuery = deb -> () ->
-		"SELECT * FROM TotaalDebiteur WHERE naam = '" + deb.getNaam()
-			+ "' AND straat = '" + deb.getStraat() + "' AND nummer = '" + deb.getNummer()
-			+ "' AND postcode = '" + deb.getPostcode() + "' AND plaats = '" + deb.getPlaats()
-			+ deb.getBtwNummer().map(s -> "' AND btwNummer = '" + s).orElse("") + "';";
+		"SELECT * FROM TotaalDebiteur WHERE naam = '" + deb.naam()
+			+ "' AND straat = '" + deb.straat() + "' AND nummer = '" + deb.nummer()
+			+ "' AND postcode = '" + deb.postcode() + "' AND plaats = '" + deb.plaats()
+			+ deb.btwNummer().map(s -> "' AND btwNummer = '" + s).orElse("") + "';";
 	private static final QueryEnumeration allQuery = () -> "SELECT * FROM TotaalDebiteur;";
 
 	private static final Function<Debiteur, QueryEnumeration> debInsert = deb -> () ->
 		"INSERT INTO TotaalDebiteur (naam, straat, nummer, postcode, plaats"
-			+ deb.getBtwNummer().map(s -> ", btwNummer").orElse("") + ") VALUES ('"
-			+ deb.getNaam() + "', '" + deb.getStraat() + "', '"
-			+ deb.getNummer() + "', '" + deb.getPostcode() + "', '" + deb.getPlaats()
-			+ deb.getBtwNummer().map(s -> "', '" + s).orElse("") + "');";
+			+ deb.btwNummer().map(s -> ", btwNummer").orElse("") + ") VALUES ('"
+			+ deb.naam() + "', '" + deb.straat() + "', '"
+			+ deb.nummer() + "', '" + deb.postcode() + "', '" + deb.plaats()
+			+ deb.btwNummer().map(s -> "', '" + s).orElse("") + "');";
 	private static final Function<Integer, QueryEnumeration> debDelete = id -> () ->
 		"DELETE FROM TotaalDebiteur WHERE debiteurID = '" + id + "';";
 	private static final BiFunction<Integer, Debiteur, QueryEnumeration> debUpdate = (oldID, debNew) -> () ->
-		"UPDATE TotaalDebiteur SET naam = '" + debNew.getNaam()
-			+ "', straat = '" + debNew.getStraat() + "', nummer = '" + debNew.getNummer()
-			+ "', postcode = '" + debNew.getPostcode() + "', plaats = '" + debNew.getPlaats()
-			+ "', btwNummer = " + debNew.getBtwNummer().map(s -> "'" + s + "'").orElse("NULL")
+		"UPDATE TotaalDebiteur SET naam = '" + debNew.naam()
+			+ "', straat = '" + debNew.straat() + "', nummer = '" + debNew.nummer()
+			+ "', postcode = '" + debNew.postcode() + "', plaats = '" + debNew.plaats()
+			+ "', btwNummer = " + debNew.btwNummer().map(s -> "'" + s + "'").orElse("NULL")
 			+ " WHERE debiteurID = " + oldID + ";";
 
 	public DebiteurDBInteraction(Database database) {
@@ -52,7 +52,7 @@ public class DebiteurDBInteraction extends DBInteraction<Debiteur> {
 
 	public Completable deleteDebiteur(Debiteur debiteur) {
 		return this.update(
-			debiteur.getDebiteurID()
+			debiteur.debiteurID()
 				.map(debDelete)
 				.orElseThrow(() -> new IllegalArgumentException("This debiteur does not contain an id: " + debiteur))
 		);
@@ -60,7 +60,7 @@ public class DebiteurDBInteraction extends DBInteraction<Debiteur> {
 
 	public Completable updateDebiteur(Debiteur oldDebiteur, Debiteur newDebiteur) {
 		return this.update(
-			oldDebiteur.getDebiteurID()
+			oldDebiteur.debiteurID()
 				.map(id -> debUpdate.apply(id, newDebiteur))
 				.orElseThrow(() -> new IllegalArgumentException("This debiteur does not contain an id: " + oldDebiteur))
 		);

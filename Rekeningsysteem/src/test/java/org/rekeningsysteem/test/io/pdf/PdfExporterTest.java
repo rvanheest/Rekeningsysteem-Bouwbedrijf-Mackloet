@@ -75,21 +75,4 @@ public class PdfExporterTest {
 		verify(this.visitor).setSaveLocation(eq(mockedFile));
 		verify(this.visitor).visit(mockedRekening);
 	}
-
-	@Test(expected = IllegalStateException.class)
-	public void testExportWithException() {
-		File mockedFile = mock(File.class);
-		try {
-			AbstractRekening mockedRekening = mock(AbstractRekening.class);
-
-			this.exporter.export(mockedRekening, mockedFile);
-		}
-		catch (IllegalStateException e) {
-			verify(this.visitor).setSaveLocation(eq(mockedFile));
-			throw e;
-		}
-		catch (PdfException e) {
-			Assert.fail("We verwachten hier een IllegalStateException en geen PdfException - message: " + e.getMessage());
-		}
-	}
 }

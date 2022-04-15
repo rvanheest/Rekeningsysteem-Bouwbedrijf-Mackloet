@@ -71,8 +71,8 @@ public class GebruiktEsselinkArtikelPane extends GridPane implements Disposable 
 			this.getArtikel()
 				.subscribe(ea -> {
 					artNrOmschr.getStyleClass().remove("no-item-found");
-					artNrOmschr.setText(ea.getArtikelNummer() + "\t" + ea.getOmschrijving());
-					extraInfo.setText(currency.getSymbol() + " " + ea.getVerkoopPrijs().getBedrag() + " per " + ea.getPrijsPer() + " " + ea.getEenheid());
+					artNrOmschr.setText(ea.artikelNummer() + "\t" + ea.omschrijving());
+					extraInfo.setText(currency.getSymbol() + " " + ea.verkoopPrijs().bedrag() + " per " + ea.prijsPer() + " " + ea.eenheid());
 
 					searchField.clear();
 				})
@@ -121,8 +121,8 @@ public class GebruiktEsselinkArtikelPane extends GridPane implements Disposable 
 	}
 
 	public void setBtwPercentage(BtwPercentage btwPercentage) {
-		this.btwPercentageTF.setValue(BigDecimal.valueOf(btwPercentage.getPercentage()));
-		this.verlegdCB.setSelected(btwPercentage.isVerlegd());
+		this.btwPercentageTF.setValue(BigDecimal.valueOf(btwPercentage.percentage()));
+		this.verlegdCB.setSelected(btwPercentage.verlegd());
 	}
 
 	public Observable<EsselinkArtikelToggle> getSelectedToggle() {

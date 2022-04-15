@@ -53,59 +53,11 @@ public class FactuurHeaderTest extends EqualsHashCodeTest {
 	}
 
 	@Test
-	public void testGetDebiteur() {
-		assertEquals(this.debiteur, this.header.getDebiteur());
-	}
-
-	@Test
-	public void testGetDatum() {
-		assertEquals(this.datum, this.header.getDatum());
-	}
-
-	@Test
-	public void testGetFactuurnummer() {
-		assertEquals(Optional.of(this.factuurnummer), this.header.getFactuurnummer());
-	}
-
-	@Test
-	public void testSetFactuurnummer() {
-		this.header.setFactuurnummer("202020");
-		assertEquals(Optional.of("202020"), this.header.getFactuurnummer());
-	}
-
-	@Test
 	public void testSecondConstructor() {
 		this.header = new FactuurHeader(this.debiteur, this.datum);
 
-		assertEquals(this.debiteur, this.header.getDebiteur());
-		assertEquals(this.datum, this.header.getDatum());
-		assertEquals(Optional.empty(), this.header.getFactuurnummer());
-	}
-
-	@Test
-	public void testEqualsFalseOtherDebiteur() {
-		Debiteur debiteur2 = new Debiteur("RvH", "PB", "116", "3241TA", "MH", "20");
-		assertFalse(this.header.equals(new FactuurHeader(debiteur2, this.datum,
-				this.factuurnummer)));
-	}
-
-	@Test
-	public void testEqualsFalseOtherDatum() {
-		LocalDate datum2 = LocalDate.of(1992, 7, 31);
-		assertFalse(this.header.equals(new FactuurHeader(this.debiteur, datum2,
-				this.factuurnummer)));
-	}
-
-	@Test
-	public void testEqualsFalseOtherFactuurnummer() {
-		assertFalse(this.header.equals(new FactuurHeader(this.debiteur, this.datum,
-				this.factuurnummer + ".")));
-	}
-
-	@Test
-	public void testToString() {
-		assertEquals("<FactuurHeader[<Debiteur[Optional.empty, RvH, PB, 116, 3241TA, MH, "
-				+ "Optional.empty]>, " + this.datum.toString() + ", Optional[32013]]>",
-				this.header.toString());
+		assertEquals(this.debiteur, this.header.debiteur());
+		assertEquals(this.datum, this.header.datum());
+		assertEquals(Optional.empty(), this.header.factuurnummer());
 	}
 }

@@ -20,8 +20,9 @@ public class ReparatiesFactuur extends AbstractFactuur<ReparatiesInkoopOrder> {
 
 	@Override
 	public String toString() {
-		return "<ReparatiesFactuur[" + String.valueOf(this.getFactuurHeader()) + ", "
-				+ String.valueOf(this.getCurrency()) + ", "
-				+ String.valueOf(this.getItemList()) + "]>";
+		return "<ReparatiesFactuur["
+			+ String.valueOf(this.getFactuurHeader()) + ", "
+			+ String.valueOf(this.getCurrency()) + ", "
+			+ String.valueOf(this.getItemList()) + "]>";
 	}
 }

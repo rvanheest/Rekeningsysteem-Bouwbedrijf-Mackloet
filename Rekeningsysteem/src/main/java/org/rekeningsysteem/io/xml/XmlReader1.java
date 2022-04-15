@@ -214,8 +214,8 @@ public class XmlReader1 extends XmlLoader {
 
 		Maybe<BtwPercentages> btw = makeEnkelBtw(node);
 		return btw.flatMap(percentages -> {
-			Single<ItemList<ParticulierArtikel>> art = itemList.apply(percentages.getMateriaalPercentage());
-			Maybe<ItemList<AbstractLoon>> loon = loonList.apply(percentages.getLoonPercentage());
+			Single<ItemList<ParticulierArtikel>> art = itemList.apply(percentages.materiaalPercentage());
+			Maybe<ItemList<AbstractLoon>> loon = loonList.apply(percentages.loonPercentage());
 
 			return Maybe.zip(header, art.toMaybe(), loon, (h, li, lo) -> {
 				li.addAll(lo);
@@ -254,8 +254,8 @@ public class XmlReader1 extends XmlLoader {
 
 		Maybe<BtwPercentages> btw = makeDubbelBtw(node);
 		return btw.flatMap(percentage -> {
-			Single<ItemList<ParticulierArtikel>> art = itemList.apply(percentage.getMateriaalPercentage());
-			Maybe<ItemList<AbstractLoon>> loon = loonList.apply(percentage.getLoonPercentage());
+			Single<ItemList<ParticulierArtikel>> art = itemList.apply(percentage.materiaalPercentage());
+			Maybe<ItemList<AbstractLoon>> loon = loonList.apply(percentage.loonPercentage());
 
 			return Maybe.zip(header, art.toMaybe(), loon, (h, li, lo) -> {
 				li.addAll(lo);

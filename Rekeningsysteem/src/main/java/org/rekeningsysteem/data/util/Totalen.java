@@ -9,26 +9,10 @@ import java.util.function.Function;
 
 public final class Totalen {
 
-	public class NettoBtwTuple {
-
-		private final Geld netto;
-		private final Geld btw;
-
-		public NettoBtwTuple(Geld netto, Geld btw) {
-			this.netto = netto;
-			this.btw = btw;
-		}
+	public record NettoBtwTuple(Geld netto, Geld btw) {
 
 		public NettoBtwTuple add(NettoBtwTuple other) {
 			return new NettoBtwTuple(this.netto.add(other.netto), this.btw.add(other.btw));
-		}
-
-		public Geld getNetto() {
-			return this.netto;
-		}
-
-		public Geld getBtw() {
-			return this.btw;
 		}
 
 		public NettoBtwTuple wipeBtw() {
@@ -37,27 +21,6 @@ public final class Totalen {
 
 		public Geld getTotaal() {
 			return this.netto.add(this.btw);
-		}
-
-		@Override
-		public boolean equals(Object other) {
-			if (other instanceof NettoBtwTuple) {
-				NettoBtwTuple that = (NettoBtwTuple) other;
-				return Objects.equals(this.netto, that.netto)
-						&& Objects.equals(this.btw, that.btw);
-			}
-			return false;
-		}
-
-		@Override
-		public int hashCode() {
-			return Objects.hash(this.netto, this.btw);
-		}
-
-		@Override
-		public String toString() {
-			return "<NettoBtwTuple[" + String.valueOf(this.netto) + ", "
-					+ String.valueOf(this.btw) + "]>";
 		}
 	}
 
@@ -89,56 +52,52 @@ public final class Totalen {
 
 	private static <K, V1, V2> Map<K, V2> sep(Map<K, V1> map, Function<V1, V2> f) {
 		Map<K, V2> res = new HashMap<>();
-		map.entrySet()
-				.stream()
-				.forEach(entry -> res.put(entry.getKey(), f.apply(entry.getValue())));
+		map.forEach((key, value) -> res.put(key, f.apply(value)));
 
 		return Collections.unmodifiableMap(res);
 	}
 
 	public Set<BtwPercentage> getBtwPercentages() {
-	    return Collections.unmodifiableSet(this.nettoBtwPerPercentage.keySet());
-    }
+		return Collections.unmodifiableSet(this.nettoBtwPerPercentage.keySet());
+	}
 
 	public Map<BtwPercentage, NettoBtwTuple> getNettoBtwTuple() {
 		return Collections.unmodifiableMap(this.nettoBtwPerPercentage);
 	}
 
 	public Map<BtwPercentage, Geld> getNetto() {
-		return Collections.unmodifiableMap(sep(this.nettoBtwPerPercentage, NettoBtwTuple::getNetto));
+		return sep(this.nettoBtwPerPercentage, NettoBtwTuple::netto);
 	}
 
 	public Map<BtwPercentage, Geld> getBtw() {
-		return Collections.unmodifiableMap(sep(this.nettoBtwPerPercentage, NettoBtwTuple::getBtw));
+		return sep(this.nettoBtwPerPercentage, NettoBtwTuple::btw);
 	}
 
 	public Geld getSubtotaal() {
 		return this.nettoBtwPerPercentage.values()
-				.parallelStream()
-				.map(NettoBtwTuple::getNetto)
-				.reduce(new Geld(0.0), Geld::add);
+			.parallelStream()
+			.map(NettoBtwTuple::netto)
+			.reduce(new Geld(0.0), Geld::add);
 	}
 
 	public Geld getTotaal() {
 		return this.nettoBtwPerPercentage.entrySet()
-				.parallelStream()
-				.map(entry -> entry.getKey().isVerlegd() ? entry.getValue().wipeBtw() : entry.getValue())
-				.map(NettoBtwTuple::getTotaal)
-				.reduce(new Geld(0.0), Geld::add);
+			.parallelStream()
+			.map(entry -> entry.getKey().verlegd() ? entry.getValue().wipeBtw() : entry.getValue())
+			.map(NettoBtwTuple::getTotaal)
+			.reduce(new Geld(0.0), Geld::add);
 	}
 
 	public Totalen plus(Totalen t2) {
 		Map<BtwPercentage, NettoBtwTuple> map = new HashMap<>(this.nettoBtwPerPercentage);
-		t2.nettoBtwPerPercentage
-				.forEach((percentage, bedrag) -> map.merge(percentage, bedrag, NettoBtwTuple::add));
+		t2.nettoBtwPerPercentage.forEach((percentage, bedrag) -> map.merge(percentage, bedrag, NettoBtwTuple::add));
 
 		return new Totalen(map);
 	}
 
 	@Override
 	public boolean equals(Object other) {
-		if (other instanceof Totalen) {
-			Totalen that = (Totalen) other;
+		if (other instanceof Totalen that) {
 			return Objects.equals(this.nettoBtwPerPercentage, that.nettoBtwPerPercentage);
 		}
 		return false;

@@ -12,7 +12,7 @@ public abstract class AbstractLoon extends ParticulierArtikel {
 
 	// AbstractLoon and all its subclasses have no materiaal price, so it is fixed to zero
 	@Override
-	public final Geld getMateriaal() {
+	public final Geld materiaal() {
 		return new Geld(0);
 	}
 
@@ -23,8 +23,7 @@ public abstract class AbstractLoon extends ParticulierArtikel {
 
 	@Override
 	public boolean equals(Object other) {
-		if (other instanceof AbstractLoon) {
-			AbstractLoon that = (AbstractLoon) other;
+		if (other instanceof AbstractLoon that) {
 			return super.equals(that);
 		}
 		return false;

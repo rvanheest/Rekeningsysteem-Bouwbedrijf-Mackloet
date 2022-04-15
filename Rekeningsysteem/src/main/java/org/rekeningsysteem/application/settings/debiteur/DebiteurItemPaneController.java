@@ -13,7 +13,7 @@ public class DebiteurItemPaneController extends AbstractListItemController<Debit
 	}
 
 	public DebiteurItemPaneController(Debiteur debiteur) {
-		this(debiteur.getDebiteurID(), new DebiteurItemPane());
+		this(debiteur.debiteurID(), new DebiteurItemPane());
 		setDebiteur(debiteur, this.getUI());
 	}
 
@@ -34,12 +34,12 @@ public class DebiteurItemPaneController extends AbstractListItemController<Debit
 	}
 
 	private static void setDebiteur(Debiteur debiteur, DebiteurItemPane ui) {
-		ui.setNaam(debiteur.getNaam());
-		ui.setStraat(debiteur.getStraat());
-		ui.setNummer(debiteur.getNummer());
-		ui.setPostcode(debiteur.getPostcode());
-		ui.setPlaats(debiteur.getPlaats());
-		ui.setBtwNummer(debiteur.getBtwNummer().orElse(""));
+		ui.setNaam(debiteur.naam());
+		ui.setStraat(debiteur.straat());
+		ui.setNummer(debiteur.nummer());
+		ui.setPostcode(debiteur.postcode());
+		ui.setPlaats(debiteur.plaats());
+		ui.setBtwNummer(debiteur.btwNummer().orElse(""));
 		ui.setAsUpdate();
 	}
 }

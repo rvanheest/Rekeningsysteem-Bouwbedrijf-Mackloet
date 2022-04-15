@@ -40,67 +40,56 @@ public class EsselinkArtikelTest extends EqualsHashCodeTest {
 
 	@Test
 	public void testGetArtikelNummer() {
-		assertEquals(this.artikelNummer, this.artikel.getArtikelNummer());
+		assertEquals(this.artikelNummer, this.artikel.artikelNummer());
 	}
 
 	@Test
 	public void testGetOmschrijving() {
-		assertEquals(this.omschrijving, this.artikel.getOmschrijving());
+		assertEquals(this.omschrijving, this.artikel.omschrijving());
 	}
 
 	@Test
 	public void testGetPrijsPer() {
-		assertEquals(this.prijsPer, this.artikel.getPrijsPer());
+		assertEquals(this.prijsPer, this.artikel.prijsPer());
 	}
 
 	@Test
 	public void testGetEenheid() {
-		assertEquals(this.eenheid, this.artikel.getEenheid());
+		assertEquals(this.eenheid, this.artikel.eenheid());
 	}
 
 	@Test
 	public void testGetVerkoopPrijs() {
-		assertEquals(this.prijs, this.artikel.getVerkoopPrijs());
+		assertEquals(this.prijs, this.artikel.verkoopPrijs());
 	}
 
 	@Test
 	public void testEqualsFalseOtherArtikelNummer() {
-		EsselinkArtikel ea2 = new EsselinkArtikel(this.artikelNummer + ".", this.omschrijving,
-				this.prijsPer, this.eenheid, this.prijs);
+		EsselinkArtikel ea2 = new EsselinkArtikel(this.artikelNummer + ".", this.omschrijving, this.prijsPer, this.eenheid, this.prijs);
 		assertFalse(this.artikel.equals(ea2));
 	}
 
 	@Test
 	public void testEqualsFalseOtherOmschrijving() {
-		EsselinkArtikel ea2 = new EsselinkArtikel(this.artikelNummer, this.omschrijving + ".",
-				this.prijsPer, this.eenheid, this.prijs);
+		EsselinkArtikel ea2 = new EsselinkArtikel(this.artikelNummer, this.omschrijving + ".", this.prijsPer, this.eenheid, this.prijs);
 		assertFalse(this.artikel.equals(ea2));
 	}
 
 	@Test
 	public void testEqualsFalseOtherPrijsPer() {
-		EsselinkArtikel ea2 = new EsselinkArtikel(this.artikelNummer, this.omschrijving,
-				this.prijsPer + 1, this.eenheid, this.prijs);
+		EsselinkArtikel ea2 = new EsselinkArtikel(this.artikelNummer, this.omschrijving, this.prijsPer + 1, this.eenheid, this.prijs);
 		assertFalse(this.artikel.equals(ea2));
 	}
 
 	@Test
 	public void testEqualsFalseOtherEenheid() {
-		EsselinkArtikel ea2 = new EsselinkArtikel(this.artikelNummer, this.omschrijving,
-				this.prijsPer, this.eenheid + ".", this.prijs);
+		EsselinkArtikel ea2 = new EsselinkArtikel(this.artikelNummer, this.omschrijving, this.prijsPer, this.eenheid + ".", this.prijs);
 		assertFalse(this.artikel.equals(ea2));
 	}
 
 	@Test
 	public void testEqualsFalseOtherPrijs() {
-		EsselinkArtikel ea2 = new EsselinkArtikel(this.artikelNummer, this.omschrijving,
-				this.prijsPer, this.eenheid, new Geld(1));
+		EsselinkArtikel ea2 = new EsselinkArtikel(this.artikelNummer, this.omschrijving, this.prijsPer, this.eenheid, new Geld(1));
 		assertFalse(this.artikel.equals(ea2));
-	}
-
-	@Test
-	public void testToString() {
-		assertEquals("<EsselinkArtikel[artikelNummer, omschrijving, 1, eenheid, <Geld[3,00]>]>",
-				this.artikel.toString());
 	}
 }
