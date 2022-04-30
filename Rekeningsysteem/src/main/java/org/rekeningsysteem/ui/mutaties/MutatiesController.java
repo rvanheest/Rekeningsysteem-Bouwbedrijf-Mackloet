@@ -48,18 +48,14 @@ public class MutatiesController extends AbstractRekeningController<MutatiesFactu
 	public MutatiesController(MutatiesFactuur input, Database database) {
 		this(
 			new FactuurHeaderController(input.getFactuurHeader(), database),
-			new ListPaneController<>(new MutatiesListController(input.getCurrency(), input.getItemList()), input.getCurrency())
+			new ListPaneController<>(new MutatiesListController(input.getItemList()), input.getItemList().getCurrency())
 		);
 	}
 
 	public MutatiesController(FactuurHeaderController header, ListPaneController<MutatiesInkoopOrder> body) {
 		super(
 			new RekeningSplitPane(header.getUI(), body.getUI()),
-			Observable.combineLatest(
-				header.getModel(),
-				body.getListModel(),
-				(head, list) -> new MutatiesFactuur(head, body.getCurrency(), list)
-			)
+			Observable.combineLatest(header.getModel(), body.getListModel(), MutatiesFactuur::new)
 		);
 		this.header = header;
 		this.disposable.addAll(header, body);

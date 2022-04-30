@@ -50,11 +50,11 @@ public class ReparationFactuurIntegrationTest extends AbstractIntegrationTest {
 		String factuurnummer = "232011";
 		FactuurHeader header = new FactuurHeader(debiteur, datum, factuurnummer);
 
-		ItemList<ReparatiesInkoopOrder> itemList = new ItemList<>();
+		ItemList<ReparatiesInkoopOrder> itemList = new ItemList<>(Currency.getInstance("EUR"));
 		this.addOrders(itemList);
 		this.addOrders(itemList);
 
-		return new ReparatiesFactuur(header, Currency.getInstance("EUR"), itemList);
+		return new ReparatiesFactuur(header, itemList);
 	}
 
 	@Override

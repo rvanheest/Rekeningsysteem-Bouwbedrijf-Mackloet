@@ -31,8 +31,9 @@ import org.w3c.dom.NodeList;
 
 import javax.xml.parsers.DocumentBuilder;
 import java.time.LocalDate;
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.Currency;
+import java.util.List;
 
 public class XmlReader1 extends XmlLoader {
 
@@ -172,7 +173,7 @@ public class XmlReader1 extends XmlLoader {
 
 		Maybe<FactuurHeader> header = makeFactuurHeader(node);
 		Maybe<String> omschrijving = getNodeValue(node, "omschrijving");
-		Function<BtwPercentage, Single<ItemList<ParticulierArtikel>>> itemList = btw ->
+		Function<BtwPercentage, Single<List<ParticulierArtikel>>> items = btw ->
 			Observable.range(0, gal.getLength())
 				.map(gal::item)
 				.flatMapMaybe(item -> switch (item.getNodeName()) {
@@ -181,25 +182,21 @@ public class XmlReader1 extends XmlLoader {
 					default -> Maybe.error(new IllegalArgumentException("Unknown artikel type found."));
 				})
 				.map(f -> f.apply(btw))
-				.collect(ItemList::new, Collection::add);
-		Function<BtwPercentage, Maybe<ItemList<AbstractLoon>>> loonList = btw ->
-			this.makeLoon(getElement(node, "loon"))
-				.map(f -> {
-					ItemList<AbstractLoon> il = new ItemList<>();
-					il.add(f.apply(btw));
-					return il;
-				});
+				.collect(() -> new ArrayList<ParticulierArtikel>(), List::add);
+		Function<BtwPercentage, Maybe<AbstractLoon>> loon = btw -> this.makeLoon(getElement(node, "loon")).map(f -> f.apply(btw));
 
-		Maybe<BtwPercentages> btw = makeEnkelBtw(node);
-		return btw.flatMap(percentages -> {
-			Single<ItemList<ParticulierArtikel>> art = itemList.apply(percentages.materiaalPercentage());
-			Maybe<ItemList<AbstractLoon>> loon = loonList.apply(percentages.loonPercentage());
-
-			return Maybe.zip(header, omschrijving, art.toMaybe(), loon, (h, o, li, lo) -> {
-				li.addAll(lo);
-				return new ParticulierFactuur(h, o, this.currency, li);
-			});
-		});
+		return makeEnkelBtw(node)
+				.flatMap(percentages -> Maybe.zip(
+						header,
+						omschrijving,
+						items.apply(percentages.materiaalPercentage())
+								.map(list -> new ItemList<>(this.currency, list))
+								.flatMapMaybe(arts -> loon.apply(percentages.loonPercentage())
+										.doOnSuccess(arts::add)
+										.map(ignored -> arts)
+								),
+						ParticulierFactuur::new
+				));
 	}
 
 	private Maybe<ParticulierFactuur> makeParticulierFactuur2(Node node) {
@@ -207,7 +204,7 @@ public class XmlReader1 extends XmlLoader {
 
 		Maybe<FactuurHeader> header = makeFactuurHeader(node);
 		Maybe<String> omschrijving = getNodeValue(node, "omschrijving");
-		Function<BtwPercentage, Single<ItemList<ParticulierArtikel>>> itemList = btw ->
+		Function<BtwPercentage, Single<List<ParticulierArtikel>>> items = btw ->
 			Observable.range(0, gal.getLength())
 				.map(gal::item)
 				.flatMapMaybe(item -> switch (item.getNodeName()) {
@@ -216,25 +213,21 @@ public class XmlReader1 extends XmlLoader {
 					default -> Maybe.error(new IllegalArgumentException("Unknown artikel type found."));
 				})
 				.map(f -> f.apply(btw))
-				.collect(ItemList::new, Collection::add);
-		Function<BtwPercentage, Maybe<ItemList<AbstractLoon>>> loonList = btw ->
-			this.makeLoon(getElement(node, "loon"))
-				.map(f -> {
-					ItemList<AbstractLoon> il = new ItemList<>();
-					il.add(f.apply(btw));
-					return il;
-				});
+				.collect(() -> new ArrayList<ParticulierArtikel>(), List::add);
+		Function<BtwPercentage, Maybe<AbstractLoon>> loonList = btw -> this.makeLoon(getElement(node, "loon")).map(f -> f.apply(btw));
 
-		Maybe<BtwPercentages> btw = makeDubbelBtw(node);
-		return btw.flatMap(percentage -> {
-			Single<ItemList<ParticulierArtikel>> art = itemList.apply(percentage.materiaalPercentage());
-			Maybe<ItemList<AbstractLoon>> loon = loonList.apply(percentage.loonPercentage());
-
-			return Maybe.zip(header, omschrijving, art.toMaybe(), loon, (h, o, li, lo) -> {
-				li.addAll(lo);
-				return new ParticulierFactuur(h, o, this.currency, li);
-			});
-		});
+		return makeDubbelBtw(node)
+				.flatMap(percentage -> Maybe.zip(
+						header,
+						omschrijving,
+						items.apply(percentage.materiaalPercentage())
+								.map(list -> new ItemList<>(this.currency, list))
+								.flatMapMaybe(arts -> loonList.apply(percentage.loonPercentage())
+										.doOnSuccess(arts::add)
+										.map(ignored -> arts)
+								),
+						ParticulierFactuur::new
+				));
 	}
 
 	private Maybe<MutatiesInkoopOrder> makeMutatiesInkoopOrder(Node node) {
@@ -252,9 +245,10 @@ public class XmlReader1 extends XmlLoader {
 		Single<ItemList<MutatiesInkoopOrder>> itemList = Observable.range(0, orders.getLength())
 			.map(orders::item)
 			.flatMapMaybe(this::makeMutatiesInkoopOrder)
-			.collect(ItemList::new, Collection::add);
+			.collect(ArrayList<MutatiesInkoopOrder>::new, List::add)
+			.map(list -> new ItemList<>(this.currency, list));
 
-		return Maybe.zip(header, itemList.toMaybe(), (h, il) -> new MutatiesFactuur(h, this.currency, il));
+		return Maybe.zip(header, itemList.toMaybe(), MutatiesFactuur::new);
 	}
 
 	private Maybe<ReparatiesInkoopOrder> makeReparatiesInkoopOrder(Node node) {
@@ -273,9 +267,10 @@ public class XmlReader1 extends XmlLoader {
 		Single<ItemList<ReparatiesInkoopOrder>> itemList = Observable.range(0, orders.getLength())
 			.map(orders::item)
 			.flatMapMaybe(this::makeReparatiesInkoopOrder)
-			.collect(ItemList::new, Collection::add);
+			.collect(ArrayList<ReparatiesInkoopOrder>::new, List::add)
+			.map(list -> new ItemList<>(this.currency, list));
 
-		return Maybe.zip(header, itemList.toMaybe(), (h, il) -> new ReparatiesFactuur(h, this.currency, il));
+		return Maybe.zip(header, itemList.toMaybe(), ReparatiesFactuur::new);
 	}
 
 	private static Maybe<Offerte> makeOfferte(Node node) {

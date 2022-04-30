@@ -15,6 +15,7 @@ import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.data.util.ItemList;
 import org.rekeningsysteem.data.util.header.Debiteur;
 import org.rekeningsysteem.data.util.header.FactuurHeader;
+import org.rekeningsysteem.exception.DifferentCurrencyException;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -25,7 +26,7 @@ import java.util.Currency;
 public class ParticulierFactuurVerlegdBtwIntegrationTest extends AbstractIntegrationTest {
 
 	protected ItemList<ParticulierArtikel> addArtikels() {
-		ItemList<ParticulierArtikel> list = new ItemList<>();
+		ItemList<ParticulierArtikel> list = new ItemList<>(Currency.getInstance("EUR"));
 
 		EsselinkArtikel sub1 = new EsselinkArtikel("2018021117", "Product 1", 1, "Zak", new Geld(5.16));
 		EsselinkArtikel sub2 = new EsselinkArtikel("2003131360", "Product 2", 1, "zak", new Geld(129.53));
@@ -49,7 +50,7 @@ public class ParticulierFactuurVerlegdBtwIntegrationTest extends AbstractIntegra
 	}
 
 	protected ItemList<AbstractLoon> addLoon() {
-		ItemList<AbstractLoon> list = new ItemList<>();
+		ItemList<AbstractLoon> list = new ItemList<>(Currency.getInstance("EUR"));
 
 		list.add(new ProductLoon("Uurloon à 38.50", 25, new Geld(38.50), new BtwPercentage(0, true)));
 		list.add(new ProductLoon("test123", 12, new Geld(12.50), new BtwPercentage(0, true)));
@@ -59,17 +60,15 @@ public class ParticulierFactuurVerlegdBtwIntegrationTest extends AbstractIntegra
 	}
 
 	@Override
-	protected ParticulierFactuur makeRekening() {
+	protected ParticulierFactuur makeRekening() throws DifferentCurrencyException {
 		Debiteur debiteur = new Debiteur("Name", "Street", "Number", "Zipcode", "Place");
 		LocalDate datum = LocalDate.of(2011, 4, 2);
 		String factuurnummer = "22011";
 		FactuurHeader header = new FactuurHeader(debiteur, datum, factuurnummer);
 		String omschrijving = "Voor u verrichte werkzaamheden betreffende renovatie badkamervloer i.v.m. lekkage";
+		ItemList<ParticulierArtikel> itemList = ItemList.merge(this.addArtikels(), this.addLoon());
 
-		ItemList<ParticulierArtikel> itemList = this.addArtikels();
-		itemList.addAll(this.addLoon());
-
-		return new ParticulierFactuur(header, omschrijving, Currency.getInstance("EUR"), itemList);
+		return new ParticulierFactuur(header, omschrijving, itemList);
 	}
 
 	@Override

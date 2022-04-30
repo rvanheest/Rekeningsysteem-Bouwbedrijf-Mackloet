@@ -143,7 +143,7 @@ public class PdfExporterVisitor {
 
 	private Consumer<PdfConverter> convert(MutatiesFactuur factuur) {
 		return this.convertFactuurHeader(factuur.getFactuurHeader())
-			.andThen(converter -> converter.replace("Valuta", factuur.getCurrency().getSymbol()))
+			.andThen(converter -> converter.replace("Valuta", factuur.getItemList().getCurrency().getSymbol()))
 			.andThen(converter -> converter.replace("orderList", factuur.getItemList()
 				.stream()
 				.map(this.itemVisitor::visit)
@@ -161,7 +161,7 @@ public class PdfExporterVisitor {
 	private Consumer<PdfConverter> convert(ParticulierFactuur factuur) {
 		return this.convertFactuurHeader(factuur.getFactuurHeader())
 			.andThen(converter -> converter.replace("Omschrijving", factuur.getOmschrijving()))
-			.andThen(converter -> converter.replace("Valuta", factuur.getCurrency().getSymbol()))
+			.andThen(converter -> converter.replace("Valuta", factuur.getItemList().getCurrency().getSymbol()))
 			.andThen(converter -> converter.replace("artikelList", factuur.getItemList()
 				.stream()
 				.map(particulierArtikel -> switch (particulierArtikel) {
@@ -178,7 +178,7 @@ public class PdfExporterVisitor {
 
 	private Consumer<PdfConverter> convert(ReparatiesFactuur factuur) {
 		return this.convertFactuurHeader(factuur.getFactuurHeader())
-			.andThen(converter -> converter.replace("Valuta", factuur.getCurrency().getSymbol()))
+			.andThen(converter -> converter.replace("Valuta", factuur.getItemList().getCurrency().getSymbol()))
 			.andThen(converter -> converter.replace("orderList", factuur.getItemList()
 				.stream()
 				.map(this.itemVisitor::visit)

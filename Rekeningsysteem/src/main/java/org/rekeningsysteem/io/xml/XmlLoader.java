@@ -50,7 +50,10 @@ public abstract class XmlLoader implements FactuurLoader {
 			.filter(nodeList -> nodeList.getLength() > 0)
 			.map(nodeList -> nodeList.item(0))
 			.flatMapMaybe(parse)
-			.onErrorResumeNext(e -> Observable.empty())
+			.onErrorResumeNext(e -> {
+				e.printStackTrace();
+				return Observable.empty();
+			})
 			.firstElement()
 			.switchIfEmpty(Single.defer(() -> Single.error(new XmlParseException("Could not parse file to object."))));
 	}

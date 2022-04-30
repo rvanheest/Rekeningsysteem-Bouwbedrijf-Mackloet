@@ -154,8 +154,8 @@ class XmlWriterDocumentVisitor {
 	public Function<Document, Node> visit(MutatiesFactuur mutatiesFactuur) {
 		return createElement("mutaties-factuur",
 			xml -> appendNode(xml, visit(mutatiesFactuur.getFactuurHeader()))
-				.andThen(appendNode(xml, visit(mutatiesFactuur.getCurrency())))
-				.andThen(appendNode(xml, visit(mutatiesFactuur.getItemList()))));
+				.andThen(appendNode(xml, visit(mutatiesFactuur.getItemList().getCurrency())))
+				.andThen(appendNode(xml, visit(mutatiesFactuur.getItemList().getList()))));
 	}
 
 	public Function<Document, Node> visit(Offerte offerte) {
@@ -172,8 +172,8 @@ class XmlWriterDocumentVisitor {
 
 				stringNode(header, "omschrijving", factuur.getOmschrijving())
 					.andThen(appendNode(xml, header))
-					.andThen(appendNode(xml, visit(factuur.getCurrency())))
-					.andThen(appendNode(xml, visit(factuur.getItemList())))
+					.andThen(appendNode(xml, visit(factuur.getItemList().getCurrency())))
+					.andThen(appendNode(xml, visit(factuur.getItemList().getList())))
 					.accept(doc);
 			});
 	}
@@ -181,7 +181,7 @@ class XmlWriterDocumentVisitor {
 	public Function<Document, Node> visit(ReparatiesFactuur factuur) {
 		return createElement("reparaties-factuur",
 			xml -> appendNode(xml, visit(factuur.getFactuurHeader()))
-				.andThen(appendNode(xml, visit(factuur.getCurrency())))
-				.andThen(appendNode(xml, visit(factuur.getItemList()))));
+				.andThen(appendNode(xml, visit(factuur.getItemList().getCurrency())))
+				.andThen(appendNode(xml, visit(factuur.getItemList().getList()))));
 	}
 }

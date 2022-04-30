@@ -50,7 +50,7 @@ public class XmlReader2Test {
 				"22011"
 		);
 		String omschrijving = "Voor u verrichte werkzaamheden betreffende renovatie badkamervloer i.v.m. lekkage";
-		ItemList<ParticulierArtikel> itemList = new ItemList<>();
+		ItemList<ParticulierArtikel> itemList = new ItemList<>(Currency.getInstance("EUR"));
 		itemList.add(new GebruiktEsselinkArtikel(new EsselinkArtikel("2018021117", "Product 1", 1, "Zak", new Geld(5.16)), 8.0, new BtwPercentage(21.0, false)));
 		itemList.add(new GebruiktEsselinkArtikel(new EsselinkArtikel("2003131360", "Product 2", 1, "zak", new Geld(129.53)), 1.0, new BtwPercentage(21.0, false)));
 		itemList.add(new GebruiktEsselinkArtikel(new EsselinkArtikel("2003131060", "Product 3", 1, "set", new Geld(35.96)), 1.0, new BtwPercentage(21.0, false)));
@@ -64,7 +64,7 @@ public class XmlReader2Test {
 		itemList.add(new ProductLoon("test123", 12.0, new Geld(12.5), new BtwPercentage(6.0, false)));
 		itemList.add(new InstantLoon("foobar", new Geld(40.0), new BtwPercentage(6.0, false)));
 
-		ParticulierFactuur expected = new ParticulierFactuur(factuurHeader, omschrijving, Currency.getInstance("EUR"), itemList);
+		ParticulierFactuur expected = new ParticulierFactuur(factuurHeader, omschrijving, itemList);
 
 		this.reader.load(path)
 			.test()
@@ -83,12 +83,12 @@ public class XmlReader2Test {
 				"272011"
 		);
 
-		ItemList<MutatiesInkoopOrder> itemList = new ItemList<>();
+		ItemList<MutatiesInkoopOrder> itemList = new ItemList<>(Currency.getInstance("EUR"));
 		itemList.add(new MutatiesInkoopOrder("Ordernummer", "111390", new Geld(4971.96)));
 		itemList.add(new MutatiesInkoopOrder("Ordernummer", "111477", new Geld(4820.96)));
 		itemList.add(new MutatiesInkoopOrder("Ordernummer", "112308", new Geld(5510.74)));
 
-		MutatiesFactuur expected = new MutatiesFactuur(factuurHeader, Currency.getInstance("EUR"), itemList);
+		MutatiesFactuur expected = new MutatiesFactuur(factuurHeader, itemList);
 
 		this.reader.load(path)
 			.test()
@@ -107,7 +107,7 @@ public class XmlReader2Test {
 			"232011"
 		);
 
-		ItemList<ReparatiesInkoopOrder> itemList = new ItemList<>();
+		ItemList<ReparatiesInkoopOrder> itemList = new ItemList<>(Currency.getInstance("EUR"));
 		itemList.add(new ReparatiesInkoopOrder("Ordernummer", "110543", new Geld(77), new Geld(6.5)));
 		itemList.add(new ReparatiesInkoopOrder("Ordernummer", "111558", new Geld(77), new Geld(9)));
 		itemList.add(new ReparatiesInkoopOrder("Ordernummer", "111518", new Geld(57.75), new Geld(0)));
@@ -132,7 +132,7 @@ public class XmlReader2Test {
 		itemList.add(new ReparatiesInkoopOrder("Ordernummer", "111272", new Geld(3630.66), new Geld(2420.44)));
 		itemList.add(new ReparatiesInkoopOrder("Ordernummer", "111148", new Geld(3878.2), new Geld(2585.46)));
 
-		ReparatiesFactuur expected = new ReparatiesFactuur(factuurHeader, Currency.getInstance("EUR"), itemList);
+		ReparatiesFactuur expected = new ReparatiesFactuur(factuurHeader, itemList);
 
 		this.reader.load(path)
 			.test()
@@ -174,7 +174,7 @@ public class XmlReader2Test {
 		);
 		String omschrijving = "Voor u verrichte werkzaamheden";
 
-		ItemList<ParticulierArtikel> itemList = new ItemList<>();
+		ItemList<ParticulierArtikel> itemList = new ItemList<>(Currency.getInstance("EUR"));
 		itemList.add(new AnderArtikel("omschr1", new Geld(2791.25), new BtwPercentage(21.0, false)));
 		itemList.add(new InstantLoon("omschr1", new Geld(5183.75), new BtwPercentage(6.0, false)));
 		itemList.add(new AnderArtikel("omschr2", new Geld(1972.2), new BtwPercentage(21.0, false)));
@@ -184,7 +184,7 @@ public class XmlReader2Test {
 		itemList.add(new AnderArtikel("omschr4", new Geld(0), new BtwPercentage(21.0, false)));
 		itemList.add(new InstantLoon("omschr4", new Geld(-800.0), new BtwPercentage(6.0, false)));
 
-		ParticulierFactuur expected = new ParticulierFactuur(factuurHeader, omschrijving, Currency.getInstance("EUR"), itemList);
+		ParticulierFactuur expected = new ParticulierFactuur(factuurHeader, omschrijving, itemList);
 
 		this.reader.load(path)
 			.test()

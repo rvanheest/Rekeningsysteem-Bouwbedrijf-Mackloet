@@ -48,18 +48,14 @@ public class ReparatiesController extends AbstractRekeningController<ReparatiesF
 	public ReparatiesController(ReparatiesFactuur input, Database database) {
 		this(
 			new FactuurHeaderController(input.getFactuurHeader(), database),
-			new ListPaneController<>(new ReparatiesListController(input.getCurrency(), input.getItemList()), input.getCurrency())
+			new ListPaneController<>(new ReparatiesListController(input.getItemList()), input.getItemList().getCurrency())
 		);
 	}
 
 	public ReparatiesController(FactuurHeaderController header, ListPaneController<ReparatiesInkoopOrder> body) {
 		super(
 			new RekeningSplitPane(header.getUI(), body.getUI()),
-			Observable.combineLatest(
-				header.getModel(),
-				body.getListModel(),
-				(head, list) -> new ReparatiesFactuur(head, body.getCurrency(), list)
-			)
+			Observable.combineLatest(header.getModel(), body.getListModel(), ReparatiesFactuur::new)
 		);
 		this.header = header;
 		this.disposable.addAll(header, body);

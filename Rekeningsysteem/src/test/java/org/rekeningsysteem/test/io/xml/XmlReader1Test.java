@@ -49,14 +49,14 @@ public class XmlReader1Test {
 				"302012"
 		);
 		String omschrijving = "TestOmschrijving";
-		ItemList<ParticulierArtikel> itemList = new ItemList<>();
+		ItemList<ParticulierArtikel> itemList = new ItemList<>(Currency.getInstance("EUR"));
 		itemList.add(new GebruiktEsselinkArtikel(new EsselinkArtikel("12345", "testomschr", 1, "Zak", new Geld(46.14)), 6.0, new BtwPercentage(19.0, false)));
 		itemList.add(new GebruiktEsselinkArtikel(new EsselinkArtikel("1234", "testomschr2", 1, "zak", new Geld(5.95)), 6.0, new BtwPercentage(19.0, false)));
 		itemList.add(new GebruiktEsselinkArtikel(new EsselinkArtikel("7985464", "testomschr3", 1, "emmer", new Geld(42.32)), 20.0, new BtwPercentage(19.0, false)));
 		itemList.add(new AnderArtikel("Ander artikel", new Geld(50.00), new BtwPercentage(19.0, false)));
 		itemList.add(new ProductLoon("Uurloon à 5,60", 20.0, new Geld(5.60), new BtwPercentage(19.0, false)));
 
-		ParticulierFactuur expected = new ParticulierFactuur(factuurHeader, omschrijving, Currency.getInstance("EUR"), itemList);
+		ParticulierFactuur expected = new ParticulierFactuur(factuurHeader, omschrijving, itemList);
 
 		this.reader.load(path)
 			.test()
@@ -75,13 +75,13 @@ public class XmlReader1Test {
 				"32013"
 		);
 		String omschrijving = "test123";
-		ItemList<ParticulierArtikel> itemList = new ItemList<>();
+		ItemList<ParticulierArtikel> itemList = new ItemList<>(Currency.getInstance("EUR"));
 		itemList.add(new GebruiktEsselinkArtikel(new EsselinkArtikel("456123", "testomschr", 1, "zak", new Geld(9.83)), 20.0, new BtwPercentage(21.0, false)));
 		itemList.add(new GebruiktEsselinkArtikel(new EsselinkArtikel("789456123", "testomschr2", 1, "emmer", new Geld(42.32)), 6.0, new BtwPercentage(21.0, false)));
 		itemList.add(new AnderArtikel("test", new Geld(20.00), new BtwPercentage(21.0, false)));
 		itemList.add(new ProductLoon("Uurloon à 6,50", 3.0, new Geld(6.50), new BtwPercentage(6.0, false)));
 
-		ParticulierFactuur expected = new ParticulierFactuur(factuurHeader, omschrijving, Currency.getInstance("EUR"), itemList);
+		ParticulierFactuur expected = new ParticulierFactuur(factuurHeader, omschrijving, itemList);
 
 		this.reader.load(path)
 			.test()
@@ -100,12 +100,12 @@ public class XmlReader1Test {
 				"12012"
 		);
 		String omschrijving = "Nieuwjaarstest 2011-2012";
-		ItemList<ParticulierArtikel> itemList = new ItemList<>();
+		ItemList<ParticulierArtikel> itemList = new ItemList<>(Currency.getInstance("EUR"));
 		itemList.add(new GebruiktEsselinkArtikel(new EsselinkArtikel("123456", "testomschr", 1, "stuks", new Geld(1078.80)), 12.0, new BtwPercentage(0.0, false)));
 		itemList.add(new GebruiktEsselinkArtikel(new EsselinkArtikel("456789", "testomschr2", 1, "stuks", new Geld(1078.80)), 11.0, new BtwPercentage(0.0, false)));
 		itemList.add(new ProductLoon("Uurloon à 2,50", 1.0, new Geld(2.50), new BtwPercentage(0.0, false)));
 
-		ParticulierFactuur expected = new ParticulierFactuur(factuurHeader, omschrijving, Currency.getInstance("EUR"), itemList);
+		ParticulierFactuur expected = new ParticulierFactuur(factuurHeader, omschrijving, itemList);
 
 		this.reader.load(path)
 			.test()
@@ -124,11 +124,11 @@ public class XmlReader1Test {
 				"72012"
 		);
 
-		ItemList<MutatiesInkoopOrder> itemList = new ItemList<>();
+		ItemList<MutatiesInkoopOrder> itemList = new ItemList<>(Currency.getInstance("EUR"));
 		itemList.add(new MutatiesInkoopOrder("Ordernummer", "13151", new Geld(2135131.00)));
 
 		MutatiesFactuur expected = new MutatiesFactuur(factuurHeader,
-				Currency.getInstance("EUR"), itemList);
+				itemList);
 
 		this.reader.load(path)
 			.test()
@@ -147,11 +147,11 @@ public class XmlReader1Test {
 				"22012"
 		);
 
-		ItemList<ReparatiesInkoopOrder> itemList = new ItemList<>();
+		ItemList<ReparatiesInkoopOrder> itemList = new ItemList<>(Currency.getInstance("EUR"));
 		itemList.add(new ReparatiesInkoopOrder("Ordernummer", "35343134", new Geld(50), new Geld(60)));
 
 		ReparatiesFactuur expected = new ReparatiesFactuur(factuurHeader,
-				Currency.getInstance("EUR"), itemList);
+				itemList);
 
 		this.reader.load(path)
 			.test()

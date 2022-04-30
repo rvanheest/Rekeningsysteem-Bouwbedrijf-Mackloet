@@ -10,7 +10,6 @@ import org.rekeningsysteem.data.util.ListItem;
 
 public class ListPaneController<M extends ListItem> implements Disposable {
 
-	private final Currency currency;
 	private final Observable<ItemList<M>> listModel;
 	private final BtwListPane ui;
 
@@ -23,13 +22,8 @@ public class ListPaneController<M extends ListItem> implements Disposable {
 		Function<AbstractListPane<U>, BtwListPane> uiFactory,
 		Currency currency
 	) {
-		this.currency = currency;
-		this.listModel = subController.getModel();
+		this.listModel = subController.getModel().map(list -> new ItemList<>(currency, list));
 		this.ui = uiFactory.apply(subController.getUI());
-	}
-
-	public Currency getCurrency() {
-		return this.currency;
 	}
 
 	public Observable<ItemList<M>> getListModel() {

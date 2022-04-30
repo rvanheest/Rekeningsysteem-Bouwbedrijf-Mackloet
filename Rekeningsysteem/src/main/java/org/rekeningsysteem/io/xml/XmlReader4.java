@@ -26,6 +26,7 @@ import org.w3c.dom.Node;
 
 import javax.xml.parsers.DocumentBuilder;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Currency;
 import java.util.Optional;
@@ -127,18 +128,18 @@ public class XmlReader4 extends XmlLoader {
 		return Maybe.zip(omschrijving, inkoopOrderNummer, prijs, MutatiesInkoopOrder::new);
 	}
 
-	private static Single<ItemList<MutatiesInkoopOrder>> makeMutatiesList(Node node) {
+	private static Single<Collection<MutatiesInkoopOrder>> makeMutatiesList(Node node) {
 		return iterate(getNodeList(node, "mutaties-bon"))
 			.flatMapMaybe(XmlReader4::makeMutatiesInkoopOrder)
-			.collect(ItemList::new, Collection::add);
+			.collect(ArrayList::new, Collection::add);
 	}
 
 	private static Maybe<MutatiesFactuur> makeMutatiesFactuur(Node node) {
 		Maybe<FactuurHeader> header = makeFactuurHeader(getElement(node, "factuurHeader"));
 		Maybe<Currency> currency = makeCurrency(node);
-		Single<ItemList<MutatiesInkoopOrder>> list = makeMutatiesList(getElement(node, "list"));
+		Single<Collection<MutatiesInkoopOrder>> list = makeMutatiesList(getElement(node, "list"));
 
-		return Maybe.zip(header, currency, list.toMaybe(), MutatiesFactuur::new);
+		return Maybe.zip(header, currency.zipWith(list.toMaybe(), ItemList::new), MutatiesFactuur::new);
 	}
 
 	private static Maybe<Offerte> makeOfferte(Node node) {
@@ -193,7 +194,7 @@ public class XmlReader4 extends XmlLoader {
 		return Maybe.zip(omschrijving, loon, btw, InstantLoon::new);
 	}
 
-	private static Single<ItemList<ParticulierArtikel>> makeItemList(Node node) {
+	private static Single<Collection<ParticulierArtikel>> makeItemList(Node node) {
 		return iterate(node.getChildNodes())
 			.filter(n -> !"#text".equals(n.getNodeName()))
 			.flatMapMaybe(item -> {
@@ -206,16 +207,16 @@ public class XmlReader4 extends XmlLoader {
 					default -> Maybe.error(new IllegalArgumentException("Unknown artikel type found. Name = " + name));
 				};
 			})
-			.collect(ItemList::new, Collection::add);
+			.collect(ArrayList::new, Collection::add);
 	}
 
 	private static Maybe<ParticulierFactuur> makeParticulierFactuur(Node node) {
 		Maybe<FactuurHeader> header = makeFactuurHeader(getElement(node, "factuurHeader"));
 		Maybe<String> omschrijving = getNodeValue(node, "omschrijving");
 		Maybe<Currency> currency = makeCurrency(node);
-		Single<ItemList<ParticulierArtikel>> itemList = makeItemList(getElement(node, "list"));
+		Single<Collection<ParticulierArtikel>> itemList = makeItemList(getElement(node, "list"));
 
-		return Maybe.zip(header, omschrijving, currency, itemList.toMaybe(), ParticulierFactuur::new);
+		return Maybe.zip(header, omschrijving, currency.zipWith(itemList.toMaybe(), ItemList::new), ParticulierFactuur::new);
 	}
 
 	private static Maybe<ReparatiesInkoopOrder> makeReparatiesInkoopOrder(Node node) {
@@ -227,17 +228,17 @@ public class XmlReader4 extends XmlLoader {
 		return Maybe.zip(omschrijving, inkoopOrderNummer, loon, materiaal, ReparatiesInkoopOrder::new);
 	}
 
-	private static Single<ItemList<ReparatiesInkoopOrder>> makeReparatiesList(Node node) {
+	private static Single<Collection<ReparatiesInkoopOrder>> makeReparatiesList(Node node) {
 		return iterate(getNodeList(node, "reparaties-bon"))
 			.flatMapMaybe(XmlReader4::makeReparatiesInkoopOrder)
-			.collect(ItemList::new, Collection::add);
+			.collect(ArrayList::new, Collection::add);
 	}
 
 	private static Maybe<ReparatiesFactuur> makeReparatiesFactuur(Node node) {
 		Maybe<FactuurHeader> header = makeFactuurHeader(getElement(node, "factuurHeader"));
 		Maybe<Currency> currency = makeCurrency(node);
-		Single<ItemList<ReparatiesInkoopOrder>> list = makeReparatiesList(getElement(node, "list"));
+		Single<Collection<ReparatiesInkoopOrder>> list = makeReparatiesList(getElement(node, "list"));
 
-		return Maybe.zip(header, currency, list.toMaybe(), ReparatiesFactuur::new);
+		return Maybe.zip(header, currency.zipWith(list.toMaybe(), ItemList::new), ReparatiesFactuur::new);
 	}
 }

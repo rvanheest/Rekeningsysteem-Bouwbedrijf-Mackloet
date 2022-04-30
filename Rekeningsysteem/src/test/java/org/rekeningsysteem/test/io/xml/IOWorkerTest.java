@@ -433,14 +433,12 @@ public class IOWorkerTest {
 		String factuurnummer = "272011";
 		FactuurHeader header = new FactuurHeader(debiteur, datum, factuurnummer);
 
-		Currency currency = Currency.getInstance("EUR");
-
-		ItemList<MutatiesInkoopOrder> itemList = new ItemList<>();
+		ItemList<MutatiesInkoopOrder> itemList = new ItemList<>(Currency.getInstance("EUR"));
 		itemList.add(new MutatiesInkoopOrder("Ordernummer", "111390", new Geld(4971.96)));
 		itemList.add(new MutatiesInkoopOrder("Ordernummer", "111477", new Geld(4820.96)));
 		itemList.add(new MutatiesInkoopOrder("Ordernummer", "112308", new Geld(5510.74)));
 
-		return new MutatiesFactuur(header, currency, itemList);
+		return new MutatiesFactuur(header, itemList);
 	}
 
 	private Offerte offerte() {
@@ -459,9 +457,7 @@ public class IOWorkerTest {
 		FactuurHeader header = new FactuurHeader(debiteur, datum, factuurnummer);
 		String omschrijving = "Voor u verrichte werkzaamheden betreffende renovatie badkamervloer i.v.m. lekkage";
 
-		Currency currency = Currency.getInstance("EUR");
-
-		ItemList<ParticulierArtikel> list = new ItemList<>();
+		ItemList<ParticulierArtikel> list = new ItemList<>(Currency.getInstance("EUR"));
 
 		EsselinkArtikel sub1 = new EsselinkArtikel("2018021117", "Product 1", 1, "Zak", new Geld(5.16));
 		EsselinkArtikel sub2 = new EsselinkArtikel("2003131360", "Product 2", 1, "zak", new Geld(129.53));
@@ -485,7 +481,7 @@ public class IOWorkerTest {
 		list.add(new ProductLoon("test123", 12, new Geld(12.50), new BtwPercentage(6, false)));
 		list.add(new InstantLoon("foobar", new Geld(40.00), new BtwPercentage(6, true)));
 
-		return new ParticulierFactuur(header, omschrijving, currency, list);
+		return new ParticulierFactuur(header, omschrijving, list);
 	}
 
 	private ReparatiesFactuur reparaties() {
@@ -494,9 +490,7 @@ public class IOWorkerTest {
 		String factuurnummer = "232011";
 		FactuurHeader header = new FactuurHeader(debiteur, datum, factuurnummer);
 
-		Currency currency = Currency.getInstance("EUR");
-
-		ItemList<ReparatiesInkoopOrder> list = new ItemList<>();
+		ItemList<ReparatiesInkoopOrder> list = new ItemList<>(Currency.getInstance("EUR"));
 
 		list.add(new ReparatiesInkoopOrder("Ordernummer", "110543", new Geld(77.00), new Geld(6.50)));
 		list.add(new ReparatiesInkoopOrder("Ordernummer", "111558", new Geld(77.00), new Geld(9.00)));
@@ -522,6 +516,6 @@ public class IOWorkerTest {
 		list.add(new ReparatiesInkoopOrder("Ordernummer", "111272", new Geld(3630.66), new Geld(2420.44)));
 		list.add(new ReparatiesInkoopOrder("Ordernummer", "111148", new Geld(3878.20), new Geld(2585.46)));
 
-		return new ReparatiesFactuur(header, currency, list);
+		return new ReparatiesFactuur(header, list);
 	}
 }

@@ -15,8 +15,7 @@ import org.rekeningsysteem.test.data.EqualsHashCodeTest;
 public abstract class AbstractRekeningTest extends EqualsHashCodeTest {
 
 	private AbstractRekening rekening;
-	private final FactuurHeader header = new FactuurHeader(new Debiteur("a", "b", "c", "d", "e"),
-			LocalDate.of(1992, 7, 30));
+	private final FactuurHeader header = new FactuurHeader(new Debiteur("a", "b", "c", "d", "e"), LocalDate.of(1992, 7, 30));
 
 	@Override
 	protected AbstractRekening makeInstance() {
@@ -27,8 +26,7 @@ public abstract class AbstractRekeningTest extends EqualsHashCodeTest {
 
 	@Override
 	protected AbstractRekening makeNotInstance() {
-		return this.makeNotInstance(new FactuurHeader(new Debiteur("", "", "", "", ""),
-				LocalDate.of(1992, 7, 30)));
+		return this.makeNotInstance(new FactuurHeader(new Debiteur("", "", "", "", ""), LocalDate.of(1992, 7, 30)));
 	}
 
 	protected abstract AbstractRekening makeNotInstance(FactuurHeader otherHeader);

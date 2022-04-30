@@ -16,13 +16,13 @@ public class ReparatiesListController extends AbstractListController<ReparatiesI
 		this(currency, new ReparatiesListPane());
 	}
 
-	public ReparatiesListController(Currency currency, List<ReparatiesInkoopOrder> input) {
-		this(currency);
-		this.setData(modelToUI(input));
+	public ReparatiesListController(ItemList<ReparatiesInkoopOrder> input) {
+		this(input.getCurrency(), new ReparatiesListPane());
+		this.setData(modelToUI(input.getList()));
 	}
 
 	public ReparatiesListController(Currency currency, ReparatiesListPane ui) {
-		super(currency, ui, ReparatiesInkoopOrderController::new);
+		super(ui, () -> new ReparatiesInkoopOrderController(currency));
 	}
 
 	@Override
@@ -38,7 +38,7 @@ public class ReparatiesListController extends AbstractListController<ReparatiesI
 	}
 
 	@Override
-	protected ItemList<ReparatiesInkoopOrder> uiToModel(List<? extends ReparatiesModel> list) {
+	protected List<ReparatiesInkoopOrder> uiToModel(List<? extends ReparatiesModel> list) {
 		return list.stream()
 			.map(item -> new ReparatiesInkoopOrder(
 				item.getOmschrijving(),
@@ -46,6 +46,6 @@ public class ReparatiesListController extends AbstractListController<ReparatiesI
 				new Geld(item.getLoon()),
 				new Geld(item.getMateriaal())
 			))
-			.collect(Collectors.toCollection(ItemList::new));
+			.collect(Collectors.toList());
 	}
 }

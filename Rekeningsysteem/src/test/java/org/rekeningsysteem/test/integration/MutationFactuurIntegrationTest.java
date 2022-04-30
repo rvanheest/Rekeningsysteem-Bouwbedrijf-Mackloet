@@ -24,12 +24,12 @@ public class MutationFactuurIntegrationTest extends AbstractIntegrationTest {
 		String factuurnummer = "272011";
 		FactuurHeader header = new FactuurHeader(debiteur, datum, factuurnummer);
 
-		ItemList<MutatiesInkoopOrder> itemList = new ItemList<>();
+		ItemList<MutatiesInkoopOrder> itemList = new ItemList<>(Currency.getInstance("EUR"));
 		itemList.add(new MutatiesInkoopOrder("Inkooporder", "111390", new Geld(4971.96)));
 		itemList.add(new MutatiesInkoopOrder("Inkooporder", "111477", new Geld(4820.96)));
 		itemList.add(new MutatiesInkoopOrder("Inkooporder", "112308", new Geld(5510.74)));
 
-		return new MutatiesFactuur(header, Currency.getInstance("EUR"), itemList);
+		return new MutatiesFactuur(header, itemList);
 	}
 
 	@Override

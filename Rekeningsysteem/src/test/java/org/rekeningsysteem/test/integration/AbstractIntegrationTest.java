@@ -3,6 +3,7 @@ package org.rekeningsysteem.test.integration;
 import org.junit.Before;
 import org.junit.Test;
 import org.rekeningsysteem.data.util.AbstractRekening;
+import org.rekeningsysteem.exception.DifferentCurrencyException;
 import org.rekeningsysteem.exception.PdfException;
 import org.rekeningsysteem.exception.XmlWriteException;
 import org.rekeningsysteem.io.FactuurExporter;
@@ -29,14 +30,14 @@ public abstract class AbstractIntegrationTest {
 	private Path pdfPath;
 	private Path xmlPath;
 
-	protected abstract AbstractRekening makeRekening();
+	protected abstract AbstractRekening makeRekening() throws DifferentCurrencyException;
 
 	protected abstract Path pdfFile();
 
 	protected abstract Path xmlFile();
 
 	@Before
-	public void setUp() throws ParserConfigurationException {
+	public void setUp() throws ParserConfigurationException, DifferentCurrencyException {
 		DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 		TransformerFactory transformerFactory = TransformerFactory.newInstance();
 		this.rekening = this.makeRekening();

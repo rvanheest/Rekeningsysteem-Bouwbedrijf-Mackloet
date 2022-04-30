@@ -69,12 +69,12 @@ public class XmlWriterTest {
 
 		Currency currency = Currency.getInstance("EUR");
 
-		ItemList<MutatiesInkoopOrder> itemList = new ItemList<>();
+		ItemList<MutatiesInkoopOrder> itemList = new ItemList<>(currency);
 		itemList.add(new MutatiesInkoopOrder("Bonnummer", "111390", new Geld(4971.96)));
 		itemList.add(new MutatiesInkoopOrder("Bonnummer", "111477", new Geld(4820.96)));
 		itemList.add(new MutatiesInkoopOrder("Bonnummer", "112308", new Geld(5510.74)));
 
-		MutatiesFactuur factuur = new MutatiesFactuur(factuurHeader, currency, itemList);
+		MutatiesFactuur factuur = new MutatiesFactuur(factuurHeader, itemList);
 
 		this.write(factuur, "MutatiesFactuur.xml");
 	}
@@ -98,7 +98,7 @@ public class XmlWriterTest {
 
 		Currency currency = Currency.getInstance("EUR");
 
-		ItemList<ParticulierArtikel> itemList = new ItemList<>();
+		ItemList<ParticulierArtikel> itemList = new ItemList<>(currency);
 		itemList.add(new GebruiktEsselinkArtikel("Product 1", new EsselinkArtikel("2018021117", "Product 1", 1, "Zak", new Geld(5.16)), 8.0, new BtwPercentage(21.0, false)));
 		itemList.add(new GebruiktEsselinkArtikel("Product 2", new EsselinkArtikel("2003131360", "Product 2", 1, "zak", new Geld(129.53)), 1.0, new BtwPercentage(21.0, false)));
 		itemList.add(new GebruiktEsselinkArtikel("Product 3", new EsselinkArtikel("2003131060", "Product 3", 1, "set", new Geld(35.96)), 1.0, new BtwPercentage(21.0, false)));
@@ -112,7 +112,7 @@ public class XmlWriterTest {
 		itemList.add(new ProductLoon("test123", 12.0, new Geld(12.5), new BtwPercentage(6.0, false)));
 		itemList.add(new InstantLoon("foobar", new Geld(40.0), new BtwPercentage(6.0, false)));
 
-		ParticulierFactuur factuur = new ParticulierFactuur(factuurHeader, omschrijving, currency, itemList);
+		ParticulierFactuur factuur = new ParticulierFactuur(factuurHeader, omschrijving, itemList);
 		this.write(factuur, "ParticulierFactuur.xml");
 	}
 
@@ -124,7 +124,7 @@ public class XmlWriterTest {
 
 		Currency currency = Currency.getInstance("EUR");
 
-		ItemList<ReparatiesInkoopOrder> itemList = new ItemList<>();
+		ItemList<ReparatiesInkoopOrder> itemList = new ItemList<>(currency);
 		itemList.add(new ReparatiesInkoopOrder("Bonnummer", "110543", new Geld(77), new Geld(6.5)));
 		itemList.add(new ReparatiesInkoopOrder("Bonnummer", "111558", new Geld(77), new Geld(9)));
 		itemList.add(new ReparatiesInkoopOrder("Bonnummer", "111518", new Geld(57.75), new Geld(0)));
@@ -149,7 +149,7 @@ public class XmlWriterTest {
 		itemList.add(new ReparatiesInkoopOrder("Bonnummer", "111272", new Geld(3630.66), new Geld(2420.44)));
 		itemList.add(new ReparatiesInkoopOrder("Bonnummer", "111148", new Geld(3878.2), new Geld(2585.46)));
 
-		ReparatiesFactuur factuur = new ReparatiesFactuur(factuurHeader, currency, itemList);
+		ReparatiesFactuur factuur = new ReparatiesFactuur(factuurHeader, itemList);
 		this.write(factuur, "ReparatiesFactuur.xml");
 	}
 }

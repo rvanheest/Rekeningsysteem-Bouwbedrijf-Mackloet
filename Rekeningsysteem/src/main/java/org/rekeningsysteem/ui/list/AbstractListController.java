@@ -1,51 +1,28 @@
 package org.rekeningsysteem.ui.list;
 
 import java.util.Collections;
-import java.util.Currency;
 import java.util.List;
+import java.util.function.Supplier;
 
 import io.reactivex.rxjava3.core.Maybe;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.disposables.Disposable;
-import io.reactivex.rxjava3.functions.Function;
-import io.reactivex.rxjava3.functions.Function3;
 import org.rekeningsysteem.application.Main;
-import org.rekeningsysteem.data.util.BtwPercentages;
-import org.rekeningsysteem.data.util.ItemList;
 import org.rekeningsysteem.data.util.ListItem;
-import org.rekeningsysteem.io.database.Database;
 
 public abstract class AbstractListController<M extends ListItem, U, C extends AbstractListItemController<M, ?>> implements Disposable {
 
 	private final AbstractListPane<U> ui;
-	private final Observable<ItemList<M>> model;
+	private final Observable<List<M>> model;
 	private final CompositeDisposable disposable = new CompositeDisposable();
 
-	public AbstractListController(
-		Currency currency,
-		AbstractListPane<U> ui,
-		Function<Currency, C> func
-	) {
-		this(ui, ui.getAddButtonEvent().map(e -> func.apply(currency)));
-	}
-
-	public AbstractListController(
-		Currency currency,
-		Database db,
-		BtwPercentages defaultBtw,
-		AbstractListPane<U> ui,
-		Function3<Currency, Database, BtwPercentages, C> func
-	) {
-		this(ui, ui.getAddButtonEvent().map(e -> func.apply(currency, db, defaultBtw)));
-	}
-
-	private AbstractListController(AbstractListPane<U> ui, Observable<? extends C> listItemController) {
+	public AbstractListController(AbstractListPane<U> ui, Supplier<C> func) {
 		this.ui = ui;
 		this.model = this.ui.getData().map(this::uiToModel);
 
 		this.disposable.addAll(
-			listItemController
+			this.ui.getAddButtonEvent().map(e -> func.get())
 				.doOnNext(C::showModalMessage)
 				.flatMapMaybe(c -> c.getModel().doOnSuccess(m -> {
 					c.dispose();
@@ -72,13 +49,13 @@ public abstract class AbstractListController<M extends ListItem, U, C extends Ab
 
 	protected abstract List<U> modelToUI(List<M> list);
 
-	protected abstract ItemList<M> uiToModel(List<? extends U> list);
+	protected abstract List<M> uiToModel(List<? extends U> list);
 
 	public AbstractListPane<U> getUI() {
 		return this.ui;
 	}
 
-	public Observable<ItemList<M>> getModel() {
+	public Observable<List<M>> getModel() {
 		return this.model;
 	}
 

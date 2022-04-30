@@ -16,13 +16,13 @@ public class MutatiesListController extends AbstractListController<MutatiesInkoo
 		this(currency, new MutatiesListPane());
 	}
 
-	public MutatiesListController(Currency currency, List<MutatiesInkoopOrder> input) {
-		this(currency);
-		this.setData(modelToUI(input));
+	public MutatiesListController(ItemList<MutatiesInkoopOrder> input) {
+		this(input.getCurrency(), new MutatiesListPane());
+		this.setData(modelToUI(input.getList()));
 	}
 
 	public MutatiesListController(Currency currency, MutatiesListPane ui) {
-		super(currency, ui, MutatiesInkoopOrderController::new);
+		super(ui, () -> new MutatiesInkoopOrderController(currency));
 	}
 
 	@Override
@@ -37,13 +37,13 @@ public class MutatiesListController extends AbstractListController<MutatiesInkoo
 	}
 
 	@Override
-	protected ItemList<MutatiesInkoopOrder> uiToModel(List<? extends MutatiesModel> list) {
+	protected List<MutatiesInkoopOrder> uiToModel(List<? extends MutatiesModel> list) {
 		return list.stream()
 			.map(item -> new MutatiesInkoopOrder(
 				item.getOmschrijving(),
 				item.getOrdernummer(),
 				new Geld(item.getPrijs())
 			))
-			.collect(Collectors.toCollection(ItemList::new));
+			.collect(Collectors.toList());
 	}
 }

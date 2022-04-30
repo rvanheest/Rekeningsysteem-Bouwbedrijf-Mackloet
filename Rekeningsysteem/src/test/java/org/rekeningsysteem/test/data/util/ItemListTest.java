@@ -4,8 +4,6 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
 import org.rekeningsysteem.data.mutaties.MutatiesInkoopOrder;
 import org.rekeningsysteem.data.particulier.AnderArtikel;
 import org.rekeningsysteem.data.particulier.loon.InstantLoon;
@@ -16,10 +14,12 @@ import org.rekeningsysteem.data.util.ListItem;
 import org.rekeningsysteem.data.util.Totalen;
 import org.rekeningsysteem.test.data.EqualsHashCodeTest;
 
-@RunWith(MockitoJUnitRunner.class)
+import java.util.Currency;
+
 public class ItemListTest extends EqualsHashCodeTest {
 
 	private ItemList<ListItem> list;
+	private final Currency currency = Currency.getInstance("EUR");
 
 	private final MutatiesInkoopOrder mutaties = new MutatiesInkoopOrder("", "", new Geld(1));
 	private final AnderArtikel ander1 = new AnderArtikel("", new Geld(2), new BtwPercentage(0.0, false));
@@ -28,7 +28,7 @@ public class ItemListTest extends EqualsHashCodeTest {
 
 	@Override
 	protected ItemList<ListItem> makeInstance() {
-		ItemList<ListItem> l = new ItemList<>();
+		ItemList<ListItem> l = new ItemList<>(this.currency);
 		l.add(this.mutaties);
 		l.add(this.ander1);
 		l.add(this.loon);
@@ -38,7 +38,7 @@ public class ItemListTest extends EqualsHashCodeTest {
 
 	@Override
 	protected ItemList<ListItem> makeNotInstance() {
-		ItemList<ListItem> l = new ItemList<>();
+		ItemList<ListItem> l = new ItemList<>(this.currency);
 		l.add(this.mutaties);
 		l.add(this.ander1);
 		return l;
@@ -52,7 +52,7 @@ public class ItemListTest extends EqualsHashCodeTest {
 
 	@Test
 	public void testGetTotalenEmptyList() {
-		assertEquals(Totalen.Empty(), new ItemList<>().getTotalen());
+		assertEquals(Totalen.Empty(), new ItemList<>(this.currency).getTotalen());
 	}
 
 	@Test

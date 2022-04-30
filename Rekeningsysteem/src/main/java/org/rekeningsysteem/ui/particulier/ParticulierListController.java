@@ -21,36 +21,28 @@ public class ParticulierListController extends AbstractListController<Particulie
 		this(currency, db, defaultBtw, new ParticulierListPane());
 	}
 
-	public ParticulierListController(Currency currency, Database db, BtwPercentages defaultBtw, List<ParticulierArtikel> input) {
-		this(currency, db, defaultBtw);
-		this.setData(this.modelToUI(input));
+	public ParticulierListController(Database db, BtwPercentages defaultBtw, ItemList<ParticulierArtikel> input) {
+		this(input.getCurrency(), db, defaultBtw, new ParticulierListPane());
+		this.setData(this.modelToUI(input.getList()));
 	}
 
 	public ParticulierListController(Currency currency, Database db, BtwPercentages defaultBtw, ParticulierListPane ui) {
-		super(currency, db, defaultBtw, ui, ParticulierArtikelController::new);
+		super(ui, () -> new ParticulierArtikelController(currency, db, defaultBtw));
 	}
 
 	@Override
 	protected List<ParticulierModel> modelToUI(List<ParticulierArtikel> list) {
-		return list.stream().map(item -> {
-			if (item instanceof GebruiktEsselinkArtikel) {
-				return new ParticulierModel((GebruiktEsselinkArtikel) item);
-			}
-			else if (item instanceof AnderArtikel) {
-				return new ParticulierModel((AnderArtikel) item);
-			}
-			else if (item instanceof InstantLoon) {
-				return new ParticulierModel((InstantLoon) item);
-			}
-			else {
-				assert item instanceof ProductLoon;
-				return new ParticulierModel((ProductLoon) item);
-			}
+		return list.stream().map(item -> switch (item) {
+			case GebruiktEsselinkArtikel gebruiktEsselinkArtikel -> new ParticulierModel(gebruiktEsselinkArtikel);
+			case AnderArtikel anderArtikel -> new ParticulierModel(anderArtikel);
+			case InstantLoon instantLoon -> new ParticulierModel(instantLoon);
+			case ProductLoon productLoon -> new ParticulierModel(productLoon);
+			default -> throw new RuntimeException();
 		}).collect(Collectors.toList());
 	}
 
 	@Override
-	protected ItemList<ParticulierArtikel> uiToModel(List<? extends ParticulierModel> list) {
+	protected List<ParticulierArtikel> uiToModel(List<? extends ParticulierModel> list) {
 		return list.stream().map(item -> {
 			GebruiktEsselinkArtikel esselink = item.getEsselink();
 			AnderArtikel ander = item.getAnder();
@@ -70,6 +62,6 @@ public class ParticulierListController extends AbstractListController<Particulie
 				assert product != null;
 				return product;
 			}
-		}).collect(Collectors.toCollection(ItemList::new));
+		}).collect(Collectors.toList());
 	}
 }

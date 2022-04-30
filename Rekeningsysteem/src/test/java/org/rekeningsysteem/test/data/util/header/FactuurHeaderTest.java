@@ -28,22 +28,6 @@ public class FactuurHeaderTest extends EqualsHashCodeTest {
 		return new FactuurHeader(this.debiteur, this.datum, this.factuurnummer + ".");
 	}
 
-	protected FactuurHeader getInstance() {
-		return this.header;
-	}
-
-	protected Debiteur getTestDebiteur() {
-		return this.debiteur;
-	}
-
-	protected LocalDate getTestDatum() {
-		return this.datum;
-	}
-
-	protected String getTestFatuurnummer() {
-		return this.factuurnummer;
-	}
-
 	@Override
 	@Before
 	public void setUp() {

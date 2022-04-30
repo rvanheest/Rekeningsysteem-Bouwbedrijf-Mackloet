@@ -23,7 +23,6 @@ import org.rekeningsysteem.data.util.header.FactuurHeader;
 public abstract class AbstractFactuurTest<E extends ListItem> extends AbstractRekeningTest {
 
 	private AbstractFactuur<E> factuur;
-	private final Currency valuta = Currency.getInstance("EUR");
 	@Mock private ItemList<E> itemList;
 
 	@Override
@@ -34,11 +33,10 @@ public abstract class AbstractFactuurTest<E extends ListItem> extends AbstractRe
 
 	@Override
 	protected AbstractFactuur<E> makeInstance(FactuurHeader header) {
-		return this.makeInstance(header, this.valuta, this.itemList);
+		return this.makeInstance(header, this.itemList);
 	}
 
-	protected abstract AbstractFactuur<E> makeInstance(FactuurHeader header, Currency currency,
-			ItemList<E> itemList);
+	protected abstract AbstractFactuur<E> makeInstance(FactuurHeader header, ItemList<E> itemList);
 
 	@Override
 	@SuppressWarnings("unchecked")
@@ -48,22 +46,16 @@ public abstract class AbstractFactuurTest<E extends ListItem> extends AbstractRe
 	
 	@Override
 	protected AbstractRekening makeNotInstance(FactuurHeader otherHeader) {
-		return this.makeNotInstance(otherHeader, this.valuta, this.itemList);
+		return this.makeNotInstance(otherHeader, this.itemList);
 	}
 
-	protected abstract AbstractFactuur<E> makeNotInstance(FactuurHeader otherHeader,
-			Currency currency, ItemList<E> itemList);
+	protected abstract AbstractFactuur<E> makeNotInstance(FactuurHeader otherHeader, ItemList<E> itemList);
 
 	@Before
 	@Override
 	public void setUp() {
 		super.setUp();
 		this.factuur = this.makeInstance();
-	}
-
-	@Test
-	public void testGetCurrency() {
-		assertEquals(this.valuta, this.factuur.getCurrency());
 	}
 
 	@Test
@@ -81,18 +73,9 @@ public abstract class AbstractFactuurTest<E extends ListItem> extends AbstractRe
 	}
 
 	@Test
-	public void testEqualsFalseOtherCurrency() {
-		Currency otherCurrency = Currency.getInstance("USD");
-		AbstractFactuur<E> rekening2 = this.makeInstance(this.factuur.getFactuurHeader(),
-				otherCurrency, this.itemList);
-		assertFalse(this.factuur.equals(rekening2));
-	}
-
-	@Test
 	public void testEqualsFalseOtherItemList() {
-		ItemList<E> otherList = new ItemList<>();
-		AbstractFactuur<E> rekening2 = this.makeInstance(this.factuur.getFactuurHeader(),
-				this.valuta, otherList);
+		ItemList<E> otherList = new ItemList<>(Currency.getInstance("EUR"));
+		AbstractFactuur<E> rekening2 = this.makeInstance(this.factuur.getFactuurHeader(), otherList);
 		assertFalse(this.factuur.equals(rekening2));
 	}
 }

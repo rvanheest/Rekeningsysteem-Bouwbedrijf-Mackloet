@@ -2,8 +2,6 @@ package org.rekeningsysteem.test.data.reparaties;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.Currency;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.rekeningsysteem.data.reparaties.ReparatiesInkoopOrder;
@@ -23,9 +21,8 @@ public class ReparatiesFactuurTest extends AbstractFactuurTest<ReparatiesInkoopO
 	}
 
 	@Override
-	protected AbstractFactuur<ReparatiesInkoopOrder> makeInstance(FactuurHeader header, Currency currency,
-			ItemList<ReparatiesInkoopOrder> itemList) {
-		return new ReparatiesFactuur(header, currency, itemList);
+	protected AbstractFactuur<ReparatiesInkoopOrder> makeInstance(FactuurHeader header, ItemList<ReparatiesInkoopOrder> itemList) {
+		return new ReparatiesFactuur(header, itemList);
 	}
 
 	@Override
@@ -34,9 +31,8 @@ public class ReparatiesFactuurTest extends AbstractFactuurTest<ReparatiesInkoopO
 	}
 
 	@Override
-	protected AbstractFactuur<ReparatiesInkoopOrder> makeNotInstance(FactuurHeader otherHeader,
-			Currency currency, ItemList<ReparatiesInkoopOrder> itemList) {
-		return new ReparatiesFactuur(otherHeader, currency, itemList);
+	protected AbstractFactuur<ReparatiesInkoopOrder> makeNotInstance(FactuurHeader otherHeader, ItemList<ReparatiesInkoopOrder> itemList) {
+		return new ReparatiesFactuur(otherHeader, itemList);
 	}
 
 	@Before
@@ -49,7 +45,7 @@ public class ReparatiesFactuurTest extends AbstractFactuurTest<ReparatiesInkoopO
 	@Test
 	public void testToString() {
 		String expected = "<ReparatiesFactuur[FactuurHeader[debiteur=Debiteur[debiteurID=Optional.empty, " 
-			+ "naam=a, straat=b, nummer=c, postcode=d, plaats=e, btwNummer=Optional.empty], datum=1992-07-30, factuurnummer=Optional.empty], EUR, itemList]>";
+			+ "naam=a, straat=b, nummer=c, postcode=d, plaats=e, btwNummer=Optional.empty], datum=1992-07-30, factuurnummer=Optional.empty], itemList]>";
 		assertEquals(expected, this.factuur.toString());
 	}
 }
