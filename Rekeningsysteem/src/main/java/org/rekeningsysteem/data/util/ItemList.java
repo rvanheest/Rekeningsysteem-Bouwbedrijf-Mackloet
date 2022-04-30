@@ -32,6 +32,6 @@ public class ItemList<E extends ListItem> extends ArrayList<E> implements Bedrag
 
 	@Override
 	public Totalen getTotalen() {
-		return this.parallelStream().reduce(new Totalen(), (t, li) -> li.accept(this.visitor).apply(t), Totalen::plus);
+		return this.parallelStream().reduce(Totalen.Empty(), (t, li) -> li.accept(this.visitor).apply(t), Totalen::plus);
 	}
 }

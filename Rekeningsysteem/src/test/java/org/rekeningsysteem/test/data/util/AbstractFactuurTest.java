@@ -73,7 +73,7 @@ public abstract class AbstractFactuurTest<E extends ListItem> extends AbstractRe
 
 	@Test
 	public void testGetTotalen() {
-		Totalen expected = new Totalen();
+		Totalen expected = Totalen.Empty();
 		when(this.itemList.getTotalen()).thenReturn(expected);
 		
 		assertEquals(expected, this.factuur.getTotalen());

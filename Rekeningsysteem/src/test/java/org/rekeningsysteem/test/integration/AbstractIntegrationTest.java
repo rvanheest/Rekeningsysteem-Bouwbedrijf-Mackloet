@@ -20,7 +20,9 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerFactory;
-import java.io.File;
+
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
@@ -32,14 +34,14 @@ public abstract class AbstractIntegrationTest {
 	private FactuurExporter exporter;
 	private FactuurLoader loader;
 	private FactuurSaver saver;
-	private File pdfFile;
-	private File xmlFile;
+	private Path pdfPath;
+	private Path xmlPath;
 
 	protected abstract AbstractRekening makeRekening();
 
-	protected abstract File pdfFile();
+	protected abstract Path pdfFile();
 
-	protected abstract File xmlFile();
+	protected abstract Path xmlFile();
 
 	@Before
 	public void setUp() throws ParserConfigurationException {
@@ -49,27 +51,27 @@ public abstract class AbstractIntegrationTest {
 		this.exporter = new PdfExporter(false);
 		this.loader = new XmlReader4(documentBuilder);
 		this.saver = new XmlWriter(documentBuilder, transformerFactory);
-		this.pdfFile = this.pdfFile();
-		this.xmlFile = this.xmlFile();
+		this.pdfPath = this.pdfFile();
+		this.xmlPath = this.xmlFile();
 	}
 
 	@Test
 	public void testPdf() throws PdfException {
-		this.exporter.export(this.rekening, this.pdfFile);
+		this.exporter.export(this.rekening, this.pdfPath);
 	}
 
 	// PdfException expected due to double spaces in filename
 	@Test(expected = PdfException.class)
 	public void testPdfWithDoubleSpacesInFileName() throws PdfException {
-		File file = new File("src\\test\\resources\\pdf\\File  with double spaces.pdf");
-		this.exporter.export(this.rekening, file);
+		Path path = Paths.get("src", "test", "resources", "pdf", "File  with double spaces.pdf").toAbsolutePath();
+		this.exporter.export(this.rekening, path);
 	}
 
 	@Test
 	public void testXML() throws XmlWriteException {
-		this.saver.save(this.rekening, this.xmlFile);
+		this.saver.save(this.rekening, this.xmlPath);
 
-		this.loader.load(this.xmlFile)
+		this.loader.load(this.xmlPath)
 			.test()
 			.assertValue(this.rekening)
 			.assertNoErrors()
@@ -79,10 +81,10 @@ public abstract class AbstractIntegrationTest {
 	@Test(expected = XmlWriteException.class)
 	public void testXmlWithException() throws Exception {
 		AbstractRekening rekening = mock(AbstractRekening.class);
-		File file = mock(File.class);
+		Path path = mock(Path.class);
 
 		doThrow(new Exception("")).when(rekening).accept(ArgumentMatchers.<RekeningVisitor<String>>any());
 
-		this.saver.save(rekening, file);
+		this.saver.save(rekening, path);
 	}
 }

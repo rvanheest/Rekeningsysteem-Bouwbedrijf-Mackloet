@@ -1,5 +1,6 @@
 package org.rekeningsysteem.application.settings.prijslijst;
 
+import io.reactivex.rxjava3.core.Maybe;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.disposables.Disposable;
@@ -14,7 +15,9 @@ import org.rekeningsysteem.logic.database.ArtikellijstDBInteraction;
 import org.rekeningsysteem.rxjavafx.JavaFxScheduler;
 
 import java.io.File;
-import java.util.Objects;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Optional;
 
 public class PrijsLijstController implements Disposable {
 
@@ -30,15 +33,15 @@ public class PrijsLijstController implements Disposable {
 
 		this.disposable.add(
 			this.ui.getStartButtonEvents()
-				.flatMap(e -> this.showOpenFileChooser(stage))
-				.doOnNext(f -> {
+				.flatMapMaybe(e -> this.showOpenFileChooser(stage))
+				.doOnNext(p -> {
 					this.ui.setStartButtonDisable(true);
 					closeButton.setDisable(true);
 				})
 				.observeOn(Schedulers.io())
-				.flatMap(file -> db
+				.flatMap(path -> db
 					.clearData()
-					.andThen(Observable.defer(() -> fileIO.readCSV(file)))
+					.andThen(Observable.defer(() -> fileIO.readCSV(path)))
 					.window(100)
 					.flatMapSingle(db::insertAll)
 					.scan(0, Math::addExact)
@@ -71,13 +74,12 @@ public class PrijsLijstController implements Disposable {
 		this.disposable.dispose();
 	}
 
-	private Observable<File> showOpenFileChooser(Stage stage) {
+	private Maybe<Path> showOpenFileChooser(Stage stage) {
 		FileChooser chooser = new FileChooser();
 		chooser.setTitle("Open data file");
-		chooser.setInitialDirectory(new File(System.getProperty("user.dir")));
+		chooser.setInitialDirectory(Paths.get(System.getProperty("user.dir")).toFile());
 		chooser.getExtensionFilters().addAll(new ExtensionFilter("CSV", "*.csv"));
 
-		return Observable.just(chooser.showOpenDialog(stage))
-			.filter(Objects::nonNull);
+		return Maybe.fromOptional(Optional.ofNullable(chooser.showOpenDialog(stage)).map(File::toPath));
 	}
 }

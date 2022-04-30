@@ -31,7 +31,7 @@ public class ArtikellijstDBInteractionTest {
 	@Before
 	public void setUp() throws SQLException, IOException, InterruptedException {
 		CountDownLatch latch = new CountDownLatch(1);
-		this.database = new Database(this.folder.newFile("database.db"));
+		this.database = new Database(this.folder.newFile("database.db").toPath());
 		this.art = new ArtikellijstDBInteraction(this.database);
 		new VersionControl(this.database)
 				.checkDBVersioning()

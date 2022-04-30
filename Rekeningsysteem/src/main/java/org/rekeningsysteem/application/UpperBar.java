@@ -33,15 +33,15 @@ public class UpperBar extends ToolBar {
 		this.setId("mainToolBar");
 
 		PropertiesWorker properties = PropertiesWorker.getInstance();
-		properties.getProperty(PropertyModelEnum.APPLICATION_LOGO)
-			.map(path -> new ImageView(new Image(Main.getExternalResource(path))))
+		properties.getUriProperty(PropertyModelEnum.APPLICATION_LOGO)
+			.map(uri -> new ImageView(new Image(uri.toString())))
 			.ifPresent(img -> {
 				this.getItems().add(img);
 				HBox.setMargin(img, new Insets(0, 0, 0, 5));
 			});
 		this.getItems().add(leftSpacer);
-		properties.getProperty(PropertyModelEnum.APPLICATION_NAME_LOGO)
-			.map(path -> new ImageView(new Image(Main.getExternalResource(path))))
+		properties.getUriProperty(PropertyModelEnum.APPLICATION_NAME_LOGO)
+			.map(uri -> new ImageView(new Image(uri.toString())))
 			.ifPresent(this.getItems()::add);
 		this.getItems().addAll(rightSpacer, new VBox(4, closeBtn, minBtn, maxBtn));
 

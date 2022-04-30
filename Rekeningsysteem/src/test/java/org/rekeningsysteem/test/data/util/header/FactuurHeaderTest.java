@@ -1,7 +1,6 @@
 package org.rekeningsysteem.test.data.util.header;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 
 import java.time.LocalDate;
 import java.util.Optional;

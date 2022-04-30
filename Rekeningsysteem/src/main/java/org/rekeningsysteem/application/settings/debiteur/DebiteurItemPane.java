@@ -120,7 +120,7 @@ public class DebiteurItemPane extends ItemPane {
 		this.plaatsTF.setText(plaats);
 	}
 
-	public Observable<Optional<String>> getBtwnummer() {
+	public Observable<Optional<String>> getBtwNummer() {
 		return this.btw.map(OptionalUtils::fromString);
 	}
 

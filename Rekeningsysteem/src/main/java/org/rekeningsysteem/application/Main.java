@@ -1,6 +1,5 @@
 package org.rekeningsysteem.application;
 
-import java.io.File;
 import java.util.Objects;
 
 import io.reactivex.rxjava3.core.Observable;
@@ -52,10 +51,6 @@ public class Main extends Application {
 		return Objects.requireNonNull(Main.class.getResource(s)).toExternalForm();
 	}
 
-	public static String getExternalResource(String path) {
-		return new File(path).toURI().toString();
-	}
-
 	@Override
 	public void start(Stage stage) {
 		Logger logger = ApplicationLogger.getInstance();
@@ -99,8 +94,8 @@ public class Main extends Application {
 					logger.error("Could not close database.", e);
 				}
 			});
-			properties.getProperty(PropertyModelEnum.APPLICATION_ICON)
-				.map(path -> new Image(Main.getExternalResource(path)))
+			properties.getUriProperty(PropertyModelEnum.APPLICATION_ICON)
+				.map(uri -> new Image(uri.toString()))
 				.ifPresent(stage.getIcons()::add);
 			stage.setScene(scene);
 			stage.initStyle(StageStyle.UNDECORATED);

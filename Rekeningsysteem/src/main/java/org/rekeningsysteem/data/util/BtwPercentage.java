@@ -1,7 +1,6 @@
 package org.rekeningsysteem.data.util;
 
 import java.util.Comparator;
-import java.util.Objects;
 
 public record BtwPercentage(double percentage, boolean verlegd) implements Comparable<BtwPercentage> {
 
@@ -10,7 +9,7 @@ public record BtwPercentage(double percentage, boolean verlegd) implements Compa
 	private static final Comparator<BtwPercentage> comparator = percentageComparator.thenComparing(verlegdComparator);
 
 	public String formattedString() {
-		String btw = String.valueOf(this.percentage) + "%";
+		String btw = this.percentage + "%";
 		return this.verlegd ? btw + ", verlegd" : btw;
 	}
 

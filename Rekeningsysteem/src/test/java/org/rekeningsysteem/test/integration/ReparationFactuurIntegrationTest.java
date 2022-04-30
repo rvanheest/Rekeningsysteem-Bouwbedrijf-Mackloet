@@ -1,6 +1,7 @@
 package org.rekeningsysteem.test.integration;
 
-import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.Currency;
 
@@ -44,8 +45,7 @@ public class ReparationFactuurIntegrationTest extends AbstractIntegrationTest {
 
 	@Override
 	protected ReparatiesFactuur makeRekening() {
-		Debiteur debiteur = new Debiteur("Name", "Street", "Number", "Zipcode",
-				"Place", "BtwNumber");
+		Debiteur debiteur = new Debiteur("Name", "Street", "Number", "Zipcode", "Place", "BtwNumber");
 		LocalDate datum = LocalDate.of(2011, 4, 5);
 		String factuurnummer = "232011";
 		FactuurHeader header = new FactuurHeader(debiteur, datum, factuurnummer);
@@ -54,17 +54,16 @@ public class ReparationFactuurIntegrationTest extends AbstractIntegrationTest {
 		this.addOrders(itemList);
 		this.addOrders(itemList);
 
-		return new ReparatiesFactuur(header, Currency.getInstance("EUR"),
-				itemList);
+		return new ReparatiesFactuur(header, Currency.getInstance("EUR"), itemList);
 	}
 
 	@Override
-	protected File pdfFile() {
-		return new File("src\\test\\resources\\pdf\\ReparationFactuurIntegrationTest.pdf");
+	protected Path pdfFile() {
+		return Paths.get("src", "test", "resources", "pdf", "ReparationFactuurIntegrationTest.pdf").toAbsolutePath();
 	}
 
 	@Override
-	protected File xmlFile() {
-		return new File("src\\test\\resources\\xml\\ReparationFactuurIntegrationTest.xml");
+	protected Path xmlFile() {
+		return Paths.get("src", "test", "resources", "xml", "ReparationFactuurIntegrationTest.pdf").toAbsolutePath();
 	}
 }

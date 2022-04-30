@@ -22,7 +22,6 @@ import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.data.util.ItemList;
 import org.rekeningsysteem.data.util.header.Debiteur;
 import org.rekeningsysteem.data.util.header.FactuurHeader;
-import org.rekeningsysteem.data.util.header.OmschrFactuurHeader;
 import org.rekeningsysteem.exception.XmlParseException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -47,20 +46,14 @@ public class XmlReader3 extends XmlLoader {
 				String version = v.getNodeValue();
 				if ("3".equals(version)) {
 					String type = t.getNodeValue();
-					switch (type) {
-						case "AangenomenFactuur":
-							return parseRekening(bestand, XmlReader3::makeAangenomenFactuur, "rekening");
-						case "MutatiesFactuur":
-							return parseRekening(bestand, XmlReader3::makeMutatiesFactuur, "rekening");
-						case "Offerte":
-							return parseRekening(bestand, XmlReader3::makeOfferte, "rekening");
-						case "ParticulierFactuur":
-							return parseRekening(bestand, XmlReader3::makeParticulierFactuur, "rekening");
-						case "ReparatiesFactuur":
-							return parseRekening(bestand, XmlReader3::makeReparatiesFactuur, "rekening");
-						default:
-							return Single.<AbstractRekening> error(new XmlParseException(String.format("No suitable invoice type found. Found type: %s", type)));
-					}
+					return switch (type) {
+						case "AangenomenFactuur" -> parseRekening(bestand, XmlReader3::makeAangenomenFactuur, "rekening");
+						case "MutatiesFactuur" -> parseRekening(bestand, XmlReader3::makeMutatiesFactuur, "rekening");
+						case "Offerte" -> parseRekening(bestand, XmlReader3::makeOfferte, "rekening");
+						case "ParticulierFactuur" -> parseRekening(bestand, XmlReader3::makeParticulierFactuur, "rekening");
+						case "ReparatiesFactuur" -> parseRekening(bestand, XmlReader3::makeReparatiesFactuur, "rekening");
+						default -> Single.<AbstractRekening> error(new XmlParseException(String.format("No suitable invoice type found. Found type: %s", type)));
+					};
 				}
 				return Single.<AbstractRekening> error(new XmlParseException(String.format("Incorrect version for this parser. Found version: %s", version)));
 			}))
@@ -92,16 +85,7 @@ public class XmlReader3 extends XmlLoader {
 		return Maybe.zip(jaar, maand, dag, LocalDate::of);
 	}
 
-	private static Maybe<OmschrFactuurHeader> makeFactuurHeader(Node node) {
-		Maybe<Debiteur> debiteur = makeDebiteur(getElement(node, "debiteur"));
-		Maybe<LocalDate> datum = makeDatum(getElement(node, "datum"));
-		Maybe<String> factuurnummer = getNodeValue(node, "factuurnummer");
-		Maybe<String> omschrijving = getNodeValue(node, "omschrijving");
-
-		return Maybe.zip(debiteur, datum, factuurnummer, omschrijving, OmschrFactuurHeader::new);
-	}
-
-	private static Maybe<FactuurHeader> makeFactuurHeaderWithoutOmschrijving(Node node) {
+	private static Maybe<FactuurHeader> makeFactuurHeader(Node node) {
 		Maybe<Debiteur> debiteur = makeDebiteur(getElement(node, "debiteur"));
 		Maybe<LocalDate> datum = makeDatum(getElement(node, "datum"));
 		Maybe<String> factuurnummer = getNodeValue(node, "factuurnummer");
@@ -157,11 +141,12 @@ public class XmlReader3 extends XmlLoader {
 	}
 
 	private static Maybe<ParticulierFactuur> makeAangenomenFactuur(Node node) {
-		Maybe<OmschrFactuurHeader> header = makeFactuurHeader(getElement(node, "factuurHeader"));
+		Maybe<FactuurHeader> header = makeFactuurHeader(getElement(node, "factuurHeader"));
+		Maybe<String> omschrijving = getNodeValue(node, "omschrijving");
 		Maybe<Currency> currency = makeCurrency(node);
 		Single<ItemList<ParticulierArtikel>> list = makeAangenomenList(getElement(node, "list"));
 
-		return Maybe.zip(header, currency, list.toMaybe(), ParticulierFactuur::new);
+		return Maybe.zip(header, omschrijving, currency, list.toMaybe(), ParticulierFactuur::new);
 	}
 
 	private static Maybe<MutatiesInkoopOrder> makeMutatiesInkoopOrder(Node node) {
@@ -179,7 +164,7 @@ public class XmlReader3 extends XmlLoader {
 	}
 
 	private static Maybe<MutatiesFactuur> makeMutatiesFactuur(Node node) {
-		Maybe<FactuurHeader> header = makeFactuurHeaderWithoutOmschrijving(getElement(node, "factuurHeader"));
+		Maybe<FactuurHeader> header = makeFactuurHeader(getElement(node, "factuurHeader"));
 		Maybe<Currency> currency = makeCurrency(node);
 		Single<ItemList<MutatiesInkoopOrder>> list = makeMutatiesList(getElement(node, "list"));
 
@@ -227,15 +212,10 @@ public class XmlReader3 extends XmlLoader {
 	private static Single<ItemList<ParticulierArtikel>> makeParticulierList(Node node) {
 		return iterate(node.getChildNodes())
 			.filter(item -> !"#text".equals(item.getNodeName()))
-			.flatMapMaybe(item -> {
-				switch (item.getNodeName()) {
-					case "gebruikt-esselink-artikel":
-						return makeGebruiktArtikelEsselink(item);
-					case "ander-artikel":
-						return makeAnderArtikel(item);
-					default:
-						return Maybe.error(new IllegalArgumentException("Unknown artikel type found."));
-				}
+			.flatMapMaybe(item -> switch (item.getNodeName()) {
+				case "gebruikt-esselink-artikel" -> makeGebruiktArtikelEsselink(item);
+				case "ander-artikel" -> makeAnderArtikel(item);
+				default -> Maybe.error(new IllegalArgumentException("Unknown artikel type found."));
 			})
 			.collect(ItemList::new, Collection::add);
 	}
@@ -264,28 +244,24 @@ public class XmlReader3 extends XmlLoader {
 	private static Single<ItemList<AbstractLoon>> makeLoonList(Node node) {
 		return iterate(node.getChildNodes())
 			.filter(n -> !"#text".equals(n.getNodeName()))
-			.flatMapMaybe(item -> {
-				switch (item.getNodeName()) {
-					case "product-loon":
-						return makeProductLoon(item);
-					case "instant-loon":
-						return makeInstantLoon(item);
-					default:
-						return Maybe.error(new IllegalArgumentException("Unknown loon type found."));
-				}
+			.flatMapMaybe(item -> switch (item.getNodeName()) {
+				case "product-loon" -> makeProductLoon(item);
+				case "instant-loon" -> makeInstantLoon(item);
+				default -> Maybe.error(new IllegalArgumentException("Unknown loon type found."));
 			})
 			.collect(ItemList::new, Collection::add);
 	}
 
 	private static Maybe<ParticulierFactuur> makeParticulierFactuur(Node node) {
-		Maybe<OmschrFactuurHeader> header = makeFactuurHeader(getElement(node, "factuurHeader"));
+		Maybe<FactuurHeader> header = makeFactuurHeader(getElement(node, "factuurHeader"));
+		Maybe<String> omschrijving = getNodeValue(node, "omschrijving");
 		Maybe<Currency> currency = makeCurrency(node);
 		Single<ItemList<ParticulierArtikel>> artList = makeParticulierList(getElement(node, "itemList"));
 		Single<ItemList<AbstractLoon>> loonList = makeLoonList(getElement(node, "loonList"));
 
-		return Maybe.zip(header, currency, artList.toMaybe(), loonList.toMaybe(), (h, c, li, lo) -> {
+		return Maybe.zip(header, omschrijving, currency, artList.toMaybe(), loonList.toMaybe(), (h, o, c, li, lo) -> {
 			li.addAll(lo);
-			return new ParticulierFactuur(h, c, li);
+			return new ParticulierFactuur(h, o, c, li);
 		});
 	}
 
@@ -305,7 +281,7 @@ public class XmlReader3 extends XmlLoader {
 	}
 
 	private static Maybe<ReparatiesFactuur> makeReparatiesFactuur(Node node) {
-		Maybe<FactuurHeader> header = makeFactuurHeaderWithoutOmschrijving(getElement(node, "factuurHeader"));
+		Maybe<FactuurHeader> header = makeFactuurHeader(getElement(node, "factuurHeader"));
 		Maybe<Currency> currency = makeCurrency(node);
 		Single<ItemList<ReparatiesInkoopOrder>> list = makeReparatiesList(getElement(node, "list"));
 

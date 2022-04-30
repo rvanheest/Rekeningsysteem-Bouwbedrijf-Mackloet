@@ -1,14 +1,10 @@
 package org.rekeningsysteem.io.pdf;
 
-import org.rekeningsysteem.data.mutaties.MutatiesFactuur;
-import org.rekeningsysteem.data.offerte.Offerte;
-import org.rekeningsysteem.data.particulier.ParticulierFactuur;
-import org.rekeningsysteem.data.reparaties.ReparatiesFactuur;
 import org.rekeningsysteem.data.util.AbstractRekening;
 import org.rekeningsysteem.exception.PdfException;
 import org.rekeningsysteem.io.FactuurExporter;
 
-import java.io.File;
+import java.nio.file.Path;
 
 public class PdfExporter implements FactuurExporter {
 
@@ -27,7 +23,7 @@ public class PdfExporter implements FactuurExporter {
 	}
 
 	@Override
-	public void export(AbstractRekening rekening, File saveLocation) throws PdfException {
+	public void export(AbstractRekening rekening, Path saveLocation) throws PdfException {
 		this.visitor.setSaveLocation(saveLocation);
 		this.visitor.visit(rekening);
 	}

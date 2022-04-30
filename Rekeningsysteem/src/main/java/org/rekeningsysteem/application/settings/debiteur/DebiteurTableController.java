@@ -109,13 +109,13 @@ public class DebiteurTableController implements Disposable {
 
 	private static Debiteur uiToModel(DebiteurTableModel model) {
 		return new Debiteur(
-			Optional.ofNullable(model.getId()),
-			model.getNaam(),
-			model.getStraat(),
-			model.getNummer(),
-			model.getPostcode(),
-			model.getPlaats(),
-			OptionalUtils.fromString(model.getBtwNummer())
+			Optional.ofNullable(model.id()),
+			model.naam(),
+			model.straat(),
+			model.nummer(),
+			model.postcode(),
+			model.plaats(),
+			OptionalUtils.fromString(model.btwNummer())
 		);
 	}
 }

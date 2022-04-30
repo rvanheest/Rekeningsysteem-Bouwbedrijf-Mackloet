@@ -25,13 +25,11 @@ public class MutatiesController extends AbstractRekeningController<MutatiesFactu
 	private final CompositeDisposable disposable = new CompositeDisposable();
 
 	public MutatiesController(Database database) {
-		this(
-			PropertiesWorker.getInstance()
-				.getProperty(PropertyModelEnum.VALUTAISO4217)
-				.map(Currency::getInstance)
-				.orElse(Currency.getInstance("EUR")),
-			database
-		);
+		this(PropertiesWorker.getInstance(), database);
+	}
+
+	public MutatiesController(PropertiesWorker properties, Database database) {
+		this(getDefaultCurrency(properties), database);
 	}
 
 	public MutatiesController(Currency currency, Database database) {

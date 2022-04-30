@@ -19,7 +19,7 @@ public class DatabaseTest {
 
 	@Before
 	public void setUp() throws IOException, SQLException {
-		this.database = new Database(this.folder.newFile("database.db"));
+		this.database = new Database(this.folder.newFile("database.db").toPath());
 	}
 
 	@After

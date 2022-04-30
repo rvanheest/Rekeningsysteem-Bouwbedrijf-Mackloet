@@ -161,53 +161,13 @@ public class DebiteurTable extends VBox implements Disposable {
 		this.disposable.dispose();
 	}
 
-	public static class DebiteurTableModel {
-
-		private final Integer id;
-		private final String naam;
-		private final String straat;
-		private final String nummer;
-		private final String postcode;
-		private final String plaats;
-		private final String btwNummer;
-
-		public DebiteurTableModel(Integer id, String naam, String straat, String nummer,
-			String postcode, String plaats, String btwNummer) {
-			this.id = id;
-			this.naam = naam;
-			this.straat = straat;
-			this.nummer = nummer;
-			this.postcode = postcode;
-			this.plaats = plaats;
-			this.btwNummer = btwNummer;
-		}
-
-		public Integer getId() {
-			return this.id;
-		}
-
-		public String getNaam() {
-			return this.naam;
-		}
-
-		public String getStraat() {
-			return this.straat;
-		}
-
-		public String getNummer() {
-			return this.nummer;
-		}
-
-		public String getPostcode() {
-			return this.postcode;
-		}
-
-		public String getPlaats() {
-			return this.plaats;
-		}
-
-		public String getBtwNummer() {
-			return this.btwNummer;
-		}
-	}
+	public record DebiteurTableModel(
+			Integer id,
+			String naam,
+			String straat,
+			String nummer,
+			String postcode,
+			String plaats,
+			String btwNummer
+	) {}
 }

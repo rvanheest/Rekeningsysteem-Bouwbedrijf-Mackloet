@@ -1,6 +1,7 @@
 package org.rekeningsysteem.test.io.xml;
 
-import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.Currency;
 
@@ -27,7 +28,6 @@ import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.data.util.ItemList;
 import org.rekeningsysteem.data.util.header.Debiteur;
 import org.rekeningsysteem.data.util.header.FactuurHeader;
-import org.rekeningsysteem.data.util.header.OmschrFactuurHeader;
 import org.rekeningsysteem.io.xml.XmlReader3;
 
 public class XmlReader3Test {
@@ -42,12 +42,14 @@ public class XmlReader3Test {
 
 	@Test
 	public void testLoadParticulierFactuur() {
-		File file = new File("src\\test\\resources\\xml\\xml3\\particulierFactuurXMLTest.xml");
+		Path path = Paths.get("src", "test", "resources", "xml", "xml3", "particulierFactuurXMLTest.xml");
 
-		OmschrFactuurHeader factuurHeader = new OmschrFactuurHeader(new Debiteur(
-				"Name", "Street", "Number", "Zipcode", "Place"),
-				LocalDate.of(2011, 4, 2), "22011", "Voor u verrichte werkzaamheden betreffende renovatie badkamervloer i.v.m. lekkage");
-
+		FactuurHeader factuurHeader = new FactuurHeader(
+			new Debiteur("Name", "Street", "Number", "Zipcode", "Place"),
+			LocalDate.of(2011, 4, 2),
+			"22011"
+		);
+		String omschrijving = "Voor u verrichte werkzaamheden betreffende renovatie badkamervloer i.v.m. lekkage";
 		ItemList<ParticulierArtikel> itemList = new ItemList<>();
 		itemList.add(new GebruiktEsselinkArtikel(new EsselinkArtikel("2018021117",
 				"Product 1", 1, "Zak", new Geld(5.16)), 8.0, new BtwPercentage(21.0, false)));
@@ -69,10 +71,9 @@ public class XmlReader3Test {
 		itemList.add(new ProductLoon("test123", 12.0, new Geld(12.5), new BtwPercentage(6.0, false)));
 		itemList.add(new InstantLoon("foobar", new Geld(40.0), new BtwPercentage(6.0, false)));
 
-		ParticulierFactuur expected = new ParticulierFactuur(factuurHeader,
-				Currency.getInstance("EUR"), itemList);
+		ParticulierFactuur expected = new ParticulierFactuur(factuurHeader, omschrijving, Currency.getInstance("EUR"), itemList);
 
-		this.reader.load(file)
+		this.reader.load(path)
 			.test()
 			.assertValue(expected)
 			.assertNoErrors()
@@ -81,7 +82,7 @@ public class XmlReader3Test {
 
 	@Test
 	public void testLoadMutatiesFactuur() {
-		File file = new File("src\\test\\resources\\xml\\xml3\\mutatiesFactuurXMLTest.xml");
+		Path path = Paths.get("src", "test", "resources", "xml", "xml3", "mutatiesFactuurXMLTest.xml");
 
 		FactuurHeader factuurHeader = new FactuurHeader(
 			new Debiteur("Name", "Street", "Number", "ZipCode", "Place", "btw"),
@@ -96,7 +97,7 @@ public class XmlReader3Test {
 
 		MutatiesFactuur expected = new MutatiesFactuur(factuurHeader, Currency.getInstance("EUR"), itemList);
 
-		this.reader.load(file)
+		this.reader.load(path)
 			.test()
 			.assertValue(expected)
 			.assertNoErrors()
@@ -105,7 +106,7 @@ public class XmlReader3Test {
 
 	@Test
 	public void testLoadReparatiesFactuur() {
-		File file = new File("src\\test\\resources\\xml\\xml3\\reparatiesFactuurXMLTest.xml");
+		Path path = Paths.get("src", "test", "resources", "xml", "xml3", "reparatiesFactuurXMLTest.xml");
 
 		FactuurHeader factuurHeader = new FactuurHeader(new Debiteur("Name",
 				"Street", "Number", "Zipcode", "Place", "BtwNumber"),
@@ -139,7 +140,7 @@ public class XmlReader3Test {
 		ReparatiesFactuur expected = new ReparatiesFactuur(factuurHeader,
 				Currency.getInstance("EUR"), itemList);
 
-		this.reader.load(file)
+		this.reader.load(path)
 			.test()
 			.assertValue(expected)
 			.assertNoErrors()
@@ -148,7 +149,7 @@ public class XmlReader3Test {
 
 	@Test
 	public void testLoadOfferte() {
-		File file = new File("src\\test\\resources\\xml\\xml3\\offerteXMLTest.xml");
+		Path path = Paths.get("src", "test", "resources", "xml", "xml3", "offerteXMLTest.xml");
 
 		FactuurHeader factuurHeader = new FactuurHeader(new Debiteur(
 				"Dhr. M. Stolk", "Ring", "", "", "Nieuwe-Tonge"),
@@ -156,7 +157,7 @@ public class XmlReader3Test {
 		Offerte expected = new Offerte(factuurHeader, "Lorem ipsum dolor sit amet, consectetur "
 				+ "adipiscing elit. Fusce quis quam tortor.", false);
 
-		this.reader.load(file)
+		this.reader.load(path)
 			.test()
 			.assertValue(expected)
 			.assertNoErrors()
@@ -165,11 +166,14 @@ public class XmlReader3Test {
 
 	@Test
 	public void testLoadAangenomenFactuur() {
-		File file = new File("src\\test\\resources\\xml\\xml3\\aangenomenFactuurXMLTest.xml");
+		Path path = Paths.get("src", "test", "resources", "xml", "xml3", "aangenomenFactuurXMLTest.xml");
 
-		OmschrFactuurHeader factuurHeader = new OmschrFactuurHeader(new Debiteur("Name",
-				"Street", "Number", "ZipCode", "Place"), LocalDate.of(2013, 4, 5), "122013",
-				"Voor u verrichte werkzaamheden");
+		FactuurHeader factuurHeader = new FactuurHeader(
+			new Debiteur("Name", "Street", "Number", "ZipCode", "Place"),
+			LocalDate.of(2013, 4, 5),
+			"122013"
+		);
+		String omschrijving = "Voor u verrichte werkzaamheden";
 
 		ItemList<ParticulierArtikel> itemList = new ItemList<>();
 		itemList.add(new AnderArtikel("omschr1", new Geld(2791.25), new BtwPercentage(21.0, false)));
@@ -181,10 +185,9 @@ public class XmlReader3Test {
 		itemList.add(new AnderArtikel("omschr4", new Geld(0), new BtwPercentage(21.0, false)));
 		itemList.add(new InstantLoon("omschr4", new Geld(-800.0), new BtwPercentage(6.0, false)));
 
-		ParticulierFactuur expected = new ParticulierFactuur(factuurHeader,
-				Currency.getInstance("EUR"), itemList);
+		ParticulierFactuur expected = new ParticulierFactuur(factuurHeader, omschrijving, Currency.getInstance("EUR"), itemList);
 
-		this.reader.load(file)
+		this.reader.load(path)
 			.test()
 			.assertValue(expected)
 			.assertNoErrors()

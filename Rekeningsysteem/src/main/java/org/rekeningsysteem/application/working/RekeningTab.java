@@ -1,6 +1,6 @@
 package org.rekeningsysteem.application.working;
 
-import java.io.File;
+import java.nio.file.Path;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -42,7 +42,7 @@ public class RekeningTab extends Tab implements Disposable {
 	private final PublishSubject<Boolean> modified = PublishSubject.create();
 	private final BehaviorSubject<AbstractRekening> latest = BehaviorSubject.create();
 	private final AbstractRekeningController<? extends AbstractRekening> controller;
-	private Optional<File> saveFile;
+	private Optional<Path> savePath;
 	private final DebiteurDBInteraction debiteurDB;
 	private final CompositeDisposable disposable = new CompositeDisposable();
 
@@ -50,10 +50,10 @@ public class RekeningTab extends Tab implements Disposable {
 		this(name, controller, Optional.empty(), database);
 	}
 
-	public RekeningTab(String name, AbstractRekeningController<? extends AbstractRekening> controller, Optional<File> file, Database database) {
+	public RekeningTab(String name, AbstractRekeningController<? extends AbstractRekening> controller, Optional<Path> path, Database database) {
 		super(name);
 		this.controller = controller;
-		this.saveFile = file;
+		this.savePath = path;
 		this.debiteurDB = new DebiteurDBInteraction(database);
 
 		this.setContent(this.controller.getUI());
@@ -79,26 +79,26 @@ public class RekeningTab extends Tab implements Disposable {
 		return this.controller.getModel();
 	}
 
-	public Optional<File> getSaveFile() {
-		return this.saveFile;
+	public Optional<Path> getSavePath() {
+		return this.savePath;
 	}
 
-	public void setSaveFile(File file) {
-		this.saveFile = Optional.ofNullable(file);
-		this.saveFile.map(File::getName).ifPresent(this::setText);
+	public void setSavePath(Path file) {
+		this.savePath = Optional.ofNullable(file);
+		this.savePath.map(p -> p.getFileName().toString()).ifPresent(this::setText);
 	}
 
 	public void initFactuurnummer() {
 		this.controller.initFactuurnummer();
 	}
 
-	public static Maybe<RekeningTab> openFile(File file, Database database) {
-		if (file.getName().endsWith(".pdf")) {
-			return Maybe.fromAction(() -> JLROpener.open(file));
+	public static Maybe<RekeningTab> openFile(Path path, Database database) {
+		if (path.getFileName().toString().endsWith(".pdf")) {
+			return Maybe.fromAction(() -> JLROpener.open(path.toFile()));
 		}
 
-		if (file.getName().endsWith(".xml")) {
-			return ioWorker.load(file)
+		if (path.getFileName().toString().endsWith(".xml")) {
+			return ioWorker.load(path)
 				.doOnError(error -> {
 					// TODO move this to a separate class (as well as all other popup windows)
 					String alertText = "Deze factuur kon niet worden geopend. De file is "
@@ -116,7 +116,7 @@ public class RekeningTab extends Tab implements Disposable {
 					f.ofType(ParticulierFactuur.class).map(fact -> new ParticulierController(fact, PropertiesWorker.getInstance(), database)),
 					f.ofType(ReparatiesFactuur.class).map(fact -> new ReparatiesController(fact, database))
 				))
-				.map(c -> new RekeningTab(file.getName(), c, Optional.of(file), database))
+				.map(c -> new RekeningTab(path.getFileName().toString(), c, Optional.of(path), database))
 				.singleElement();
 		}
 
@@ -126,7 +126,7 @@ public class RekeningTab extends Tab implements Disposable {
 	public void save() {
 		AbstractRekening rekening = this.latest.getValue();
 
-		this.saveFile.ifPresent(file -> ioWorker.save(rekening, file));
+		this.savePath.ifPresent(file -> ioWorker.save(rekening, file));
 
 		if (this.controller.getSaveSelected().blockingGet()) {
 			this.debiteurDB.addDebiteur(rekening.getFactuurHeader().debiteur()).blockingAwait();
@@ -140,13 +140,13 @@ public class RekeningTab extends Tab implements Disposable {
 		this.modified.onNext(false);
 	}
 
-	public void export(File file) throws PdfException {
+	public void export(Path path) throws PdfException {
 		final AtomicReference<PdfException> e = new AtomicReference<>();
 
 		AbstractRekening rekening = this.latest.getValue();
 
 		try {
-			ioWorker.export(rekening, file);
+			ioWorker.export(rekening, path);
 		}
 		catch (PdfException ex) {
 			e.set(ex);

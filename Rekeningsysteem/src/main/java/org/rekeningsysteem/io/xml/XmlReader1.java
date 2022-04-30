@@ -23,7 +23,6 @@ import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.data.util.ItemList;
 import org.rekeningsysteem.data.util.header.Debiteur;
 import org.rekeningsysteem.data.util.header.FactuurHeader;
-import org.rekeningsysteem.data.util.header.OmschrFactuurHeader;
 import org.rekeningsysteem.exception.GeldParseException;
 import org.rekeningsysteem.exception.XmlParseException;
 import org.w3c.dom.Document;
@@ -47,21 +46,14 @@ public class XmlReader1 extends XmlLoader {
 	public Single<AbstractRekening> read(Document document) {
 		Node factuur = document.getElementsByTagName("bestand").item(0);
 		String soort = factuur.getFirstChild().getNodeName();
-		switch (soort) {
-			case "particulierfactuur1":
-			case "partfactuur":
-				return parseRekening(factuur, this::makeParticulierFactuur1, soort);
-			case "particulierfactuur2":
-				return parseRekening(factuur, this::makeParticulierFactuur2, soort);
-			case "reparatiesfactuur":
-				return parseRekening(factuur, this::makeReparatiesFactuur, soort);
-			case "mutatiesfactuur":
-				return parseRekening(factuur, this::makeMutatiesFactuur, soort);
-			case "offerte":
-				return parseRekening(factuur, XmlReader1::makeOfferte, soort);
-			default:
-				return Single.error(new XmlParseException(String.format("Geen geschikte Node gevonden. Nodenaam = %s.", soort)));
-		}
+		return switch (soort) {
+			case "particulierfactuur1", "partfactuur" -> parseRekening(factuur, this::makeParticulierFactuur1, soort);
+			case "particulierfactuur2" -> parseRekening(factuur, this::makeParticulierFactuur2, soort);
+			case "reparatiesfactuur" -> parseRekening(factuur, this::makeReparatiesFactuur, soort);
+			case "mutatiesfactuur" -> parseRekening(factuur, this::makeMutatiesFactuur, soort);
+			case "offerte" -> parseRekening(factuur, XmlReader1::makeOfferte, soort);
+			default -> Single.error(new XmlParseException(String.format("Geen geschikte Node gevonden. Nodenaam = %s.", soort)));
+		};
 	}
 
 	private Single<Geld> makeGeld(String s) {
@@ -109,16 +101,7 @@ public class XmlReader1 extends XmlLoader {
 			: Maybe.zip(naam, straat, nummer, postcode, plaats, btwnr, Debiteur::new));
 	}
 
-	private static Maybe<OmschrFactuurHeader> makeFactuurHeader(Node node) {
-		Maybe<Debiteur> debiteur = makeDebiteur(getElement(node, "debiteur"));
-		Maybe<LocalDate> datum = makeDatum(getElement(node, "datum"));
-		Maybe<String> factuurnummer = getNodeValue(node, "factuurnummer");
-		Maybe<String> omschrijving = getNodeValue(node, "omschrijving");
-
-		return Maybe.zip(debiteur, datum, factuurnummer, omschrijving, OmschrFactuurHeader::new);
-	}
-
-	private static Maybe<FactuurHeader> makeFactuurHeaderWithoutOmschrijving(Node node) {
+	private static Maybe<FactuurHeader> makeFactuurHeader(Node node) {
 		Maybe<Debiteur> debiteur = makeDebiteur(getElement(node, "debiteur"));
 		Maybe<LocalDate> datum = makeDatum(getElement(node, "datum"));
 		Maybe<String> factuurnummer = getNodeValue(node, "factuurnummer");
@@ -187,20 +170,15 @@ public class XmlReader1 extends XmlLoader {
 	private Maybe<ParticulierFactuur> makeParticulierFactuur1(Node node) {
 		NodeList gal = getElement(getElement(node, "artikellijst"), "gebruiktartikellijst").getChildNodes();
 
-		Maybe<OmschrFactuurHeader> header = makeFactuurHeader(node);
+		Maybe<FactuurHeader> header = makeFactuurHeader(node);
+		Maybe<String> omschrijving = getNodeValue(node, "omschrijving");
 		Function<BtwPercentage, Single<ItemList<ParticulierArtikel>>> itemList = btw ->
 			Observable.range(0, gal.getLength())
 				.map(gal::item)
-				.flatMapMaybe(item -> {
-					switch (item.getNodeName()) {
-						case "gebruiktartikelander":
-							return this.makeAnderArtikel(item);
-						case "gebruiktartikelesselink":
-							return this.makeGebruiktArtikelEsselink(item);
-						default:
-							return Maybe.error(new IllegalArgumentException(
-								"Unknown artikel type found."));
-					}
+				.flatMapMaybe(item -> switch (item.getNodeName()) {
+					case "gebruiktartikelander" -> this.makeAnderArtikel(item);
+					case "gebruiktartikelesselink" -> this.makeGebruiktArtikelEsselink(item);
+					default -> Maybe.error(new IllegalArgumentException("Unknown artikel type found."));
 				})
 				.map(f -> f.apply(btw))
 				.collect(ItemList::new, Collection::add);
@@ -217,9 +195,9 @@ public class XmlReader1 extends XmlLoader {
 			Single<ItemList<ParticulierArtikel>> art = itemList.apply(percentages.materiaalPercentage());
 			Maybe<ItemList<AbstractLoon>> loon = loonList.apply(percentages.loonPercentage());
 
-			return Maybe.zip(header, art.toMaybe(), loon, (h, li, lo) -> {
+			return Maybe.zip(header, omschrijving, art.toMaybe(), loon, (h, o, li, lo) -> {
 				li.addAll(lo);
-				return new ParticulierFactuur(h, this.currency, li);
+				return new ParticulierFactuur(h, o, this.currency, li);
 			});
 		});
 	}
@@ -227,20 +205,15 @@ public class XmlReader1 extends XmlLoader {
 	private Maybe<ParticulierFactuur> makeParticulierFactuur2(Node node) {
 		NodeList gal = getElement(getElement(node, "artikellijst"), "gebruiktartikellijst").getChildNodes();
 
-		Maybe<OmschrFactuurHeader> header = makeFactuurHeader(node);
+		Maybe<FactuurHeader> header = makeFactuurHeader(node);
+		Maybe<String> omschrijving = getNodeValue(node, "omschrijving");
 		Function<BtwPercentage, Single<ItemList<ParticulierArtikel>>> itemList = btw ->
 			Observable.range(0, gal.getLength())
 				.map(gal::item)
-				.flatMapMaybe(item -> {
-					switch (item.getNodeName()) {
-						case "gebruiktartikelander":
-							return this.makeAnderArtikel(item);
-						case "gebruiktartikelesselink":
-							return this.makeGebruiktArtikelEsselink(item);
-						default:
-							return Maybe.error(new IllegalArgumentException(
-								"Unknown artikel type found."));
-					}
+				.flatMapMaybe(item -> switch (item.getNodeName()) {
+					case "gebruiktartikelander" -> this.makeAnderArtikel(item);
+					case "gebruiktartikelesselink" -> this.makeGebruiktArtikelEsselink(item);
+					default -> Maybe.error(new IllegalArgumentException("Unknown artikel type found."));
 				})
 				.map(f -> f.apply(btw))
 				.collect(ItemList::new, Collection::add);
@@ -257,9 +230,9 @@ public class XmlReader1 extends XmlLoader {
 			Single<ItemList<ParticulierArtikel>> art = itemList.apply(percentage.materiaalPercentage());
 			Maybe<ItemList<AbstractLoon>> loon = loonList.apply(percentage.loonPercentage());
 
-			return Maybe.zip(header, art.toMaybe(), loon, (h, li, lo) -> {
+			return Maybe.zip(header, omschrijving, art.toMaybe(), loon, (h, o, li, lo) -> {
 				li.addAll(lo);
-				return new ParticulierFactuur(h, this.currency, li);
+				return new ParticulierFactuur(h, o, this.currency, li);
 			});
 		});
 	}
@@ -273,7 +246,7 @@ public class XmlReader1 extends XmlLoader {
 	}
 
 	private Maybe<MutatiesFactuur> makeMutatiesFactuur(Node node) {
-		Maybe<FactuurHeader> header = makeFactuurHeaderWithoutOmschrijving(node);
+		Maybe<FactuurHeader> header = makeFactuurHeader(node);
 
 		NodeList orders = getNodeList(getElement(node, "mutatiesbonlijst"), "mutatiesbon");
 		Single<ItemList<MutatiesInkoopOrder>> itemList = Observable.range(0, orders.getLength())
@@ -294,7 +267,7 @@ public class XmlReader1 extends XmlLoader {
 	}
 
 	private Maybe<ReparatiesFactuur> makeReparatiesFactuur(Node node) {
-		Maybe<FactuurHeader> header = makeFactuurHeaderWithoutOmschrijving(node);
+		Maybe<FactuurHeader> header = makeFactuurHeader(node);
 
 		NodeList orders = getNodeList(getElement(node, "reparatiesbonlijst"), "reparatiesbon");
 		Single<ItemList<ReparatiesInkoopOrder>> itemList = Observable.range(0, orders.getLength())

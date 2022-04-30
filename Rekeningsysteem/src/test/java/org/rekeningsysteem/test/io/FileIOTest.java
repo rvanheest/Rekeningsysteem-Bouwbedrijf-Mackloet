@@ -6,13 +6,14 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.nio.file.NoSuchFileException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 
 import io.reactivex.rxjava3.core.Observable;
@@ -30,17 +31,17 @@ public class FileIOTest {
 
 	private FileIO io;
 	@Rule public TemporaryFolder folder = new TemporaryFolder();
-	private File file;
+	private Path path;
 
 	@Before
 	public void setUp() throws IOException {
-		this.file = this.folder.newFile();
+		this.path = this.folder.newFile().toPath();
 		this.io = new FileIO();
 	}
 
 	@Test
 	public void testReadCSV() throws IOException {
-		FileUtils.writeLines(this.file, Arrays.asList(
+		FileUtils.writeLines(this.path.toFile(), Arrays.asList(
 			"artikelnummer;omschrijving;prijsPer;Eenheid;verkoopprijs",
 			"6030001186;PPB vloerbalk T2 183 503cm *;1;m1;13,20",
 			"6030001187;PPB vloerbalk T2 183 363cm;1;m1;13,20",
@@ -52,7 +53,7 @@ public class FileIOTest {
 			"6030001225;PPB vulelement 640-4.0;1;Stuks;15,11"
 		));
 
-		this.io.readCSV(this.file)
+		this.io.readCSV(this.path)
 			.test()
 			.assertValues(
 				new EsselinkArtikel("6030001186", "PPB vloerbalk T2 183 503cm *", 1, "m1", new Geld(13.20)),
@@ -70,7 +71,7 @@ public class FileIOTest {
 
 	@Test
 	public void testNonExistingFile() {
-		this.io.readCSV(new File("does-not-exist.csv"))
+		this.io.readCSV(Paths.get("does-not-exist.csv"))
 			.test()
 			.assertNoValues()
 			.assertError(NoSuchFileException.class)
@@ -81,7 +82,7 @@ public class FileIOTest {
 	public void testReadFile() {
 		this.testWriteFile();
 
-		this.io.readFile(this.file)
+		this.io.readFile(this.path)
 			.test()
 			.assertValue("abcdef")
 			.assertNoErrors()
@@ -90,13 +91,13 @@ public class FileIOTest {
 
 	@Test
 	public void testWriteFile() {
-		this.io.writeToFile(this.file, true, Observable.just("abc", "def"))
+		this.io.writeToFile(this.path, true, Observable.just("abc", "def"))
 			.test()
 			.assertNoValues()
 			.assertNoErrors()
 			.assertComplete();
 
-		this.io.readFile(this.file)
+		this.io.readFile(this.path)
 			.test()
 			.assertValue("abcdef")
 			.assertNoErrors()
@@ -181,7 +182,7 @@ public class FileIOTest {
 
 	@Test
 	public void testWriteFileWithWriterOnIOThreadNoMock() throws IOException, InterruptedException {
-		try (OutputStream out = new FileOutputStream(this.file, false);
+		try (OutputStream out = new FileOutputStream(this.path.toFile(), false);
 			Writer writer = new OutputStreamWriter(out)) {
 
 			Observable.just("abcdef")
@@ -194,7 +195,7 @@ public class FileIOTest {
 				.assertComplete();
 		}
 
-		this.io.readFile(this.file)
+		this.io.readFile(this.path)
 			.test()
 			.assertValue("abcdef")
 			.assertNoErrors()
@@ -203,14 +204,14 @@ public class FileIOTest {
 
 	@Test
 	public void testWriteFileWithFileOnIOThreadNoMock() throws InterruptedException {
-		this.io.writeToFile(this.file, false, Observable.just("abcdef").observeOn(Schedulers.io()))
+		this.io.writeToFile(this.path, false, Observable.just("abcdef").observeOn(Schedulers.io()))
 			.test()
 			.await()
 			.assertNoValues()
 			.assertNoErrors()
 			.assertComplete();
 
-		this.io.readFile(this.file)
+		this.io.readFile(this.path)
 			.test()
 			.assertValue("abcdef")
 			.assertNoErrors()
@@ -219,21 +220,21 @@ public class FileIOTest {
 
 	@Test
 	public void testAppendFileWithFileOnIOThreadNoMock() throws InterruptedException {
-		this.io.writeToFile(this.file, false, Observable.just("abc", "def").observeOn(Schedulers.io()))
+		this.io.writeToFile(this.path, false, Observable.just("abc", "def").observeOn(Schedulers.io()))
 			.test()
 			.await()
 			.assertNoValues()
 			.assertNoErrors()
 			.assertComplete();
 
-		this.io.writeToFile(this.file, true, Observable.just("ghi", "jkl").observeOn(Schedulers.io()))
+		this.io.writeToFile(this.path, true, Observable.just("ghi", "jkl").observeOn(Schedulers.io()))
 			.test()
 			.await()
 			.assertNoValues()
 			.assertNoErrors()
 			.assertComplete();
 
-		this.io.readFile(this.file)
+		this.io.readFile(this.path)
 			.test()
 			.assertValue("defghijkl")
 			.assertNoErrors()

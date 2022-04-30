@@ -42,17 +42,12 @@ public abstract class AbstractRekeningController<M extends AbstractRekening> imp
 	}
 
 	protected static Currency getDefaultCurrency(PropertiesWorker properties) {
-		return properties.getProperty(PropertyModelEnum.VALUTAISO4217)
-			.map(Currency::getInstance)
-			.orElse(Currency.getInstance("EUR"));
+		return properties.getCurrencyProperty(PropertyModelEnum.VALUTAISO4217, "EUR");
 	}
 
 	protected static BtwPercentages getDefaultBtwPercentage(PropertiesWorker properties) {
-		return properties.getProperty(PropertyModelEnum.LOONBTWPERCENTAGE)
-			.map(Double::parseDouble)
-			.flatMap(l -> properties
-				.getProperty(PropertyModelEnum.MATERIAALBTWPERCENTAGE)
-				.map(Double::parseDouble)
+		return properties.getDoubleProperty(PropertyModelEnum.LOONBTWPERCENTAGE)
+			.flatMap(l -> properties.getDoubleProperty(PropertyModelEnum.MATERIAALBTWPERCENTAGE)
 				.map(m -> new BtwPercentages(l, m)))
 			.orElse(new BtwPercentages(9, 21));
 	}

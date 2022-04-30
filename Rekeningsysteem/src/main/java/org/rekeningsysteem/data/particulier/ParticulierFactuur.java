@@ -4,18 +4,20 @@ import java.util.Currency;
 
 import org.rekeningsysteem.data.util.AbstractFactuur;
 import org.rekeningsysteem.data.util.ItemList;
-import org.rekeningsysteem.data.util.header.OmschrFactuurHeader;
+import org.rekeningsysteem.data.util.header.FactuurHeader;
 import org.rekeningsysteem.data.util.visitor.RekeningVisitor;
 
 public class ParticulierFactuur extends AbstractFactuur<ParticulierArtikel> {
 
-	public ParticulierFactuur(OmschrFactuurHeader header, Currency currency, ItemList<ParticulierArtikel> itemList) {
+	private final String omschrijving;
+
+	public ParticulierFactuur(FactuurHeader header, String omschrijving, Currency currency, ItemList<ParticulierArtikel> itemList) {
 		super(header, currency, itemList);
+		this.omschrijving = omschrijving;
 	}
 
-	@Override
-	public OmschrFactuurHeader getFactuurHeader() {
-		return (OmschrFactuurHeader) super.getFactuurHeader();
+	public String getOmschrijving() {
+		return this.omschrijving;
 	}
 
 	@Override

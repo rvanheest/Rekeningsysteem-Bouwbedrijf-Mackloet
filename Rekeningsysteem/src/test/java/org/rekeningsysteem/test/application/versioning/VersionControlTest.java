@@ -1,7 +1,7 @@
 package org.rekeningsysteem.test.application.versioning;
 
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.sql.SQLException;
 
 import io.reactivex.rxjava3.core.Observable;
@@ -23,8 +23,8 @@ public class VersionControlTest {
 
 	@Before
 	public void setUp() throws IOException, SQLException {
-		File file = this.folder.newFile("database.db");
-		this.database = new Database(file);
+		Path path = this.folder.newFile("database.db").toPath();
+		this.database = new Database(path);
 		this.vc = new VersionControl(this.database);
 	}
 

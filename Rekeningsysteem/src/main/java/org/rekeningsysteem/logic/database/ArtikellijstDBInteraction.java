@@ -24,7 +24,7 @@ public class ArtikellijstDBInteraction extends DBInteraction<EsselinkArtikel> {
 	private static final QueryEnumeration clearTable = () -> "DELETE FROM Artikellijst;";
 
 	private static final Function<EsselinkArtikel, String> artikelToString = ea ->
-			"('" + ea.artikelNummer() + "', '" + ea.omschrijving().replace("\'", "\'\'")
+			"('" + ea.artikelNummer() + "', '" + ea.omschrijving().replace("'", "''")
 					+ "', '" + ea.prijsPer() + "', '" + ea.eenheid()
 					+ "', '" + ea.verkoopPrijs().bedrag() + "')";
 	private static final Function<EsselinkArtikel, QueryEnumeration> insert = ea -> () ->

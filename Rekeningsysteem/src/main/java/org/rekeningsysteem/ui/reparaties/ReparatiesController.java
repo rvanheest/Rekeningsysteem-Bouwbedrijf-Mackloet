@@ -25,13 +25,11 @@ public class ReparatiesController extends AbstractRekeningController<ReparatiesF
 	private final CompositeDisposable disposable = new CompositeDisposable();
 
 	public ReparatiesController(Database database) {
-		this(
-			PropertiesWorker.getInstance()
-				.getProperty(PropertyModelEnum.VALUTAISO4217)
-				.map(Currency::getInstance)
-				.orElse(Currency.getInstance("EUR")),
-			database
-		);
+		this(PropertiesWorker.getInstance(), database);
+	}
+
+	public ReparatiesController(PropertiesWorker propertiesWorker, Database database) {
+		this(getDefaultCurrency(propertiesWorker), database);
 	}
 
 	public ReparatiesController(Currency currency, Database database) {

@@ -2,7 +2,7 @@ package org.rekeningsysteem.test.io.pdf;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.File;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -20,7 +20,7 @@ public class PdfConverterTest {
 	private final Object expectedOutput;
 
 	public PdfConverterTest(Object input, Object expectedOutput) {
-		this.converter = new PdfConverter(new File("resources\\LaTeX\\Offerte.tex"));
+		this.converter = new PdfConverter(Paths.get("resources", "LaTeX", "Offerte.tex"));
 		this.input = input;
 		this.expectedOutput = expectedOutput;
 	}

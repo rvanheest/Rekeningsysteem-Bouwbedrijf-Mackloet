@@ -1,6 +1,6 @@
 package org.rekeningsysteem.io.pdf;
 
-import java.io.File;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,8 +13,8 @@ public class PdfConverter extends JLRConverter {
 
 	private final Map<String, String> replaceMap = new HashMap<>();
 
-	public PdfConverter(File file) {
-		super(file);
+	public PdfConverter(Path path) {
+		super(path.toFile());
 		this.fillMapWithSmallLetters();
 		this.fillMapWithCapitals();
 	}

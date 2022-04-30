@@ -14,8 +14,8 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilder;
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.Optional;
 
 public abstract class XmlLoader implements FactuurLoader {
@@ -27,13 +27,13 @@ public abstract class XmlLoader implements FactuurLoader {
 	}
 
 	@Override
-	public Single<AbstractRekening> load(File file) {
-		return this.load(this.builder, file);
+	public Single<AbstractRekening> load(Path path) {
+		return this.load(this.builder, path);
 	}
 
-	Single<AbstractRekening> load(DocumentBuilder builder, File file) {
+	Single<AbstractRekening> load(DocumentBuilder builder, Path path) {
 		try {
-			Document document = builder.parse(file);
+			Document document = builder.parse(path.toFile());
 			document.getDocumentElement().normalize();
 			return this.read(document);
 		}

@@ -1,6 +1,7 @@
 package org.rekeningsysteem.test.integration;
 
-import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 
 import org.junit.runner.RunWith;
@@ -13,29 +14,12 @@ import org.rekeningsysteem.data.util.header.FactuurHeader;
 public class OfferteFalseIntegrationTest extends AbstractIntegrationTest {
 
 	protected String makeText() {
-		return "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce quis quam tortor. "
-				+ "Nunc id leo in eros tincidunt lobortis eget a erat. Mauris id velit ut diam "
-				+ "tincidunt auctor ut sed sapien. Morbi in tellus ut sapien molestie sodales "
-				+ "vitae molestie libero. Sed sodales augue nulla, ut pulvinar odio placerat eu. "
-				+ "Nunc at arcu euismod, pulvinar orci nec, fermentum tellus. In hac habitasse "
-				+ "platea dictumst. Interdum et malesuada fames ac ante ipsum primis in faucibus. "
-				+ "Nullam eu sagittis libero, quis pretium tortor. Aliquam at placerat dolor. "
-				+ "Nunc fringilla quam venenatis lacus condimentum, vitae mattis risus "
-				+ "ullamcorper. Maecenas pulvinar gravida libero, ac scelerisque justo "
-				+ "dignissim in.\n\n"
-				
-				+ "Maecenas pretium mi id magna convallis, vel auctor erat pulvinar. Cras et "
-				+ "tellus nec lacus pellentesque rutrum eget sodales nisi. In vitae sagittis "
-				+ "urna. Sed vestibulum suscipit vulputate. Vivamus commodo augue at dolor "
-				+ "volutpat blandit. Nunc in justo bibendum, cursus purus quis, scelerisque est. "
-				+ "Aenean ut accumsan arcu.\n\n"
-				
-				+ "Cras volutpat auctor mollis. Sed aliquam elit et accumsan dictum. Pellentesque "
-				+ "sollicitudin, turpis sollicitudin tincidunt porttitor, velit quam mollis sem, "
-				+ "non volutpat nunc arcu quis magna. Fusce vitae mattis nisl. Nulla sit amet "
-				+ "mollis neque, et hendrerit eros. Cras id risus adipiscing, sollicitudin odio "
-				+ "non, mollis metus. Pellentesque vulputate tempus nibh a ultricies. Quisque "
-				+ "ullamcorper dictum velit, sit amet pellentesque risus facilisis vel.";
+		return """
+				Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce quis quam tortor. Nunc id leo in eros tincidunt lobortis eget a erat. Mauris id velit ut diam tincidunt auctor ut sed sapien. Morbi in tellus ut sapien molestie sodales vitae molestie libero. Sed sodales augue nulla, ut pulvinar odio placerat eu. Nunc at arcu euismod, pulvinar orci nec, fermentum tellus. In hac habitasse platea dictumst. Interdum et malesuada fames ac ante ipsum primis in faucibus. Nullam eu sagittis libero, quis pretium tortor. Aliquam at placerat dolor. Nunc fringilla quam venenatis lacus condimentum, vitae mattis risus ullamcorper. Maecenas pulvinar gravida libero, ac scelerisque justo dignissim in.
+
+				Maecenas pretium mi id magna convallis, vel auctor erat pulvinar. Cras et tellus nec lacus pellentesque rutrum eget sodales nisi. In vitae sagittis urna. Sed vestibulum suscipit vulputate. Vivamus commodo augue at dolor volutpat blandit. Nunc in justo bibendum, cursus purus quis, scelerisque est. Aenean ut accumsan arcu.
+
+				Cras volutpat auctor mollis. Sed aliquam elit et accumsan dictum. Pellentesque sollicitudin, turpis sollicitudin tincidunt porttitor, velit quam mollis sem, non volutpat nunc arcu quis magna. Fusce vitae mattis nisl. Nulla sit amet mollis neque, et hendrerit eros. Cras id risus adipiscing, sollicitudin odio non, mollis metus. Pellentesque vulputate tempus nibh a ultricies. Quisque ullamcorper dictum velit, sit amet pellentesque risus facilisis vel.""";
 	}
 
 	@Override
@@ -48,12 +32,12 @@ public class OfferteFalseIntegrationTest extends AbstractIntegrationTest {
 	}
 
 	@Override
-	protected File pdfFile() {
-		return new File("src\\test\\resources\\pdf\\OfferteFalseIntegrationTest.pdf");
+	protected Path pdfFile() {
+		return Paths.get("src", "test", "resources", "pdf", "OfferteFalseIntegrationTest.pdf").toAbsolutePath();
 	}
 
 	@Override
-	protected File xmlFile() {
-		return new File("src\\test\\resources\\xml\\OfferteFalseIntegrationTest.xml");
+	protected Path xmlFile() {
+		return Paths.get("src", "test", "resources", "xml", "OfferteFalseIntegrationTest.pdf").toAbsolutePath();
 	}
 }

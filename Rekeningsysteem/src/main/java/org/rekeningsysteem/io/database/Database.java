@@ -1,6 +1,6 @@
 package org.rekeningsysteem.io.database;
 
-import java.io.File;
+import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -32,15 +32,14 @@ public class Database implements AutoCloseable {
 	}
 
 	private Database(PropertiesWorker worker) throws SQLException {
-		this(worker.getProperty(PropertyModelEnum.DATABASE)
-			.map(File::new)
+		this(worker.getPathProperty(PropertyModelEnum.DATABASE)
 			.orElseThrow(() -> new SQLException("Did not find the database location.")));
 	}
 
-	public Database(File file) throws SQLException {
+	public Database(Path path) throws SQLException {
 		try {
 			Class.forName("org.sqlite.JDBC");
-			this.connection = DriverManager.getConnection("jdbc:sqlite:" + file.getPath());
+			this.connection = DriverManager.getConnection("jdbc:sqlite:" + path.toString());
 		}
 		catch (ClassNotFoundException e) {
 			throw new SQLException("Class \"org.sqlite.JDBC\" was not found", e);

@@ -48,20 +48,20 @@ public class ParticulierArtikelController extends AbstractListItemController<Par
 		this.instantController = instantController;
 		this.productController = productController;
 
-		properties.getProperty(PropertyModelEnum.FEATURE_PARTICULIER_ESSELINK_ARTIKEL)
-			.filter(Boolean::parseBoolean)
+		properties.getBooleanProperty(PropertyModelEnum.FEATURE_PARTICULIER_ESSELINK_ARTIKEL)
+			.filter(b -> b)
 			.ifPresent(b -> ui.addContent(ParticulierArtikelType.ESSELINK, this.gebruiktController.getUI()));
 
-		properties.getProperty(PropertyModelEnum.FEATURE_PARTICULIER_EIGEN_ARTIKEL)
-			.filter(Boolean::parseBoolean)
+		properties.getBooleanProperty(PropertyModelEnum.FEATURE_PARTICULIER_EIGEN_ARTIKEL)
+			.filter(b -> b)
 			.ifPresent(b -> ui.addContent(ParticulierArtikelType.ANDER, this.anderController.getUI()));
 
-		properties.getProperty(PropertyModelEnum.FEATURE_PARTICULIER_LOON)
-			.filter(Boolean::parseBoolean)
+		properties.getBooleanProperty(PropertyModelEnum.FEATURE_PARTICULIER_LOON)
+			.filter(b -> b)
 			.ifPresent(b -> ui.addContent(ParticulierArtikelType.INSTANT, this.instantController.getUI()));
 
-		properties.getProperty(PropertyModelEnum.FEATURE_PARTICULIER_LOON_PER_UUR)
-			.filter(Boolean::parseBoolean)
+		properties.getBooleanProperty(PropertyModelEnum.FEATURE_PARTICULIER_LOON_PER_UUR)
+			.filter(b -> b)
 			.ifPresent(b -> ui.addContent(ParticulierArtikelType.PRODUCT, this.productController.getUI()));
 
 		this.setBtwPercentage(defaultBtw);

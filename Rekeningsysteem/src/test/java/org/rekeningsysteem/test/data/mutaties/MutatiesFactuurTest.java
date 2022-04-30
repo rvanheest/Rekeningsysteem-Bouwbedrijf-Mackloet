@@ -63,8 +63,8 @@ public class MutatiesFactuurTest extends AbstractFactuurTest<MutatiesInkoopOrder
 
 	@Test
 	public void testToString() {
-		String expected = "<MutatiesFactuur[<FactuurHeader[Debiteur[debiteurID=Optional.empty, naam=a, straat=b, " 
-			+ "nummer=c, postcode=d, plaats=e, btwNummer=Optional.empty], 1992-07-30, Optional.empty]>, EUR, itemList]>";
+		String expected = "<MutatiesFactuur[FactuurHeader[debiteur=Debiteur[debiteurID=Optional.empty, naam=a, straat=b, " 
+			+ "nummer=c, postcode=d, plaats=e, btwNummer=Optional.empty], datum=1992-07-30, factuurnummer=Optional.empty], EUR, itemList]>";
 		assertEquals(expected, this.factuur.toString());
 	}
 }

@@ -2,7 +2,9 @@ package org.rekeningsysteem.ui.header;
 
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.disposables.Disposable;
-import org.rekeningsysteem.data.util.header.OmschrFactuurHeader;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
+import org.rekeningsysteem.data.util.header.FactuurHeader;
 import org.rekeningsysteem.io.database.Database;
 import org.rekeningsysteem.logic.database.DebiteurDBInteraction;
 import org.rekeningsysteem.ui.header.FactuurnummerPane.FactuurnummerType;
@@ -11,7 +13,7 @@ import java.util.Optional;
 
 public class OmschrFactuurHeaderController implements Disposable {
 
-	private final Observable<OmschrFactuurHeader> model;
+	private final Observable<Pair<FactuurHeader, String>> model;
 	private final FactuurHeaderPane ui;
 
 	// subcontrollers
@@ -27,12 +29,12 @@ public class OmschrFactuurHeaderController implements Disposable {
 		);
 	}
 
-	public OmschrFactuurHeaderController(OmschrFactuurHeader input, Database database) {
+	public OmschrFactuurHeaderController(FactuurHeader factuurHeader, String omschrijving, Database database) {
 		this(
-			new DebiteurController(input.debiteur(), new DebiteurDBInteraction(database)),
-			new DatumController(input.datum()),
-			new FactuurnummerController(FactuurnummerType.FACTUUR, input.factuurnummer()),
-			new OmschrijvingController(input.getOmschrijving())
+			new DebiteurController(factuurHeader.debiteur(), new DebiteurDBInteraction(database)),
+			new DatumController(factuurHeader.datum()),
+			new FactuurnummerController(FactuurnummerType.FACTUUR, factuurHeader.factuurnummer()),
+			new OmschrijvingController(omschrijving)
 		);
 	}
 
@@ -50,12 +52,12 @@ public class OmschrFactuurHeaderController implements Disposable {
 			datum.getModel(),
 			factuurnummer.getModel(),
 			omschrijving.getModel(),
-			OmschrFactuurHeader::new
+				(deb, dat, fac, omschr) -> new ImmutablePair<>(new FactuurHeader(deb, dat, fac), omschr)
 		);
 		this.ui = new FactuurHeaderPane(debiteur.getUI(), datum.getUI(), factuurnummer.getUI(), omschrijving.getUI());
 	}
 
-	public Observable<OmschrFactuurHeader> getModel() {
+	public Observable<Pair<FactuurHeader, String>> getModel() {
 		return this.model;
 	}
 

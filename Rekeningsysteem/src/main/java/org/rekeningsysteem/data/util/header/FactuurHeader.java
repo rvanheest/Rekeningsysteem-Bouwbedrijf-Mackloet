@@ -1,7 +1,6 @@
 package org.rekeningsysteem.data.util.header;
 
 import java.time.LocalDate;
-import java.util.Objects;
 import java.util.Optional;
 
 public record FactuurHeader(Debiteur debiteur, LocalDate datum, Optional<String> factuurnummer) {

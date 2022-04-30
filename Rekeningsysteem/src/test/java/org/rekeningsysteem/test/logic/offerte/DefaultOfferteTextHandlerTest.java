@@ -1,8 +1,5 @@
 package org.rekeningsysteem.test.logic.offerte;
 
-import java.io.File;
-import java.io.IOException;
-
 import io.reactivex.rxjava3.core.Observable;
 import org.junit.Before;
 import org.junit.Rule;
@@ -12,17 +9,17 @@ import org.rekeningsysteem.exception.NoSuchFileException;
 import org.rekeningsysteem.io.FileIO;
 import org.rekeningsysteem.logic.offerte.DefaultOfferteTextHandler;
 
+import java.io.IOException;
+
 public class DefaultOfferteTextHandlerTest {
 
 	private DefaultOfferteTextHandler handler;
 	@Rule public TemporaryFolder folder = new TemporaryFolder();
-	private File file;
 	private final FileIO io = new FileIO();
 
 	@Before
 	public void setUp() throws IOException {
-		this.file = this.folder.newFile();
-		this.handler = new DefaultOfferteTextHandler(this.file, this.io);
+		this.handler = new DefaultOfferteTextHandler(this.folder.newFile().toPath(), this.io);
 	}
 
 	@Test
@@ -49,8 +46,7 @@ public class DefaultOfferteTextHandlerTest {
 
 	@Test
 	public void testSetDefaultTextWithNoFile() {
-		this.file = null;
-		this.handler = new DefaultOfferteTextHandler(this.file, this.io);
+		this.handler = new DefaultOfferteTextHandler(null, this.io);
 
 		this.handler.setDefaultText(Observable.just("abcdef"))
 			.test()

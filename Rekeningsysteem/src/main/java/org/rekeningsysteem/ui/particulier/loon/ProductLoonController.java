@@ -20,9 +20,7 @@ public class ProductLoonController {
 
 	public ProductLoonController(Currency currency, PropertiesWorker properties) {
 		this(new ProductLoonPane(currency));
-		properties.getProperty(PropertyModelEnum.UURLOON)
-			.map(Double::parseDouble)
-			.ifPresent(this.ui::setUurloon);
+		properties.getDoubleProperty(PropertyModelEnum.UURLOON).ifPresent(this.ui::setUurloon);
 	}
 
 	public ProductLoonController(ProductLoonPane ui) {

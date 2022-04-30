@@ -1,6 +1,7 @@
 package org.rekeningsysteem.test.integration;
 
-import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.Currency;
 
@@ -18,7 +19,7 @@ import org.rekeningsysteem.data.util.BtwPercentage;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.data.util.ItemList;
 import org.rekeningsysteem.data.util.header.Debiteur;
-import org.rekeningsysteem.data.util.header.OmschrFactuurHeader;
+import org.rekeningsysteem.data.util.header.FactuurHeader;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ParticulierFactuurTwoBtwIntegrationTest extends AbstractIntegrationTest {
@@ -26,20 +27,13 @@ public class ParticulierFactuurTwoBtwIntegrationTest extends AbstractIntegration
 	protected ItemList<ParticulierArtikel> addArtikels() {
 		ItemList<ParticulierArtikel> list = new ItemList<>();
 
-		EsselinkArtikel sub1 = new EsselinkArtikel("2018021117", "Product 1", 1, "Zak",
-				new Geld(5.16));
-		EsselinkArtikel sub2 = new EsselinkArtikel("2003131360", "Product 2", 1, "zak",
-				new Geld(129.53));
-		EsselinkArtikel sub3 = new EsselinkArtikel("2003131060", "Product 3", 1, "set",
-				new Geld(35.96));
-		EsselinkArtikel sub4 = new EsselinkArtikel("2003131306", "Product 4", 1, "zak",
-				new Geld(9.47));
-		EsselinkArtikel sub5 = new EsselinkArtikel("4010272112", "Product 5", 1, "Stuks",
-				new Geld(17.18));
-		EsselinkArtikel sub6 = new EsselinkArtikel("2009200131", "Product 6", 1, "Stuks",
-				new Geld(6.84));
-		EsselinkArtikel sub7 = new EsselinkArtikel("2009200105", "Product 7", 1, "Stuks",
-				new Geld(7.44));
+		EsselinkArtikel sub1 = new EsselinkArtikel("2018021117", "Product 1", 1, "Zak", new Geld(5.16));
+		EsselinkArtikel sub2 = new EsselinkArtikel("2003131360", "Product 2", 1, "zak", new Geld(129.53));
+		EsselinkArtikel sub3 = new EsselinkArtikel("2003131060", "Product 3", 1, "set", new Geld(35.96));
+		EsselinkArtikel sub4 = new EsselinkArtikel("2003131306", "Product 4", 1, "zak", new Geld(9.47));
+		EsselinkArtikel sub5 = new EsselinkArtikel("4010272112", "Product 5", 1, "Stuks", new Geld(17.18));
+		EsselinkArtikel sub6 = new EsselinkArtikel("2009200131", "Product 6", 1, "Stuks", new Geld(6.84));
+		EsselinkArtikel sub7 = new EsselinkArtikel("2009200105", "Product 7", 1, "Stuks", new Geld(7.44));
 
 		list.add(new GebruiktEsselinkArtikel(sub1, 8, new BtwPercentage(21, false)));
 		list.add(new GebruiktEsselinkArtikel(sub2, 1, new BtwPercentage(21, false)));
@@ -70,24 +64,22 @@ public class ParticulierFactuurTwoBtwIntegrationTest extends AbstractIntegration
 				"Place");
 		LocalDate datum = LocalDate.of(2011, 4, 2);
 		String factuurnummer = "22011";
-		String omschrijving = "Voor u verrichte werkzaamheden betreffende renovatie "
-				+ "badkamervloer i.v.m. lekkage";
-		OmschrFactuurHeader header = new OmschrFactuurHeader(debiteur, datum, factuurnummer,
-				omschrijving);
+		FactuurHeader header = new FactuurHeader(debiteur, datum, factuurnummer);
+		String omschrijving = "Voor u verrichte werkzaamheden betreffende renovatie badkamervloer i.v.m. lekkage";
 
 		ItemList<ParticulierArtikel> itemList = this.addArtikels();
 		itemList.addAll(this.addLoon());
 
-		return new ParticulierFactuur(header, Currency.getInstance("EUR"), itemList);
+		return new ParticulierFactuur(header, omschrijving, Currency.getInstance("EUR"), itemList);
 	}
 
 	@Override
-	protected File pdfFile() {
-		return new File("src\\test\\resources\\pdf\\ParticulierFactuurTwoBtwIntegrationTest.pdf");
+	protected Path pdfFile() {
+		return Paths.get("src", "test", "resources", "pdf", "ParticulierFactuurTwoBtwIntegrationTest.pdf").toAbsolutePath();
 	}
 
 	@Override
-	protected File xmlFile() {
-		return new File("src\\test\\resources\\xml\\ParticulierFactuurTwoBtwIntegrationTest.xml");
+	protected Path xmlFile() {
+		return Paths.get("src", "test", "resources", "xml", "ParticulierFactuurTwoBtwIntegrationTest.pdf").toAbsolutePath();
 	}
 }

@@ -8,11 +8,13 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Optional;
 import java.util.Properties;
 
@@ -30,7 +32,7 @@ import org.rekeningsysteem.properties.PropertyKey;
 @RunWith(MockitoJUnitRunner.class)
 public class PropertiesWorkerTest {
 	
-	private static final File file = new File("src\\test\\resources\\test.resources");
+	private static final Path path = Paths.get("src", "test", "resources", "test.resources");
 
 	private PropertiesWorker worker;
 	@Mock private Properties properties;
@@ -39,8 +41,8 @@ public class PropertiesWorkerTest {
 
 	@BeforeClass
 	public static void setUpClass() throws IOException {
-		if (!file.exists()) {
-			try (OutputStream stream = new FileOutputStream(file)) {
+		if (!Files.exists(path)) {
+			try (OutputStream stream = new FileOutputStream(path.toFile())) {
 				//Makes new File
 			}
 		}
@@ -48,15 +50,13 @@ public class PropertiesWorkerTest {
 
 	@Before
 	public void setUp() throws IOException {
-		this.worker = PropertiesWorker.getInstance(this.properties, file, this.logger);
+		this.worker = PropertiesWorker.getInstance(this.properties, path, this.logger);
 		verify(this.properties).load((InputStream) any());
 	}
 
 	@AfterClass
-	public static void tearDownClass() {
-		if (file.exists()) {
-			file.delete();
-		}
+	public static void tearDownClass() throws IOException {
+		Files.deleteIfExists(path);
 	}
 
 	@Test
@@ -89,14 +89,14 @@ public class PropertiesWorkerTest {
 	@Test
 	public void testLoadFails() throws IOException {
 		doThrow(new IOException("")).when(this.properties).load((InputStream) any());
-		PropertiesWorker.getInstance(this.properties, file, this.logger);
+		PropertiesWorker.getInstance(this.properties, path, this.logger);
 
 		verify(this.logger).error(anyString(), (Throwable) any());
 	}
 
 	@Test
 	public void testLoadFile_FileNotFound() {
-		PropertiesWorker.getInstance(this.properties, new File("bestaatniet.txt"), this.logger);
+		PropertiesWorker.getInstance(this.properties, Paths.get("bestaatniet.txt"), this.logger);
 
 		verify(this.logger).error(anyString(), (Throwable) any());
 	}

@@ -36,10 +36,7 @@ public class Root extends BorderPane implements Disposable {
 	public Root(Stage stage, Database database, Logger logger) {
 		this.setId("root");
 
-		Boolean fullscreen = PropertiesWorker.getInstance()
-			.getProperty(PropertyModelEnum.APPLICATION_FULL_SCREEN_MODE)
-			.map(Boolean::parseBoolean)
-			.orElse(false);
+		boolean fullscreen = PropertiesWorker.getInstance().getBooleanProperty(PropertyModelEnum.APPLICATION_FULL_SCREEN_MODE, false);
 		this.max = BehaviorSubject.createDefault(fullscreen);
 
 		UpperBar upperBar = new UpperBar();
@@ -54,7 +51,7 @@ public class Root extends BorderPane implements Disposable {
 
 		Observable<Boolean> maxToggle = this.max.scan(!fullscreen, (cum, b) -> !cum)
 			.skip(1)
-			.doOnNext(b -> PropertiesWorker.getInstance().setProperty(PropertyModelEnum.APPLICATION_FULL_SCREEN_MODE, Boolean.toString(b)));
+			.doOnNext(b -> PropertiesWorker.getInstance().setProperty(PropertyModelEnum.APPLICATION_FULL_SCREEN_MODE, b));
 
 		this.disposable.addAll(
 			this.resizeButton,

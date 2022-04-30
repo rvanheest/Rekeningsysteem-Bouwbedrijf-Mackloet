@@ -17,7 +17,7 @@ public class PrijsLijstPane extends GridPane {
 
 	public PrijsLijstPane() {
 		this.progressLabel.getStyleClass().add("no-item-found");
-		Label warningLabel = new Label("Let op, de huidige data wordt verwijderd wanneer nieuwe data wordt geimporteerd!");
+		Label warningLabel = new Label("Let op, de huidige data wordt verwijderd wanneer nieuwe data wordt geïmporteerd!");
 		warningLabel.setTextFill(Color.RED);
 		warningLabel.setWrapText(true);
 

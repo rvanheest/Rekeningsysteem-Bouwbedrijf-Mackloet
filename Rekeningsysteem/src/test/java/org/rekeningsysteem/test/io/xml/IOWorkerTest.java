@@ -5,7 +5,8 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 
-import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.Currency;
 
@@ -38,7 +39,6 @@ import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.data.util.ItemList;
 import org.rekeningsysteem.data.util.header.Debiteur;
 import org.rekeningsysteem.data.util.header.FactuurHeader;
-import org.rekeningsysteem.data.util.header.OmschrFactuurHeader;
 import org.rekeningsysteem.exception.PdfException;
 import org.rekeningsysteem.exception.XmlParseException;
 import org.rekeningsysteem.exception.XmlWriteException;
@@ -72,8 +72,8 @@ public class IOWorkerTest {
 	}
 
 	@Test
-	public void testLoadEmptyFile() {
-		this.loader.load(new File("src\\test\\resources\\ioWorker\\loadXML\\empty.xml"))
+	public void testLoadEmptyPath() {
+		this.loader.load(Paths.get("src", "test", "resources", "ioWorker", "loadXML", "empty.xml"))
 			.test()
 			.assertNoValues()
 			.assertError(XmlParseException.class)
@@ -83,7 +83,7 @@ public class IOWorkerTest {
 
 	@Test
 	public void testLoadAangenomenFactuur2() {
-		this.loader.load(new File("src\\test\\resources\\ioWorker\\loadXML\\2Aangenomen.xml"))
+		this.loader.load(Paths.get("src", "test", "resources", "ioWorker", "loadXML", "2Aangenomen.xml"))
 			.map(AbstractRekening::getClass)
 			.cast(Class.class)
 			.test()
@@ -95,7 +95,7 @@ public class IOWorkerTest {
 
 	@Test
 	public void testLoadAangenomenFactuur3() {
-		this.loader.load(new File("src\\test\\resources\\ioWorker\\loadXML\\3Aangenomen.xml"))
+		this.loader.load(Paths.get("src", "test", "resources", "ioWorker", "loadXML", "3Aangenomen.xml"))
 			.map(AbstractRekening::getClass)
 			.cast(Class.class)
 			.test()
@@ -107,7 +107,7 @@ public class IOWorkerTest {
 
 	@Test
 	public void testLoadMutatiesFactuur1() {
-		this.loader.load(new File("src\\test\\resources\\ioWorker\\loadXML\\1Mutaties.xml"))
+		this.loader.load(Paths.get("src", "test", "resources", "ioWorker", "loadXML", "1Mutaties.xml"))
 			.map(AbstractRekening::getClass)
 			.cast(Class.class)
 			.test()
@@ -119,7 +119,7 @@ public class IOWorkerTest {
 
 	@Test
 	public void testLoadMutatiesFactuur2() {
-		this.loader.load(new File("src\\test\\resources\\ioWorker\\loadXML\\2Mutaties.xml"))
+		this.loader.load(Paths.get("src", "test", "resources", "ioWorker", "loadXML", "2Mutaties.xml"))
 			.map(AbstractRekening::getClass)
 			.cast(Class.class)
 			.test()
@@ -131,7 +131,7 @@ public class IOWorkerTest {
 
 	@Test
 	public void testLoadMutatiesFactuur3() {
-		this.loader.load(new File("src\\test\\resources\\ioWorker\\loadXML\\3Mutaties.xml"))
+		this.loader.load(Paths.get("src", "test", "resources", "ioWorker", "loadXML", "3Mutaties.xml"))
 			.map(AbstractRekening::getClass)
 			.cast(Class.class)
 			.test()
@@ -143,7 +143,7 @@ public class IOWorkerTest {
 
 	@Test
 	public void testLoadMutatiesFactuur4() {
-		this.loader.load(new File("src\\test\\resources\\ioWorker\\loadXML\\4Mutaties.xml"))
+		this.loader.load(Paths.get("src", "test", "resources", "ioWorker", "loadXML", "4Mutaties.xml"))
 			.map(AbstractRekening::getClass)
 			.cast(Class.class)
 			.test()
@@ -157,10 +157,10 @@ public class IOWorkerTest {
 	public void testSaveMutatiesFactuur() throws XmlWriteException {
 
 		MutatiesFactuur factuur = this.mutaties();
-		File file = new File("src\\test\\resources\\ioWorker\\saveXML\\Mutaties.xml");
+		Path path = Paths.get("src", "test", "resources", "ioWorker", "saveXML", "Mutaties.xml");
 
-		this.loader.save(factuur, file);
-		this.loader.load(file)
+		this.loader.save(factuur, path);
+		this.loader.load(path)
 			.test()
 			.assertValue(factuur)
 			.assertNoErrors()
@@ -171,15 +171,15 @@ public class IOWorkerTest {
 	@Test
 	public void testExportMutatiesFactuur() throws PdfException {
 		MutatiesFactuur factuur = this.mutaties();
-		File file = new File("src\\test\\resources\\ioWorker\\savePDF\\Mutaties.pdf");
+		Path path = Paths.get("src", "test", "resources", "ioWorker", "savePDF", "Mutaties.pdf");
 
-		this.loader.export(factuur, file);
+		this.loader.export(factuur, path);
 		verifyNoInteractions(this.logger);
 	}
 
 	@Test
 	public void testLoadOfferte1() {
-		this.loader.load(new File("src\\test\\resources\\ioWorker\\loadXML\\1Offerte.xml"))
+		this.loader.load(Paths.get("src", "test", "resources", "ioWorker", "loadXML", "1Offerte.xml"))
 			.map(AbstractRekening::getClass)
 			.cast(Class.class)
 			.test()
@@ -191,7 +191,7 @@ public class IOWorkerTest {
 
 	@Test
 	public void testLoadOfferte2() {
-		this.loader.load(new File("src\\test\\resources\\ioWorker\\loadXML\\2Offerte.xml"))
+		this.loader.load(Paths.get("src", "test", "resources", "ioWorker", "loadXML", "2Offerte.xml"))
 			.map(AbstractRekening::getClass)
 			.cast(Class.class)
 			.test()
@@ -203,7 +203,7 @@ public class IOWorkerTest {
 
 	@Test
 	public void testLoadOfferte3() {
-		this.loader.load(new File("src\\test\\resources\\ioWorker\\loadXML\\3Offerte.xml"))
+		this.loader.load(Paths.get("src", "test", "resources", "ioWorker", "loadXML", "3Offerte.xml"))
 			.map(AbstractRekening::getClass)
 			.cast(Class.class)
 			.test()
@@ -215,7 +215,7 @@ public class IOWorkerTest {
 
 	@Test
 	public void testLoadOfferte4() {
-		this.loader.load(new File("src\\test\\resources\\ioWorker\\loadXML\\4Offerte.xml"))
+		this.loader.load(Paths.get("src", "test", "resources", "ioWorker", "loadXML", "4Offerte.xml"))
 			.map(AbstractRekening::getClass)
 			.cast(Class.class)
 			.test()
@@ -228,10 +228,10 @@ public class IOWorkerTest {
 	@Test
 	public void testSaveOfferte() throws XmlWriteException {
 		Offerte offerte = this.offerte();
-		File file = new File("src\\test\\resources\\ioWorker\\saveXML\\Offerte.xml");
+		Path path = Paths.get("src", "test", "resources", "ioWorker", "saveXML", "Offerte.xml");
 
-		this.loader.save(offerte, file);
-		this.loader.load(file)
+		this.loader.save(offerte, path);
+		this.loader.load(path)
 			.test()
 			.assertValue(offerte)
 			.assertNoErrors()
@@ -242,15 +242,15 @@ public class IOWorkerTest {
 	@Test
 	public void testExportOfferte() throws PdfException {
 		Offerte factuur = this.offerte();
-		File file = new File("src\\test\\resources\\ioWorker\\savePDF\\Offerte.pdf");
+		Path path = Paths.get("src", "test", "resources", "ioWorker", "savePDF", "Offerte.pdf");
 
-		this.loader.export(factuur, file);
+		this.loader.export(factuur, path);
 		verifyNoInteractions(this.logger);
 	}
 
 	@Test
 	public void testLoadPartFactuur1() {
-		this.loader.load(new File("src\\test\\resources\\ioWorker\\loadXML\\1Part.xml"))
+		this.loader.load(Paths.get("src", "test", "resources", "ioWorker", "loadXML", "1Part.xml"))
 			.map(AbstractRekening::getClass)
 			.cast(Class.class)
 			.test()
@@ -262,7 +262,7 @@ public class IOWorkerTest {
 
 	@Test
 	public void testLoadParticulierFactuur1_1() {
-		this.loader.load(new File("src\\test\\resources\\ioWorker\\loadXML\\1Particulier1.xml"))
+		this.loader.load(Paths.get("src", "test", "resources", "ioWorker", "loadXML", "1Particulier1.xml"))
 			.map(AbstractRekening::getClass)
 			.cast(Class.class)
 			.test()
@@ -274,7 +274,7 @@ public class IOWorkerTest {
 
 	@Test
 	public void testLoadParticulierFactuur1_2() {
-		this.loader.load(new File("src\\test\\resources\\ioWorker\\loadXML\\1Particulier2.xml"))
+		this.loader.load(Paths.get("src", "test", "resources", "ioWorker", "loadXML", "1Particulier2.xml"))
 			.map(AbstractRekening::getClass)
 			.cast(Class.class)
 			.test()
@@ -286,7 +286,7 @@ public class IOWorkerTest {
 
 	@Test
 	public void testLoadParticulierFactuur2() {
-		this.loader.load(new File("src\\test\\resources\\ioWorker\\loadXML\\2Particulier.xml"))
+		this.loader.load(Paths.get("src", "test", "resources", "ioWorker", "loadXML", "2Particulier.xml"))
 			.map(AbstractRekening::getClass)
 			.cast(Class.class)
 			.test()
@@ -299,7 +299,7 @@ public class IOWorkerTest {
 	@Test
 	public void testLoadParticulierFactuur3() {
 		this.loader
-			.load(new File("src\\test\\resources\\ioWorker\\loadXML\\3Particulier.xml"))
+			.load(Paths.get("src", "test", "resources", "ioWorker", "loadXML", "3Particulier.xml"))
 			.map(AbstractRekening::getClass)
 			.cast(Class.class)
 			.test()
@@ -311,7 +311,7 @@ public class IOWorkerTest {
 
 	@Test
 	public void testLoadParticulierFactuur4() {
-		this.loader.load(new File("src\\test\\resources\\ioWorker\\loadXML\\4Particulier.xml"))
+		this.loader.load(Paths.get("src", "test", "resources", "ioWorker", "loadXML", "4Particulier.xml"))
 			.map(AbstractRekening::getClass)
 			.cast(Class.class)
 			.test()
@@ -323,7 +323,7 @@ public class IOWorkerTest {
 
 	@Test
 	public void testLoadParticulierVerlegdFactuur4() {
-		this.loader.load(new File("src\\test\\resources\\ioWorker\\loadXML\\4ParticulierVerlegd.xml"))
+		this.loader.load(Paths.get("src", "test", "resources", "ioWorker", "loadXML", "4ParticulierVerlegd.xml"))
 			.map(AbstractRekening::getClass)
 			.cast(Class.class)
 			.test()
@@ -336,10 +336,10 @@ public class IOWorkerTest {
 	@Test
 	public void testSaveParticulier() throws XmlWriteException {
 		ParticulierFactuur factuur = this.particulier();
-		File file = new File("src\\test\\resources\\ioWorker\\saveXML\\Particulier.xml");
+		Path path = Paths.get("src", "test", "resources", "ioWorker", "saveXML", "Particulier.xml");
 
-		this.loader.save(factuur, file);
-		this.loader.load(file)
+		this.loader.save(factuur, path);
+		this.loader.load(path)
 			.test()
 			.assertValue(factuur)
 			.assertNoErrors()
@@ -350,15 +350,15 @@ public class IOWorkerTest {
 	@Test
 	public void testExportParticulierFactuur() throws PdfException {
 		ParticulierFactuur factuur = this.particulier();
-		File file = new File("src\\test\\resources\\ioWorker\\savePDF\\Particulier.pdf");
+		Path path = Paths.get("src", "test", "resources", "ioWorker", "savePDF", "Particulier.pdf");
 
-		this.loader.export(factuur, file);
+		this.loader.export(factuur, path);
 		verifyNoInteractions(this.logger);
 	}
 
 	@Test
 	public void testLoadReparatiesFactuur1() {
-		this.loader.load(new File("src\\test\\resources\\ioWorker\\loadXML\\1Reparaties.xml"))
+		this.loader.load(Paths.get("src", "test", "resources", "ioWorker", "loadXML", "1Reparaties.xml"))
 			.map(AbstractRekening::getClass)
 			.cast(Class.class)
 			.test()
@@ -370,7 +370,7 @@ public class IOWorkerTest {
 
 	@Test
 	public void testLoadReparatiesFactuur2() {
-		this.loader.load(new File("src\\test\\resources\\ioWorker\\loadXML\\2Reparaties.xml"))
+		this.loader.load(Paths.get("src", "test", "resources", "ioWorker", "loadXML", "2Reparaties.xml"))
 			.map(AbstractRekening::getClass)
 			.cast(Class.class)
 			.test()
@@ -382,7 +382,7 @@ public class IOWorkerTest {
 
 	@Test
 	public void testLoadReparatiesFactuur3() {
-		this.loader.load(new File("src\\test\\resources\\ioWorker\\loadXML\\3Reparaties.xml"))
+		this.loader.load(Paths.get("src", "test", "resources", "ioWorker", "loadXML", "3Reparaties.xml"))
 			.map(AbstractRekening::getClass)
 			.cast(Class.class)
 			.test()
@@ -394,7 +394,7 @@ public class IOWorkerTest {
 
 	@Test
 	public void testLoadReparatiesFactuur4() {
-		this.loader.load(new File("src\\test\\resources\\ioWorker\\loadXML\\4Reparaties.xml"))
+		this.loader.load(Paths.get("src", "test", "resources", "ioWorker", "loadXML", "4Reparaties.xml"))
 			.map(AbstractRekening::getClass)
 			.cast(Class.class)
 			.test()
@@ -407,10 +407,10 @@ public class IOWorkerTest {
 	@Test
 	public void testSaveReparaties() throws XmlWriteException {
 		ReparatiesFactuur factuur = this.reparaties();
-		File file = new File("src\\test\\resources\\ioWorker\\saveXML\\Reparaties.xml");
+		Path path = Paths.get("src", "test", "resources", "ioWorker", "saveXML", "Reparaties.xml");
 
-		this.loader.save(factuur, file);
-		this.loader.load(file)
+		this.loader.save(factuur, path);
+		this.loader.load(path)
 			.test()
 			.assertValue(factuur)
 			.assertNoErrors()
@@ -421,9 +421,9 @@ public class IOWorkerTest {
 	@Test
 	public void testExportReparatiesFactuur() throws PdfException {
 		ReparatiesFactuur factuur = this.reparaties();
-		File file = new File("src\\test\\resources\\ioWorker\\savePDF\\Reparaties.pdf");
+		Path path = Paths.get("src", "test", "resources", "ioWorker", "savePDF", "Reparaties.pdf");
 
-		this.loader.export(factuur, file);
+		this.loader.export(factuur, path);
 		verifyNoInteractions(this.logger);
 	}
 
@@ -456,8 +456,8 @@ public class IOWorkerTest {
 		Debiteur debiteur = new Debiteur("Name", "Street", "Number", "Zipcode", "Place");
 		LocalDate datum = LocalDate.of(2011, 4, 2);
 		String factuurnummer = "22011";
+		FactuurHeader header = new FactuurHeader(debiteur, datum, factuurnummer);
 		String omschrijving = "Voor u verrichte werkzaamheden betreffende renovatie badkamervloer i.v.m. lekkage";
-		OmschrFactuurHeader header = new OmschrFactuurHeader(debiteur, datum, factuurnummer, omschrijving);
 
 		Currency currency = Currency.getInstance("EUR");
 
@@ -485,7 +485,7 @@ public class IOWorkerTest {
 		list.add(new ProductLoon("test123", 12, new Geld(12.50), new BtwPercentage(6, false)));
 		list.add(new InstantLoon("foobar", new Geld(40.00), new BtwPercentage(6, true)));
 
-		return new ParticulierFactuur(header, currency, list);
+		return new ParticulierFactuur(header, omschrijving, currency, list);
 	}
 
 	private ReparatiesFactuur reparaties() {

@@ -28,7 +28,7 @@ public class DebiteurItemPaneController extends AbstractListItemController<Debit
 			ui.getNummer(),
 			ui.getPostcode(),
 			ui.getPlaats(),
-			ui.getBtwnummer(),
+			ui.getBtwNummer(),
 			(naam, straat, nummer, postcode, plaats, btw) -> new Debiteur(debiteurID, naam, straat, nummer, postcode, plaats, btw)
 		);
 	}

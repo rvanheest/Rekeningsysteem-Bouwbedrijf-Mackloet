@@ -39,7 +39,7 @@ public class ParticulierController extends AbstractRekeningController<Particulie
 
 	public ParticulierController(ParticulierFactuur input, PropertiesWorker properties, Database database) {
 		this(
-			new OmschrFactuurHeaderController(input.getFactuurHeader(), database),
+			new OmschrFactuurHeaderController(input.getFactuurHeader(), input.getOmschrijving(), database),
 			new ListPaneController<>(new ParticulierListController(input.getCurrency(), database, getDefaultBtwPercentage(properties), input.getItemList()), input.getCurrency())
 		);
 	}
@@ -50,7 +50,7 @@ public class ParticulierController extends AbstractRekeningController<Particulie
 			Observable.combineLatest(
 				header.getModel(),
 				body.getListModel(),
-				(head, list) -> new ParticulierFactuur(head, body.getCurrency(), list)
+				(head, list) -> new ParticulierFactuur(head.getLeft(), head.getRight(), body.getCurrency(), list)
 			)
 		);
 		this.header = header;

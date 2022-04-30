@@ -28,7 +28,7 @@ public class DebiteurDBInteractionTest {
 	@Before
 	public void setUp() throws IOException, SQLException, InterruptedException {
 		CountDownLatch latch = new CountDownLatch(1);
-		this.database = new Database(this.folder.newFile("database.db"));
+		this.database = new Database(this.folder.newFile("database.db").toPath());
 		this.deb = new DebiteurDBInteraction(this.database);
 		new VersionControl(this.database)
 			.checkDBVersioning()

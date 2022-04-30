@@ -2,9 +2,6 @@ package org.rekeningsysteem.test.data.util;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -57,7 +54,7 @@ public class ItemListTest extends EqualsHashCodeTest {
 
 	@Test
 	public void testGetTotalenEmptyList() {
-		assertEquals(new Totalen(), new ItemList<>().getTotalen());
+		assertEquals(Totalen.Empty(), new ItemList<>().getTotalen());
 	}
 
 	@Test
@@ -77,17 +74,12 @@ public class ItemListTest extends EqualsHashCodeTest {
 
 		Totalen result = this.list.getTotalen();
 
-		Map<BtwPercentage, Geld> expectedBtw = new HashMap<>();
-		expectedBtw.put(new BtwPercentage(50.0, false), new Geld(8));
-		expectedBtw.put(new BtwPercentage(25.0, true), new Geld(5));
-		expectedBtw.put(new BtwPercentage(0.0, false), new Geld(0));
-
-		assertEquals(new Geld(12), result.getNetto().get(new BtwPercentage(0.0, false)));
-		assertEquals(new Geld(20), result.getNetto().get(new BtwPercentage(25.0, true)));
-		assertEquals(new Geld(16), result.getNetto().get(new BtwPercentage(50.0, false)));
-		assertEquals(new Geld(8), result.getBtw().get(new BtwPercentage(50.0, false)));
-		assertEquals(new Geld(5), result.getBtw().get(new BtwPercentage(25.0, true)));
-		assertEquals(expectedBtw, result.getBtw());
+		assertEquals(new Geld(12), result.nettoBtwPerPercentage().get(new BtwPercentage(0.0, false)).netto());
+		assertEquals(new Geld(0), result.nettoBtwPerPercentage().get(new BtwPercentage(0.0, false)).btw());
+		assertEquals(new Geld(20), result.nettoBtwPerPercentage().get(new BtwPercentage(25.0, true)).netto());
+		assertEquals(new Geld(5), result.nettoBtwPerPercentage().get(new BtwPercentage(25.0, true)).btw());
+		assertEquals(new Geld(16), result.nettoBtwPerPercentage().get(new BtwPercentage(50.0, false)).netto());
+		assertEquals(new Geld(8), result.nettoBtwPerPercentage().get(new BtwPercentage(50.0, false)).btw());
 		assertEquals(new Geld(48), result.getSubtotaal()); // 12 + 20 + 16
 		assertEquals(new Geld(56), result.getTotaal()); // 48 + (16 * 0.5)
 	}
@@ -104,13 +96,10 @@ public class ItemListTest extends EqualsHashCodeTest {
 
 		Totalen result = this.list.getTotalen();
 
-		Map<BtwPercentage, Geld> expectedBtw = new HashMap<>();
-		expectedBtw.put(new BtwPercentage(50.0, false), new Geld(1));
-		expectedBtw.put(new BtwPercentage(21.0, false), new Geld(0.0));
-
-		assertEquals(new Geld(2), result.getNetto().get(new BtwPercentage(50.0, false)));
-		assertEquals(new Geld(1), result.getBtw().get(new BtwPercentage(50.0, false)));
-		assertEquals(expectedBtw, result.getBtw());
+		assertEquals(new Geld(2), result.nettoBtwPerPercentage().get(new BtwPercentage(50.0, false)).netto());
+		assertEquals(new Geld(1), result.nettoBtwPerPercentage().get(new BtwPercentage(50.0, false)).btw());
+		assertEquals(new Geld(0), result.nettoBtwPerPercentage().get(new BtwPercentage(21.0, false)).netto());
+		assertEquals(new Geld(0), result.nettoBtwPerPercentage().get(new BtwPercentage(21.0, false)).btw());
 		assertEquals(new Geld(2), result.getSubtotaal());
 		assertEquals(new Geld(3), result.getTotaal());
 	}

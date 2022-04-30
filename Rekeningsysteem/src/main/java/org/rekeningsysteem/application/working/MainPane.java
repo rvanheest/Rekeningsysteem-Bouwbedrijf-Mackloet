@@ -1,9 +1,11 @@
 package org.rekeningsysteem.application.working;
 
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 import io.reactivex.rxjava3.core.Maybe;
@@ -99,8 +101,7 @@ public class MainPane extends BorderPane implements Disposable {
 	}
 
 	private void addToolbarButton(PropertyModelEnum feature, List<Node> toolbarButtons, Button button) {
-		this.properties.getProperty(feature)
-			.map(Boolean::parseBoolean)
+		this.properties.getBooleanProperty(feature)
 			.filter(b -> b)
 			.ifPresent(b -> toolbarButtons.add(button));
 	}
@@ -140,7 +141,7 @@ public class MainPane extends BorderPane implements Disposable {
 
 			this.initSaveObservable()
 				.flatMapMaybe(tab -> saveFromTab(stage, tab, false))
-				.filter(tab -> tab.getSaveFile().isPresent())
+				.filter(tab -> tab.getSavePath().isPresent())
 				.subscribe(RekeningTab::save),
 
 			this.initExportObservable()
@@ -202,7 +203,7 @@ public class MainPane extends BorderPane implements Disposable {
 		return tab.getModel()
 			.firstElement()
 			.doOnSuccess(rekening -> {
-				if (!tab.getSaveFile().isPresent()) {
+				if (tab.getSavePath().isEmpty()) {
 					save(rekening instanceof Offerte, stage, tab);
 					if (saveTab) tab.save();
 				}
@@ -214,81 +215,78 @@ public class MainPane extends BorderPane implements Disposable {
 		if (isOfferte) {
 			this.showSaveFileChooserOfferte(stage).ifPresent(file -> {
 				this.saveLastSaveLocationOfferteProperty(file);
-				tab.setSaveFile(file);
+				tab.setSavePath(file);
 				tab.initFactuurnummer();
 			});
 		}
 		else {
 			this.showSaveFileChooser(stage).ifPresent(file -> {
 				this.saveLastSaveLocationProperty(file);
-				tab.setSaveFile(file);
+				tab.setSavePath(file);
 				tab.initFactuurnummer();
 			});
 		}
 	}
 
-	private void saveLastSaveLocationProperty(File file) {
-		this.properties.setProperty(PropertyModelEnum.LAST_SAVE_LOCATION, file.getParentFile().getPath());
+	private void saveLastSaveLocationProperty(Path path) {
+		this.properties.setProperty(PropertyModelEnum.LAST_SAVE_LOCATION, path.getParent());
 	}
 
-	private void saveLastSaveLocationOfferteProperty(File file) {
-		this.properties.setProperty(PropertyModelEnum.LAST_SAVE_LOCATION_OFFERTE, file.getParentFile().getPath());
+	private void saveLastSaveLocationOfferteProperty(Path path) {
+		this.properties.setProperty(PropertyModelEnum.LAST_SAVE_LOCATION_OFFERTE, path.getParent());
 	}
 
-	private Observable<File> showOpenFileChooser(Stage stage) {
-		File initDir = new File(this.properties.getProperty(PropertyModelEnum.LAST_SAVE_LOCATION).orElse(System.getProperty("user.dir")));
-
-		if (!initDir.exists()) {
-			initDir = new File(System.getProperty("user.dir"));
-		}
+	private Maybe<Path> showOpenFileChooser(Stage stage) {
+		Path initDir = this.properties.getPathProperty(PropertyModelEnum.LAST_SAVE_LOCATION)
+				.filter(Files::exists)
+				.orElseGet(() -> Paths.get(System.getProperty("user.dir")));
 
 		FileChooser chooser = new FileChooser();
 		chooser.setTitle("Open een factuur");
-		chooser.setInitialDirectory(initDir);
+		chooser.setInitialDirectory(initDir.toFile());
 		chooser.getExtensionFilters().addAll(new ExtensionFilter("XML, PDF", "*.xml", "*.pdf"));
-
-		return Observable.just(chooser.showOpenDialog(stage)).filter(Objects::nonNull);
+		
+		return Maybe.fromOptional(Optional.ofNullable(chooser.showOpenDialog(stage)).map(File::toPath));
 	}
 
-	private Optional<File> showSaveFileChooser(PropertyKey key, Stage stage) {
-		File initDir = new File(this.properties.getProperty(key).orElse(System.getProperty("user.dir")));
-
-		if (!initDir.exists()) {
-			initDir = new File(System.getProperty("user.dir"));
-		}
+	private Optional<Path> showSaveFileChooser(PropertyKey key, Stage stage) {
+		Path initDir = this.properties.getPathProperty(key)
+				.filter(Files::exists)
+				.orElseGet(() -> Paths.get(System.getProperty("user.dir")));
 
 		FileChooser chooser = new FileChooser();
 		chooser.setTitle("Sla een factuur op");
-		chooser.setInitialDirectory(initDir);
+		chooser.setInitialDirectory(initDir.toFile());
 		chooser.getExtensionFilters().addAll(new ExtensionFilter("XML", "*.xml"));
 
-		return Optional.ofNullable(chooser.showSaveDialog(stage));
+		return Optional.ofNullable(chooser.showSaveDialog(stage)).map(File::toPath);
 	}
 
-	private Optional<File> showSaveFileChooser(Stage stage) {
+	private Optional<Path> showSaveFileChooser(Stage stage) {
 		return this.showSaveFileChooser(PropertyModelEnum.LAST_SAVE_LOCATION, stage);
 	}
 
-	private Optional<File> showSaveFileChooserOfferte(Stage stage) {
+	private Optional<Path> showSaveFileChooserOfferte(Stage stage) {
 		return this.showSaveFileChooser(PropertyModelEnum.LAST_SAVE_LOCATION_OFFERTE, stage);
 	}
 
-	private Optional<File> showExportFileChooser(Stage stage) {
-		File initDir = new File(this.properties.getProperty(PropertyModelEnum.LAST_SAVE_LOCATION).orElse(System.getProperty("user.dir")));
-
-		if (!initDir.exists()) initDir = new File(System.getProperty("user.dir"));
+	private Optional<Path> showExportFileChooser(Stage stage) {
+		Path initDir = this.properties.getPathProperty(PropertyModelEnum.LAST_SAVE_LOCATION)
+			.filter(Files::exists)
+			.orElseGet(() -> Paths.get(System.getProperty("user.dir")));
 
 		FileChooser chooser = new FileChooser();
 		chooser.setTitle("Exporteer een factuur");
-		chooser.setInitialDirectory(initDir);
-		chooser.setInitialFileName(this.tabpane.getSelectedTab().getSaveFile()
-			.map(File::getName)
+		chooser.setInitialDirectory(initDir.toFile());
+		chooser.setInitialFileName(this.tabpane.getSelectedTab().getSavePath()
+			.map(Path::getFileName)
+			.map(Path::toString)
 			.map(s -> s.substring(0, s.length() - 3) + "pdf")
 			.orElse(""));
 
 		chooser.getExtensionFilters().addAll(new ExtensionFilter("PDF", "*.pdf"));
 
-		return Optional.ofNullable(chooser.showSaveDialog(stage));
+		return Optional.ofNullable(chooser.showSaveDialog(stage)).map(File::toPath);
 	}
 
 	private Observable<RekeningTab> initMutatiesObservable() {
@@ -313,7 +311,7 @@ public class MainPane extends BorderPane implements Disposable {
 
 	private Observable<RekeningTab> initOpenObservable(Stage stage) {
 		return Observables.fromNodeEvents(this.open, ActionEvent.ACTION)
-			.flatMap(event -> this.showOpenFileChooser(stage))
+			.flatMapMaybe(event -> this.showOpenFileChooser(stage))
 			.doOnNext(this::saveLastSaveLocationProperty)
 			.flatMapMaybe(file -> RekeningTab.openFile(file, this.database));
 	}

@@ -34,7 +34,7 @@ public class SettingsPane extends TabPane implements Disposable {
 		this.getTabs().add(debiteurTab);
 		this.disposable.add(debC);
 
-		properties.getProperty(PropertyModelEnum.FEATURE_PARTICULIER_ESSELINK_ARTIKEL).map(Boolean::parseBoolean)
+		properties.getBooleanProperty(PropertyModelEnum.FEATURE_PARTICULIER_ESSELINK_ARTIKEL)
 			.filter(b -> b)
 			.ifPresent(b -> {
 				PrijsLijstController prijslijstC = new PrijsLijstController(stage, closeButton, new ArtikellijstDBInteraction(database), logger);
@@ -43,7 +43,7 @@ public class SettingsPane extends TabPane implements Disposable {
 				this.disposable.add(prijslijstC);
 			});
 
-		properties.getProperty(PropertyModelEnum.FEATURE_OFFERTE).map(Boolean::parseBoolean)
+		properties.getBooleanProperty(PropertyModelEnum.FEATURE_OFFERTE)
 			.filter(b -> b)
 			.ifPresent(b -> {
 				DefaultOfferteTextPaneController offerteC = new DefaultOfferteTextPaneController(logger);

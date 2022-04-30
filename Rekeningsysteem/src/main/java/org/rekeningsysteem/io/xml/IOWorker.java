@@ -13,7 +13,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerFactory;
-import java.io.File;
+import java.nio.file.Path;
 
 public class IOWorker implements FactuurSaver, FactuurExporter, FactuurLoader {
 
@@ -56,7 +56,7 @@ public class IOWorker implements FactuurSaver, FactuurExporter, FactuurLoader {
 	}
 
 	@Override
-	public Single<AbstractRekening> load(File file) {
+	public Single<AbstractRekening> load(Path file) {
 		return this.loader.load(file)
 				.onErrorResumeNext(t -> this.oldLoader3.load(file))
 				.onErrorResumeNext(t -> this.oldLoader2.load(file))
@@ -67,12 +67,12 @@ public class IOWorker implements FactuurSaver, FactuurExporter, FactuurLoader {
 	}
 
 	@Override
-	public void export(AbstractRekening rekening, File saveLocation) throws PdfException {
+	public void export(AbstractRekening rekening, Path saveLocation) throws PdfException {
 		this.exporter.export(rekening, saveLocation);
 	}
 
 	@Override
-	public void save(AbstractRekening rekening, File saveLocation) {
+	public void save(AbstractRekening rekening, Path saveLocation) {
 		this.saver.save(rekening, saveLocation);
 	}
 }

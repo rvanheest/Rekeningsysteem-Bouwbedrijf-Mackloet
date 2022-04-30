@@ -20,7 +20,6 @@ import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.data.util.ItemList;
 import org.rekeningsysteem.data.util.header.Debiteur;
 import org.rekeningsysteem.data.util.header.FactuurHeader;
-import org.rekeningsysteem.data.util.header.OmschrFactuurHeader;
 import org.rekeningsysteem.exception.XmlWriteException;
 import org.rekeningsysteem.io.xml.XmlWriter;
 
@@ -29,7 +28,10 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerFactory;
 
-import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.Currency;
 
@@ -47,20 +49,20 @@ public class XmlWriterTest {
 		this.writer = new XmlWriter(builder, transformerFactory);
 	}
 
-	private void write(AbstractRekening rekening, String filename) throws XmlWriteException {
-		File dir = new File("src\\test\\resources\\xml\\writer");
-		if (!dir.exists()) assertTrue(dir.mkdir());
-		
-		File file = new File(dir, filename);
-		assertTrue(file.delete());
-		assertFalse(file.exists());
+	private void write(AbstractRekening rekening, String filename) throws XmlWriteException, IOException {
+		Path dir = Paths.get("src", "test", "resources", "xml", "writer");
+		if (!Files.exists(dir)) Files.createDirectory(dir);
 
-		this.writer.save(rekening, file);
-		assertTrue(file.exists());
+		Path path = dir.resolve(filename);
+		Files.delete(path);
+		assertFalse(Files.exists(path));
+
+		this.writer.save(rekening, path);
+		assertTrue(Files.exists(path));
 	}
 
 	@Test
-	public void testWriteMutatiesFactuurToXml() throws XmlWriteException {
+	public void testWriteMutatiesFactuurToXml() throws XmlWriteException, IOException {
 		Debiteur debiteur = new Debiteur("name", "street", "number", "zipcode", "city", "vatNumber");
 		LocalDate date = LocalDate.of(2017, 7, 30);
 		FactuurHeader factuurHeader = new FactuurHeader(debiteur, date, "272011");
@@ -78,7 +80,7 @@ public class XmlWriterTest {
 	}
 
 	@Test
-	public void testWriteOfferteToXml() throws XmlWriteException {
+	public void testWriteOfferteToXml() throws XmlWriteException, IOException {
 		Debiteur debiteur = new Debiteur("name", "street", "number", "zipcode", "city", "vatNumber");
 		LocalDate date = LocalDate.of(2017, 7, 30);
 		FactuurHeader factuurHeader = new FactuurHeader(debiteur, date, "272011");
@@ -88,11 +90,11 @@ public class XmlWriterTest {
 	}
 
 	@Test
-	public void testWriteNormalInvoice() throws XmlWriteException {
+	public void testWriteNormalInvoice() throws XmlWriteException, IOException {
 		Debiteur debiteur = new Debiteur("name", "street", "number", "zipcode", "city", "vatNumber");
 		LocalDate date = LocalDate.of(2017, 7, 30);
+		FactuurHeader factuurHeader = new FactuurHeader(debiteur, date, "272011");
 		String omschrijving = "Voor u verrichte werkzaamheden betreffende renovatie badkamervloer i.v.m. lekkage";
-		OmschrFactuurHeader factuurHeader = new OmschrFactuurHeader(debiteur, date, "272011", omschrijving);
 
 		Currency currency = Currency.getInstance("EUR");
 
@@ -110,12 +112,12 @@ public class XmlWriterTest {
 		itemList.add(new ProductLoon("test123", 12.0, new Geld(12.5), new BtwPercentage(6.0, false)));
 		itemList.add(new InstantLoon("foobar", new Geld(40.0), new BtwPercentage(6.0, false)));
 
-		ParticulierFactuur factuur = new ParticulierFactuur(factuurHeader, currency, itemList);
+		ParticulierFactuur factuur = new ParticulierFactuur(factuurHeader, omschrijving, currency, itemList);
 		this.write(factuur, "ParticulierFactuur.xml");
 	}
 
 	@Test
-	public void testWriteRepairsInvoice() throws XmlWriteException {
+	public void testWriteRepairsInvoice() throws XmlWriteException, IOException {
 		Debiteur debiteur = new Debiteur("name", "street", "number", "zipcode", "city", "vatNumber");
 		LocalDate date = LocalDate.of(2017, 7, 30);
 		FactuurHeader factuurHeader = new FactuurHeader(debiteur, date, "272011");

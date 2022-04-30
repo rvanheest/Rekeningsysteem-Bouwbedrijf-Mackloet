@@ -14,7 +14,7 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import java.io.File;
+import java.nio.file.Path;
 import java.util.function.Function;
 
 public class XmlWriter implements FactuurSaver {
@@ -39,7 +39,7 @@ public class XmlWriter implements FactuurSaver {
 	}
 
 	@Override
-	public void save(AbstractRekening rekening, File file) {
+	public void save(AbstractRekening rekening, Path path) {
 		try {
 			Document xmlDoc = this.documentBuilder.newDocument();
 			xmlDoc.setXmlStandalone(true);
@@ -56,7 +56,7 @@ public class XmlWriter implements FactuurSaver {
 
 			xmlDoc.appendChild(root);
 
-			transformer.transform(new DOMSource(xmlDoc), new StreamResult(file));
+			transformer.transform(new DOMSource(xmlDoc), new StreamResult(path.toFile()));
 		}
 		catch (Exception e) {
 			throw new XmlWriteException(e);

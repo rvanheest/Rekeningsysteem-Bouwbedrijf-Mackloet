@@ -1,6 +1,7 @@
 package org.rekeningsysteem.test.integration;
 
-import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.Currency;
 
@@ -18,8 +19,7 @@ public class MutationFactuurIntegrationTest extends AbstractIntegrationTest {
 
 	@Override
 	protected MutatiesFactuur makeRekening() {
-		Debiteur debiteur = new Debiteur("Name", "Street", "Number", "Zipcode",
-				"Place", "BtwNumber");
+		Debiteur debiteur = new Debiteur("Name", "Street", "Number", "Zipcode", "Place", "BtwNumber");
 		LocalDate datum = LocalDate.of(2011, 5, 9);
 		String factuurnummer = "272011";
 		FactuurHeader header = new FactuurHeader(debiteur, datum, factuurnummer);
@@ -33,12 +33,12 @@ public class MutationFactuurIntegrationTest extends AbstractIntegrationTest {
 	}
 
 	@Override
-	protected File pdfFile() {
-		return new File("src\\test\\resources\\pdf\\MutationFactuurIntegrationTest.pdf");
+	protected Path pdfFile() {
+		return Paths.get("src", "test", "resources", "pdf", "MutationFactuurIntegrationTest.pdf").toAbsolutePath();
 	}
 
 	@Override
-	protected File xmlFile() {
-		return new File("src\\test\\resources\\xml\\MutationFactuurIntegrationTest.xml");
+	protected Path xmlFile() {
+		return Paths.get("src", "test", "resources", "xml", "MutationFactuurIntegrationTest.xml").toAbsolutePath();
 	}
 }

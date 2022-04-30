@@ -87,7 +87,7 @@ class XmlWriterDocumentVisitor implements RekeningVisitor<Function<Document, Nod
 			xml -> doc -> {
 				Node header = visit(factuur.getFactuurHeader()).apply(doc);
 
-				stringNode(header, "omschrijving", factuur.getFactuurHeader().getOmschrijving())
+				stringNode(header, "omschrijving", factuur.getOmschrijving())
 					.andThen(appendNode(xml, header))
 					.andThen(appendNode(xml, visit(factuur.getCurrency())))
 					.andThen(appendNode(xml, visit(factuur.getItemList())))

@@ -15,14 +15,14 @@ import org.rekeningsysteem.data.util.AbstractRekening;
 import org.rekeningsysteem.data.util.Totalen;
 import org.rekeningsysteem.data.util.header.Debiteur;
 import org.rekeningsysteem.data.util.header.FactuurHeader;
-import org.rekeningsysteem.data.util.header.OmschrFactuurHeader;
 import org.rekeningsysteem.exception.PdfException;
 import org.rekeningsysteem.properties.PropertiesWorker;
 import org.rekeningsysteem.properties.PropertyModelEnum;
 
-import java.io.File;
 import java.io.IOException;
-import java.time.format.DateTimeFormatter;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
@@ -35,7 +35,7 @@ public class PdfExporterVisitor {
 	private final boolean autoOpen;
 	private final PropertiesWorker properties;
 	private final PdfListItemVisitor itemVisitor;
-	private File saveLocation;
+	private Path saveLocation;
 
 	public PdfExporterVisitor(PdfListItemVisitor itemVisitor) {
 		this(true, PropertiesWorker.getInstance(), itemVisitor);
@@ -51,45 +51,41 @@ public class PdfExporterVisitor {
 		this.itemVisitor = itemVisitor;
 	}
 
-	public File getSaveLocation() {
+	public Path getSaveLocation() {
 		return this.saveLocation;
 	}
 
-	public void setSaveLocation(File saveLocation) {
+	public void setSaveLocation(Path saveLocation) {
 		this.saveLocation = saveLocation;
 	}
 
-	private void general(File templateTex, Consumer<PdfConverter> convert) throws PdfException {
+	private void general(Path templateTex, Consumer<PdfConverter> convert) throws PdfException {
 		try {
-			String pdfName = this.saveLocation.getName();
+			String pdfName = this.saveLocation.getFileName().toString();
 			pdfName = pdfName.substring(0, pdfName.lastIndexOf("."));
 
-			File tempTemplateDir = new File("resources\\LaTeX\\temp");
-			if (!tempTemplateDir.exists()) {
-				tempTemplateDir.mkdir();
+			Path tempTemplateDir = Paths.get("resources", "LaTeX", "temp").toAbsolutePath();
+			if (!Files.exists(tempTemplateDir)) {
+				Files.createDirectory(tempTemplateDir);
 			}
-			File resultTex = new File(tempTemplateDir.getAbsolutePath() + "\\" + pdfName + ".tex");
+			Path resultTex = tempTemplateDir.resolve(pdfName + ".tex");
 
-			File templateDir = templateTex.getParentFile();
+			Path templateDir = templateTex.getParent();
 
 			PdfConverter converter = new PdfConverter(templateDir);
 			convert.accept(converter);
 			this.parse(converter, templateTex, resultTex);
 			this.generate(new JLRGenerator(), resultTex, templateDir);
 
-			FileUtils.deleteDirectory(tempTemplateDir);
+			FileUtils.deleteDirectory(tempTemplateDir.toFile());
 
 			if (this.autoOpen) {
-				JLROpener.open(this.saveLocation);
+				JLROpener.open(this.saveLocation.toFile());
 			}
 		}
 		catch (IOException e) {
 			throw new PdfException(e.getMessage(), e);
 		}
-	}
-
-	private Optional<File> getTemplate(PropertyModelEnum key) {
-		return this.properties.getProperty(key).map(File::new);
 	}
 
 	public void visit(AbstractRekening rekening) throws PdfException {
@@ -103,7 +99,7 @@ public class PdfExporterVisitor {
 	}
 
 	private void visit(PropertyModelEnum key, Consumer<PdfConverter> converter) throws PdfException {
-		Optional<File> templateTex = this.getTemplate(key);
+		Optional<Path> templateTex = this.properties.getPathProperty(key);
 		if (templateTex.isPresent()) this.general(templateTex.get(), converter);
 	}
 
@@ -119,31 +115,27 @@ public class PdfExporterVisitor {
 			converter.replace("DebiteurBtwNummer", debiteur.btwNummer().orElse(""));
 
 			converter.replace("Factuurnummer", header.factuurnummer().orElse(""));
-			this.properties.getProperty(PropertyModelEnum.DATE_FORMAT)
-				.map(format -> header.datum().format(DateTimeFormatter.ofPattern(format)))
+			this.properties.getDateTimeFormatterProperty(PropertyModelEnum.DATE_FORMAT)
+				.map(header.datum()::format)
 				.ifPresent(datum -> converter.replace("Datum", datum));
 		};
-	}
-
-	private Consumer<PdfConverter> convertOmschrFactuurHeader(OmschrFactuurHeader header) {
-		return this.convertFactuurHeader(header)
-			.andThen(converter -> converter.replace("Omschrijving", header.getOmschrijving()));
 	}
 
 	private Consumer<PdfConverter> convertTotalen(Totalen totalen) {
 		return converter -> {
 			converter.replace("SubTotaalBedrag",
-				totalen.getBtwPercentages().stream().anyMatch(btw -> btw.percentage() != 0.0)
+				totalen.nettoBtwPerPercentage().keySet().stream().anyMatch(btw -> btw.percentage() != 0.0)
 					? Collections.singletonList(totalen.getSubtotaal().formattedString())
 					: Collections.emptyList()
 			);
-			converter.replace("btwList", totalen.getNettoBtwTuple().entrySet()
+			converter.replace("btwList", totalen.nettoBtwPerPercentage().entrySet()
 				.stream()
 				.sorted(Map.Entry.comparingByKey())
 				.map(entry -> Arrays.asList(
 					entry.getKey().formattedString(),
 					entry.getValue().netto().formattedString(),
-					entry.getValue().btw().formattedString() + (entry.getKey().verlegd() ? " (verlegd)" : "")))
+					entry.getValue().btw().formattedString() + (entry.getKey().verlegd() ? " (verlegd)" : "")
+				))
 				.collect(Collectors.toList()));
 			converter.replace("TotaalBedrag", totalen.getTotaal().formattedString());
 		};
@@ -155,19 +147,20 @@ public class PdfExporterVisitor {
 			.andThen(converter -> converter.replace("orderList", factuur.getItemList()
 				.stream()
 				.map(this.itemVisitor::visit)
-				.collect(Collectors.toList())))
+				.collect(Collectors.toList())
+			))
 			.andThen(converter -> converter.replace("TotaalBedrag", factuur.getTotalen().getTotaal().formattedString()));
 	}
 
 	private Consumer<PdfConverter> convert(Offerte offerte) {
 		return this.convertFactuurHeader(offerte.getFactuurHeader())
 			.andThen(converter -> converter.replace("Tekst", offerte.getTekst()))
-			.andThen(converter -> converter.replace("Ondertekenen",
-				String.valueOf(offerte.isOndertekenen())));
+			.andThen(converter -> converter.replace("Ondertekenen", String.valueOf(offerte.isOndertekenen())));
 	}
 
 	private Consumer<PdfConverter> convert(ParticulierFactuur factuur) {
-		return this.convertOmschrFactuurHeader(factuur.getFactuurHeader())
+		return this.convertFactuurHeader(factuur.getFactuurHeader())
+			.andThen(converter -> converter.replace("Omschrijving", factuur.getOmschrijving()))
 			.andThen(converter -> converter.replace("Valuta", factuur.getCurrency().getSymbol()))
 			.andThen(converter -> converter.replace("artikelList", factuur.getItemList()
 				.stream()
@@ -178,7 +171,8 @@ public class PdfExporterVisitor {
 					case ProductLoon l -> this.itemVisitor.visit(l);
 					default -> throw new IllegalStateException("Unexpected value: " + particulierArtikel);
 				})
-				.collect(Collectors.toList())))
+				.collect(Collectors.toList())
+			))
 			.andThen(this.convertTotalen(factuur.getTotalen()));
 	}
 
@@ -188,20 +182,21 @@ public class PdfExporterVisitor {
 			.andThen(converter -> converter.replace("orderList", factuur.getItemList()
 				.stream()
 				.map(this.itemVisitor::visit)
-				.collect(Collectors.toList())))
+				.collect(Collectors.toList())
+			))
 			.andThen(converter -> converter.replace("TotaalBedrag", factuur.getTotalen().getTotaal().formattedString()));
 	}
 
-	private void parse(PdfConverter converter, File templateTex, File resultTex) throws PdfException, IOException {
-		if (!converter.parse(templateTex, resultTex)) {
+	private void parse(PdfConverter converter, Path templateTex, Path resultTex) throws PdfException, IOException {
+		if (!converter.parse(templateTex.toFile(), resultTex.toFile())) {
 			throw new PdfException(converter.getErrorMessage());
 		}
 	}
 
-	private void generate(JLRGenerator generator, File resultTex, File templateDir) throws PdfException, IOException {
+	private void generate(JLRGenerator generator, Path resultTex, Path templateDir) throws PdfException, IOException {
 		generator.deleteTempFiles(true, true, true);
 
-		if (!generator.generate(resultTex, this.saveLocation.getParentFile(), templateDir)) {
+		if (!generator.generate(resultTex.toFile(), this.saveLocation.getParent().toFile(), templateDir.toFile())) {
 			throw new PdfException(generator.getErrorMessage());
 		}
 	}
