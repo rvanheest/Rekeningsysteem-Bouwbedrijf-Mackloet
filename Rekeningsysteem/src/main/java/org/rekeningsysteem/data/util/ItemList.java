@@ -2,36 +2,39 @@ package org.rekeningsysteem.data.util;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.function.Function;
 
-import org.rekeningsysteem.data.util.visitor.ListItemVisitor;
+import org.rekeningsysteem.data.mutaties.MutatiesInkoopOrder;
+import org.rekeningsysteem.data.particulier.AnderArtikel;
+import org.rekeningsysteem.data.particulier.GebruiktEsselinkArtikel;
+import org.rekeningsysteem.data.particulier.loon.AbstractLoon;
+import org.rekeningsysteem.data.reparaties.ReparatiesInkoopOrder;
 
 public class ItemList<E extends ListItem> extends ArrayList<E> implements BedragManager {
 
 	private static final long serialVersionUID = -8022736753592974322L;
 
-	private final ListItemVisitor<Function<Totalen, Totalen>> visitor;
-
 	public ItemList() {
-		this(new TotalenListItemVisitor());
-	}
-
-	public ItemList(ListItemVisitor<Function<Totalen, Totalen>> visitor) {
 		super();
-		this.visitor = visitor;
 	}
 
 	public ItemList(Collection<? extends E> c) {
-		this(new TotalenListItemVisitor(), c);
-	}
-
-	public ItemList(ListItemVisitor<Function<Totalen, Totalen>> visitor, Collection<? extends E> c) {
 		super(c);
-		this.visitor = visitor;
 	}
 
 	@Override
 	public Totalen getTotalen() {
-		return this.parallelStream().reduce(Totalen.Empty(), (t, li) -> li.accept(this.visitor).apply(t), Totalen::plus);
+		return this.parallelStream()
+				.reduce(
+						Totalen.Empty(),
+						(t, li) -> switch (li) {
+							case AnderArtikel item -> t.add(item.getMateriaalBtwPercentage(), item.materiaal(), item.getMateriaalBtw());
+							case GebruiktEsselinkArtikel item -> t.add(item.getMateriaalBtwPercentage(), item.materiaal(), item.getMateriaalBtw());
+							case MutatiesInkoopOrder item -> t.add(item.materiaal());
+							case ReparatiesInkoopOrder item -> t.add(item.materiaal());
+							case AbstractLoon item -> t.add(item.getLoonBtwPercentage(), item.loon(), item.getLoonBtw());
+							default -> t;
+						},
+						Totalen::plus
+				);
 	}
 }

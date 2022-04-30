@@ -4,7 +4,6 @@ import java.util.Objects;
 
 import org.rekeningsysteem.data.util.AbstractRekening;
 import org.rekeningsysteem.data.util.header.FactuurHeader;
-import org.rekeningsysteem.data.util.visitor.RekeningVisitor;
 
 public class Offerte extends AbstractRekening {
 
@@ -23,11 +22,6 @@ public class Offerte extends AbstractRekening {
 
 	public boolean isOndertekenen() {
 		return this.ondertekenen;
-	}
-
-	@Override
-	public <T> T accept(RekeningVisitor<T> visitor) throws Exception {
-		return visitor.visit(this);
 	}
 
 	@Override

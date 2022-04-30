@@ -1,7 +1,10 @@
 package org.rekeningsysteem.io.xml;
 
+import org.rekeningsysteem.data.mutaties.MutatiesFactuur;
+import org.rekeningsysteem.data.offerte.Offerte;
+import org.rekeningsysteem.data.particulier.ParticulierFactuur;
+import org.rekeningsysteem.data.reparaties.ReparatiesFactuur;
 import org.rekeningsysteem.data.util.AbstractRekening;
-import org.rekeningsysteem.data.util.visitor.RekeningVisitor;
 import org.rekeningsysteem.exception.XmlWriteException;
 import org.rekeningsysteem.io.FactuurSaver;
 import org.w3c.dom.Document;
@@ -21,19 +24,16 @@ public class XmlWriter implements FactuurSaver {
 
 	private static final String documentVersion = "4";
 
-	private final RekeningVisitor<Function<Document, Node>> documentVisitor;
-	private final RekeningVisitor<String> typeVisitor;
+	private final XmlWriterDocumentVisitor documentVisitor;
 	private final DocumentBuilder documentBuilder;
 	private final TransformerFactory transformerFactory;
 
 	public XmlWriter(DocumentBuilder documentBuilder, TransformerFactory transformerFactory) {
-		this(new XmlWriterDocumentVisitor(new XmlWriterItemVisitor()), new XmlWriterRekeningTypeVisitor(), documentBuilder, transformerFactory);
+		this(new XmlWriterDocumentVisitor(), documentBuilder, transformerFactory);
 	}
 
-	public XmlWriter(RekeningVisitor<Function<Document, Node>> documentVisitor, RekeningVisitor<String> typeVisitor,
-		DocumentBuilder documentBuilder, TransformerFactory transformerFactory) {
+	public XmlWriter(XmlWriterDocumentVisitor documentVisitor, DocumentBuilder documentBuilder, TransformerFactory transformerFactory) {
 		this.documentVisitor = documentVisitor;
-		this.typeVisitor = typeVisitor;
 		this.documentBuilder = documentBuilder;
 		this.transformerFactory = transformerFactory;
 	}
@@ -50,9 +50,24 @@ public class XmlWriter implements FactuurSaver {
 			transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
 
 			Element root = xmlDoc.createElement("bestand");
-			root.setAttribute("type", rekening.accept(this.typeVisitor));
+
+			root.setAttribute("type", switch (rekening) {
+				case MutatiesFactuur ignored -> "MutatiesFactuur";
+				case Offerte ignored -> "Offerte";
+				case ParticulierFactuur ignored -> "ParticulierFactuur";
+				case ReparatiesFactuur ignored -> "ReparatiesFactuur";
+				case default -> throw new RuntimeException();
+			});
 			root.setAttribute("version", documentVersion);
-			root.appendChild(rekening.accept(this.documentVisitor).apply(xmlDoc));
+
+			Function<Document, Node> f = switch (rekening) {
+				case MutatiesFactuur item -> this.documentVisitor.visit(item);
+				case Offerte item -> this.documentVisitor.visit(item);
+				case ParticulierFactuur item -> this.documentVisitor.visit(item);
+				case ReparatiesFactuur item -> this.documentVisitor.visit(item);
+				case default -> throw new RuntimeException();
+			};
+			root.appendChild(f.apply(xmlDoc));
 
 			xmlDoc.appendChild(root);
 

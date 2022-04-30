@@ -3,26 +3,18 @@ package org.rekeningsysteem.test.data.offerte;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.verify;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
 import org.rekeningsysteem.data.offerte.Offerte;
 import org.rekeningsysteem.data.util.AbstractRekening;
 import org.rekeningsysteem.data.util.header.FactuurHeader;
-import org.rekeningsysteem.data.util.visitor.RekeningVisitor;
 import org.rekeningsysteem.test.data.util.AbstractRekeningTest;
 
-@RunWith(MockitoJUnitRunner.class)
 public final class OfferteTest extends AbstractRekeningTest {
 
 	private Offerte offerte;
 	private final String tekst = "Lorem ipsum dolor sit amet.";
-	@Mock private RekeningVisitor<Object> visitor;
 
 	@Override
 	protected Offerte makeInstance() {
@@ -59,13 +51,6 @@ public final class OfferteTest extends AbstractRekeningTest {
 	@Test
 	public void testIsOndertekenen() {
 		assertTrue(this.offerte.isOndertekenen());
-	}
-
-	@Test
-	public void testAccept() throws Exception {
-		this.offerte.accept(this.visitor);
-
-		verify(this.visitor).visit(eq(this.offerte));
 	}
 
 	@Test

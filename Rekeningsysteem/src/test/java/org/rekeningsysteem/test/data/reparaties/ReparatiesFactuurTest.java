@@ -1,29 +1,21 @@
 package org.rekeningsysteem.test.data.reparaties;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.verify;
 
 import java.util.Currency;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
 import org.rekeningsysteem.data.reparaties.ReparatiesInkoopOrder;
 import org.rekeningsysteem.data.reparaties.ReparatiesFactuur;
 import org.rekeningsysteem.data.util.AbstractFactuur;
 import org.rekeningsysteem.data.util.ItemList;
 import org.rekeningsysteem.data.util.header.FactuurHeader;
-import org.rekeningsysteem.data.util.visitor.RekeningVisitor;
 import org.rekeningsysteem.test.data.util.AbstractFactuurTest;
 
-@RunWith(MockitoJUnitRunner.class)
 public class ReparatiesFactuurTest extends AbstractFactuurTest<ReparatiesInkoopOrder> {
 
 	private ReparatiesFactuur factuur;
-	@Mock private RekeningVisitor<Object> visitor;
 
 	@Override
 	protected ReparatiesFactuur makeInstance() {
@@ -52,13 +44,6 @@ public class ReparatiesFactuurTest extends AbstractFactuurTest<ReparatiesInkoopO
 	public void setUp() {
 		super.setUp();
 		this.factuur = this.makeInstance();
-	}
-
-	@Test
-	public void testAccept() throws Exception {
-		this.factuur.accept(this.visitor);
-
-		verify(this.visitor).visit(eq(this.factuur));
 	}
 
 	@Test

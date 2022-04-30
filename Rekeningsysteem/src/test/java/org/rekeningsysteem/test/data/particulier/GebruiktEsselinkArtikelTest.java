@@ -2,29 +2,20 @@ package org.rekeningsysteem.test.data.particulier;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.verify;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
 import org.rekeningsysteem.data.particulier.EsselinkArtikel;
 import org.rekeningsysteem.data.particulier.GebruiktEsselinkArtikel;
 import org.rekeningsysteem.data.util.BtwPercentage;
 import org.rekeningsysteem.data.util.Geld;
-import org.rekeningsysteem.data.util.visitor.ListItemVisitor;
 
-@RunWith(MockitoJUnitRunner.class)
 public class GebruiktEsselinkArtikelTest extends ParticulierArtikelTest {
 
 	private GebruiktEsselinkArtikel gebruiktArtikel;
-	private final EsselinkArtikel artikel = new EsselinkArtikel("artikelnummer", "omschrijving", 2,
-			"eenheid", new Geld(1));
+	private final EsselinkArtikel artikel = new EsselinkArtikel("artikelnummer", "omschrijving", 2, "eenheid", new Geld(1));
 	private final double aantal = 5;
 	private final BtwPercentage btwPercentage = new BtwPercentage(10, false);
-	@Mock private ListItemVisitor<Object> visitor;
 
 	@Override
 	protected GebruiktEsselinkArtikel makeInstance() {
@@ -64,31 +55,21 @@ public class GebruiktEsselinkArtikelTest extends ParticulierArtikelTest {
 	}
 
 	@Test
-	public void testAccept() {
-		this.gebruiktArtikel.accept(this.visitor);
-
-		verify(this.visitor).visit(eq(this.gebruiktArtikel));
-	}
-
-	@Test
 	public void testEqualsFalseOtherEsselinkAritkel() {
 		EsselinkArtikel ea = new EsselinkArtikel("", "", 1, "", new Geld(2));
-		GebruiktEsselinkArtikel gea = new GebruiktEsselinkArtikel(ea, this.aantal,
-				this.btwPercentage);
+		GebruiktEsselinkArtikel gea = new GebruiktEsselinkArtikel(ea, this.aantal, this.btwPercentage);
 		assertFalse(this.gebruiktArtikel.equals(gea));
 	}
 
 	@Test
 	public void testEqualsFalseOtherAantal() {
-		GebruiktEsselinkArtikel gea = new GebruiktEsselinkArtikel(this.artikel, this.aantal + 1,
-				this.btwPercentage);
+		GebruiktEsselinkArtikel gea = new GebruiktEsselinkArtikel(this.artikel, this.aantal + 1, this.btwPercentage);
 		assertFalse(this.gebruiktArtikel.equals(gea));
 	}
 
 	@Test
 	public void testEqualsFalseOtherMateriaalBtwPercentage() {
-		GebruiktEsselinkArtikel gea = new GebruiktEsselinkArtikel(this.artikel, this.aantal,
-				new BtwPercentage(this.btwPercentage.percentage() + 1, false));
+		GebruiktEsselinkArtikel gea = new GebruiktEsselinkArtikel(this.artikel, this.aantal, new BtwPercentage(this.btwPercentage.percentage() + 1, false));
 		assertFalse(this.gebruiktArtikel.equals(gea));
 	}
 

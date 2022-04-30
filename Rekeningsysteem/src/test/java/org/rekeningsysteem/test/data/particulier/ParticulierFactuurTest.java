@@ -3,7 +3,6 @@ package org.rekeningsysteem.test.data.particulier;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.rekeningsysteem.data.particulier.ParticulierArtikel;
 import org.rekeningsysteem.data.particulier.ParticulierFactuur;
@@ -12,14 +11,12 @@ import org.rekeningsysteem.data.util.ItemList;
 import org.rekeningsysteem.data.util.Totalen;
 import org.rekeningsysteem.data.util.header.Debiteur;
 import org.rekeningsysteem.data.util.header.FactuurHeader;
-import org.rekeningsysteem.data.util.visitor.RekeningVisitor;
 import org.rekeningsysteem.test.data.util.AbstractFactuurTest;
 
 import java.time.LocalDate;
 import java.util.Currency;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -28,7 +25,6 @@ public class ParticulierFactuurTest extends AbstractFactuurTest<ParticulierArtik
 
 	private ParticulierFactuur factuur;
 	private final FactuurHeader header = new FactuurHeader(new Debiteur("a", "b", "c", "d", "e"), LocalDate.of(1992, 7, 30));
-	@Mock private RekeningVisitor<Object> visitor;
 
 	@Override
 	protected ParticulierFactuur makeInstance() {
@@ -69,13 +65,6 @@ public class ParticulierFactuurTest extends AbstractFactuurTest<ParticulierArtik
 
 		assertEquals(expected, this.factuur.getTotalen());
 		verify(this.factuur.getItemList()).getTotalen();
-	}
-
-	@Test
-	public void testAccept() throws Exception {
-		this.factuur.accept(this.visitor);
-
-		verify(this.visitor).visit(eq(this.factuur));
 	}
 
 	@Test

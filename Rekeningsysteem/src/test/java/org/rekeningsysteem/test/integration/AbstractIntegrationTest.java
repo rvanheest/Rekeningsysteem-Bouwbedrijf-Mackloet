@@ -2,11 +2,7 @@ package org.rekeningsysteem.test.integration;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.ArgumentMatchers;
-import org.mockito.junit.MockitoJUnitRunner;
 import org.rekeningsysteem.data.util.AbstractRekening;
-import org.rekeningsysteem.data.util.visitor.RekeningVisitor;
 import org.rekeningsysteem.exception.PdfException;
 import org.rekeningsysteem.exception.XmlWriteException;
 import org.rekeningsysteem.io.FactuurExporter;
@@ -24,10 +20,6 @@ import javax.xml.transform.TransformerFactory;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
-
-@RunWith(MockitoJUnitRunner.class)
 public abstract class AbstractIntegrationTest {
 
 	private AbstractRekening rekening;
@@ -76,15 +68,5 @@ public abstract class AbstractIntegrationTest {
 			.assertValue(this.rekening)
 			.assertNoErrors()
 			.assertComplete();
-	}
-
-	@Test(expected = XmlWriteException.class)
-	public void testXmlWithException() throws Exception {
-		AbstractRekening rekening = mock(AbstractRekening.class);
-		Path path = mock(Path.class);
-
-		doThrow(new Exception("")).when(rekening).accept(ArgumentMatchers.<RekeningVisitor<String>>any());
-
-		this.saver.save(rekening, path);
 	}
 }

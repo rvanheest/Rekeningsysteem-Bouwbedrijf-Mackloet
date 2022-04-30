@@ -4,7 +4,6 @@ import java.util.Objects;
 
 import org.rekeningsysteem.data.util.BtwPercentage;
 import org.rekeningsysteem.data.util.Geld;
-import org.rekeningsysteem.data.util.visitor.ListItemVisitor;
 
 public class GebruiktEsselinkArtikel extends ParticulierArtikel {
 
@@ -56,11 +55,6 @@ public class GebruiktEsselinkArtikel extends ParticulierArtikel {
 
 	public double getAantal() {
 		return this.aantal;
-	}
-
-	@Override
-	public <T> T accept(ListItemVisitor<T> visitor) {
-		return visitor.visit(this);
 	}
 
 	@Override

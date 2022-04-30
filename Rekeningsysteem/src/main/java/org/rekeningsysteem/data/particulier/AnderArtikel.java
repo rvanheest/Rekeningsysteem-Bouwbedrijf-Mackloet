@@ -4,7 +4,6 @@ import java.util.Objects;
 
 import org.rekeningsysteem.data.util.BtwPercentage;
 import org.rekeningsysteem.data.util.Geld;
-import org.rekeningsysteem.data.util.visitor.ListItemVisitor;
 
 public class AnderArtikel extends ParticulierArtikel {
 
@@ -40,11 +39,6 @@ public class AnderArtikel extends ParticulierArtikel {
 	@Override
 	public final Geld getLoonBtw() {
 		return new Geld(0);
-	}
-
-	@Override
-	public <T> T accept(ListItemVisitor<T> visitor) {
-		return visitor.visit(this);
 	}
 
 	@Override

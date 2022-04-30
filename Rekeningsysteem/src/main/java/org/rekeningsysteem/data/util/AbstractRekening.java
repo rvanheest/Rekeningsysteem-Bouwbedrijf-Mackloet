@@ -3,9 +3,8 @@ package org.rekeningsysteem.data.util;
 import java.util.Objects;
 
 import org.rekeningsysteem.data.util.header.FactuurHeader;
-import org.rekeningsysteem.data.util.visitor.RekeningVisitable;
 
-public abstract class AbstractRekening implements RekeningVisitable {
+public abstract class AbstractRekening {
 
 	private final FactuurHeader header;
 

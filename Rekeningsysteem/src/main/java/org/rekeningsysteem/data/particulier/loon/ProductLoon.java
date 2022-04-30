@@ -4,7 +4,6 @@ import java.util.Objects;
 
 import org.rekeningsysteem.data.util.BtwPercentage;
 import org.rekeningsysteem.data.util.Geld;
-import org.rekeningsysteem.data.util.visitor.ListItemVisitor;
 
 public final class ProductLoon extends AbstractLoon {
 
@@ -42,11 +41,6 @@ public final class ProductLoon extends AbstractLoon {
 	@Override
 	public BtwPercentage getLoonBtwPercentage() {
 		return this.loonBtwPercentage;
-	}
-
-	@Override
-	public <T> T accept(ListItemVisitor<T> visitor) {
-		return visitor.visit(this);
 	}
 
 	@Override

@@ -1,29 +1,21 @@
 package org.rekeningsysteem.test.data.mutaties;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.verify;
 
 import java.util.Currency;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
 import org.rekeningsysteem.data.mutaties.MutatiesInkoopOrder;
 import org.rekeningsysteem.data.mutaties.MutatiesFactuur;
 import org.rekeningsysteem.data.util.AbstractFactuur;
 import org.rekeningsysteem.data.util.ItemList;
 import org.rekeningsysteem.data.util.header.FactuurHeader;
-import org.rekeningsysteem.data.util.visitor.RekeningVisitor;
 import org.rekeningsysteem.test.data.util.AbstractFactuurTest;
 
-@RunWith(MockitoJUnitRunner.class)
 public class MutatiesFactuurTest extends AbstractFactuurTest<MutatiesInkoopOrder> {
 
 	private MutatiesFactuur factuur;
-	@Mock private RekeningVisitor<Object> visitor;
 
 	@Override
 	protected MutatiesFactuur makeInstance() {
@@ -52,13 +44,6 @@ public class MutatiesFactuurTest extends AbstractFactuurTest<MutatiesInkoopOrder
 	public void setUp() {
 		super.setUp();
 		this.factuur = this.makeInstance();
-	}
-
-	@Test
-	public void testAccept() throws Exception {
-		this.factuur.accept(this.visitor);
-
-		verify(this.visitor).visit(eq(this.factuur));
 	}
 
 	@Test

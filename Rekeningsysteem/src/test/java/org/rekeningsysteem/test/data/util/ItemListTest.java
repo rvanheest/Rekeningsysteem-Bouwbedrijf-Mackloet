@@ -14,14 +14,12 @@ import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.data.util.ItemList;
 import org.rekeningsysteem.data.util.ListItem;
 import org.rekeningsysteem.data.util.Totalen;
-import org.rekeningsysteem.data.util.TotalenListItemVisitor;
 import org.rekeningsysteem.test.data.EqualsHashCodeTest;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ItemListTest extends EqualsHashCodeTest {
 
 	private ItemList<ListItem> list;
-	private final TotalenListItemVisitor visitor = new TotalenListItemVisitor();
 
 	private final MutatiesInkoopOrder mutaties = new MutatiesInkoopOrder("", "", new Geld(1));
 	private final AnderArtikel ander1 = new AnderArtikel("", new Geld(2), new BtwPercentage(0.0, false));
@@ -30,7 +28,7 @@ public class ItemListTest extends EqualsHashCodeTest {
 
 	@Override
 	protected ItemList<ListItem> makeInstance() {
-		ItemList<ListItem> l = new ItemList<>(this.visitor);
+		ItemList<ListItem> l = new ItemList<>();
 		l.add(this.mutaties);
 		l.add(this.ander1);
 		l.add(this.loon);
@@ -40,7 +38,7 @@ public class ItemListTest extends EqualsHashCodeTest {
 
 	@Override
 	protected ItemList<ListItem> makeNotInstance() {
-		ItemList<ListItem> l = new ItemList<>(this.visitor);
+		ItemList<ListItem> l = new ItemList<>();
 		l.add(this.mutaties);
 		l.add(this.ander1);
 		return l;
