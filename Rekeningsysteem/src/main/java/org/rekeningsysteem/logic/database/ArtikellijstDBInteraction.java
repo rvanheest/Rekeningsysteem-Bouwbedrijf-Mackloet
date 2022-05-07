@@ -8,7 +8,7 @@ import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Maybe;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.Single;
-import org.rekeningsysteem.data.particulier.EsselinkArtikel;
+import org.rekeningsysteem.data.particulier.materiaal.EsselinkArtikel;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.io.database.Database;
 import org.rekeningsysteem.io.database.QueryEnumeration;

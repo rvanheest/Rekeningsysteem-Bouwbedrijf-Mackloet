@@ -2,31 +2,36 @@ package org.rekeningsysteem.test.integration;
 
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.rekeningsysteem.data.particulier.AnderArtikel;
-import org.rekeningsysteem.data.particulier.EsselinkArtikel;
-import org.rekeningsysteem.data.particulier.GebruiktEsselinkArtikel;
 import org.rekeningsysteem.data.particulier.ParticulierArtikel;
 import org.rekeningsysteem.data.particulier.ParticulierFactuur;
-import org.rekeningsysteem.data.particulier.loon.AbstractLoon;
 import org.rekeningsysteem.data.particulier.loon.InstantLoon;
+import org.rekeningsysteem.data.particulier.loon.Loon;
 import org.rekeningsysteem.data.particulier.loon.ProductLoon;
+import org.rekeningsysteem.data.particulier.materiaal.AnderArtikel;
+import org.rekeningsysteem.data.particulier.materiaal.EsselinkArtikel;
+import org.rekeningsysteem.data.particulier.materiaal.GebruiktEsselinkArtikel;
+import org.rekeningsysteem.data.particulier.materiaal.Materiaal;
 import org.rekeningsysteem.data.util.BtwPercentage;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.data.util.ItemList;
 import org.rekeningsysteem.data.util.header.Debiteur;
 import org.rekeningsysteem.data.util.header.FactuurHeader;
-import org.rekeningsysteem.exception.DifferentCurrencyException;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Currency;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ParticulierFactuurTwoMetVerlegdBtwIntegrationTest extends AbstractIntegrationTest {
 
-	protected ItemList<ParticulierArtikel> addArtikels() {
-		ItemList<ParticulierArtikel> list = new ItemList<>(Currency.getInstance("EUR"));
+	protected List<Materiaal> materiaalArtikels() {
+		List<Materiaal> list = new ArrayList<>();
 
 		EsselinkArtikel sub1 = new EsselinkArtikel("2018021117", "Product 1", 1, "Zak", new Geld(5.16));
 		EsselinkArtikel sub2 = new EsselinkArtikel("2003131360", "Product 2", 1, "zak", new Geld(129.53));
@@ -49,8 +54,8 @@ public class ParticulierFactuurTwoMetVerlegdBtwIntegrationTest extends AbstractI
 		return list;
 	}
 
-	protected ItemList<AbstractLoon> addLoon() {
-		ItemList<AbstractLoon> list = new ItemList<>(Currency.getInstance("EUR"));
+	protected List<Loon> loonArtikels() {
+		List<Loon> list = new ArrayList<>();
 
 		list.add(new ProductLoon("Uurloon à 38.50", 25, new Geld(38.50), new BtwPercentage(6, true)));
 		list.add(new ProductLoon("test123", 12, new Geld(12.50), new BtwPercentage(6, false)));
@@ -60,13 +65,16 @@ public class ParticulierFactuurTwoMetVerlegdBtwIntegrationTest extends AbstractI
 	}
 
 	@Override
-	protected ParticulierFactuur makeRekening() throws DifferentCurrencyException {
+	protected ParticulierFactuur makeDocument() {
 		Debiteur debiteur = new Debiteur("Name", "Street", "Number", "Zipcode", "Place");
 		LocalDate datum = LocalDate.of(2011, 4, 2);
 		String factuurnummer = "22011";
 		FactuurHeader header = new FactuurHeader(debiteur, datum, factuurnummer);
 		String omschrijving = "Voor u verrichte werkzaamheden betreffende renovatie badkamervloer i.v.m. lekkage";
-		ItemList<ParticulierArtikel> itemList = ItemList.merge(this.addArtikels(), this.addLoon());
+		ItemList<ParticulierArtikel> itemList = new ItemList<>(Currency.getInstance("EUR"), Stream.of(
+				this.materiaalArtikels(),
+				this.loonArtikels()
+		).flatMap(Collection::stream).collect(Collectors.toList()));
 
 		return new ParticulierFactuur(header, omschrijving, itemList);
 	}

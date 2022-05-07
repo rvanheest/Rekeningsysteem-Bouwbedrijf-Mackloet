@@ -3,6 +3,7 @@ package org.rekeningsysteem.ui.mutaties;
 import java.util.Currency;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.rekeningsysteem.data.mutaties.MutatiesInkoopOrder;
 import org.rekeningsysteem.data.util.Geld;
@@ -18,7 +19,7 @@ public class MutatiesListController extends AbstractListController<MutatiesInkoo
 
 	public MutatiesListController(ItemList<MutatiesInkoopOrder> input) {
 		this(input.getCurrency(), new MutatiesListPane());
-		this.setData(modelToUI(input.getList()));
+		this.setData(modelToUI(input.stream()));
 	}
 
 	public MutatiesListController(Currency currency, MutatiesListPane ui) {
@@ -26,8 +27,8 @@ public class MutatiesListController extends AbstractListController<MutatiesInkoo
 	}
 
 	@Override
-	protected List<MutatiesModel> modelToUI(List<MutatiesInkoopOrder> list) {
-		return list.stream()
+	protected List<MutatiesModel> modelToUI(Stream<MutatiesInkoopOrder> stream) {
+		return stream
 			.map(item -> new MutatiesModel(
 				item.omschrijving(),
 				item.inkoopOrderNummer(),

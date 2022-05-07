@@ -14,7 +14,7 @@ import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.ObservableTransformer;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
-import org.rekeningsysteem.data.particulier.EsselinkArtikel;
+import org.rekeningsysteem.data.particulier.materiaal.EsselinkArtikel;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.exception.GeldParseException;
 

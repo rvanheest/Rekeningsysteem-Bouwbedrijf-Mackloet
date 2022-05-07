@@ -47,8 +47,8 @@ public class ReparatiesController extends AbstractRekeningController<ReparatiesF
 
 	public ReparatiesController(ReparatiesFactuur input, Database database) {
 		this(
-			new FactuurHeaderController(input.getFactuurHeader(), database),
-			new ListPaneController<>(new ReparatiesListController(input.getItemList()), input.getItemList().getCurrency())
+			new FactuurHeaderController(input.header(), database),
+			new ListPaneController<>(new ReparatiesListController(input.itemList()), input.itemList().getCurrency())
 		);
 	}
 

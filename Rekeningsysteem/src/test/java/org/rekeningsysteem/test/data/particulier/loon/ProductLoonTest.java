@@ -1,7 +1,6 @@
 package org.rekeningsysteem.test.data.particulier.loon;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -12,7 +11,7 @@ import org.rekeningsysteem.data.util.BtwPercentage;
 import org.rekeningsysteem.data.util.Geld;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ProductLoonTest extends AbstractLoonTest {
+public class ProductLoonTest extends LoonTest {
 
 	private ProductLoon item;
 	private final double uren = 10;
@@ -21,12 +20,12 @@ public class ProductLoonTest extends AbstractLoonTest {
 
 	@Override
 	protected ProductLoon makeInstance() {
-		return new ProductLoon(this.getTestOmschrijving(), this.uren, this.uurloon, this.loonBtwPercentage);
+		return new ProductLoon("omschrijving", this.uren, this.uurloon, this.loonBtwPercentage);
 	}
 
 	@Override
-	protected ProductLoon makeNotInstance() {
-		return new ProductLoon(this.getTestOmschrijving(), this.uren + 2, this.uurloon, this.loonBtwPercentage);
+	protected ProductLoon makeInstance(boolean verlegd) {
+		return new ProductLoon("omschrijving", this.uren + 2, this.uurloon, new BtwPercentage(10, verlegd));
 	}
 
 	@Before
@@ -38,45 +37,16 @@ public class ProductLoonTest extends AbstractLoonTest {
 
 	@Test
 	public void testGetUren() {
-		assertEquals(this.uren, this.item.getUren(), 0.0);
+		assertEquals(this.uren, this.item.uren(), 0.0);
 	}
 
 	@Test
 	public void testGetUurloon() {
-		assertEquals(this.uurloon, this.item.getUurloon());
+		assertEquals(this.uurloon, this.item.uurloon());
 	}
 
 	@Test
 	public void testGetLoon() {
 		assertEquals(new Geld(40), this.item.loon());
-	}
-
-	@Test
-	public void testEqualsFalseOtherOmschrijving() {
-		ProductLoon loon2 = new ProductLoon(this.getTestOmschrijving() + ".", this.uren, this.uurloon, this.loonBtwPercentage);
-		assertFalse(this.item.equals(loon2));
-	}
-
-	@Test
-	public void testEqualsFalseOtherUren() {
-		ProductLoon loon2 = new ProductLoon(this.getTestOmschrijving(), this.uren + 2, this.uurloon, this.loonBtwPercentage);
-		assertFalse(this.item.equals(loon2));
-	}
-
-	@Test
-	public void testEqualsFalseOtherUurloon() {
-		ProductLoon loon2 = new ProductLoon(this.getTestOmschrijving(), this.uren, this.uurloon.multiply(3), this.loonBtwPercentage);
-		assertFalse(this.item.equals(loon2));
-	}
-
-	@Test
-	public void testEqualsFalseOtherLoonBtwPercentage() {
-		ProductLoon loon2 = new ProductLoon(this.getTestOmschrijving(), this.uren, this.uurloon, new BtwPercentage(this.loonBtwPercentage.percentage() + 1.0, false));
-		assertFalse(this.item.equals(loon2));
-	}
-
-	@Test
-	public void testToString() {
-		assertEquals("<ProductLoon[omschrijving, 10.0, Geld[bedrag=4.0], BtwPercentage[percentage=10.0, verlegd=false]]>", this.item.toString());
 	}
 }

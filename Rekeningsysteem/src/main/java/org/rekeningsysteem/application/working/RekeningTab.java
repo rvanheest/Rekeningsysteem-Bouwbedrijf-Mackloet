@@ -20,7 +20,7 @@ import org.rekeningsysteem.data.mutaties.MutatiesFactuur;
 import org.rekeningsysteem.data.offerte.Offerte;
 import org.rekeningsysteem.data.particulier.ParticulierFactuur;
 import org.rekeningsysteem.data.reparaties.ReparatiesFactuur;
-import org.rekeningsysteem.data.util.AbstractRekening;
+import org.rekeningsysteem.data.util.Document;
 import org.rekeningsysteem.exception.PdfException;
 import org.rekeningsysteem.io.database.Database;
 import org.rekeningsysteem.io.xml.IOWorker;
@@ -40,17 +40,17 @@ public class RekeningTab extends Tab implements Disposable {
 	private static final IOWorker ioWorker = new IOWorker(ApplicationLogger.getInstance());
 
 	private final PublishSubject<Boolean> modified = PublishSubject.create();
-	private final BehaviorSubject<AbstractRekening> latest = BehaviorSubject.create();
-	private final AbstractRekeningController<? extends AbstractRekening> controller;
+	private final BehaviorSubject<Document> latest = BehaviorSubject.create();
+	private final AbstractRekeningController<? extends Document> controller;
 	private Optional<Path> savePath;
 	private final DebiteurDBInteraction debiteurDB;
 	private final CompositeDisposable disposable = new CompositeDisposable();
 
-	public RekeningTab(String name, AbstractRekeningController<? extends AbstractRekening> controller, Database database) {
+	public RekeningTab(String name, AbstractRekeningController<? extends Document> controller, Database database) {
 		this(name, controller, Optional.empty(), database);
 	}
 
-	public RekeningTab(String name, AbstractRekeningController<? extends AbstractRekening> controller, Optional<Path> path, Database database) {
+	public RekeningTab(String name, AbstractRekeningController<? extends Document> controller, Optional<Path> path, Database database) {
 		super(name);
 		this.controller = controller;
 		this.savePath = path;
@@ -75,7 +75,7 @@ public class RekeningTab extends Tab implements Disposable {
 		this.setOnClosed(evt -> this.dispose());
 	}
 
-	public Observable<? extends AbstractRekening> getModel() {
+	public Observable<? extends Document> getModel() {
 		return this.controller.getModel();
 	}
 
@@ -124,12 +124,12 @@ public class RekeningTab extends Tab implements Disposable {
 	}
 
 	public void save() {
-		AbstractRekening rekening = this.latest.getValue();
+		Document rekening = this.latest.getValue();
 
 		this.savePath.ifPresent(file -> ioWorker.save(rekening, file));
 
 		if (this.controller.getSaveSelected().blockingGet()) {
-			this.debiteurDB.addDebiteur(rekening.getFactuurHeader().debiteur()).blockingAwait();
+			this.debiteurDB.addDebiteur(rekening.header().debiteur()).blockingAwait();
 		}
 		
 		String text = this.getText();
@@ -143,7 +143,7 @@ public class RekeningTab extends Tab implements Disposable {
 	public void export(Path path) throws PdfException {
 		final AtomicReference<PdfException> e = new AtomicReference<>();
 
-		AbstractRekening rekening = this.latest.getValue();
+		Document rekening = this.latest.getValue();
 
 		try {
 			ioWorker.export(rekening, path);

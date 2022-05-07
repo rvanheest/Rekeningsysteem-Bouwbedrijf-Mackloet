@@ -1,4 +1,4 @@
-package org.rekeningsysteem.data.particulier;
+package org.rekeningsysteem.data.particulier.materiaal;
 
 import org.rekeningsysteem.data.util.Geld;
 

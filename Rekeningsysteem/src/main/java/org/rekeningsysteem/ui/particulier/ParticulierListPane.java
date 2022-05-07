@@ -6,8 +6,8 @@ import java.util.List;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.cell.PropertyValueFactory;
 
-import org.rekeningsysteem.data.particulier.GebruiktEsselinkArtikel;
-import org.rekeningsysteem.data.particulier.AnderArtikel;
+import org.rekeningsysteem.data.particulier.materiaal.GebruiktEsselinkArtikel;
+import org.rekeningsysteem.data.particulier.materiaal.AnderArtikel;
 import org.rekeningsysteem.data.particulier.loon.InstantLoon;
 import org.rekeningsysteem.data.particulier.loon.ProductLoon;
 import org.rekeningsysteem.data.util.BtwPercentage;
@@ -69,11 +69,11 @@ public class ParticulierListPane extends AbstractListPane<ParticulierModel> {
 			this.instant = null;
 			this.product = null;
 
-			this.omschrijving = epa.getOmschrijving();
+			this.omschrijving = epa.omschrijving();
 			this.loon = null;
 			this.loonBtwPercentage = null;
 			this.materiaal = epa.materiaal().bedrag();
-			this.materiaalBtwPercentage = epa.getMateriaalBtwPercentage();
+			this.materiaalBtwPercentage = epa.materiaalBtwPercentage();
 		}
 
 		public ParticulierModel(AnderArtikel pa2i) {
@@ -82,11 +82,11 @@ public class ParticulierListPane extends AbstractListPane<ParticulierModel> {
 			this.instant = null;
 			this.product = null;
 
-			this.omschrijving = pa2i.getOmschrijving();
+			this.omschrijving = pa2i.omschrijving();
 			this.loon = null;
 			this.loonBtwPercentage = null;
 			this.materiaal = pa2i.materiaal().bedrag();
-			this.materiaalBtwPercentage = pa2i.getMateriaalBtwPercentage();
+			this.materiaalBtwPercentage = pa2i.materiaalBtwPercentage();
 		}
 
 		public ParticulierModel(InstantLoon il2) {
@@ -95,9 +95,9 @@ public class ParticulierListPane extends AbstractListPane<ParticulierModel> {
 			this.instant = il2;
 			this.product = null;
 
-			this.omschrijving = il2.getOmschrijving();
+			this.omschrijving = il2.omschrijving();
 			this.loon = il2.loon().bedrag();
-			this.loonBtwPercentage = il2.getLoonBtwPercentage();
+			this.loonBtwPercentage = il2.loonBtwPercentage();
 			this.materiaal = null;
 			this.materiaalBtwPercentage = null;
 		}
@@ -108,9 +108,9 @@ public class ParticulierListPane extends AbstractListPane<ParticulierModel> {
 			this.instant = null;
 			this.product = pl2;
 
-			this.omschrijving = pl2.getOmschrijving();
+			this.omschrijving = pl2.omschrijving();
 			this.loon = pl2.loon().bedrag();
-			this.loonBtwPercentage = pl2.getLoonBtwPercentage();
+			this.loonBtwPercentage = pl2.loonBtwPercentage();
 			this.materiaal = null;
 			this.materiaalBtwPercentage = null;
 		}

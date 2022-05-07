@@ -7,19 +7,8 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.exception.GeldParseException;
-import org.rekeningsysteem.test.data.EqualsHashCodeTest;
 
-public final class GeldTest extends EqualsHashCodeTest {
-
-	@Override
-	protected Object makeInstance() {
-		return new Geld(5.0);
-	}
-
-	@Override
-	protected Object makeNotInstance() {
-		return new Geld(6.33);
-	}
+public final class GeldTest {
 
 	@Test(expected = GeldParseException.class)
 	public void testStringConstructorWithInvalidCharacters() throws GeldParseException {

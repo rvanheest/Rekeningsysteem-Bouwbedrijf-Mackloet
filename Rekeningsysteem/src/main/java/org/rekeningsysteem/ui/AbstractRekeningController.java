@@ -7,15 +7,15 @@ import io.reactivex.rxjava3.core.Maybe;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.disposables.Disposable;
 import org.rekeningsysteem.application.working.RekeningSplitPane;
-import org.rekeningsysteem.data.util.AbstractRekening;
 import org.rekeningsysteem.data.util.BtwPercentages;
+import org.rekeningsysteem.data.util.Document;
 import org.rekeningsysteem.logic.factuurnummer.FactuurnummerManager;
 import org.rekeningsysteem.logic.factuurnummer.PropertyFactuurnummerManager;
 import org.rekeningsysteem.properties.PropertiesWorker;
 import org.rekeningsysteem.properties.PropertyKey;
 import org.rekeningsysteem.properties.PropertyModelEnum;
 
-public abstract class AbstractRekeningController<M extends AbstractRekening> implements Disposable {
+public abstract class AbstractRekeningController<M extends Document> implements Disposable {
 
 	private final RekeningSplitPane ui;
 	private final Observable<M> model;

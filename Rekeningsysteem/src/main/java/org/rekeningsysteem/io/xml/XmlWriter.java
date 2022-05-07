@@ -4,7 +4,6 @@ import org.rekeningsysteem.data.mutaties.MutatiesFactuur;
 import org.rekeningsysteem.data.offerte.Offerte;
 import org.rekeningsysteem.data.particulier.ParticulierFactuur;
 import org.rekeningsysteem.data.reparaties.ReparatiesFactuur;
-import org.rekeningsysteem.data.util.AbstractRekening;
 import org.rekeningsysteem.exception.XmlWriteException;
 import org.rekeningsysteem.io.FactuurSaver;
 import org.w3c.dom.Document;
@@ -39,7 +38,7 @@ public class XmlWriter implements FactuurSaver {
 	}
 
 	@Override
-	public void save(AbstractRekening rekening, Path path) {
+	public void save(org.rekeningsysteem.data.util.Document document, Path path) {
 		try {
 			Document xmlDoc = this.documentBuilder.newDocument();
 			xmlDoc.setXmlStandalone(true);
@@ -51,7 +50,7 @@ public class XmlWriter implements FactuurSaver {
 
 			Element root = xmlDoc.createElement("bestand");
 
-			root.setAttribute("type", switch (rekening) {
+			root.setAttribute("type", switch (document) {
 				case MutatiesFactuur ignored -> "MutatiesFactuur";
 				case Offerte ignored -> "Offerte";
 				case ParticulierFactuur ignored -> "ParticulierFactuur";
@@ -60,7 +59,7 @@ public class XmlWriter implements FactuurSaver {
 			});
 			root.setAttribute("version", documentVersion);
 
-			Function<Document, Node> f = switch (rekening) {
+			Function<Document, Node> f = switch (document) {
 				case MutatiesFactuur item -> this.documentVisitor.visit(item);
 				case Offerte item -> this.documentVisitor.visit(item);
 				case ParticulierFactuur item -> this.documentVisitor.visit(item);

@@ -11,7 +11,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.rekeningsysteem.application.versioning.VersionControl;
-import org.rekeningsysteem.data.particulier.EsselinkArtikel;
+import org.rekeningsysteem.data.particulier.materiaal.EsselinkArtikel;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.io.database.Database;
 import org.rekeningsysteem.logic.database.ArtikellijstDBInteraction;

@@ -1,10 +1,10 @@
 package org.rekeningsysteem.io;
 
-import java.nio.file.Path;
+import org.rekeningsysteem.data.util.Document;
 
-import org.rekeningsysteem.data.util.AbstractRekening;
+import java.nio.file.Path;
 
 public interface FactuurSaver {
 
-	void save(AbstractRekening rekening, Path saveLocation);
+	void save(Document document, Path saveLocation);
 }

@@ -39,8 +39,8 @@ public class ParticulierController extends AbstractRekeningController<Particulie
 
 	public ParticulierController(ParticulierFactuur input, PropertiesWorker properties, Database database) {
 		this(
-			new OmschrFactuurHeaderController(input.getFactuurHeader(), input.getOmschrijving(), database),
-			new ListPaneController<>(new ParticulierListController(database, getDefaultBtwPercentage(properties), input.getItemList()), input.getItemList().getCurrency())
+			new OmschrFactuurHeaderController(input.header(), input.omschrijving(), database),
+			new ListPaneController<>(new ParticulierListController(database, getDefaultBtwPercentage(properties), input.itemList()), input.itemList().getCurrency())
 		);
 	}
 

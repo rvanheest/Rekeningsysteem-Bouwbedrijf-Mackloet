@@ -3,6 +3,7 @@ package org.rekeningsysteem.ui.reparaties;
 import java.util.Currency;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.rekeningsysteem.data.reparaties.ReparatiesInkoopOrder;
 import org.rekeningsysteem.data.util.Geld;
@@ -18,7 +19,7 @@ public class ReparatiesListController extends AbstractListController<ReparatiesI
 
 	public ReparatiesListController(ItemList<ReparatiesInkoopOrder> input) {
 		this(input.getCurrency(), new ReparatiesListPane());
-		this.setData(modelToUI(input.getList()));
+		this.setData(modelToUI(input.stream()));
 	}
 
 	public ReparatiesListController(Currency currency, ReparatiesListPane ui) {
@@ -26,8 +27,8 @@ public class ReparatiesListController extends AbstractListController<ReparatiesI
 	}
 
 	@Override
-	protected List<ReparatiesModel> modelToUI(List<ReparatiesInkoopOrder> list) {
-		return list.stream()
+	protected List<ReparatiesModel> modelToUI(Stream<ReparatiesInkoopOrder> stream) {
+		return stream
 			.map(item -> new ReparatiesModel(
 				item.omschrijving(),
 				item.inkoopOrderNummer(),

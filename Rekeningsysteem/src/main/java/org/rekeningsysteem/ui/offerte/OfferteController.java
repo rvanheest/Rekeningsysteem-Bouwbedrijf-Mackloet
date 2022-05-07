@@ -23,8 +23,8 @@ public class OfferteController extends AbstractRekeningController<Offerte> {
 
 	public OfferteController(Offerte input, Database database) {
 		this(
-			new OfferteHeaderController(input.getFactuurHeader(), input.isOndertekenen(), database),
-			new TextPaneController(input.getTekst())
+			new OfferteHeaderController(input.header(), input.ondertekenen(), database),
+			new TextPaneController(input.tekst())
 		);
 	}
 

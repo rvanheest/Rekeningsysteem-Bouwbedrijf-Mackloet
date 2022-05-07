@@ -3,9 +3,9 @@ package org.rekeningsysteem.io.xml;
 import org.rekeningsysteem.data.mutaties.MutatiesFactuur;
 import org.rekeningsysteem.data.mutaties.MutatiesInkoopOrder;
 import org.rekeningsysteem.data.offerte.Offerte;
-import org.rekeningsysteem.data.particulier.AnderArtikel;
-import org.rekeningsysteem.data.particulier.EsselinkArtikel;
-import org.rekeningsysteem.data.particulier.GebruiktEsselinkArtikel;
+import org.rekeningsysteem.data.particulier.materiaal.AnderArtikel;
+import org.rekeningsysteem.data.particulier.materiaal.EsselinkArtikel;
+import org.rekeningsysteem.data.particulier.materiaal.GebruiktEsselinkArtikel;
 import org.rekeningsysteem.data.particulier.ParticulierFactuur;
 import org.rekeningsysteem.data.particulier.loon.InstantLoon;
 import org.rekeningsysteem.data.particulier.loon.ProductLoon;
@@ -21,11 +21,11 @@ import org.w3c.dom.Node;
 
 import java.time.LocalDate;
 import java.util.Currency;
-import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 import static org.rekeningsysteem.io.xml.XmlWriterUtils.appendNode;
 import static org.rekeningsysteem.io.xml.XmlWriterUtils.createElement;
@@ -102,42 +102,42 @@ class XmlWriterDocumentVisitor {
 
 	public Function<Document, Node> visit(AnderArtikel item) {
 		return createElement("ander-artikel",
-				xml -> stringNode(xml, "omschrijving", item.getOmschrijving())
+				xml -> stringNode(xml, "omschrijving", item.omschrijving())
 						.andThen(visit(xml, "prijs", item.materiaal()))
-						.andThen(visit(xml, "materiaalBtwPercentage", item.getMateriaalBtwPercentage()))
+						.andThen(visit(xml, "materiaalBtwPercentage", item.materiaalBtwPercentage()))
 		);
 	}
 
 	public Function<Document, Node> visit(GebruiktEsselinkArtikel item) {
 		return createElement("gebruikt-esselink-artikel",
-				xml -> stringNode(xml, "omschrijving", item.getOmschrijving())
-						.andThen(appendNode(xml, visit(item.getArtikel())))
-						.andThen(stringNode(xml, "aantal", String.valueOf(item.getAantal())))
-						.andThen(visit(xml, "materiaalBtwPercentage", item.getMateriaalBtwPercentage()))
+				xml -> stringNode(xml, "omschrijving", item.omschrijving())
+						.andThen(appendNode(xml, visit(item.artikel())))
+						.andThen(stringNode(xml, "aantal", String.valueOf(item.aantal())))
+						.andThen(visit(xml, "materiaalBtwPercentage", item.materiaalBtwPercentage()))
 		);
 	}
 
 	public Function<Document, Node> visit(InstantLoon item) {
 		return createElement("instant-loon",
-				xml -> stringNode(xml, "omschrijving", item.getOmschrijving())
+				xml -> stringNode(xml, "omschrijving", item.omschrijving())
 						.andThen(visit(xml, "loon", item.loon()))
-						.andThen(visit(xml, "loonBtwPercentage", item.getLoonBtwPercentage()))
+						.andThen(visit(xml, "loonBtwPercentage", item.loonBtwPercentage()))
 		);
 	}
 
 	public Function<Document, Node> visit(ProductLoon item) {
 		return createElement("product-loon",
-				xml -> stringNode(xml, "omschrijving", item.getOmschrijving())
-						.andThen(stringNode(xml, "uren", String.valueOf(item.getUren())))
-						.andThen(visit(xml, "uurloon", item.getUurloon()))
-						.andThen(visit(xml, "loonBtwPercentage", item.getLoonBtwPercentage()))
+				xml -> stringNode(xml, "omschrijving", item.omschrijving())
+						.andThen(stringNode(xml, "uren", String.valueOf(item.uren())))
+						.andThen(visit(xml, "uurloon", item.uurloon()))
+						.andThen(visit(xml, "loonBtwPercentage", item.loonBtwPercentage()))
 		);
 	}
 
-	private <T extends ListItem> Function<Document, Node> visit(List<T> list) {
+	private <T extends ListItem> Function<Document, Node> visit(Stream<T> stream) {
 		return createElement(
 				"list",
-				xml -> list.stream()
+				xml -> stream
 					.map(t -> appendNode(xml, switch (t) {
 						case MutatiesInkoopOrder item -> visit(item);
 						case ReparatiesInkoopOrder item -> visit(item);
@@ -153,35 +153,35 @@ class XmlWriterDocumentVisitor {
 
 	public Function<Document, Node> visit(MutatiesFactuur mutatiesFactuur) {
 		return createElement("mutaties-factuur",
-			xml -> appendNode(xml, visit(mutatiesFactuur.getFactuurHeader()))
-				.andThen(appendNode(xml, visit(mutatiesFactuur.getItemList().getCurrency())))
-				.andThen(appendNode(xml, visit(mutatiesFactuur.getItemList().getList()))));
+			xml -> appendNode(xml, visit(mutatiesFactuur.header()))
+				.andThen(appendNode(xml, visit(mutatiesFactuur.itemList().getCurrency())))
+				.andThen(appendNode(xml, visit(mutatiesFactuur.itemList().stream()))));
 	}
 
 	public Function<Document, Node> visit(Offerte offerte) {
 		return createElement("offerte",
-			xml -> appendNode(xml, visit(offerte.getFactuurHeader()))
-				.andThen(stringNode(xml, "tekst", offerte.getTekst()))
-				.andThen(stringNode(xml, "ondertekenen", String.valueOf(offerte.isOndertekenen()))));
+			xml -> appendNode(xml, visit(offerte.header()))
+				.andThen(stringNode(xml, "tekst", offerte.tekst()))
+				.andThen(stringNode(xml, "ondertekenen", String.valueOf(offerte.ondertekenen()))));
 	}
 
 	public Function<Document, Node> visit(ParticulierFactuur factuur) {
 		return createElement("particulier-factuur",
 			xml -> doc -> {
-				Node header = visit(factuur.getFactuurHeader()).apply(doc);
+				Node header = visit(factuur.header()).apply(doc);
 
-				stringNode(header, "omschrijving", factuur.getOmschrijving())
+				stringNode(header, "omschrijving", factuur.omschrijving())
 					.andThen(appendNode(xml, header))
-					.andThen(appendNode(xml, visit(factuur.getItemList().getCurrency())))
-					.andThen(appendNode(xml, visit(factuur.getItemList().getList())))
+					.andThen(appendNode(xml, visit(factuur.itemList().getCurrency())))
+					.andThen(appendNode(xml, visit(factuur.itemList().stream())))
 					.accept(doc);
 			});
 	}
 
 	public Function<Document, Node> visit(ReparatiesFactuur factuur) {
 		return createElement("reparaties-factuur",
-			xml -> appendNode(xml, visit(factuur.getFactuurHeader()))
-				.andThen(appendNode(xml, visit(factuur.getItemList().getCurrency())))
-				.andThen(appendNode(xml, visit(factuur.getItemList().getList()))));
+			xml -> appendNode(xml, visit(factuur.header()))
+				.andThen(appendNode(xml, visit(factuur.itemList().getCurrency())))
+				.andThen(appendNode(xml, visit(factuur.itemList().stream()))));
 	}
 }

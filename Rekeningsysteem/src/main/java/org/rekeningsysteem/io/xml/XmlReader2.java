@@ -8,17 +8,17 @@ import io.reactivex.rxjava3.functions.Function;
 import org.rekeningsysteem.data.mutaties.MutatiesFactuur;
 import org.rekeningsysteem.data.mutaties.MutatiesInkoopOrder;
 import org.rekeningsysteem.data.offerte.Offerte;
-import org.rekeningsysteem.data.particulier.AnderArtikel;
-import org.rekeningsysteem.data.particulier.EsselinkArtikel;
-import org.rekeningsysteem.data.particulier.GebruiktEsselinkArtikel;
+import org.rekeningsysteem.data.particulier.materiaal.AnderArtikel;
+import org.rekeningsysteem.data.particulier.materiaal.EsselinkArtikel;
+import org.rekeningsysteem.data.particulier.materiaal.GebruiktEsselinkArtikel;
 import org.rekeningsysteem.data.particulier.ParticulierArtikel;
 import org.rekeningsysteem.data.particulier.ParticulierFactuur;
-import org.rekeningsysteem.data.particulier.loon.AbstractLoon;
+import org.rekeningsysteem.data.particulier.loon.Loon;
 import org.rekeningsysteem.data.particulier.loon.InstantLoon;
 import org.rekeningsysteem.data.particulier.loon.ProductLoon;
+import org.rekeningsysteem.data.particulier.materiaal.Materiaal;
 import org.rekeningsysteem.data.reparaties.ReparatiesFactuur;
 import org.rekeningsysteem.data.reparaties.ReparatiesInkoopOrder;
-import org.rekeningsysteem.data.util.AbstractRekening;
 import org.rekeningsysteem.data.util.BtwPercentage;
 import org.rekeningsysteem.data.util.BtwPercentages;
 import org.rekeningsysteem.data.util.Geld;
@@ -43,7 +43,7 @@ public class XmlReader2 extends XmlLoader {
 	}
 
 	@Override
-	public Single<AbstractRekening> read(Document document) {
+	public Single<org.rekeningsysteem.data.util.Document> read(Document document) {
 		Node bestand = document.getElementsByTagName("bestand").item(0);
 		return Optional.ofNullable(bestand.getAttributes().getNamedItem("type")).map(kindNode -> {
 			String type = kindNode.getNodeValue();
@@ -53,7 +53,7 @@ public class XmlReader2 extends XmlLoader {
 				case "Offerte" -> parseRekening(bestand, XmlReader2::makeOfferte, "rekening");
 				case "ParticulierFactuur" -> parseRekening(bestand, XmlReader2::makeParticulierFactuur, "rekening");
 				case "ReparatiesFactuur" -> parseRekening(bestand, XmlReader2::makeReparatiesFactuur, "rekening");
-				default -> Single.<AbstractRekening> error(new XmlParseException(String.format("Geen geschikte Node gevonden. Nodenaam = %s.", type)));
+				default -> Single.<org.rekeningsysteem.data.util.Document> error(new XmlParseException(String.format("Geen geschikte Node gevonden. Nodenaam = %s.", type)));
 			};
 		}).orElseGet(() -> Single.error(new XmlParseException("Geen factuur type gespecificeerd")));
 	}
@@ -206,7 +206,7 @@ public class XmlReader2 extends XmlLoader {
 		return Maybe.zip(omschrijving, prijs, (omschr, pr) -> btw -> new AnderArtikel(omschr, pr, btw));
 	}
 
-	private static Function<BtwPercentage, Single<Collection<ParticulierArtikel>>> makeParticulierList(Node node) {
+	private static Function<BtwPercentage, Observable<Materiaal>> makeMateriaal(Node node) {
 		return btw -> iterate(node.getChildNodes())
 			.filter(item -> !"#text".equals(item.getNodeName()))
 			.flatMapMaybe(item -> switch (item.getNodeName()) {
@@ -214,8 +214,7 @@ public class XmlReader2 extends XmlLoader {
 				case "ander-artikel" -> makeAnderArtikel(item);
 				default -> Maybe.error(new IllegalArgumentException("Unknown artikel type found."));
 			})
-			.map(f -> f.apply(btw))
-			.collect(ArrayList::new, Collection::add);
+			.map(f -> f.apply(btw));
 	}
 
 	private static Maybe<Function<BtwPercentage, ProductLoon>> makeProductLoon(Node node) {
@@ -233,7 +232,7 @@ public class XmlReader2 extends XmlLoader {
 		return Maybe.zip(omschrijving, loon, (omschr, l) -> btw -> new InstantLoon(omschr, l, btw));
 	}
 
-	private static Function<BtwPercentage, Single<Collection<AbstractLoon>>> makeLoonList(Node node) {
+	private static Function<BtwPercentage, Observable<Loon>> makeLoonList(Node node) {
 		return btw -> iterate(node.getChildNodes())
 			.filter(n -> !"#text".equals(n.getNodeName()))
 			.flatMapMaybe(item -> switch (item.getNodeName()) {
@@ -241,23 +240,23 @@ public class XmlReader2 extends XmlLoader {
 				case "instant-loon" -> makeInstantLoon(item);
 				default -> Maybe.error(new IllegalArgumentException("Unknown loon type found."));
 			})
-			.map(f -> f.apply(btw))
-			.collect(ArrayList::new, Collection::add);
+			.map(f -> f.apply(btw));
 	}
 
 	private static Maybe<ParticulierFactuur> makeParticulierFactuur(Node node) {
 		Maybe<FactuurHeader> header = makeFactuurHeader(getElement(node, "factuurHeader"));
 		Maybe<String> omschrijving = getNodeValue(node, "omschrijving");
 		Maybe<Currency> currency = makeCurrency(node);
-		Function<BtwPercentage, Single<Collection<ParticulierArtikel>>> listFunc = makeParticulierList(getElement(node, "itemList"));
-		Function<BtwPercentage, Single<Collection<AbstractLoon>>> loonFunc = makeLoonList(getElement(node, "loonList"));
+		Function<BtwPercentage, Observable<Materiaal>> materiaalFunc = makeMateriaal(getElement(node, "itemList"));
+		Function<BtwPercentage, Observable<Loon>> loonFunc = makeLoonList(getElement(node, "loonList"));
 		Maybe<BtwPercentages> btw = makeBtwPercentage(getElement(node, "btwPercentage"));
 
 		return btw.flatMap(percentage -> {
-			Single<Collection<ParticulierArtikel>> arts = listFunc.apply(percentage.materiaalPercentage());
-			Single<Collection<AbstractLoon>> loon = loonFunc.apply(percentage.loonPercentage());
-			Maybe<ItemList<ParticulierArtikel>> itemList = Maybe.zip(currency.zipWith(arts.toMaybe(), ItemList::new), currency.zipWith(loon.toMaybe(), ItemList::new), ItemList::merge);
+			Observable<Materiaal> arts = materiaalFunc.apply(percentage.materiaalPercentage());
+			Observable<Loon> loon = loonFunc.apply(percentage.loonPercentage());
+			Single<Collection<ParticulierArtikel>> items = Observable.concat(arts, loon).collect(ArrayList::new, Collection::add);
 
+			Maybe<ItemList<ParticulierArtikel>> itemList = Maybe.zip(currency, items.toMaybe(), ItemList::new);
 			return Maybe.zip(header, omschrijving, itemList, ParticulierFactuur::new);
 		});
 	}

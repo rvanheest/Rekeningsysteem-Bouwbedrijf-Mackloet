@@ -23,7 +23,7 @@ public class OfferteTrueIntegrationTest extends AbstractIntegrationTest {
 	}
 
 	@Override
-	protected Offerte makeRekening() {
+	protected Offerte makeDocument() {
 		Debiteur debiteur = new Debiteur("Name", "Street", "Number", "Zipcode", "Place");
 		LocalDate datum = LocalDate.of(2011, 8, 11);
 		String factuurnummer = "107";

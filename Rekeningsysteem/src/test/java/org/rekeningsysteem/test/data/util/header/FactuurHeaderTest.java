@@ -9,30 +9,16 @@ import org.junit.Before;
 import org.junit.Test;
 import org.rekeningsysteem.data.util.header.Debiteur;
 import org.rekeningsysteem.data.util.header.FactuurHeader;
-import org.rekeningsysteem.test.data.EqualsHashCodeTest;
 
-public class FactuurHeaderTest extends EqualsHashCodeTest {
+public class FactuurHeaderTest {
 
 	private FactuurHeader header;
 	private final Debiteur debiteur = new Debiteur("RvH", "PB", "116", "3241TA", "MH");
 	private final LocalDate datum = LocalDate.now();
-	private final String factuurnummer = "32013";
 
-	@Override
-	protected FactuurHeader makeInstance() {
-		return new FactuurHeader(this.debiteur, this.datum, this.factuurnummer);
-	}
-
-	@Override
-	protected FactuurHeader makeNotInstance() {
-		return new FactuurHeader(this.debiteur, this.datum, this.factuurnummer + ".");
-	}
-
-	@Override
 	@Before
 	public void setUp() {
-		super.setUp();
-		this.header = this.makeInstance();
+		this.header = new FactuurHeader(this.debiteur, this.datum, "32013");
 	}
 
 	@Test

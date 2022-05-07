@@ -3,7 +3,7 @@ package org.rekeningsysteem.ui.particulier;
 import java.util.Currency;
 
 import io.reactivex.rxjava3.core.Observable;
-import org.rekeningsysteem.data.particulier.AnderArtikel;
+import org.rekeningsysteem.data.particulier.materiaal.AnderArtikel;
 import org.rekeningsysteem.data.util.BtwPercentage;
 import org.rekeningsysteem.data.util.Geld;
 

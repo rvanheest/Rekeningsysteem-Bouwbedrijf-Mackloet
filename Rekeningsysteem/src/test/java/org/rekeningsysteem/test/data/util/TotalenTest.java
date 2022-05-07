@@ -7,26 +7,14 @@ import org.junit.Test;
 import org.rekeningsysteem.data.util.BtwPercentage;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.data.util.Totalen;
-import org.rekeningsysteem.test.data.EqualsHashCodeTest;
 
-public class TotalenTest extends EqualsHashCodeTest {
+public class TotalenTest {
 
 	private Totalen totalen;
 
-	@Override
-	protected Totalen makeInstance() {
-		return new Totalen(new BtwPercentage(50.0, false), new Geld(2), new Geld(16));
-	}
-
-	@Override
-	protected Totalen makeNotInstance() {
-		return new Totalen(new BtwPercentage(0.0, false), new Geld(1), new Geld(0));
-	}
-
 	@Before
 	public void setUp() {
-		super.setUp();
-		this.totalen = this.makeInstance();
+		this.totalen = new Totalen(new BtwPercentage(50.0, false), new Geld(2), new Geld(16));
 	}
 
 	@Test

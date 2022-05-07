@@ -2,7 +2,7 @@ package org.rekeningsysteem.io.xml;
 
 import io.reactivex.rxjava3.core.Single;
 import org.apache.logging.log4j.core.Logger;
-import org.rekeningsysteem.data.util.AbstractRekening;
+import org.rekeningsysteem.data.util.Document;
 import org.rekeningsysteem.exception.PdfException;
 import org.rekeningsysteem.io.FactuurExporter;
 import org.rekeningsysteem.io.FactuurLoader;
@@ -56,7 +56,7 @@ public class IOWorker implements FactuurSaver, FactuurExporter, FactuurLoader {
 	}
 
 	@Override
-	public Single<AbstractRekening> load(Path file) {
+	public Single<Document> load(Path file) {
 		return this.loader.load(file)
 				.onErrorResumeNext(t -> this.oldLoader3.load(file))
 				.onErrorResumeNext(t -> this.oldLoader2.load(file))
@@ -67,12 +67,12 @@ public class IOWorker implements FactuurSaver, FactuurExporter, FactuurLoader {
 	}
 
 	@Override
-	public void export(AbstractRekening rekening, Path saveLocation) throws PdfException {
-		this.exporter.export(rekening, saveLocation);
+	public void export(Document document, Path saveLocation) throws PdfException {
+		this.exporter.export(document, saveLocation);
 	}
 
 	@Override
-	public void save(AbstractRekening rekening, Path saveLocation) {
-		this.saver.save(rekening, saveLocation);
+	public void save(Document document, Path saveLocation) {
+		this.saver.save(document, saveLocation);
 	}
 }

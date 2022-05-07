@@ -5,16 +5,15 @@ import io.reactivex.rxjava3.core.Single;
 import org.rekeningsysteem.data.mutaties.MutatiesFactuur;
 import org.rekeningsysteem.data.mutaties.MutatiesInkoopOrder;
 import org.rekeningsysteem.data.offerte.Offerte;
-import org.rekeningsysteem.data.particulier.AnderArtikel;
-import org.rekeningsysteem.data.particulier.EsselinkArtikel;
-import org.rekeningsysteem.data.particulier.GebruiktEsselinkArtikel;
+import org.rekeningsysteem.data.particulier.materiaal.AnderArtikel;
+import org.rekeningsysteem.data.particulier.materiaal.EsselinkArtikel;
+import org.rekeningsysteem.data.particulier.materiaal.GebruiktEsselinkArtikel;
 import org.rekeningsysteem.data.particulier.ParticulierArtikel;
 import org.rekeningsysteem.data.particulier.ParticulierFactuur;
 import org.rekeningsysteem.data.particulier.loon.InstantLoon;
 import org.rekeningsysteem.data.particulier.loon.ProductLoon;
 import org.rekeningsysteem.data.reparaties.ReparatiesFactuur;
 import org.rekeningsysteem.data.reparaties.ReparatiesInkoopOrder;
-import org.rekeningsysteem.data.util.AbstractRekening;
 import org.rekeningsysteem.data.util.BtwPercentage;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.data.util.ItemList;
@@ -38,7 +37,7 @@ public class XmlReader4 extends XmlLoader {
 	}
 
 	@Override
-	public Single<AbstractRekening> read(Document document) {
+	public Single<org.rekeningsysteem.data.util.Document> read(Document document) {
 		Node doc = document.getElementsByTagName("bestand").item(0);
 
 		return Optional.ofNullable(doc.getAttributes().getNamedItem("type"))
@@ -49,10 +48,10 @@ public class XmlReader4 extends XmlLoader {
 						case "Offerte" -> parseRekening(doc, XmlReader4::makeOfferte, "offerte");
 						case "ParticulierFactuur" -> parseRekening(doc, XmlReader4::makeParticulierFactuur, "particulier-factuur");
 						case "ReparatiesFactuur" -> parseRekening(doc, XmlReader4::makeReparatiesFactuur, "reparaties-factuur");
-						default -> Single.<AbstractRekening> error(new XmlParseException(String.format("No suitable invoice type found. Found type: %s", t.getNodeValue())));
+						default -> Single.<org.rekeningsysteem.data.util.Document> error(new XmlParseException(String.format("No suitable invoice type found. Found type: %s", t.getNodeValue())));
 					};
 				}
-				return Single.<AbstractRekening> error(new XmlParseException(String.format("Incorrect version for this parser. Found version: %s", v.getNodeValue())));
+				return Single.<org.rekeningsysteem.data.util.Document> error(new XmlParseException(String.format("Incorrect version for this parser. Found version: %s", v.getNodeValue())));
 			}))
 			.orElseGet(() -> Single.error(new XmlParseException("No invoice type is specified")));
 	}

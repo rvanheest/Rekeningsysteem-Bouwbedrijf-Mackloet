@@ -3,6 +3,7 @@ package org.rekeningsysteem.test.io.xml;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.Currency;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -14,10 +15,10 @@ import org.junit.Test;
 import org.rekeningsysteem.data.mutaties.MutatiesInkoopOrder;
 import org.rekeningsysteem.data.mutaties.MutatiesFactuur;
 import org.rekeningsysteem.data.offerte.Offerte;
-import org.rekeningsysteem.data.particulier.EsselinkArtikel;
-import org.rekeningsysteem.data.particulier.GebruiktEsselinkArtikel;
+import org.rekeningsysteem.data.particulier.materiaal.EsselinkArtikel;
+import org.rekeningsysteem.data.particulier.materiaal.GebruiktEsselinkArtikel;
 import org.rekeningsysteem.data.particulier.ParticulierArtikel;
-import org.rekeningsysteem.data.particulier.AnderArtikel;
+import org.rekeningsysteem.data.particulier.materiaal.AnderArtikel;
 import org.rekeningsysteem.data.particulier.ParticulierFactuur;
 import org.rekeningsysteem.data.particulier.loon.InstantLoon;
 import org.rekeningsysteem.data.particulier.loon.ProductLoon;
@@ -50,26 +51,20 @@ public class XmlReader3Test {
 			"22011"
 		);
 		String omschrijving = "Voor u verrichte werkzaamheden betreffende renovatie badkamervloer i.v.m. lekkage";
-		ItemList<ParticulierArtikel> itemList = new ItemList<>(Currency.getInstance("EUR"));
-		itemList.add(new GebruiktEsselinkArtikel(new EsselinkArtikel("2018021117",
-				"Product 1", 1, "Zak", new Geld(5.16)), 8.0, new BtwPercentage(21.0, false)));
-		itemList.add(new GebruiktEsselinkArtikel(new EsselinkArtikel("2003131360",
-				"Product 2", 1, "zak", new Geld(129.53)), 1.0, new BtwPercentage(21.0, false)));
-		itemList.add(new GebruiktEsselinkArtikel(new EsselinkArtikel("2003131060",
-				"Product 3", 1, "set", new Geld(35.96)), 1.0, new BtwPercentage(21.0, false)));
-		itemList.add(new GebruiktEsselinkArtikel(new EsselinkArtikel("2003131306",
-				"Product 4", 1, "zak", new Geld(9.47)), 1.0, new BtwPercentage(21.0, false)));
-		itemList.add(new GebruiktEsselinkArtikel(new EsselinkArtikel("4010272112",
-				"Product 5", 1, "Stuks", new Geld(17.18)), 1.0, new BtwPercentage(21.0, false)));
-		itemList.add(new GebruiktEsselinkArtikel(new EsselinkArtikel("2009200131",
-				"Product 6", 1, "Stuks", new Geld(6.84)), 1.0, new BtwPercentage(21.0, false)));
-		itemList.add(new GebruiktEsselinkArtikel(new EsselinkArtikel("2009200105",
-				"Product 7", 1, "Stuks", new Geld(7.44)), 1.0, new BtwPercentage(21.0, false)));
-		itemList.add(new AnderArtikel("Stucloper + trapfolie", new Geld(15.0), new BtwPercentage(21.0, false)));
-		itemList.add(new AnderArtikel("Kitwerk", new Geld(149.5), new BtwPercentage(21.0, false)));
-		itemList.add(new ProductLoon("Uurloon à 38.50", 25.0, new Geld(38.5), new BtwPercentage(6.0, false)));
-		itemList.add(new ProductLoon("test123", 12.0, new Geld(12.5), new BtwPercentage(6.0, false)));
-		itemList.add(new InstantLoon("foobar", new Geld(40.0), new BtwPercentage(6.0, false)));
+		ItemList<ParticulierArtikel> itemList = new ItemList<>(Currency.getInstance("EUR"), Arrays.asList(
+				new GebruiktEsselinkArtikel(new EsselinkArtikel("2018021117", "Product 1", 1, "Zak", new Geld(5.16)), 8.0, new BtwPercentage(21.0, false)),
+				new GebruiktEsselinkArtikel(new EsselinkArtikel("2003131360", "Product 2", 1, "zak", new Geld(129.53)), 1.0, new BtwPercentage(21.0, false)),
+				new GebruiktEsselinkArtikel(new EsselinkArtikel("2003131060", "Product 3", 1, "set", new Geld(35.96)), 1.0, new BtwPercentage(21.0, false)),
+				new GebruiktEsselinkArtikel(new EsselinkArtikel("2003131306", "Product 4", 1, "zak", new Geld(9.47)), 1.0, new BtwPercentage(21.0, false)),
+				new GebruiktEsselinkArtikel(new EsselinkArtikel("4010272112", "Product 5", 1, "Stuks", new Geld(17.18)), 1.0, new BtwPercentage(21.0, false)),
+				new GebruiktEsselinkArtikel(new EsselinkArtikel("2009200131", "Product 6", 1, "Stuks", new Geld(6.84)), 1.0, new BtwPercentage(21.0, false)),
+				new GebruiktEsselinkArtikel(new EsselinkArtikel("2009200105", "Product 7", 1, "Stuks", new Geld(7.44)), 1.0, new BtwPercentage(21.0, false)),
+				new AnderArtikel("Stucloper + trapfolie", new Geld(15.0), new BtwPercentage(21.0, false)),
+				new AnderArtikel("Kitwerk", new Geld(149.5), new BtwPercentage(21.0, false)),
+				new ProductLoon("Uurloon à 38.50", 25.0, new Geld(38.5), new BtwPercentage(6.0, false)),
+				new ProductLoon("test123", 12.0, new Geld(12.5), new BtwPercentage(6.0, false)),
+				new InstantLoon("foobar", new Geld(40.0), new BtwPercentage(6.0, false))
+		));
 
 		ParticulierFactuur expected = new ParticulierFactuur(factuurHeader, omschrijving, itemList);
 
@@ -90,10 +85,11 @@ public class XmlReader3Test {
 			"272011"
 		);
 
-		ItemList<MutatiesInkoopOrder> itemList = new ItemList<>(Currency.getInstance("EUR"));
-		itemList.add(new MutatiesInkoopOrder("Ordernummer", "111390", new Geld(4971.96)));
-		itemList.add(new MutatiesInkoopOrder("Ordernummer", "111477", new Geld(4820.96)));
-		itemList.add(new MutatiesInkoopOrder("Ordernummer", "112308", new Geld(5510.74)));
+		ItemList<MutatiesInkoopOrder> itemList = new ItemList<>(Currency.getInstance("EUR"), Arrays.asList(
+				new MutatiesInkoopOrder("Ordernummer", "111390", new Geld(4971.96)),
+				new MutatiesInkoopOrder("Ordernummer", "111477", new Geld(4820.96)),
+				new MutatiesInkoopOrder("Ordernummer", "112308", new Geld(5510.74))
+		));
 
 		MutatiesFactuur expected = new MutatiesFactuur(factuurHeader, itemList);
 
@@ -112,30 +108,31 @@ public class XmlReader3Test {
 				"Street", "Number", "Zipcode", "Place", "BtwNumber"),
 				LocalDate.of(2011, 4, 5), "232011");
 
-		ItemList<ReparatiesInkoopOrder> itemList = new ItemList<>(Currency.getInstance("EUR"));
-		itemList.add(new ReparatiesInkoopOrder("Ordernummer", "110543", new Geld(77), new Geld(6.5)));
-		itemList.add(new ReparatiesInkoopOrder("Ordernummer", "111558", new Geld(77), new Geld(9)));
-		itemList.add(new ReparatiesInkoopOrder("Ordernummer", "111518", new Geld(57.75), new Geld(0)));
-		itemList.add(new ReparatiesInkoopOrder("Ordernummer", "111660", new Geld(77), new Geld(0)));
-		itemList.add(new ReparatiesInkoopOrder("Ordernummer", "111563", new Geld(115.5), new Geld(13.5)));
-		itemList.add(new ReparatiesInkoopOrder("Ordernummer", "111625", new Geld(57.75), new Geld(15)));
-		itemList.add(new ReparatiesInkoopOrder("Ordernummer", "111764", new Geld(77), new Geld(0)));
-		itemList.add(new ReparatiesInkoopOrder("Ordernummer", "111751", new Geld(77), new Geld(0)));
-		itemList.add(new ReparatiesInkoopOrder("Ordernummer", "111745", new Geld(38.5), new Geld(0)));
-		itemList.add(new ReparatiesInkoopOrder("Ordernummer", "111571", new Geld(57.75), new Geld(3.5)));
-		itemList.add(new ReparatiesInkoopOrder("Ordernummer", "111876", new Geld(77), new Geld(0)));
-		itemList.add(new ReparatiesInkoopOrder("Ordernummer", "111716", new Geld(154), new Geld(7.5)));
-		itemList.add(new ReparatiesInkoopOrder("Ordernummer", "111854", new Geld(154), new Geld(183.5)));
-		itemList.add(new ReparatiesInkoopOrder("Ordernummer", "111912", new Geld(38.5), new Geld(9)));
-		itemList.add(new ReparatiesInkoopOrder("Ordernummer", "111940", new Geld(154), new Geld(9)));
-		itemList.add(new ReparatiesInkoopOrder("Ordernummer", "111928", new Geld(77), new Geld(4.5)));
-		itemList.add(new ReparatiesInkoopOrder("Ordernummer", "111723", new Geld(115.5), new Geld(0)));
-		itemList.add(new ReparatiesInkoopOrder("Ordernummer", "111963", new Geld(299.26), new Geld(448.88)));
-		itemList.add(new ReparatiesInkoopOrder("Ordernummer", "111739", new Geld(408.16), new Geld(136.52)));
-		itemList.add(new ReparatiesInkoopOrder("Ordernummer", "111091", new Geld(1451.27), new Geld(967.51)));
-		itemList.add(new ReparatiesInkoopOrder("Ordernummer", "111409", new Geld(2546.57), new Geld(1697.72)));
-		itemList.add(new ReparatiesInkoopOrder("Ordernummer", "111272", new Geld(3630.66), new Geld(2420.44)));
-		itemList.add(new ReparatiesInkoopOrder("Ordernummer", "111148", new Geld(3878.2), new Geld(2585.46)));
+		ItemList<ReparatiesInkoopOrder> itemList = new ItemList<>(Currency.getInstance("EUR"), Arrays.asList(
+				new ReparatiesInkoopOrder("Ordernummer", "110543", new Geld(77), new Geld(6.5)),
+				new ReparatiesInkoopOrder("Ordernummer", "111558", new Geld(77), new Geld(9)),
+				new ReparatiesInkoopOrder("Ordernummer", "111518", new Geld(57.75), new Geld(0)),
+				new ReparatiesInkoopOrder("Ordernummer", "111660", new Geld(77), new Geld(0)),
+				new ReparatiesInkoopOrder("Ordernummer", "111563", new Geld(115.5), new Geld(13.5)),
+				new ReparatiesInkoopOrder("Ordernummer", "111625", new Geld(57.75), new Geld(15)),
+				new ReparatiesInkoopOrder("Ordernummer", "111764", new Geld(77), new Geld(0)),
+				new ReparatiesInkoopOrder("Ordernummer", "111751", new Geld(77), new Geld(0)),
+				new ReparatiesInkoopOrder("Ordernummer", "111745", new Geld(38.5), new Geld(0)),
+				new ReparatiesInkoopOrder("Ordernummer", "111571", new Geld(57.75), new Geld(3.5)),
+				new ReparatiesInkoopOrder("Ordernummer", "111876", new Geld(77), new Geld(0)),
+				new ReparatiesInkoopOrder("Ordernummer", "111716", new Geld(154), new Geld(7.5)),
+				new ReparatiesInkoopOrder("Ordernummer", "111854", new Geld(154), new Geld(183.5)),
+				new ReparatiesInkoopOrder("Ordernummer", "111912", new Geld(38.5), new Geld(9)),
+				new ReparatiesInkoopOrder("Ordernummer", "111940", new Geld(154), new Geld(9)),
+				new ReparatiesInkoopOrder("Ordernummer", "111928", new Geld(77), new Geld(4.5)),
+				new ReparatiesInkoopOrder("Ordernummer", "111723", new Geld(115.5), new Geld(0)),
+				new ReparatiesInkoopOrder("Ordernummer", "111963", new Geld(299.26), new Geld(448.88)),
+				new ReparatiesInkoopOrder("Ordernummer", "111739", new Geld(408.16), new Geld(136.52)),
+				new ReparatiesInkoopOrder("Ordernummer", "111091", new Geld(1451.27), new Geld(967.51)),
+				new ReparatiesInkoopOrder("Ordernummer", "111409", new Geld(2546.57), new Geld(1697.72)),
+				new ReparatiesInkoopOrder("Ordernummer", "111272", new Geld(3630.66), new Geld(2420.44)),
+				new ReparatiesInkoopOrder("Ordernummer", "111148", new Geld(3878.2), new Geld(2585.46))
+		));
 
 		ReparatiesFactuur expected = new ReparatiesFactuur(factuurHeader, itemList);
 
@@ -174,15 +171,16 @@ public class XmlReader3Test {
 		);
 		String omschrijving = "Voor u verrichte werkzaamheden";
 
-		ItemList<ParticulierArtikel> itemList = new ItemList<>(Currency.getInstance("EUR"));
-		itemList.add(new AnderArtikel("omschr1", new Geld(2791.25), new BtwPercentage(21.0, false)));
-		itemList.add(new InstantLoon("omschr1", new Geld(5183.75), new BtwPercentage(6.0, false)));
-		itemList.add(new AnderArtikel("omschr2", new Geld(1972.2), new BtwPercentage(21.0, false)));
-		itemList.add(new InstantLoon("omschr2", new Geld(1314.8), new BtwPercentage(6.0, false)));
-		itemList.add(new AnderArtikel("omschr3", new Geld(5667), new BtwPercentage(21.0, false)));
-		itemList.add(new InstantLoon("omschr3", new Geld(2300.0), new BtwPercentage(6.0, false)));
-		itemList.add(new AnderArtikel("omschr4", new Geld(0), new BtwPercentage(21.0, false)));
-		itemList.add(new InstantLoon("omschr4", new Geld(-800.0), new BtwPercentage(6.0, false)));
+		ItemList<ParticulierArtikel> itemList = new ItemList<>(Currency.getInstance("EUR"), Arrays.asList(
+				new AnderArtikel("omschr1", new Geld(2791.25), new BtwPercentage(21.0, false)),
+				new InstantLoon("omschr1", new Geld(5183.75), new BtwPercentage(6.0, false)),
+				new AnderArtikel("omschr2", new Geld(1972.2), new BtwPercentage(21.0, false)),
+				new InstantLoon("omschr2", new Geld(1314.8), new BtwPercentage(6.0, false)),
+				new AnderArtikel("omschr3", new Geld(5667), new BtwPercentage(21.0, false)),
+				new InstantLoon("omschr3", new Geld(2300.0), new BtwPercentage(6.0, false)),
+				new AnderArtikel("omschr4", new Geld(0), new BtwPercentage(21.0, false)),
+				new InstantLoon("omschr4", new Geld(-800.0), new BtwPercentage(6.0, false))
+		));
 
 		ParticulierFactuur expected = new ParticulierFactuur(factuurHeader, omschrijving, itemList);
 

@@ -3,10 +3,11 @@ package org.rekeningsysteem.ui.particulier;
 import java.util.Currency;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-import org.rekeningsysteem.data.particulier.GebruiktEsselinkArtikel;
+import org.rekeningsysteem.data.particulier.materiaal.GebruiktEsselinkArtikel;
 import org.rekeningsysteem.data.particulier.ParticulierArtikel;
-import org.rekeningsysteem.data.particulier.AnderArtikel;
+import org.rekeningsysteem.data.particulier.materiaal.AnderArtikel;
 import org.rekeningsysteem.data.particulier.loon.InstantLoon;
 import org.rekeningsysteem.data.particulier.loon.ProductLoon;
 import org.rekeningsysteem.data.util.BtwPercentages;
@@ -23,7 +24,7 @@ public class ParticulierListController extends AbstractListController<Particulie
 
 	public ParticulierListController(Database db, BtwPercentages defaultBtw, ItemList<ParticulierArtikel> input) {
 		this(input.getCurrency(), db, defaultBtw, new ParticulierListPane());
-		this.setData(this.modelToUI(input.getList()));
+		this.setData(this.modelToUI(input.stream()));
 	}
 
 	public ParticulierListController(Currency currency, Database db, BtwPercentages defaultBtw, ParticulierListPane ui) {
@@ -31,8 +32,8 @@ public class ParticulierListController extends AbstractListController<Particulie
 	}
 
 	@Override
-	protected List<ParticulierModel> modelToUI(List<ParticulierArtikel> list) {
-		return list.stream().map(item -> switch (item) {
+	protected List<ParticulierModel> modelToUI(Stream<ParticulierArtikel> stream) {
+		return stream.map(item -> switch (item) {
 			case GebruiktEsselinkArtikel gebruiktEsselinkArtikel -> new ParticulierModel(gebruiktEsselinkArtikel);
 			case AnderArtikel anderArtikel -> new ParticulierModel(anderArtikel);
 			case InstantLoon instantLoon -> new ParticulierModel(instantLoon);

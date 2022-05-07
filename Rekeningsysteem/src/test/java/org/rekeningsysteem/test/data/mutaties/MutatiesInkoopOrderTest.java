@@ -6,34 +6,30 @@ import org.junit.Before;
 import org.junit.Test;
 import org.rekeningsysteem.data.mutaties.MutatiesInkoopOrder;
 import org.rekeningsysteem.data.util.Geld;
-import org.rekeningsysteem.test.data.util.ListItemTest;
 
-public class MutatiesInkoopOrderTest extends ListItemTest {
+public class MutatiesInkoopOrderTest {
 
 	private MutatiesInkoopOrder order;
-	private final String omschrijving = "omschrijving";
-	private final String ordernummer = "ordernummer";
-	private final Geld materiaal = new Geld(10);
-
-	@Override
-	protected MutatiesInkoopOrder makeInstance() {
-		return new MutatiesInkoopOrder(this.omschrijving, this.ordernummer, this.materiaal);
-	}
-
-	@Override
-	protected MutatiesInkoopOrder makeNotInstance() {
-		return new MutatiesInkoopOrder(this.omschrijving + ".", this.ordernummer, this.materiaal);
-	}
+	private Geld materiaal;
 
 	@Before
-	@Override
 	public void setUp() {
-		super.setUp();
-		this.order = this.makeInstance();
+		this.materiaal = new Geld(10);
+		this.order = new MutatiesInkoopOrder("omschrijving", "ordernummer", this.materiaal);
+	}
+
+	@Test
+	public void testMateriaalBedrag() {
+		assertEquals(this.materiaal, this.order.materiaal());
+	}
+
+	@Test
+	public void testGeenLoonBedrag() {
+		assertEquals(new Geld(0), this.order.loon());
 	}
 
 	@Test
 	public void testGetTotaal() {
-		assertEquals(this.materiaal.bedrag(), this.order.getTotaal().bedrag(), 0);
+		assertEquals(this.materiaal, this.order.getTotaal());
 	}
 }

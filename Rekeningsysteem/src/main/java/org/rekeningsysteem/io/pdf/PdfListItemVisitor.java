@@ -1,8 +1,8 @@
 package org.rekeningsysteem.io.pdf;
 
 import org.rekeningsysteem.data.mutaties.MutatiesInkoopOrder;
-import org.rekeningsysteem.data.particulier.AnderArtikel;
-import org.rekeningsysteem.data.particulier.GebruiktEsselinkArtikel;
+import org.rekeningsysteem.data.particulier.materiaal.AnderArtikel;
+import org.rekeningsysteem.data.particulier.materiaal.GebruiktEsselinkArtikel;
 import org.rekeningsysteem.data.particulier.loon.InstantLoon;
 import org.rekeningsysteem.data.particulier.loon.ProductLoon;
 import org.rekeningsysteem.data.reparaties.ReparatiesInkoopOrder;
@@ -38,15 +38,15 @@ public class PdfListItemVisitor {
 		if (materiaal.isZero())
 			return Collections.emptyList();
 
-		Double aantal = item.getAantal();
+		Double aantal = item.aantal();
 		String aantalAsString = aantal == Math.floor(aantal) && !Double.isInfinite(aantal)
 			? String.valueOf(aantal.intValue())
 			: String.valueOf(aantal);
 
 		return Arrays.asList(
-			aantalAsString + "x " + item.getArtikel().omschrijving(),
+			aantalAsString + "x " + item.artikel().omschrijving(),
 			materiaal.formattedString(),
-			formatBtwPercentage(item.getMateriaalBtwPercentage())
+			formatBtwPercentage(item.materiaalBtwPercentage())
 		);
 	}
 
@@ -57,9 +57,9 @@ public class PdfListItemVisitor {
 			return Collections.emptyList();
 
 		return Arrays.asList(
-			item.getOmschrijving(),
+			item.omschrijving(),
 			materiaal.formattedString(),
-			formatBtwPercentage(item.getMateriaalBtwPercentage())
+			formatBtwPercentage(item.materiaalBtwPercentage())
 		);
 	}
 
@@ -85,9 +85,9 @@ public class PdfListItemVisitor {
 			return Collections.emptyList();
 
 		return Arrays.asList(
-			item.getOmschrijving(),
+			item.omschrijving(),
 			loon.formattedString(),
-			formatBtwPercentage(item.getLoonBtwPercentage())
+			formatBtwPercentage(item.loonBtwPercentage())
 		);
 	}
 
@@ -98,9 +98,9 @@ public class PdfListItemVisitor {
 			return Collections.emptyList();
 
 		return Arrays.asList(
-			item.getUren() + " uren à " + item.getUurloon().formattedString(),
+			item.uren() + " uren à " + item.uurloon().formattedString(),
 			loon.formattedString(),
-			formatBtwPercentage(item.getLoonBtwPercentage())
+			formatBtwPercentage(item.loonBtwPercentage())
 		);
 	}
 }

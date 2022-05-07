@@ -4,7 +4,6 @@ import io.reactivex.rxjava3.core.Maybe;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.functions.Function;
-import org.rekeningsysteem.data.util.AbstractRekening;
 import org.rekeningsysteem.exception.XmlParseException;
 import org.rekeningsysteem.io.FactuurLoader;
 import org.w3c.dom.Document;
@@ -27,11 +26,11 @@ public abstract class XmlLoader implements FactuurLoader {
 	}
 
 	@Override
-	public Single<AbstractRekening> load(Path path) {
+	public Single<org.rekeningsysteem.data.util.Document> load(Path path) {
 		return this.load(this.builder, path);
 	}
 
-	Single<AbstractRekening> load(DocumentBuilder builder, Path path) {
+	Single<org.rekeningsysteem.data.util.Document> load(DocumentBuilder builder, Path path) {
 		try {
 			Document document = builder.parse(path.toFile());
 			document.getDocumentElement().normalize();
@@ -42,9 +41,9 @@ public abstract class XmlLoader implements FactuurLoader {
 		}
 	}
 
-	abstract Single<AbstractRekening> read(Document document);
+	abstract Single<org.rekeningsysteem.data.util.Document> read(Document document);
 
-	static Single<AbstractRekening> parseRekening(Node bestand, Function<Node, Maybe<? extends AbstractRekening>> parse, String... names) {
+	static Single<org.rekeningsysteem.data.util.Document> parseRekening(Node bestand, Function<Node, Maybe<? extends org.rekeningsysteem.data.util.Document>> parse, String... names) {
 		return Observable.fromArray(names)
 			.map(name -> getNodeList(bestand, name))
 			.filter(nodeList -> nodeList.getLength() > 0)

@@ -1,6 +1,6 @@
 package org.rekeningsysteem.io.pdf;
 
-import org.rekeningsysteem.data.util.AbstractRekening;
+import org.rekeningsysteem.data.util.Document;
 import org.rekeningsysteem.exception.PdfException;
 import org.rekeningsysteem.io.FactuurExporter;
 
@@ -23,7 +23,7 @@ public class PdfExporter implements FactuurExporter {
 	}
 
 	@Override
-	public void export(AbstractRekening rekening, Path saveLocation) throws PdfException {
+	public void export(Document rekening, Path saveLocation) throws PdfException {
 		this.visitor.setSaveLocation(saveLocation);
 		this.visitor.visit(rekening);
 	}

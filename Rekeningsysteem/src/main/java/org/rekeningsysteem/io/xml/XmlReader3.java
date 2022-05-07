@@ -6,17 +6,17 @@ import io.reactivex.rxjava3.core.Single;
 import org.rekeningsysteem.data.mutaties.MutatiesFactuur;
 import org.rekeningsysteem.data.mutaties.MutatiesInkoopOrder;
 import org.rekeningsysteem.data.offerte.Offerte;
-import org.rekeningsysteem.data.particulier.AnderArtikel;
-import org.rekeningsysteem.data.particulier.EsselinkArtikel;
-import org.rekeningsysteem.data.particulier.GebruiktEsselinkArtikel;
+import org.rekeningsysteem.data.particulier.materiaal.AnderArtikel;
+import org.rekeningsysteem.data.particulier.materiaal.EsselinkArtikel;
+import org.rekeningsysteem.data.particulier.materiaal.GebruiktEsselinkArtikel;
 import org.rekeningsysteem.data.particulier.ParticulierArtikel;
 import org.rekeningsysteem.data.particulier.ParticulierFactuur;
-import org.rekeningsysteem.data.particulier.loon.AbstractLoon;
+import org.rekeningsysteem.data.particulier.loon.Loon;
 import org.rekeningsysteem.data.particulier.loon.InstantLoon;
 import org.rekeningsysteem.data.particulier.loon.ProductLoon;
+import org.rekeningsysteem.data.particulier.materiaal.Materiaal;
 import org.rekeningsysteem.data.reparaties.ReparatiesFactuur;
 import org.rekeningsysteem.data.reparaties.ReparatiesInkoopOrder;
-import org.rekeningsysteem.data.util.AbstractRekening;
 import org.rekeningsysteem.data.util.BtwPercentage;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.data.util.ItemList;
@@ -31,6 +31,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Currency;
+import java.util.List;
 import java.util.Optional;
 
 public class XmlReader3 extends XmlLoader {
@@ -40,7 +41,7 @@ public class XmlReader3 extends XmlLoader {
 	}
 
 	@Override
-	public Single<AbstractRekening> read(Document document) {
+	public Single<org.rekeningsysteem.data.util.Document> read(Document document) {
 		Node bestand = document.getElementsByTagName("bestand").item(0);
 		return Optional.ofNullable(bestand.getAttributes().getNamedItem("type"))
 			.flatMap(t -> Optional.ofNullable(bestand.getAttributes().getNamedItem("version")).map(v -> {
@@ -53,10 +54,10 @@ public class XmlReader3 extends XmlLoader {
 						case "Offerte" -> parseRekening(bestand, XmlReader3::makeOfferte, "rekening");
 						case "ParticulierFactuur" -> parseRekening(bestand, XmlReader3::makeParticulierFactuur, "rekening");
 						case "ReparatiesFactuur" -> parseRekening(bestand, XmlReader3::makeReparatiesFactuur, "rekening");
-						default -> Single.<AbstractRekening> error(new XmlParseException(String.format("No suitable invoice type found. Found type: %s", type)));
+						default -> Single.<org.rekeningsysteem.data.util.Document> error(new XmlParseException(String.format("No suitable invoice type found. Found type: %s", type)));
 					};
 				}
-				return Single.<AbstractRekening> error(new XmlParseException(String.format("Incorrect version for this parser. Found version: %s", version)));
+				return Single.<org.rekeningsysteem.data.util.Document> error(new XmlParseException(String.format("Incorrect version for this parser. Found version: %s", version)));
 			}))
 			.orElseGet(() -> Single.error(new XmlParseException("No invoice type is specified")));
 	}
@@ -210,15 +211,14 @@ public class XmlReader3 extends XmlLoader {
 		return Maybe.zip(omschrijving, prijs, btw, AnderArtikel::new);
 	}
 
-	private static Single<Collection<ParticulierArtikel>> makeParticulierList(Node node) {
+	private static Observable<Materiaal> makeMateriaal(Node node) {
 		return iterate(node.getChildNodes())
 			.filter(item -> !"#text".equals(item.getNodeName()))
 			.flatMapMaybe(item -> switch (item.getNodeName()) {
 				case "gebruikt-esselink-artikel" -> makeGebruiktArtikelEsselink(item);
 				case "ander-artikel" -> makeAnderArtikel(item);
 				default -> Maybe.error(new IllegalArgumentException("Unknown artikel type found."));
-			})
-			.collect(ArrayList::new, Collection::add);
+			});
 	}
 
 	private static Maybe<ProductLoon> makeProductLoon(Node node) {
@@ -242,24 +242,25 @@ public class XmlReader3 extends XmlLoader {
 		return Maybe.zip(omschrijving, loon, btw, InstantLoon::new);
 	}
 
-	private static Single<Collection<AbstractLoon>> makeLoonList(Node node) {
+	private static Observable<Loon> makeLoonList(Node node) {
 		return iterate(node.getChildNodes())
 			.filter(n -> !"#text".equals(n.getNodeName()))
 			.flatMapMaybe(item -> switch (item.getNodeName()) {
 				case "product-loon" -> makeProductLoon(item);
 				case "instant-loon" -> makeInstantLoon(item);
 				default -> Maybe.error(new IllegalArgumentException("Unknown loon type found."));
-			})
-			.collect(ArrayList::new, Collection::add);
+			});
 	}
 
 	private static Maybe<ParticulierFactuur> makeParticulierFactuur(Node node) {
 		Maybe<FactuurHeader> header = makeFactuurHeader(getElement(node, "factuurHeader"));
 		Maybe<String> omschrijving = getNodeValue(node, "omschrijving");
 		Maybe<Currency> currency = makeCurrency(node);
-		Single<Collection<ParticulierArtikel>> artList = makeParticulierList(getElement(node, "itemList"));
-		Single<Collection<AbstractLoon>> loonList = makeLoonList(getElement(node, "loonList"));
-		Maybe<ItemList<ParticulierArtikel>> itemList = Maybe.zip(currency.zipWith(artList.toMaybe(), ItemList::new), currency.zipWith(loonList.toMaybe(), ItemList::new), ItemList::merge);
+
+		Observable<Materiaal> materiaalList = makeMateriaal(getElement(node, "itemList"));
+		Observable<Loon> loonList = makeLoonList(getElement(node, "loonList"));
+		Single<List<ParticulierArtikel>> items = Observable.concat(materiaalList, loonList).collect(ArrayList::new, Collection::add);
+		Maybe<ItemList<ParticulierArtikel>> itemList = Maybe.zip(currency, items.toMaybe(), ItemList::new);
 
 		return Maybe.zip(header, omschrijving, itemList, ParticulierFactuur::new);
 	}

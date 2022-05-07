@@ -47,8 +47,8 @@ public class MutatiesController extends AbstractRekeningController<MutatiesFactu
 
 	public MutatiesController(MutatiesFactuur input, Database database) {
 		this(
-			new FactuurHeaderController(input.getFactuurHeader(), database),
-			new ListPaneController<>(new MutatiesListController(input.getItemList()), input.getItemList().getCurrency())
+			new FactuurHeaderController(input.header(), database),
+			new ListPaneController<>(new MutatiesListController(input.itemList()), input.itemList().getCurrency())
 		);
 	}
 

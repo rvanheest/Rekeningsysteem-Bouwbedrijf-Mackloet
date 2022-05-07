@@ -8,7 +8,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 
-import org.rekeningsysteem.data.particulier.EsselinkArtikel;
+import org.rekeningsysteem.data.particulier.materiaal.EsselinkArtikel;
 
 public class EsselinkSearchBox extends AbstractSearchBox<EsselinkArtikel> {
 

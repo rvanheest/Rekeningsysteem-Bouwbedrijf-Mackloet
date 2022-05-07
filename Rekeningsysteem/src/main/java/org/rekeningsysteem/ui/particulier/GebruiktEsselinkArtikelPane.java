@@ -8,7 +8,7 @@ import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.disposables.Disposable;
 import javafx.scene.control.CheckBox;
-import org.rekeningsysteem.data.particulier.EsselinkArtikel;
+import org.rekeningsysteem.data.particulier.materiaal.EsselinkArtikel;
 import org.rekeningsysteem.data.util.BtwPercentage;
 import org.rekeningsysteem.rxjavafx.Observables;
 import org.rekeningsysteem.ui.textfields.NumberField;

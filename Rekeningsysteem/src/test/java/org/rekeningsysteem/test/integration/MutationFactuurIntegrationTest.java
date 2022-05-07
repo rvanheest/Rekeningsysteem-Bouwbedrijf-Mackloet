@@ -3,6 +3,7 @@ package org.rekeningsysteem.test.integration;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.Currency;
 
 import org.junit.runner.RunWith;
@@ -18,16 +19,17 @@ import org.rekeningsysteem.data.util.header.FactuurHeader;
 public class MutationFactuurIntegrationTest extends AbstractIntegrationTest {
 
 	@Override
-	protected MutatiesFactuur makeRekening() {
+	protected MutatiesFactuur makeDocument() {
 		Debiteur debiteur = new Debiteur("Name", "Street", "Number", "Zipcode", "Place", "BtwNumber");
 		LocalDate datum = LocalDate.of(2011, 5, 9);
 		String factuurnummer = "272011";
 		FactuurHeader header = new FactuurHeader(debiteur, datum, factuurnummer);
 
-		ItemList<MutatiesInkoopOrder> itemList = new ItemList<>(Currency.getInstance("EUR"));
-		itemList.add(new MutatiesInkoopOrder("Inkooporder", "111390", new Geld(4971.96)));
-		itemList.add(new MutatiesInkoopOrder("Inkooporder", "111477", new Geld(4820.96)));
-		itemList.add(new MutatiesInkoopOrder("Inkooporder", "112308", new Geld(5510.74)));
+		ItemList<MutatiesInkoopOrder> itemList = new ItemList<>(Currency.getInstance("EUR"), Arrays.asList(
+				new MutatiesInkoopOrder("Inkooporder", "111390", new Geld(4971.96)),
+				new MutatiesInkoopOrder("Inkooporder", "111477", new Geld(4820.96)),
+				new MutatiesInkoopOrder("Inkooporder", "112308", new Geld(5510.74))
+		));
 
 		return new MutatiesFactuur(header, itemList);
 	}

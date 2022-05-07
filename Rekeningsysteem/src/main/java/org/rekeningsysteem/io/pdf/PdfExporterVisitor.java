@@ -5,13 +5,13 @@ import de.nixosoft.jlr.JLROpener;
 import org.apache.commons.io.FileUtils;
 import org.rekeningsysteem.data.mutaties.MutatiesFactuur;
 import org.rekeningsysteem.data.offerte.Offerte;
-import org.rekeningsysteem.data.particulier.AnderArtikel;
-import org.rekeningsysteem.data.particulier.GebruiktEsselinkArtikel;
+import org.rekeningsysteem.data.particulier.materiaal.AnderArtikel;
+import org.rekeningsysteem.data.particulier.materiaal.GebruiktEsselinkArtikel;
 import org.rekeningsysteem.data.particulier.ParticulierFactuur;
 import org.rekeningsysteem.data.particulier.loon.InstantLoon;
 import org.rekeningsysteem.data.particulier.loon.ProductLoon;
 import org.rekeningsysteem.data.reparaties.ReparatiesFactuur;
-import org.rekeningsysteem.data.util.AbstractRekening;
+import org.rekeningsysteem.data.util.Document;
 import org.rekeningsysteem.data.util.Totalen;
 import org.rekeningsysteem.data.util.header.Debiteur;
 import org.rekeningsysteem.data.util.header.FactuurHeader;
@@ -88,7 +88,7 @@ public class PdfExporterVisitor {
 		}
 	}
 
-	public void visit(AbstractRekening rekening) throws PdfException {
+	public void visit(Document rekening) throws PdfException {
 		switch (rekening) {
 			case MutatiesFactuur factuur -> this.visit(PropertyModelEnum.PDF_MUTATIES_TEMPLATE, this.convert(factuur));
 			case Offerte offerte -> this.visit(PropertyModelEnum.PDF_OFFERTE_TEMPLATE, this.convert(offerte));
@@ -142,9 +142,9 @@ public class PdfExporterVisitor {
 	}
 
 	private Consumer<PdfConverter> convert(MutatiesFactuur factuur) {
-		return this.convertFactuurHeader(factuur.getFactuurHeader())
-			.andThen(converter -> converter.replace("Valuta", factuur.getItemList().getCurrency().getSymbol()))
-			.andThen(converter -> converter.replace("orderList", factuur.getItemList()
+		return this.convertFactuurHeader(factuur.header())
+			.andThen(converter -> converter.replace("Valuta", factuur.itemList().getCurrency().getSymbol()))
+			.andThen(converter -> converter.replace("orderList", factuur.itemList()
 				.stream()
 				.map(this.itemVisitor::visit)
 				.collect(Collectors.toList())
@@ -153,16 +153,16 @@ public class PdfExporterVisitor {
 	}
 
 	private Consumer<PdfConverter> convert(Offerte offerte) {
-		return this.convertFactuurHeader(offerte.getFactuurHeader())
-			.andThen(converter -> converter.replace("Tekst", offerte.getTekst()))
-			.andThen(converter -> converter.replace("Ondertekenen", String.valueOf(offerte.isOndertekenen())));
+		return this.convertFactuurHeader(offerte.header())
+			.andThen(converter -> converter.replace("Tekst", offerte.tekst()))
+			.andThen(converter -> converter.replace("Ondertekenen", String.valueOf(offerte.ondertekenen())));
 	}
 
 	private Consumer<PdfConverter> convert(ParticulierFactuur factuur) {
-		return this.convertFactuurHeader(factuur.getFactuurHeader())
-			.andThen(converter -> converter.replace("Omschrijving", factuur.getOmschrijving()))
-			.andThen(converter -> converter.replace("Valuta", factuur.getItemList().getCurrency().getSymbol()))
-			.andThen(converter -> converter.replace("artikelList", factuur.getItemList()
+		return this.convertFactuurHeader(factuur.header())
+			.andThen(converter -> converter.replace("Omschrijving", factuur.omschrijving()))
+			.andThen(converter -> converter.replace("Valuta", factuur.itemList().getCurrency().getSymbol()))
+			.andThen(converter -> converter.replace("artikelList", factuur.itemList()
 				.stream()
 				.map(particulierArtikel -> switch (particulierArtikel) {
 					case AnderArtikel a -> this.itemVisitor.visit(a);
@@ -177,9 +177,9 @@ public class PdfExporterVisitor {
 	}
 
 	private Consumer<PdfConverter> convert(ReparatiesFactuur factuur) {
-		return this.convertFactuurHeader(factuur.getFactuurHeader())
-			.andThen(converter -> converter.replace("Valuta", factuur.getItemList().getCurrency().getSymbol()))
-			.andThen(converter -> converter.replace("orderList", factuur.getItemList()
+		return this.convertFactuurHeader(factuur.header())
+			.andThen(converter -> converter.replace("Valuta", factuur.itemList().getCurrency().getSymbol()))
+			.andThen(converter -> converter.replace("orderList", factuur.itemList()
 				.stream()
 				.map(this.itemVisitor::visit)
 				.collect(Collectors.toList())

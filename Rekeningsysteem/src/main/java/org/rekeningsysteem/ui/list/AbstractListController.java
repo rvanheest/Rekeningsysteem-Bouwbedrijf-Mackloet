@@ -1,8 +1,10 @@
 package org.rekeningsysteem.ui.list;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 import io.reactivex.rxjava3.core.Maybe;
 import io.reactivex.rxjava3.core.Observable;
@@ -29,17 +31,17 @@ public abstract class AbstractListController<M extends ListItem, U, C extends Ab
 					Main.getMain().hideModalMessage();
 				}))
 				.flatMapMaybe(Maybe::fromOptional)
-				.flatMapMaybe(model -> this.getModel().firstElement().doOnSuccess(list -> list.add(model)))
+				.flatMapMaybe(model -> this.getModel().firstElement().doOnSuccess(list -> list.add(model)).map(Collection::stream))
 				.map(this::modelToUI)
 				.subscribe(this.ui::setData),
 
 			this.ui.getUpButtonEvent()
-				.flatMapMaybe(index -> this.model.firstElement().doOnSuccess(list -> Collections.swap(list, index, index - 1)))
+				.flatMapMaybe(index -> this.model.firstElement().doOnSuccess(list -> Collections.swap(list, index, index - 1)).map(Collection::stream))
 				.map(this::modelToUI)
 				.subscribe(this.ui::setData),
 
 			this.ui.getDownButtonEvent()
-				.flatMapMaybe(index -> this.model.firstElement().doOnSuccess(list -> Collections.swap(list, index, index + 1)))
+				.flatMapMaybe(index -> this.model.firstElement().doOnSuccess(list -> Collections.swap(list, index, index + 1)).map(Collection::stream))
 				.map(this::modelToUI)
 				.subscribe(this.ui::setData),
 
@@ -47,7 +49,7 @@ public abstract class AbstractListController<M extends ListItem, U, C extends Ab
 		);
 	}
 
-	protected abstract List<U> modelToUI(List<M> list);
+	protected abstract List<U> modelToUI(Stream<M> stream);
 
 	protected abstract List<M> uiToModel(List<? extends U> list);
 

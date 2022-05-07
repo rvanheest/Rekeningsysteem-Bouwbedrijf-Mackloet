@@ -7,16 +7,16 @@ import io.reactivex.rxjava3.functions.Function;
 import org.rekeningsysteem.data.mutaties.MutatiesFactuur;
 import org.rekeningsysteem.data.mutaties.MutatiesInkoopOrder;
 import org.rekeningsysteem.data.offerte.Offerte;
-import org.rekeningsysteem.data.particulier.AnderArtikel;
-import org.rekeningsysteem.data.particulier.EsselinkArtikel;
-import org.rekeningsysteem.data.particulier.GebruiktEsselinkArtikel;
+import org.rekeningsysteem.data.particulier.materiaal.AnderArtikel;
+import org.rekeningsysteem.data.particulier.materiaal.EsselinkArtikel;
+import org.rekeningsysteem.data.particulier.materiaal.GebruiktEsselinkArtikel;
 import org.rekeningsysteem.data.particulier.ParticulierArtikel;
 import org.rekeningsysteem.data.particulier.ParticulierFactuur;
-import org.rekeningsysteem.data.particulier.loon.AbstractLoon;
+import org.rekeningsysteem.data.particulier.loon.Loon;
 import org.rekeningsysteem.data.particulier.loon.ProductLoon;
+import org.rekeningsysteem.data.particulier.materiaal.Materiaal;
 import org.rekeningsysteem.data.reparaties.ReparatiesFactuur;
 import org.rekeningsysteem.data.reparaties.ReparatiesInkoopOrder;
-import org.rekeningsysteem.data.util.AbstractRekening;
 import org.rekeningsysteem.data.util.BtwPercentage;
 import org.rekeningsysteem.data.util.BtwPercentages;
 import org.rekeningsysteem.data.util.Geld;
@@ -32,8 +32,8 @@ import org.w3c.dom.NodeList;
 import javax.xml.parsers.DocumentBuilder;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Currency;
-import java.util.List;
 
 public class XmlReader1 extends XmlLoader {
 
@@ -44,7 +44,7 @@ public class XmlReader1 extends XmlLoader {
 	}
 
 	@Override
-	public Single<AbstractRekening> read(Document document) {
+	public Single<org.rekeningsysteem.data.util.Document> read(Document document) {
 		Node factuur = document.getElementsByTagName("bestand").item(0);
 		String soort = factuur.getFirstChild().getNodeName();
 		return switch (soort) {
@@ -173,7 +173,7 @@ public class XmlReader1 extends XmlLoader {
 
 		Maybe<FactuurHeader> header = makeFactuurHeader(node);
 		Maybe<String> omschrijving = getNodeValue(node, "omschrijving");
-		Function<BtwPercentage, Single<List<ParticulierArtikel>>> items = btw ->
+		Function<BtwPercentage, Observable<Materiaal>> items = btw ->
 			Observable.range(0, gal.getLength())
 				.map(gal::item)
 				.flatMapMaybe(item -> switch (item.getNodeName()) {
@@ -181,20 +181,20 @@ public class XmlReader1 extends XmlLoader {
 					case "gebruiktartikelesselink" -> this.makeGebruiktArtikelEsselink(item);
 					default -> Maybe.error(new IllegalArgumentException("Unknown artikel type found."));
 				})
-				.map(f -> f.apply(btw))
-				.collect(() -> new ArrayList<ParticulierArtikel>(), List::add);
-		Function<BtwPercentage, Maybe<AbstractLoon>> loon = btw -> this.makeLoon(getElement(node, "loon")).map(f -> f.apply(btw));
+				.map(f -> f.apply(btw));
+		Function<BtwPercentage, Maybe<Loon>> loon = btw -> this.makeLoon(getElement(node, "loon")).map(f -> f.apply(btw));
 
 		return makeEnkelBtw(node)
 				.flatMap(percentages -> Maybe.zip(
 						header,
 						omschrijving,
-						items.apply(percentages.materiaalPercentage())
+						Observable.concat(
+								items.apply(percentages.materiaalPercentage()),
+								loon.apply(percentages.loonPercentage()).toObservable()
+						)
+								.collect(ArrayList<ParticulierArtikel>::new, Collection::add)
 								.map(list -> new ItemList<>(this.currency, list))
-								.flatMapMaybe(arts -> loon.apply(percentages.loonPercentage())
-										.doOnSuccess(arts::add)
-										.map(ignored -> arts)
-								),
+								.toMaybe(),
 						ParticulierFactuur::new
 				));
 	}
@@ -204,7 +204,7 @@ public class XmlReader1 extends XmlLoader {
 
 		Maybe<FactuurHeader> header = makeFactuurHeader(node);
 		Maybe<String> omschrijving = getNodeValue(node, "omschrijving");
-		Function<BtwPercentage, Single<List<ParticulierArtikel>>> items = btw ->
+		Function<BtwPercentage, Observable<Materiaal>> items = btw ->
 			Observable.range(0, gal.getLength())
 				.map(gal::item)
 				.flatMapMaybe(item -> switch (item.getNodeName()) {
@@ -212,20 +212,20 @@ public class XmlReader1 extends XmlLoader {
 					case "gebruiktartikelesselink" -> this.makeGebruiktArtikelEsselink(item);
 					default -> Maybe.error(new IllegalArgumentException("Unknown artikel type found."));
 				})
-				.map(f -> f.apply(btw))
-				.collect(() -> new ArrayList<ParticulierArtikel>(), List::add);
-		Function<BtwPercentage, Maybe<AbstractLoon>> loonList = btw -> this.makeLoon(getElement(node, "loon")).map(f -> f.apply(btw));
+				.map(f -> f.apply(btw));
+		Function<BtwPercentage, Maybe<Loon>> loonList = btw -> this.makeLoon(getElement(node, "loon")).map(f -> f.apply(btw));
 
 		return makeDubbelBtw(node)
 				.flatMap(percentage -> Maybe.zip(
 						header,
 						omschrijving,
-						items.apply(percentage.materiaalPercentage())
+						Observable.concat(
+								items.apply(percentage.materiaalPercentage()),
+								loonList.apply(percentage.loonPercentage()).toObservable()
+						)
+								.collect(ArrayList<ParticulierArtikel>::new, Collection::add)
 								.map(list -> new ItemList<>(this.currency, list))
-								.flatMapMaybe(arts -> loonList.apply(percentage.loonPercentage())
-										.doOnSuccess(arts::add)
-										.map(ignored -> arts)
-								),
+								.toMaybe(),
 						ParticulierFactuur::new
 				));
 	}
@@ -245,7 +245,7 @@ public class XmlReader1 extends XmlLoader {
 		Single<ItemList<MutatiesInkoopOrder>> itemList = Observable.range(0, orders.getLength())
 			.map(orders::item)
 			.flatMapMaybe(this::makeMutatiesInkoopOrder)
-			.collect(ArrayList<MutatiesInkoopOrder>::new, List::add)
+			.collect(ArrayList<MutatiesInkoopOrder>::new, Collection::add)
 			.map(list -> new ItemList<>(this.currency, list));
 
 		return Maybe.zip(header, itemList.toMaybe(), MutatiesFactuur::new);
@@ -267,7 +267,7 @@ public class XmlReader1 extends XmlLoader {
 		Single<ItemList<ReparatiesInkoopOrder>> itemList = Observable.range(0, orders.getLength())
 			.map(orders::item)
 			.flatMapMaybe(this::makeReparatiesInkoopOrder)
-			.collect(ArrayList<ReparatiesInkoopOrder>::new, List::add)
+			.collect(ArrayList<ReparatiesInkoopOrder>::new, Collection::add)
 			.map(list -> new ItemList<>(this.currency, list));
 
 		return Maybe.zip(header, itemList.toMaybe(), ReparatiesFactuur::new);
