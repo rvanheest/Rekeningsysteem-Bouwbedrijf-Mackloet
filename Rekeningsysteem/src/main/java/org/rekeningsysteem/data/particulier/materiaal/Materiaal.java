@@ -1,15 +1,17 @@
 package org.rekeningsysteem.data.particulier.materiaal;
 
+import org.javamoney.moneta.Money;
 import org.rekeningsysteem.data.particulier.ParticulierArtikel;
 import org.rekeningsysteem.data.util.BtwPercentage;
-import org.rekeningsysteem.data.util.Geld;
+
+import javax.money.MonetaryAmount;
 
 public interface Materiaal extends ParticulierArtikel {
 
 	// Materiaal and all its subclasses have no loon price, so it is fixed to zero
 	@Override
-	default Geld loon() {
-		return new Geld(0);
+	default MonetaryAmount loon() {
+		return Money.zero(this.materiaal().getCurrency());
 	}
 
 	@Override
@@ -18,7 +20,7 @@ public interface Materiaal extends ParticulierArtikel {
 	}
 
 	@Override
-	default Geld loonBtw() {
-		return new Geld(0);
+	default MonetaryAmount loonBtw() {
+		return Money.zero(this.materiaal().getCurrency());
 	}
 }

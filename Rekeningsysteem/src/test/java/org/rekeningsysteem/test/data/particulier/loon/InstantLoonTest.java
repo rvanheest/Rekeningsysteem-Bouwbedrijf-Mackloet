@@ -2,16 +2,21 @@ package org.rekeningsysteem.test.data.particulier.loon;
 
 import static org.junit.Assert.assertEquals;
 
+import org.javamoney.moneta.Money;
 import org.junit.Before;
 import org.junit.Test;
 import org.rekeningsysteem.data.particulier.loon.InstantLoon;
 import org.rekeningsysteem.data.util.BtwPercentage;
-import org.rekeningsysteem.data.util.Geld;
+
+import javax.money.CurrencyUnit;
+import javax.money.Monetary;
+import javax.money.MonetaryAmount;
 
 public class InstantLoonTest extends LoonTest {
 
 	private InstantLoon item;
-	private final Geld loon = new Geld(12);
+	private final CurrencyUnit currency = Monetary.getCurrency("EUR");
+	private final MonetaryAmount loon = Money.of(12, this.currency);
 	private final BtwPercentage loonBtwPercentage = new BtwPercentage(10, false);
 
 	@Override

@@ -1,6 +1,7 @@
 package org.rekeningsysteem.data.particulier.materiaal;
 
 import org.rekeningsysteem.data.util.BtwPercentage;
-import org.rekeningsysteem.data.util.Geld;
 
-public record AnderArtikel(String omschrijving, Geld materiaal, BtwPercentage materiaalBtwPercentage) implements Materiaal { }
+import javax.money.MonetaryAmount;
+
+public record AnderArtikel(String omschrijving, MonetaryAmount materiaal, BtwPercentage materiaalBtwPercentage) implements Materiaal { }

@@ -19,12 +19,14 @@ import org.rekeningsysteem.exception.PdfException;
 import org.rekeningsysteem.properties.PropertiesWorker;
 import org.rekeningsysteem.properties.PropertyModelEnum;
 
+import javax.money.CurrencyUnit;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Currency;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -121,6 +123,11 @@ public class PdfExporterVisitor {
 		};
 	}
 
+	private Consumer<PdfConverter> visitCurrency(CurrencyUnit currency) {
+		return converter -> converter.replace("Valuta",
+				Currency.getInstance(currency.getCurrencyCode()).getSymbol());
+	}
+
 	private Consumer<PdfConverter> convertTotalen(Totalen totalen) {
 		return converter -> {
 			converter.replace("SubTotaalBedrag",
@@ -143,7 +150,7 @@ public class PdfExporterVisitor {
 
 	private Consumer<PdfConverter> convert(MutatiesFactuur factuur) {
 		return this.convertFactuurHeader(factuur.header())
-			.andThen(converter -> converter.replace("Valuta", factuur.itemList().getCurrency().getSymbol()))
+			.andThen(this.visitCurrency(factuur.itemList().getCurrency()))
 			.andThen(converter -> converter.replace("orderList", factuur.itemList()
 				.stream()
 				.map(this.itemVisitor::visit)
@@ -161,7 +168,7 @@ public class PdfExporterVisitor {
 	private Consumer<PdfConverter> convert(ParticulierFactuur factuur) {
 		return this.convertFactuurHeader(factuur.header())
 			.andThen(converter -> converter.replace("Omschrijving", factuur.omschrijving()))
-			.andThen(converter -> converter.replace("Valuta", factuur.itemList().getCurrency().getSymbol()))
+			.andThen(this.visitCurrency(factuur.itemList().getCurrency()))
 			.andThen(converter -> converter.replace("artikelList", factuur.itemList()
 				.stream()
 				.map(particulierArtikel -> switch (particulierArtikel) {
@@ -178,7 +185,7 @@ public class PdfExporterVisitor {
 
 	private Consumer<PdfConverter> convert(ReparatiesFactuur factuur) {
 		return this.convertFactuurHeader(factuur.header())
-			.andThen(converter -> converter.replace("Valuta", factuur.itemList().getCurrency().getSymbol()))
+			.andThen(this.visitCurrency(factuur.itemList().getCurrency()))
 			.andThen(converter -> converter.replace("orderList", factuur.itemList()
 				.stream()
 				.map(this.itemVisitor::visit)

@@ -2,55 +2,59 @@ package org.rekeningsysteem.test.data.util;
 
 import static org.junit.Assert.assertEquals;
 
+import org.javamoney.moneta.Money;
 import org.junit.Before;
 import org.junit.Test;
 import org.rekeningsysteem.data.util.BtwPercentage;
-import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.data.util.Totalen;
+
+import javax.money.CurrencyUnit;
+import javax.money.Monetary;
 
 public class TotalenTest {
 
 	private Totalen totalen;
+	private final CurrencyUnit currency = Monetary.getCurrency("EUR");
 
 	@Before
 	public void setUp() {
-		this.totalen = new Totalen(new BtwPercentage(50.0, false), new Geld(2), new Geld(16));
+		this.totalen = new Totalen(this.currency, new BtwPercentage(50.0, false), Money.of(2, this.currency), Money.of(16, this.currency));
 	}
 
 	@Test
 	public void testAdd() {
-		this.totalen = this.totalen.add(new BtwPercentage(50, false), new Geld(0), new Geld(20))
-				.add(new BtwPercentage(50, false), new Geld(0), new Geld(30))
-				.add(new BtwPercentage(10, true), new Geld(0), new Geld(100))
-				.add(new BtwPercentage(20, true), new Geld(0), new Geld(100));
+		this.totalen = this.totalen.add(new BtwPercentage(50, false), Money.of(0, this.currency), Money.of(20, this.currency))
+				.add(new BtwPercentage(50, false), Money.of(0, this.currency), Money.of(30, this.currency))
+				.add(new BtwPercentage(10, true), Money.of(0, this.currency), Money.of(100, this.currency))
+				.add(new BtwPercentage(20, true), Money.of(0, this.currency), Money.of(100, this.currency));
 
-		assertEquals(new Geld(2), this.totalen.nettoBtwPerPercentage().get(new BtwPercentage(50.0, false)).netto());
-		assertEquals(new Geld(66), this.totalen.nettoBtwPerPercentage().get(new BtwPercentage(50.0, false)).btw());
-		assertEquals(new Geld(0), this.totalen.nettoBtwPerPercentage().get(new BtwPercentage(10.0, true)).netto());
-		assertEquals(new Geld(100), this.totalen.nettoBtwPerPercentage().get(new BtwPercentage(10.0, true)).btw());
-		assertEquals(new Geld(0), this.totalen.nettoBtwPerPercentage().get(new BtwPercentage(20.0, true)).netto());
-		assertEquals(new Geld(100), this.totalen.nettoBtwPerPercentage().get(new BtwPercentage(20.0, true)).btw());
-		assertEquals(new Geld(2), this.totalen.getSubtotaal());
-		assertEquals(new Geld(68), this.totalen.getTotaal()); // 2 + 16 + 20 + 30
+		assertEquals(Money.of(2, this.currency), this.totalen.nettoBtwPerPercentage().get(new BtwPercentage(50.0, false)).netto());
+		assertEquals(Money.of(66, this.currency), this.totalen.nettoBtwPerPercentage().get(new BtwPercentage(50.0, false)).btw());
+		assertEquals(Money.of(0, this.currency), this.totalen.nettoBtwPerPercentage().get(new BtwPercentage(10.0, true)).netto());
+		assertEquals(Money.of(100, this.currency), this.totalen.nettoBtwPerPercentage().get(new BtwPercentage(10.0, true)).btw());
+		assertEquals(Money.of(0, this.currency), this.totalen.nettoBtwPerPercentage().get(new BtwPercentage(20.0, true)).netto());
+		assertEquals(Money.of(100, this.currency), this.totalen.nettoBtwPerPercentage().get(new BtwPercentage(20.0, true)).btw());
+		assertEquals(Money.of(2, this.currency), this.totalen.getSubtotaal());
+		assertEquals(Money.of(68, this.currency), this.totalen.getTotaal()); // 2 + 16 + 20 + 30
 	}
 
 	@Test
 	public void testGetSubtotalen() {
-		assertEquals(new Geld(2), this.totalen.getSubtotaal());
+		assertEquals(Money.of(2, this.currency), this.totalen.getSubtotaal());
 	}
 
 	@Test
 	public void testGetTotalen() {
-		assertEquals(new Geld(18), this.totalen.getTotaal());
+		assertEquals(Money.of(18, this.currency), this.totalen.getTotaal());
 	}
 
 	@Test
 	public void testPlus() {
-		Totalen t2 = new Totalen(new BtwPercentage(20, true), new Geld(3), new Geld(100));
+		Totalen t2 = new Totalen(this.currency, new BtwPercentage(20, true), Money.of(3, this.currency), Money.of(100, this.currency));
 
-		Totalen expected = Totalen.Empty()
-				.add(new BtwPercentage(50, false), new Geld(2), new Geld(16))
-				.add(new BtwPercentage(20, true), new Geld(3), new Geld(100));
+		Totalen expected = new Totalen(this.currency)
+				.add(new BtwPercentage(50, false), Money.of(2, this.currency), Money.of(16, this.currency))
+				.add(new BtwPercentage(20, true), Money.of(3, this.currency), Money.of(100, this.currency));
 
 		assertEquals(expected, this.totalen.plus(t2));
 	}

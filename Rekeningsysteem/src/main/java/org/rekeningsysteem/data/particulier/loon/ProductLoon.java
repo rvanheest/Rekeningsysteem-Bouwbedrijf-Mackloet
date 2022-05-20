@@ -1,12 +1,13 @@
 package org.rekeningsysteem.data.particulier.loon;
 
 import org.rekeningsysteem.data.util.BtwPercentage;
-import org.rekeningsysteem.data.util.Geld;
 
-public record ProductLoon(String omschrijving, double uren, Geld uurloon, BtwPercentage loonBtwPercentage) implements Loon {
+import javax.money.MonetaryAmount;
+
+public record ProductLoon(String omschrijving, double uren, MonetaryAmount uurloon, BtwPercentage loonBtwPercentage) implements Loon {
 
 	@Override
-	public Geld loon() {
+	public MonetaryAmount loon() {
 		return this.uurloon.multiply(this.uren);
 	}
 }

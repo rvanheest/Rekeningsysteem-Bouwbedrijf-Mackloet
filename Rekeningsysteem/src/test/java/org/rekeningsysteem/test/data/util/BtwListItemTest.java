@@ -2,14 +2,19 @@ package org.rekeningsysteem.test.data.util;
 
 import static org.junit.Assert.assertEquals;
 
+import org.javamoney.moneta.Money;
 import org.junit.Before;
 import org.junit.Test;
 import org.rekeningsysteem.data.util.BtwListItem;
-import org.rekeningsysteem.data.util.Geld;
+
+import javax.money.CurrencyUnit;
+import javax.money.Monetary;
+import javax.money.MonetaryAmount;
 
 public abstract class BtwListItemTest {
 
 	private BtwListItem item;
+	private final CurrencyUnit currency = Monetary.getCurrency("EUR");
 
 	protected abstract BtwListItem makeInstance();
 
@@ -20,19 +25,19 @@ public abstract class BtwListItemTest {
 
 	@Test
 	public void testGetLoonBtw() {
-		Geld loon = this.item.loon();
+		MonetaryAmount loon = this.item.loon();
 		double percentage = this.item.loonBtwPercentage().percentage();
 
-		Geld expected = new Geld(loon.bedrag() * percentage / 100);
+		MonetaryAmount expected = Money.of(loon.getNumber().doubleValueExact() * percentage / 100, this.currency);
 		assertEquals(expected, this.item.loonBtw());
 	}
 
 	@Test
 	public void testGetMateriaalBtw() {
-		Geld materiaal = this.item.materiaal();
+		MonetaryAmount materiaal = this.item.materiaal();
 		double percentage = this.item.materiaalBtwPercentage().percentage();
 
-		Geld expected = new Geld(materiaal.bedrag() * percentage / 100);
+		MonetaryAmount expected = Money.of(materiaal.getNumber().doubleValueExact() * percentage / 100, this.currency);
 		assertEquals(expected, this.item.materiaalBtw());
 	}
 }

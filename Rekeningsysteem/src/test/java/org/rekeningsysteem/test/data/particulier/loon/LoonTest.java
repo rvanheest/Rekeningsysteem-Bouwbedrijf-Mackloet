@@ -2,16 +2,20 @@ package org.rekeningsysteem.test.data.particulier.loon;
 
 import static org.junit.Assert.assertEquals;
 
+import org.javamoney.moneta.Money;
 import org.junit.Before;
 import org.junit.Test;
 import org.rekeningsysteem.data.particulier.loon.Loon;
 import org.rekeningsysteem.data.util.BtwPercentage;
-import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.test.data.util.BtwListItemTest;
+
+import javax.money.CurrencyUnit;
+import javax.money.Monetary;
 
 public abstract class LoonTest extends BtwListItemTest {
 
 	private Loon loon;
+	private final CurrencyUnit currency = Monetary.getCurrency("EUR");
 
 	@Override
 	protected abstract Loon makeInstance();
@@ -27,7 +31,7 @@ public abstract class LoonTest extends BtwListItemTest {
 
 	@Test
 	public void testGetMateriaal() {
-		assertEquals(new Geld(0), this.loon.materiaal());
+		assertEquals(Money.zero(this.currency), this.loon.materiaal());
 	}
 
 	@Test
@@ -43,6 +47,6 @@ public abstract class LoonTest extends BtwListItemTest {
 	@Test
 	@Override
 	public void testGetMateriaalBtw() {
-		assertEquals(new Geld(0), this.loon.materiaalBtw());
+		assertEquals(Money.zero(this.currency), this.loon.materiaalBtw());
 	}
 }

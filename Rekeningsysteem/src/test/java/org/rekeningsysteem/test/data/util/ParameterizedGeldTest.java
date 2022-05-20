@@ -12,6 +12,7 @@ import org.junit.runners.Parameterized.Parameters;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.exception.GeldParseException;
 
+@Deprecated
 @RunWith(Parameterized.class)
 public final class ParameterizedGeldTest {
 

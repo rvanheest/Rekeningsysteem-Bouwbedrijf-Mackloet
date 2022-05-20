@@ -1,16 +1,18 @@
 package org.rekeningsysteem.data.mutaties;
 
-import org.rekeningsysteem.data.util.Geld;
+import org.javamoney.moneta.Money;
 import org.rekeningsysteem.data.util.ListItem;
 
-public record MutatiesInkoopOrder(String omschrijving, String inkoopOrderNummer, Geld materiaal) implements ListItem {
+import javax.money.MonetaryAmount;
+
+public record MutatiesInkoopOrder(String omschrijving, String inkoopOrderNummer, MonetaryAmount materiaal) implements ListItem {
 
 	@Override
-	public Geld loon() {
-		return new Geld(0);
+	public MonetaryAmount loon() {
+		return Money.zero(this.materiaal.getCurrency());
 	}
 
-	public Geld getTotaal() {
+	public MonetaryAmount getTotaal() {
 		return this.materiaal();
 	}
 }

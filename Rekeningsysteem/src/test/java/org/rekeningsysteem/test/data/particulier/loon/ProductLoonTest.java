@@ -2,20 +2,25 @@ package org.rekeningsysteem.test.data.particulier.loon;
 
 import static org.junit.Assert.assertEquals;
 
+import org.javamoney.moneta.Money;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.rekeningsysteem.data.particulier.loon.ProductLoon;
 import org.rekeningsysteem.data.util.BtwPercentage;
-import org.rekeningsysteem.data.util.Geld;
+
+import javax.money.CurrencyUnit;
+import javax.money.Monetary;
+import javax.money.MonetaryAmount;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ProductLoonTest extends LoonTest {
 
 	private ProductLoon item;
 	private final double uren = 10;
-	private final Geld uurloon = new Geld(4);
+	private final CurrencyUnit currency = Monetary.getCurrency("EUR");
+	private final MonetaryAmount uurloon = Money.of(4, this.currency);
 	private final BtwPercentage loonBtwPercentage = new BtwPercentage(10, false);
 
 	@Override
@@ -47,6 +52,6 @@ public class ProductLoonTest extends LoonTest {
 
 	@Test
 	public void testGetLoon() {
-		assertEquals(new Geld(40), this.item.loon());
+		assertEquals(Money.of(40, this.currency), this.item.loon());
 	}
 }

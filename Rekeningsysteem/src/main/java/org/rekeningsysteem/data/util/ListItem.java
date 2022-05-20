@@ -1,8 +1,10 @@
 package org.rekeningsysteem.data.util;
 
+import javax.money.MonetaryAmount;
+
 public interface ListItem {
 
-	Geld loon();
+	MonetaryAmount loon();
 
-	Geld materiaal();
+	MonetaryAmount materiaal();
 }

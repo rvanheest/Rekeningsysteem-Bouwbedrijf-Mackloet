@@ -5,6 +5,7 @@ import java.text.DecimalFormatSymbols;
 
 import org.rekeningsysteem.exception.GeldParseException;
 
+@Deprecated
 public record Geld(double bedrag) {
 
 	public Geld(double bedrag) {

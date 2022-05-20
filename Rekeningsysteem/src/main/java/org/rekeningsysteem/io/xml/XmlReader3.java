@@ -3,6 +3,7 @@ package org.rekeningsysteem.io.xml;
 import io.reactivex.rxjava3.core.Maybe;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.Single;
+import org.javamoney.moneta.Money;
 import org.rekeningsysteem.data.mutaties.MutatiesFactuur;
 import org.rekeningsysteem.data.mutaties.MutatiesInkoopOrder;
 import org.rekeningsysteem.data.offerte.Offerte;
@@ -18,7 +19,6 @@ import org.rekeningsysteem.data.particulier.materiaal.Materiaal;
 import org.rekeningsysteem.data.reparaties.ReparatiesFactuur;
 import org.rekeningsysteem.data.reparaties.ReparatiesInkoopOrder;
 import org.rekeningsysteem.data.util.BtwPercentage;
-import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.data.util.ItemList;
 import org.rekeningsysteem.data.util.header.Debiteur;
 import org.rekeningsysteem.data.util.header.FactuurHeader;
@@ -26,13 +26,15 @@ import org.rekeningsysteem.exception.XmlParseException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
+import javax.money.CurrencyUnit;
+import javax.money.Monetary;
+import javax.money.MonetaryAmount;
 import javax.xml.parsers.DocumentBuilder;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Currency;
-import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 
 public class XmlReader3 extends XmlLoader {
 
@@ -103,28 +105,24 @@ public class XmlReader3 extends XmlLoader {
 		return Maybe.zip(debiteur, datum, offertenummer, FactuurHeader::new);
 	}
 
-	private static Maybe<Geld> makeGeld(Node node) {
-		return getNodeValue(node, "bedrag").map(Double::parseDouble).map(Geld::new);
+	private static Function<CurrencyUnit, Maybe<MonetaryAmount>> makeMoney(Node node) {
+		return currency -> getNodeValue(node, "bedrag")
+				.map(Double::parseDouble)
+				.map(amount -> Money.of(amount, currency));
 	}
 
-	private static Maybe<Currency> makeCurrency(Node node) {
-		return getNodeValue(node, "currency")
-			.flatMap(currency ->
-				Maybe.fromOptional(
-					Currency.getAvailableCurrencies().parallelStream()
-						.filter(cur -> currency.equals(cur.getCurrencyCode()))
-						.findFirst()
-				)
-			);
+	private static Maybe<CurrencyUnit> makeCurrency(Node node) {
+		return getNodeValue(node, "currency").map(Monetary::getCurrency);
 	}
 
-	private static Observable<ParticulierArtikel> makeAangenomenListItem(Node node) {
+	private static Function<CurrencyUnit, Observable<ParticulierArtikel>> makeAangenomenListItem(Node node) {
+		return currency -> {
 		Maybe<String> omschrijving = getNodeValue(node, "omschrijving");
-		Maybe<Geld> loon = makeGeld(getElement(node, "loon"));
+		Maybe<MonetaryAmount> loon = makeMoney(getElement(node, "loon")).apply(currency);
 		Maybe<BtwPercentage> loonBtw = getNodeValue(node, "loonBtwPercentage")
 			.map(Double::parseDouble)
 			.map(b -> new BtwPercentage(b, false));
-		Maybe<Geld> materiaal = makeGeld(getElement(node, "materiaal"));
+		Maybe<MonetaryAmount> materiaal = makeMoney(getElement(node, "materiaal")).apply(currency);
 		Maybe<BtwPercentage> materiaalBtw = getNodeValue(node, "materiaalBtwPercentage")
 			.map(Double::parseDouble)
 			.map(b -> new BtwPercentage(b, false));
@@ -132,45 +130,62 @@ public class XmlReader3 extends XmlLoader {
 		return Maybe.zip(omschrijving, loon, loonBtw, materiaal, materiaalBtw,
 				(omschr, l, lb, m, mb) -> Observable.just(
 					new AnderArtikel(omschr, m, mb),
-					new InstantLoon(omschr, l, lb)))
+					new InstantLoon(omschr, l, lb))
+			)
 			.flatMapObservable(xs -> xs);
+		};
 	}
 
-	private static Single<Collection<ParticulierArtikel>> makeAangenomenList(Node node) {
-		return iterate(getNodeList(node, "list-item"))
-			.flatMap(XmlReader3::makeAangenomenListItem)
+	private static Function<CurrencyUnit, Single<Collection<ParticulierArtikel>>> makeAangenomenList(Node node) {
+		return currency -> iterate(getNodeList(node, "list-item"))
+			.map(XmlReader3::makeAangenomenListItem)
+			.flatMap(f -> f.apply(currency))
 			.collect(ArrayList::new, Collection::add);
 	}
 
 	private static Maybe<ParticulierFactuur> makeAangenomenFactuur(Node node) {
 		Maybe<FactuurHeader> header = makeFactuurHeader(getElement(node, "factuurHeader"));
 		Maybe<String> omschrijving = getNodeValue(node, "omschrijving");
-		Maybe<Currency> currency = makeCurrency(node);
-		Single<Collection<ParticulierArtikel>> list = makeAangenomenList(getElement(node, "list"));
+		Maybe<CurrencyUnit> currency = makeCurrency(node);
+		Function<CurrencyUnit, Single<Collection<ParticulierArtikel>>> fList = makeAangenomenList(getElement(node, "list"));
 
-		return Maybe.zip(header, omschrijving, currency.zipWith(list.toMaybe(), ItemList::new), ParticulierFactuur::new);
+		return currency
+				.flatMap(c -> Maybe.zip(
+						header,
+						omschrijving,
+						fList.apply(c).map(l -> new ItemList<>(c, l)).toMaybe(),
+						ParticulierFactuur::new
+				));
 	}
 
-	private static Maybe<MutatiesInkoopOrder> makeMutatiesInkoopOrder(Node node) {
-		Maybe<String> omschrijving = getNodeValue(node, "omschrijving");
-		Maybe<String> inkoopOrderNummer = getNodeValue(node, "bonnummer");
-		Maybe<Geld> prijs = makeGeld(getElement(node, "prijs"));
+	private static Function<CurrencyUnit, Maybe<MutatiesInkoopOrder>> makeMutatiesInkoopOrder(Node node) {
+		return currency -> {
+			Maybe<String> omschrijving = getNodeValue(node, "omschrijving");
+			Maybe<String> inkoopOrderNummer = getNodeValue(node, "bonnummer");
+			Maybe<MonetaryAmount> prijs = makeMoney(getElement(node, "prijs")).apply(currency);
 
-		return Maybe.zip(omschrijving, inkoopOrderNummer, prijs, MutatiesInkoopOrder::new);
+			return Maybe.zip(omschrijving, inkoopOrderNummer, prijs, MutatiesInkoopOrder::new);
+		};
 	}
 
-	private static Single<Collection<MutatiesInkoopOrder>> makeMutatiesList(Node node) {
-		return iterate(getNodeList(node, "list-item"))
-			.flatMapMaybe(XmlReader3::makeMutatiesInkoopOrder)
+	private static Function<CurrencyUnit, Single<Collection<MutatiesInkoopOrder>>> makeMutatiesList(Node node) {
+		return currency -> iterate(getNodeList(node, "list-item"))
+			.map(XmlReader3::makeMutatiesInkoopOrder)
+			.flatMapMaybe(f -> f.apply(currency))
 			.collect(ArrayList::new, Collection::add);
 	}
 
 	private static Maybe<MutatiesFactuur> makeMutatiesFactuur(Node node) {
 		Maybe<FactuurHeader> header = makeFactuurHeader(getElement(node, "factuurHeader"));
-		Maybe<Currency> currency = makeCurrency(node);
-		Single<Collection<MutatiesInkoopOrder>> list = makeMutatiesList(getElement(node, "list"));
+		Maybe<CurrencyUnit> currency = makeCurrency(node);
+		Function<CurrencyUnit, Single<Collection<MutatiesInkoopOrder>>> fList = makeMutatiesList(getElement(node, "list"));
 
-		return Maybe.zip(header, currency.zipWith(list.toMaybe(), ItemList::new), MutatiesFactuur::new);
+		return currency
+				.flatMap(c -> Maybe.zip(
+						header,
+						fList.apply(c).map(l -> new ItemList<>(c, l)).toMaybe(),
+						MutatiesFactuur::new
+				));
 	}
 
 	private static Maybe<Offerte> makeOfferte(Node node) {
@@ -181,73 +196,83 @@ public class XmlReader3 extends XmlLoader {
 		return Maybe.zip(header, text, ondertekenen, Offerte::new);
 	}
 
-	private static Maybe<EsselinkArtikel> makeEsselinkArtikel(Node node) {
-		Maybe<String> artikelNummer = getNodeValue(node, "artikelNummer");
-		Maybe<String> omschrijving = getNodeValue(node, "omschrijving");
-		Maybe<Integer> prijsPer = getNodeValue(node, "prijsPer").map(Integer::parseInt);
-		Maybe<String> eenheid = getNodeValue(node, "eenheid");
-		Maybe<Geld> verkoopPrijs = makeGeld(getElement(node, "verkoopPrijs"));
+	private static Function<CurrencyUnit, Maybe<EsselinkArtikel>> makeEsselinkArtikel(Node node) {
+		return currency -> {
+			Maybe<String> artikelNummer = getNodeValue(node, "artikelNummer");
+			Maybe<String> omschrijving = getNodeValue(node, "omschrijving");
+			Maybe<Integer> prijsPer = getNodeValue(node, "prijsPer").map(Integer::parseInt);
+			Maybe<String> eenheid = getNodeValue(node, "eenheid");
+			Maybe<MonetaryAmount> verkoopPrijs = makeMoney(getElement(node, "verkoopPrijs")).apply(currency);
 
-		return Maybe.zip(artikelNummer, omschrijving, prijsPer, eenheid, verkoopPrijs, EsselinkArtikel::new);
+			return Maybe.zip(artikelNummer, omschrijving, prijsPer, eenheid, verkoopPrijs, EsselinkArtikel::new);
+		};
 	}
 
-	private static Maybe<GebruiktEsselinkArtikel> makeGebruiktArtikelEsselink(Node node) {
-		Maybe<EsselinkArtikel> artikel = makeEsselinkArtikel(getElement(node, "artikel"));
-		Maybe<Double> aantal = getNodeValue(node, "aantal").map(Double::parseDouble);
-		Maybe<BtwPercentage> btw = getNodeValue(node, "materiaalBtwPercentage")
-			.map(Double::parseDouble)
-			.map(b -> new BtwPercentage(b, false));
-
-		return Maybe.zip(artikel, aantal, btw, GebruiktEsselinkArtikel::new);
+	private static Function<CurrencyUnit, Maybe<GebruiktEsselinkArtikel>> makeGebruiktArtikelEsselink(Node node) {
+		return currency -> {
+			Maybe<EsselinkArtikel> artikel = makeEsselinkArtikel(getElement(node, "artikel")).apply(currency);
+			Maybe<Double> aantal = getNodeValue(node, "aantal").map(Double::parseDouble);
+			Maybe<BtwPercentage> btw = getNodeValue(node, "materiaalBtwPercentage")
+				.map(Double::parseDouble)
+				.map(b -> new BtwPercentage(b, false));
+	
+			return Maybe.zip(artikel, aantal, btw, GebruiktEsselinkArtikel::new);
+		};
 	}
 
-	private static Maybe<AnderArtikel> makeAnderArtikel(Node node) {
-		Maybe<String> omschrijving = getNodeValue(node, "omschrijving");
-		Maybe<Geld> prijs = makeGeld(getElement(node, "prijs"));
-		Maybe<BtwPercentage> btw = getNodeValue(node, "materiaalBtwPercentage")
-			.map(Double::parseDouble)
-			.map(b -> new BtwPercentage(b, false));
-
-		return Maybe.zip(omschrijving, prijs, btw, AnderArtikel::new);
+	private static Function<CurrencyUnit, Maybe<AnderArtikel>> makeAnderArtikel(Node node) {
+		return currency -> {
+			Maybe<String> omschrijving = getNodeValue(node, "omschrijving");
+			Maybe<MonetaryAmount> prijs = makeMoney(getElement(node, "prijs")).apply(currency);
+			Maybe<BtwPercentage> btw = getNodeValue(node, "materiaalBtwPercentage")
+				.map(Double::parseDouble)
+				.map(b -> new BtwPercentage(b, false));
+	
+			return Maybe.zip(omschrijving, prijs, btw, AnderArtikel::new);
+		};
 	}
 
-	private static Observable<Materiaal> makeMateriaal(Node node) {
-		return iterate(node.getChildNodes())
+	private static Function<CurrencyUnit, Observable<Materiaal>> makeMateriaal(Node node) {
+		return currency -> iterate(node.getChildNodes())
 			.filter(item -> !"#text".equals(item.getNodeName()))
 			.flatMapMaybe(item -> switch (item.getNodeName()) {
-				case "gebruikt-esselink-artikel" -> makeGebruiktArtikelEsselink(item);
-				case "ander-artikel" -> makeAnderArtikel(item);
+				case "gebruikt-esselink-artikel" -> makeGebruiktArtikelEsselink(item).apply(currency);
+				case "ander-artikel" -> makeAnderArtikel(item).apply(currency);
 				default -> Maybe.error(new IllegalArgumentException("Unknown artikel type found."));
 			});
 	}
 
-	private static Maybe<ProductLoon> makeProductLoon(Node node) {
-		Maybe<String> omschrijving = getNodeValue(node, "omschrijving");
-		Maybe<Double> uren = getNodeValue(node, "uren").map(Double::parseDouble);
-		Maybe<Geld> uurloon = makeGeld(getElement(node, "uurloon"));
-		Maybe<BtwPercentage> btw = getNodeValue(node, "loonBtwPercentage")
-			.map(Double::parseDouble)
-			.map(b -> new BtwPercentage(b, false));
-
-		return Maybe.zip(omschrijving, uren, uurloon, btw, ProductLoon::new);
+	private static Function<CurrencyUnit, Maybe<ProductLoon>> makeProductLoon(Node node) {
+		return currency -> {
+			Maybe<String> omschrijving = getNodeValue(node, "omschrijving");
+			Maybe<Double> uren = getNodeValue(node, "uren").map(Double::parseDouble);
+			Maybe<MonetaryAmount> uurloon = makeMoney(getElement(node, "uurloon")).apply(currency);
+			Maybe<BtwPercentage> btw = getNodeValue(node, "loonBtwPercentage")
+				.map(Double::parseDouble)
+				.map(b -> new BtwPercentage(b, false));
+	
+			return Maybe.zip(omschrijving, uren, uurloon, btw, ProductLoon::new);
+		};
 	}
 
-	private static Maybe<InstantLoon> makeInstantLoon(Node node) {
-		Maybe<String> omschrijving = getNodeValue(node, "omschrijving");
-		Maybe<Geld> loon = makeGeld(getElement(node, "loon"));
-		Maybe<BtwPercentage> btw = getNodeValue(node, "loonBtwPercentage")
-			.map(Double::parseDouble)
-			.map(b -> new BtwPercentage(b, false));
-
-		return Maybe.zip(omschrijving, loon, btw, InstantLoon::new);
+	private static Function<CurrencyUnit, Maybe<InstantLoon>> makeInstantLoon(Node node) {
+		return currency -> {
+			Maybe<String> omschrijving = getNodeValue(node, "omschrijving");
+			Maybe<MonetaryAmount> loon = makeMoney(getElement(node, "loon")).apply(currency);
+			Maybe<BtwPercentage> btw = getNodeValue(node, "loonBtwPercentage")
+				.map(Double::parseDouble)
+				.map(b -> new BtwPercentage(b, false));
+	
+			return Maybe.zip(omschrijving, loon, btw, InstantLoon::new);
+		};
 	}
 
-	private static Observable<Loon> makeLoonList(Node node) {
-		return iterate(node.getChildNodes())
+	private static Function<CurrencyUnit, Observable<Loon>> makeLoonList(Node node) {
+		return currency -> iterate(node.getChildNodes())
 			.filter(n -> !"#text".equals(n.getNodeName()))
 			.flatMapMaybe(item -> switch (item.getNodeName()) {
-				case "product-loon" -> makeProductLoon(item);
-				case "instant-loon" -> makeInstantLoon(item);
+				case "product-loon" -> makeProductLoon(item).apply(currency);
+				case "instant-loon" -> makeInstantLoon(item).apply(currency);
 				default -> Maybe.error(new IllegalArgumentException("Unknown loon type found."));
 			});
 	}
@@ -255,36 +280,49 @@ public class XmlReader3 extends XmlLoader {
 	private static Maybe<ParticulierFactuur> makeParticulierFactuur(Node node) {
 		Maybe<FactuurHeader> header = makeFactuurHeader(getElement(node, "factuurHeader"));
 		Maybe<String> omschrijving = getNodeValue(node, "omschrijving");
-		Maybe<Currency> currency = makeCurrency(node);
+		Maybe<CurrencyUnit> currency = makeCurrency(node);
 
-		Observable<Materiaal> materiaalList = makeMateriaal(getElement(node, "itemList"));
-		Observable<Loon> loonList = makeLoonList(getElement(node, "loonList"));
-		Single<List<ParticulierArtikel>> items = Observable.concat(materiaalList, loonList).collect(ArrayList::new, Collection::add);
-		Maybe<ItemList<ParticulierArtikel>> itemList = Maybe.zip(currency, items.toMaybe(), ItemList::new);
+		Function<CurrencyUnit, Observable<Materiaal>> fMateriaalList = makeMateriaal(getElement(node, "itemList"));
+		Function<CurrencyUnit, Observable<Loon>> fLoonList = makeLoonList(getElement(node, "loonList"));
+		Function<CurrencyUnit, Single<Collection<ParticulierArtikel>>> fList = c -> Observable.concat(fMateriaalList.apply(c), fLoonList.apply(c)).collect(ArrayList::new, Collection::add);
 
-		return Maybe.zip(header, omschrijving, itemList, ParticulierFactuur::new);
+		return currency
+				.flatMap(c -> Maybe.zip(
+						header,
+						omschrijving,
+						fList.apply(c).map(l -> new ItemList<>(c, l)).toMaybe(),
+						ParticulierFactuur::new
+				));
 	}
 
-	private static Maybe<ReparatiesInkoopOrder> makeReparatiesInkoopOrder(Node node) {
-		Maybe<String> omschrijving = getNodeValue(node, "omschrijving");
-		Maybe<String> inkoopOrderNummer = getNodeValue(node, "bonnummer");
-		Maybe<Geld> loon = makeGeld(getElement(node, "loon"));
-		Maybe<Geld> materiaal = makeGeld(getElement(node, "materiaal"));
+	private static Function<CurrencyUnit, Maybe<ReparatiesInkoopOrder>> makeReparatiesInkoopOrder(Node node) {
+		return currency -> {
+			Maybe<String> omschrijving = getNodeValue(node, "omschrijving");
+			Maybe<String> inkoopOrderNummer = getNodeValue(node, "bonnummer");
+			Maybe<MonetaryAmount> loon = makeMoney(getElement(node, "loon")).apply(currency);
+			Maybe<MonetaryAmount> materiaal = makeMoney(getElement(node, "materiaal")).apply(currency);
 
-		return Maybe.zip(omschrijving, inkoopOrderNummer, loon, materiaal, ReparatiesInkoopOrder::new);
+			return Maybe.zip(omschrijving, inkoopOrderNummer, loon, materiaal, ReparatiesInkoopOrder::new);
+		};
 	}
 
-	private static Single<Collection<ReparatiesInkoopOrder>> makeReparatiesList(Node node) {
-		return iterate(getNodeList(node, "list-item"))
-			.flatMapMaybe(XmlReader3::makeReparatiesInkoopOrder)
+	private static Function<CurrencyUnit, Single<Collection<ReparatiesInkoopOrder>>> makeReparatiesList(Node node) {
+		return currency -> iterate(getNodeList(node, "list-item"))
+			.map(XmlReader3::makeReparatiesInkoopOrder)
+			.flatMapMaybe(f -> f.apply(currency))
 			.collect(ArrayList::new, Collection::add);
 	}
 
 	private static Maybe<ReparatiesFactuur> makeReparatiesFactuur(Node node) {
 		Maybe<FactuurHeader> header = makeFactuurHeader(getElement(node, "factuurHeader"));
-		Maybe<Currency> currency = makeCurrency(node);
-		Single<Collection<ReparatiesInkoopOrder>> list = makeReparatiesList(getElement(node, "list"));
+		Maybe<CurrencyUnit> currency = makeCurrency(node);
+		Function<CurrencyUnit, Single<Collection<ReparatiesInkoopOrder>>> fList = makeReparatiesList(getElement(node, "list"));
 
-		return Maybe.zip(header, currency.zipWith(list.toMaybe(), ItemList::new), ReparatiesFactuur::new);
+		return currency
+				.flatMap(c -> Maybe.zip(
+						header,
+						fList.apply(c).map(l -> new ItemList<>(c, l)).toMaybe(),
+						ReparatiesFactuur::new
+				));
 	}
 }

@@ -6,9 +6,9 @@ import org.rekeningsysteem.data.particulier.materiaal.AnderArtikel;
 import org.rekeningsysteem.data.particulier.materiaal.GebruiktEsselinkArtikel;
 import org.rekeningsysteem.data.reparaties.ReparatiesInkoopOrder;
 
+import javax.money.CurrencyUnit;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Currency;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -16,14 +16,14 @@ import java.util.stream.Stream;
 public class ItemList<E extends ListItem> implements BedragManager {
 
 	private final List<E> list;
-	private final Currency currency;
+	private final CurrencyUnit currency;
 
-	public ItemList(Currency currency) {
+	public ItemList(CurrencyUnit currency) {
 		this.list = new ArrayList<>();
 		this.currency = currency;
 	}
 
-	public ItemList(Currency currency, Collection<? extends E> c) {
+	public ItemList(CurrencyUnit currency, Collection<? extends E> c) {
 		this(currency);
 		this.list.addAll(c);
 	}
@@ -32,7 +32,7 @@ public class ItemList<E extends ListItem> implements BedragManager {
 		return this.list.stream();
 	}
 
-	public Currency getCurrency() {
+	public CurrencyUnit getCurrency() {
 		return this.currency;
 	}
 
@@ -40,7 +40,7 @@ public class ItemList<E extends ListItem> implements BedragManager {
 	public Totalen getTotalen() {
 		return this.list.parallelStream()
 				.reduce(
-						Totalen.Empty(),
+						new Totalen(this.currency),
 						(t, li) -> switch (li) {
 							case AnderArtikel item -> t.add(item.materiaalBtwPercentage(), item.materiaal(), item.materiaalBtw());
 							case GebruiktEsselinkArtikel item -> t.add(item.materiaalBtwPercentage(), item.materiaal(), item.materiaalBtw());

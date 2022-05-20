@@ -2,18 +2,22 @@ package org.rekeningsysteem.test.data.particulier.materiaal;
 
 import static org.junit.Assert.assertEquals;
 
+import org.javamoney.moneta.Money;
 import org.junit.Before;
 import org.junit.Test;
 import org.rekeningsysteem.data.particulier.materiaal.EsselinkArtikel;
 import org.rekeningsysteem.data.particulier.materiaal.GebruiktEsselinkArtikel;
 import org.rekeningsysteem.data.particulier.materiaal.Materiaal;
 import org.rekeningsysteem.data.util.BtwPercentage;
-import org.rekeningsysteem.data.util.Geld;
+
+import javax.money.CurrencyUnit;
+import javax.money.Monetary;
 
 public class GebruiktEsselinkArtikelTest extends MateriaalTest {
 
 	private GebruiktEsselinkArtikel gebruiktArtikel;
-	private final EsselinkArtikel artikel = new EsselinkArtikel("artikelnummer", "artikelomschrijving", 2, "eenheid", new Geld(1));
+	private final CurrencyUnit currency = Monetary.getCurrency("EUR");
+	private final EsselinkArtikel artikel = new EsselinkArtikel("artikelnummer", "artikelomschrijving", 2, "eenheid", Money.of(1, this.currency));
 
 	@Override
 	protected GebruiktEsselinkArtikel makeInstance() {
@@ -41,6 +45,6 @@ public class GebruiktEsselinkArtikelTest extends MateriaalTest {
 
 	@Test
 	public void testGetMateriaal() {
-		assertEquals(new Geld(2.5), this.gebruiktArtikel.materiaal());
+		assertEquals(Money.of(2.5, this.currency), this.gebruiktArtikel.materiaal());
 	}
 }

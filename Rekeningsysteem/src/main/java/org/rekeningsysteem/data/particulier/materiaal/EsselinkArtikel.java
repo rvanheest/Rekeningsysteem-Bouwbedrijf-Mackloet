@@ -1,5 +1,5 @@
 package org.rekeningsysteem.data.particulier.materiaal;
 
-import org.rekeningsysteem.data.util.Geld;
+import javax.money.MonetaryAmount;
 
-public record EsselinkArtikel(String artikelNummer, String omschrijving, int prijsPer, String eenheid, Geld verkoopPrijs) {}
+public record EsselinkArtikel(String artikelNummer, String omschrijving, int prijsPer, String eenheid, MonetaryAmount verkoopPrijs) {}

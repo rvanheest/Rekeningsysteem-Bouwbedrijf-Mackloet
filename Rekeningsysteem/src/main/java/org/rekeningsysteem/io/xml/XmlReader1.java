@@ -19,7 +19,6 @@ import org.rekeningsysteem.data.reparaties.ReparatiesFactuur;
 import org.rekeningsysteem.data.reparaties.ReparatiesInkoopOrder;
 import org.rekeningsysteem.data.util.BtwPercentage;
 import org.rekeningsysteem.data.util.BtwPercentages;
-import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.data.util.ItemList;
 import org.rekeningsysteem.data.util.header.Debiteur;
 import org.rekeningsysteem.data.util.header.FactuurHeader;
@@ -29,15 +28,16 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import javax.money.CurrencyUnit;
+import javax.money.MonetaryAmount;
 import javax.xml.parsers.DocumentBuilder;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Currency;
 
 public class XmlReader1 extends XmlLoader {
 
-	private Currency currency;
+	private CurrencyUnit currency;
 
 	public XmlReader1(DocumentBuilder builder) {
 		super(builder);
@@ -57,12 +57,12 @@ public class XmlReader1 extends XmlLoader {
 		};
 	}
 
-	private Single<Geld> makeGeld(String s) {
+	private Single<MonetaryAmount> makeMoney(String s) {
 		String[] ss = s.split(" ");
 
 		switch (ss.length) {
 			case 1:
-				return Single.fromCallable(() -> new Geld(ss[0]));
+				return Single.fromCallable(() -> new MonetaryAmount(ss[0]));
 			case 2:
 				if (this.currency == null || this.currency.getSymbol().equals(ss[0])) {
 					this.currency = Maybe.fromOptional(
@@ -70,7 +70,7 @@ public class XmlReader1 extends XmlLoader {
 							.filter(cur -> ss[0].equals(cur.getSymbol()))
 							.findFirst()
 					).blockingGet();
-					return Single.fromCallable(() -> new Geld(ss[1]));
+					return Single.fromCallable(() -> new MonetaryAmount(ss[1]));
 				}
 				else {
 					// corrupte file: verschillende valuta's
@@ -120,7 +120,7 @@ public class XmlReader1 extends XmlLoader {
 
 	private Maybe<Function<BtwPercentage, AnderArtikel>> makeAnderArtikel(Node node) {
 		Maybe<String> omschrijving = getNodeValue(getElement(node, "artikel"), "omschrijving");
-		Maybe<Geld> prijs = getNodeValue(node, "prijs").flatMapSingle(this::makeGeld);
+		Maybe<MonetaryAmount> prijs = getNodeValue(node, "prijs").flatMapSingle(this::makeMoney);
 
 		return Maybe.zip(omschrijving, prijs, (omschr, pr) -> btw -> new AnderArtikel(omschr, pr, btw));
 	}
@@ -130,7 +130,7 @@ public class XmlReader1 extends XmlLoader {
 		Maybe<String> omschrijving = getNodeValue(node, "omschrijving");
 		Maybe<Integer> prijsPer = getNodeValue(node, "prijsper").map(Integer::parseInt);
 		Maybe<String> eenheid = getNodeValue(node, "eenheid");
-		Maybe<Geld> verkoopPrijs = getNodeValue(node, "verkoopprijs").flatMapSingle(this::makeGeld);
+		Maybe<MonetaryAmount> verkoopPrijs = getNodeValue(node, "verkoopprijs").flatMapSingle(this::makeMoney);
 
 		return Maybe.zip(artikelNummer, omschrijving, prijsPer, eenheid, verkoopPrijs, EsselinkArtikel::new);
 	}
@@ -143,7 +143,7 @@ public class XmlReader1 extends XmlLoader {
 	}
 
 	private Maybe<Function<BtwPercentage, ProductLoon>> makeLoon(Node node) {
-		Maybe<Geld> uurloon = getNodeValue(node, "uurloon").flatMapSingle(this::makeGeld);
+		Maybe<MonetaryAmount> uurloon = getNodeValue(node, "uurloon").flatMapSingle(this::makeMoney);
 		Maybe<Double> uren = getNodeValue(node, "uren").map(Double::parseDouble);
 
 		return Maybe.zip(uurloon, uren, (ul, ur) -> btw -> new ProductLoon("Uurloon à " + ul.formattedString(), ur, ul, btw));
@@ -233,7 +233,7 @@ public class XmlReader1 extends XmlLoader {
 	private Maybe<MutatiesInkoopOrder> makeMutatiesInkoopOrder(Node node) {
 		Maybe<String> omschrijving = getNodeValue(node, "omschrijving");
 		Maybe<String> inkoopOrderNummer = getNodeValue(node, "bonnummer");
-		Maybe<Geld> prijs = getNodeValue(node, "prijs").flatMapSingle(this::makeGeld);
+		Maybe<MonetaryAmount> prijs = getNodeValue(node, "prijs").flatMapSingle(this::makeMoney);
 
 		return Maybe.zip(omschrijving, inkoopOrderNummer, prijs, MutatiesInkoopOrder::new);
 	}
@@ -254,8 +254,8 @@ public class XmlReader1 extends XmlLoader {
 	private Maybe<ReparatiesInkoopOrder> makeReparatiesInkoopOrder(Node node) {
 		Maybe<String> omschrijving = getNodeValue(node, "omschrijving");
 		Maybe<String> inkoopOrderNummer = getNodeValue(node, "bonnummer");
-		Maybe<Geld> uurloon = getNodeValue(node, "uurloon").flatMapSingle(this::makeGeld);
-		Maybe<Geld> materiaal = getNodeValue(node, "materiaal").flatMapSingle(this::makeGeld);
+		Maybe<MonetaryAmount> uurloon = getNodeValue(node, "uurloon").flatMapSingle(this::makeMoney);
+		Maybe<MonetaryAmount> materiaal = getNodeValue(node, "materiaal").flatMapSingle(this::makeMoney);
 
 		return Maybe.zip(omschrijving, inkoopOrderNummer, uurloon, materiaal, ReparatiesInkoopOrder::new);
 	}

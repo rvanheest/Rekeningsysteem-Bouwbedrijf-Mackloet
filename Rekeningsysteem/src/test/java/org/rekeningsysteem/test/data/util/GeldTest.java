@@ -8,6 +8,7 @@ import org.junit.Test;
 import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.exception.GeldParseException;
 
+@Deprecated
 public final class GeldTest {
 
 	@Test(expected = GeldParseException.class)

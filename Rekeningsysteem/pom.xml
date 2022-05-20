@@ -105,6 +105,14 @@
 			<artifactId>sqlite-jdbc</artifactId>
 			<version>3.36.0.3</version>
 		</dependency>
+
+		<!-- Money API -->
+		<dependency>
+			<groupId>org.javamoney</groupId>
+			<artifactId>moneta</artifactId>
+			<version>1.4.2</version>
+			<type>pom</type>
+		</dependency>
 	</dependencies>
 
 	<build>

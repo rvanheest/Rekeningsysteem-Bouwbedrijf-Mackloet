@@ -9,6 +9,7 @@ import org.rekeningsysteem.data.reparaties.ReparatiesInkoopOrder;
 import org.rekeningsysteem.data.util.BtwPercentage;
 import org.rekeningsysteem.data.util.Geld;
 
+import javax.money.MonetaryAmount;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -16,7 +17,7 @@ import java.util.List;
 public class PdfListItemVisitor {
 
 	public List<String> visit(MutatiesInkoopOrder item) {
-		Geld totaal = item.getTotaal();
+		MonetaryAmount totaal = item.getTotaal();
 
 		if (totaal.isZero())
 			return Collections.emptyList();
@@ -33,7 +34,7 @@ public class PdfListItemVisitor {
 	}
 
 	public List<String> visit(GebruiktEsselinkArtikel item) {
-		Geld materiaal = item.materiaal();
+		MonetaryAmount materiaal = item.materiaal();
 
 		if (materiaal.isZero())
 			return Collections.emptyList();
@@ -51,7 +52,7 @@ public class PdfListItemVisitor {
 	}
 
 	public List<String> visit(AnderArtikel item) {
-		Geld materiaal = item.materiaal();
+		MonetaryAmount materiaal = item.materiaal();
 
 		if (materiaal.isZero())
 			return Collections.emptyList();
@@ -64,7 +65,7 @@ public class PdfListItemVisitor {
 	}
 
 	public List<String> visit(ReparatiesInkoopOrder item) {
-		Geld totaal = item.getTotaal();
+		MonetaryAmount totaal = item.getTotaal();
 
 		if (totaal.isZero())
 			return Collections.emptyList();
@@ -79,7 +80,7 @@ public class PdfListItemVisitor {
 	}
 
 	public List<String> visit(InstantLoon item) {
-		Geld loon = item.loon();
+		MonetaryAmount loon = item.loon();
 
 		if (loon.isZero())
 			return Collections.emptyList();
@@ -92,7 +93,7 @@ public class PdfListItemVisitor {
 	}
 
 	public List<String> visit(ProductLoon item) {
-		Geld loon = item.loon();
+		MonetaryAmount loon = item.loon();
 
 		if (loon.isZero())
 			return Collections.emptyList();

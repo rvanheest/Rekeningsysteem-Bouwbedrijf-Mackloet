@@ -12,15 +12,15 @@ import org.rekeningsysteem.data.particulier.loon.ProductLoon;
 import org.rekeningsysteem.data.reparaties.ReparatiesFactuur;
 import org.rekeningsysteem.data.reparaties.ReparatiesInkoopOrder;
 import org.rekeningsysteem.data.util.BtwPercentage;
-import org.rekeningsysteem.data.util.Geld;
 import org.rekeningsysteem.data.util.ListItem;
 import org.rekeningsysteem.data.util.header.Debiteur;
 import org.rekeningsysteem.data.util.header.FactuurHeader;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
+import javax.money.CurrencyUnit;
+import javax.money.MonetaryAmount;
 import java.time.LocalDate;
-import java.util.Currency;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.function.Consumer;
@@ -59,11 +59,11 @@ class XmlWriterDocumentVisitor {
 				.andThen(optionalStringNode(xml, "factuurnummer", header.factuurnummer())));
 	}
 
-	private Function<Document, Node> visit(Currency currency) {
+	private Function<Document, Node> visit(CurrencyUnit currency) {
 		return createElement("currency", xml -> doc -> xml.appendChild(doc.createTextNode(currency.getCurrencyCode())));
 	}
 
-	private Consumer<Document> visit(Node root, String key, Geld value) {
+	private Consumer<Document> visit(Node root, String key, MonetaryAmount value) {
 		return stringNode(root, key, value.formattedString());
 	}
 
